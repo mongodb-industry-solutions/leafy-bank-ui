@@ -1,6 +1,6 @@
-# Leafy Bank Frontend
+# Leafy Bank UI
 
-Leafy Bank Frontend is the graphical user interface for our demo banking application, showcasing the integration of MongoDB's powerful features tailored for Financial Services. This responsive and intuitive UI allows users to explore and interact with banking functionalities, highlighting real-time data processing, secure transactions, and seamless user experiences. Perfect for demonstrating the capabilities of modern financial applications built on MongoDB.
+Leafy Bank UI is the graphical user interface for our demo banking application, showcasing the integration of MongoDB's powerful features tailored for Financial Services. This responsive and intuitive UI allows users to explore and interact with banking functionalities, highlighting real-time data processing, secure transactions, and seamless user experiences. Perfect for demonstrating the capabilities of modern financial applications built on MongoDB.
 
 ## Where MongoDB Shines?
 
