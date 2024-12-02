@@ -58,7 +58,8 @@ const Chatbot = () => {
             const NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL = process.env.NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL;
             const apiUrl = `${NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL}/querythepdf`;
             console.log("apiUrl:", apiUrl);
-
+            
+            // For checking backend service API code, the GitHub repository is available at https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag
             const response = await axios.post(
                 apiUrl,
                 { industry, demo_name, query, guidelines },
