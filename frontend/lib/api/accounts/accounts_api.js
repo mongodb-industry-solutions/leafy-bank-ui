@@ -4,6 +4,13 @@
  * The backend services are decoupled and coded in Python.
  * For more details, please refer to the Accounts API repository:
  * https://github.com/mongodb-industry-solutions/leafy-bank-backend-accounts/
+ * @module accounts_api
+ * @requires None
+ * @exports createAccount
+ * @exports deleteAccount
+ * @exports closeAccount
+ * @exports fetchAccountsForUser
+ * @exports fetchActiveAccountsForUser
  */
 
 const ACCOUNTS_API_URL = process.env.NEXT_PUBLIC_ACCOUNTS_API_URL;

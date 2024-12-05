@@ -1,22 +1,30 @@
-import { fetchActiveAccountsForUser, fetchRecentTransactionsForUser } from "@/lib/api/accounts/accounts_api";
+// UserSlice.js
+
+import { fetchActiveAccountsForUser } from "@/lib/api/accounts/accounts_api";
+import { fetchRecentTransactionsForUser } from "@/lib/api/transactions/transactions_api";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { USER_MAP } from "@/lib/constants";
 
-// Thunks to fetch user data
-export const fetchUserData = createAsyncThunk('User/fetchUserData',
-  async (userId, { dispatch }) => {
-    const [accounts, transactions] = await Promise.all([
-      fetchActiveAccountsForUser(userId),
-      fetchRecentTransactionsForUser(userId)
-    ]);
-    return { accounts, transactions };
+// Thunk to fetch user data
+export const fetchUserData = createAsyncThunk(
+  'User/fetchUserData',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const [accounts, transactions] = await Promise.all([
+        fetchActiveAccountsForUser(userId),
+        fetchRecentTransactionsForUser(userId)
+      ]);
+      return { accounts, transactions };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
   }
 );
 
 const UserSlice = createSlice({
   name: "User",
   initialState: {
-    usersList: Object.keys(USER_MAP).map(id => ({ id, name: USER_MAP[id] })),
+    usersList: Object.entries(USER_MAP).map(([id, name]) => ({ id, name })),
     selectedUser: null,
     loading: true,
     error: null,
@@ -56,14 +64,21 @@ const UserSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserData.fulfilled, (state, action) => {
-      state.accounts.loading = false;
-      state.accounts.list = action.payload.accounts;
-      state.accounts.initialLoad = true;
-      state.transactions.loading = false;
-      state.transactions.list = action.payload.transactions;
-      state.transactions.initialLoad = true;
-    });
+    builder
+      .addCase(fetchUserData.fulfilled, (state, action) => {
+        state.accounts.loading = false;
+        state.accounts.list = action.payload.accounts;
+        state.accounts.initialLoad = true;
+        state.transactions.loading = false;
+        state.transactions.list = action.payload.transactions;
+        state.transactions.initialLoad = true;
+      })
+      .addCase(fetchUserData.rejected, (state, action) => {
+        state.accounts.loading = false;
+        state.accounts.error = action.payload;
+        state.transactions.loading = false;
+        state.transactions.error = action.payload;
+      });
   },
 });
 

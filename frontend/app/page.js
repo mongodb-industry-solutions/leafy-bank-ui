@@ -1,11 +1,18 @@
-import Chatbot from "@/components/Chatbot/ChatbotComp";
-import LoginComp from "@/components/Login/LoginComp";
+"use client"
+
+// page.js 
+/**
+ * This file is the main entry point for the frontend application. It is responsible for rendering the RootLayout component.
+ * @module page
+ * @requires react
+ * @requires RootLayout
+ * @exports Home
+ */
 
 export default function Home() {
   return (
     <>
-      <Chatbot></Chatbot>
-      <LoginComp/>
+      
     </>
   );
 }
