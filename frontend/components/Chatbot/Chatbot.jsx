@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./ChatbotComp.module.css";
+import styles from "./Chatbot.module.css";
 import { Subtitle, Body } from '@leafygreen-ui/typography';
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';

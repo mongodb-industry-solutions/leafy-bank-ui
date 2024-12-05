@@ -1,6 +1,6 @@
 "use client";
 
-// LoginComp.jsx
+// Login.jsx
 
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,11 +8,12 @@ import Icon from '@leafygreen-ui/icon';
 import { Modal, Container } from 'react-bootstrap';
 import { H2, Subtitle, Description } from '@leafygreen-ui/typography';
 
-import styles from "./loginComp.module.css";
-import UserComp from '../user/UserComp';
+import styles from './Login.module.css'
+import User from '@/components/User/User';
 import { fetchUserData, setSelectedUser } from '@/redux/slices/UserSlice';
+import { USER_MAP } from "@/lib/constants";
 
-const LoginComp = () => {
+const Login = () => {
     const dispatch = useDispatch();
     const users = useSelector(state => state.User.usersList);
     const selectedUser = useSelector(state => state.User.selectedUser);
@@ -53,7 +54,7 @@ const LoginComp = () => {
                         <Icon glyph="X" />
                     </div>
                 )}
-                <div className={styles.modalMainCOntent}>
+                <div className={styles.modalMainContent}>
                     <H2 className={styles.centerText}>Welcome to Leafy Bank</H2>
                     <Subtitle className={`${styles.weightNormal} ${styles.centerText} mt-2`}>This is a MongoDB demo</Subtitle>
                     <br />
@@ -61,23 +62,15 @@ const LoginComp = () => {
                         Please select the user you would like to login as
                     </Description>
                     <div className={`${styles.usersContainer}`}>
-                        {usersLoading ? (
-                            [0, 1, 2, 3, 4].map((item) => (
-                                <UserComp key={item}></UserComp>
-                            ))
-                        ) : users.length > 0 ? (
-                            users.map((user, index) => (
-                                <UserComp
-                                    key={index}
-                                    user={user}
-                                    isSelectedUser={selectedUser && selectedUser.id === user.id}
-                                    setOpen={setOpen}
-                                    setLocalSelectedUser={(user) => dispatch(setSelectedUser(user))}
-                                ></UserComp>
-                            ))
-                        ) : (
-                            'No users found, please reload'
-                        )}
+                        {Object.entries(USER_MAP).map(([id, name]) => ( 
+                            <User
+                            user={{id, name}}
+                            isSelectedUser={selectedUser && selectedUser.id === id}
+                            key={id}
+                            setOpen={setOpen}
+                            setLocalSelectedUser={(user) => dispatch(setSelectedUser(user))}
+                            ></User>
+                         ))}
                     </div>
                     <Description className={`${styles.descriptionModal} mb-3`}>
                         Note: Each user has pre-loaded data, such as recent transactions, and opened accounts. This variation is designed to showcase different scenarios, providing a more dynamic and realistic user experience for the demo.
@@ -88,4 +81,4 @@ const LoginComp = () => {
     );
 };
 
-export default LoginComp;
+export default Login;
