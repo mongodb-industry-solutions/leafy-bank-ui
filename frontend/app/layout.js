@@ -7,15 +7,15 @@
  * @requires react
  * @requires geist/font/sans
  * @requires ClientProvider
- * @requires LoginComp
+ * @requires Login
  * @exports RootLayout
  */
 
-import './globals.css';
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { GeistSans } from "geist/font/sans";
 import ClientProvider from './ClientProvider';
-import LoginComp from '/components/Login/LoginComp';
-import Chatbot from '@/components/Chatbot/ChatbotComp';
+import Login from '@/components/Login/Login';
+import Chatbot from '@/components/Chatbot/Chatbot';
 
 export const metadata = {
   title: "Home",
@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       <body>
         <ClientProvider>
           {children}
-          <LoginComp/>
+          <Login/>
           <Chatbot/>
         </ClientProvider>
       </body>

@@ -30,7 +30,7 @@
     flex-wrap: wrap;
     justify-content: space-between; /* Ensure even space between cards */
 }
-.modalMainCOntent{
+.modalMainContent{
     height: 100%;
     display: flex;
     flex-direction: column;
