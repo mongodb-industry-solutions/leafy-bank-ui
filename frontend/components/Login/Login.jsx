@@ -3,44 +3,46 @@
 // Login.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import Icon from '@leafygreen-ui/icon';
 import { Modal, Container } from 'react-bootstrap';
 import { H2, Subtitle, Description } from '@leafygreen-ui/typography';
 
-import styles from './Login.module.css'
+import styles from './Login.module.css';
 import User from '@/components/User/User';
-import { fetchUserData, setSelectedUser } from '@/redux/slices/UserSlice';
 import { USER_MAP } from "@/lib/constants";
+import { fetchUserData } from '@/lib/api/userDataApi';
 
 const Login = () => {
-    const dispatch = useDispatch();
-    const users = useSelector(state => state.User.usersList);
-    const selectedUser = useSelector(state => state.User.selectedUser);
-    const usersLoading = useSelector(state => state.User.loading);
     const [open, setOpen] = useState(false);
-
-    useEffect(() => {
-        // Automatically select the first user from USER_MAP if none is selected
-        if (!selectedUser && users.length > 0) {
-            const firstUser = users[0];
-            dispatch(setSelectedUser(firstUser));
-            dispatch(fetchUserData(firstUser.id));
-        }
-    }, [selectedUser, users, dispatch]);
+    const [users, setUsers] = useState(Object.entries(USER_MAP).map(([id, name]) => ({ id, name })));
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [usersLoading, setUsersLoading] = useState(false);
 
     useEffect(() => {
         setOpen(true);
     }, []);
 
-    const handleClose = () => {
-        setOpen(false);
+    const handleUserSelect = (user) => {
+        // Clear previous data
+        localStorage.removeItem('selectedUser');
+        localStorage.removeItem('accounts');
+        localStorage.removeItem('transactions');
+
+        // Set new selected user
+        setSelectedUser(user);
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Fetch and store new data
+        fetchUserData(user.id).then(data => {
+            localStorage.setItem('accounts', JSON.stringify(data.accounts));
+            localStorage.setItem('transactions', JSON.stringify(data.transactions));
+        });
     };
 
     return (
         <Modal
             show={open}
-            onHide={handleClose}
+            onHide={() => setOpen(false)}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -50,7 +52,7 @@ const Login = () => {
         >
             <Container className='p-3 h-100'>
                 {!usersLoading && (
-                    <div className='d-flex flex-row-reverse p-1 cursorPointer' onClick={handleClose}>
+                    <div className='d-flex flex-row-reverse p-1 cursorPointer' onClick={() => setOpen(false)}>
                         <Icon glyph="X" />
                     </div>
                 )}
@@ -62,15 +64,15 @@ const Login = () => {
                         Please select the user you would like to login as
                     </Description>
                     <div className={`${styles.usersContainer}`}>
-                        {Object.entries(USER_MAP).map(([id, name]) => ( 
+                        {users.map(user => (
                             <User
-                            user={{id, name}}
-                            isSelectedUser={selectedUser && selectedUser.id === id}
-                            key={id}
-                            setOpen={setOpen}
-                            setLocalSelectedUser={(user) => dispatch(setSelectedUser(user))}
-                            ></User>
-                         ))}
+                                user={user}
+                                isSelectedUser={selectedUser && selectedUser.id === user.id}
+                                key={user.id}
+                                setOpen={setOpen}
+                                setLocalSelectedUser={handleUserSelect}
+                            />
+                        ))}
                     </div>
                     <Description className={`${styles.descriptionModal} mb-3`}>
                         Note: Each user has pre-loaded data, such as recent transactions, and opened accounts. This variation is designed to showcase different scenarios, providing a more dynamic and realistic user experience for the demo.
