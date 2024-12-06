@@ -1,0 +1,87 @@
+/* styles/userProfile.module.css */
+.userButton {
+    background-color: transparent;
+    color: #333;
+    font-size: 16px;
+    padding: 6px 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .popupCard {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: fit-content;
+    padding: 10px 23px;
+  }
+  
+  .profileImage {
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .divider {
+    border-bottom: 1px solid #ccc;
+    margin: 16px 0;
+   
+  }
+  
+  .profileItem {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+  }
+
+  .id{
+    color: rgb(137, 136, 136);
+  }
+  
+  .userButton {
+    display: flex;
+    align-items: center;
+}
+
+.username {
+    display: inline-block;
+}
+
+.userIcon {
+    display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .username {
+        display: none;
+    }
+
+    .userIcon {
+        display: inline-block;
+    }
+}
+
+  /*.logoutButton {
+    margin-top: 16px;
+    width: 100%;
+    background-color: #f0f0f0;
+    color: #333;
+  }
+*/
+  

@@ -79,5 +79,5 @@ export async function fetchRecentTransactionsForUser(userIdentifier) {
     }
 
     const data = await response.json();
-    return data.accounts;
+    return data.transactions;
 }
