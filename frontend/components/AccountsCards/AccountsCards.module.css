@@ -1,0 +1,178 @@
+.cardsWrapper {
+  padding: 20px;
+  background-image: url('/images/blob3.svg');
+  border-radius: 20px;
+  background-size: cover;
+  background-position-y: bottom;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  /* Keeps the background fixed when scrolling */
+}
+
+.loading {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-family: sans-serif;
+  margin-top: 15px;
+}
+
+.cardsContainer {
+  display: flex;
+  gap: 20px;
+   /* Space between cards */
+   justify-content: space-around;
+  transition: transform 0.5s ease;
+  /* Only on mobile, act like a slider */
+  overflow: hidden; /* Prevents overflow outside the container */
+  flex-wrap: wrap;
+}
+
+.card {
+  width: 300px;
+  padding: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: white;
+  flex-shrink: 0;
+  z-index: 1;
+  position: relative;
+}
+
+
+.cardContent {
+  font-family: sans-serif;
+  font-size: 16px;
+  color: #333;
+  position: relative;
+}
+
+.accNumber {
+  color: rgb(135, 135, 135);
+}
+
+.accBalance {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.balance {
+  font-size: 30px;
+
+}
+
+.formContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+
+}
+
+.form {
+  padding-right: 30px;
+}
+
+.formButtons {
+  display: flex;
+  justify-content: center;
+  /* Centers the buttons horizontally */
+  align-items: center;
+  /* Centers the buttons vertically if there's any vertical space */
+  margin-top: 10px;
+}
+
+.formButtons button {
+  margin: 0 5px;
+  /* Adds a small horizontal margin between buttons */
+}
+
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.infoButton {
+  margin-left: auto;
+}
+
+.popover {
+  z-index: 200;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+}
+
+.popoverContent {
+  padding: 10px;
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;        /* New stacking context with its own hierarchy */
+  transform: translateZ(0);  /* This will force the creation of a new stacking context */
+
+}
+
+.comboboxDropdown{
+  position: relative;
+  z-index: 250; /* Ensure it stays above the overlay */
+  background-color: white;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .cardsContainer {
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x:scroll;
+    padding: 0px 20px 10px 0px;
+    width: 90%;
+    flex-wrap: nowrap;
+   
+  }
+
+  .card {
+    width: 80%;
+    z-index: 0;
+    padding-left: 10px;
+    margin-left: 0px;
+  }
+
+  .hideOnMobile {
+    display: none;
+    /* Hide on mobile */
+  }
+
+  .indicators {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+  }
+  
+  .indicator {
+    width: 10px;
+    height: 10px;
+    background-color: #cbe0da;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+  }
+  
+  .indicator.active {
+    background-color: #00684A;
+  }
+  
+}
