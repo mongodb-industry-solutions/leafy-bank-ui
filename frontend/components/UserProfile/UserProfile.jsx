@@ -2,8 +2,7 @@
 
 // UserProfile.jsx
 
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
 import { H3, Subtitle, Body } from '@leafygreen-ui/typography';
 import Image from 'next/image';
 import Card from '@leafygreen-ui/card';
@@ -14,11 +13,25 @@ import styles from './userProfile.module.css';
 
 const UserProfile = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [activeAccounts, setActiveAccounts] = useState({ accounts: [] });
+    const [recentTransactions, setRecentTransactions] = useState({ transactions: [] });
 
-    // Accessing data from Redux store
-    const selectedUser = useSelector(state => state.User.selectedUser);
-    const accounts = useSelector(state => state.User.accounts.list);
-    const transactions = useSelector(state => state.User.transactions.list);
+    useEffect(() => {
+        // Retrieve data from localStorage
+        const userString = localStorage.getItem('selectedUser');
+        const activeAccountsString = localStorage.getItem('active_accounts');
+        const recentTransactionsString = localStorage.getItem('recent_transactions');
+
+        // Parse the JSON strings
+        const user = userString ? JSON.parse(userString) : null;
+        const accounts = activeAccountsString ? JSON.parse(activeAccountsString) : { accounts: [] };
+        const transactions = recentTransactionsString ? JSON.parse(recentTransactionsString) : { transactions: [] };
+
+        setSelectedUser(user);
+        setActiveAccounts(accounts);
+        setRecentTransactions(transactions);
+    }, []);
 
     const togglePopup = () => {
         setIsPopupOpen(!isPopupOpen);
@@ -41,8 +54,8 @@ const UserProfile = () => {
                         <H3>My Profile</H3>
                         <Image
                             className={styles.profileImage}
-                            src={'/images/userAvatar.png'}
-                            alt="Profile"
+                            src={`/rsc/users/${selectedUser.id}.png`}
+                            alt="User Avatar"
                             width={100}
                             height={100}
                             priority
@@ -58,18 +71,18 @@ const UserProfile = () => {
                         </div>
                         <div className={styles.profileItem}>
                             <Subtitle>Email:</Subtitle>
-                            <Body baseFontSize={16}>{selectedUser.email || 'user@example.com'}</Body>
+                            <Body baseFontSize={16}>{selectedUser.name + '@example.com' || 'user@example.com'}</Body>
                         </div>
 
                         <div className={styles.divider}></div>
                         <Subtitle>Account Information</Subtitle>
                         <div className={styles.profileItem}>
                             <Subtitle>Number of Accounts:</Subtitle>
-                            <Body baseFontSize={16}>{accounts.length}</Body>
+                            <Body baseFontSize={16}>{activeAccounts.accounts.length}</Body>
                         </div>
                         <div className={styles.profileItem}>
                             <Subtitle>Recent Transactions:</Subtitle>
-                            <Body baseFontSize={16}>{transactions.length}</Body>
+                            <Body baseFontSize={16}>{recentTransactions.transactions.length}</Body>
                         </div>
 
                         <Button onClick={togglePopup} className={styles.closeButton}>
