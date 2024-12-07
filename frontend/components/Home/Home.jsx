@@ -65,7 +65,7 @@ const Home = () => {
     log.Number_linked_accounts = exi.linkedAccounts.length;
     log.Number_recent_transactions = exi.recentTransactions.length;
     localStorage.setItem('user', JSON.stringify(log));
-    localStorage.setItem('transactions', JSON.stringify(exi.recentTransactions));
+    localStorage.setItem('recent_transactions', JSON.stringify(exi.recentTransactions));
     setTransactions(exi.recentTransactions);
   };
 

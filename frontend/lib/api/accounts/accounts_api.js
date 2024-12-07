@@ -114,7 +114,7 @@ export async function fetchAccountsForUser(userIdentifier) {
     }
 
     const data = await response.json();
-    return data.accounts;
+    return data;
 }
 
 /**
@@ -137,5 +137,5 @@ export async function fetchActiveAccountsForUser(userIdentifier) {
     }
 
     const data = await response.json();
-    return data.accounts;
+    return data;
 }

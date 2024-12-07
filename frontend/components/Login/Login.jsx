@@ -25,8 +25,8 @@ const Login = () => {
     const handleUserSelect = (user) => {
         // Clear previous data
         localStorage.removeItem('selectedUser');
-        localStorage.removeItem('accounts');
-        localStorage.removeItem('transactions');
+        localStorage.removeItem('active_accounts');
+        localStorage.removeItem('recent_transactions');
 
         // Set new selected user
         setSelectedUser(user);
@@ -34,8 +34,8 @@ const Login = () => {
 
         // Fetch and store new data
         fetchUserData(user.id).then(data => {
-            localStorage.setItem('accounts', JSON.stringify(data.accounts));
-            localStorage.setItem('transactions', JSON.stringify(data.transactions));
+            localStorage.setItem('active_accounts', JSON.stringify(data.active_accounts));
+            localStorage.setItem('recent_transactions', JSON.stringify(data.recent_transactions));
         });
     };
 
