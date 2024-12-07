@@ -8,6 +8,7 @@ import { GeistSans } from "geist/font/sans";
 import Login from '@/components/Login/Login';
 import Chatbot from '@/components/Chatbot/Chatbot';
 import Header from '@/components/Header/Header';
+import AccountsCards from '@/components/AccountsCards/AccountsCards';
 
 export default function RootLayout({ children }) {
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
         {children}
         <Login />
         <Header />
+        <AccountsCards />
         <Chatbot />
       </body>
     </html>

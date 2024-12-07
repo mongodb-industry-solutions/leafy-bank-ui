@@ -25,7 +25,7 @@ const ACCOUNTS_API_URL = process.env.NEXT_PUBLIC_ACCOUNTS_API_URL;
  * @returns {Promise<Object>} The response data from the server.
  * @throws Will throw an error if the request fails.
  */
-export async function createAccount(userName, userId, accountNumber, accountBalance, accountType) {
+export async function createAccount({ userName, userId, accountNumber, accountBalance, accountType }) {
     const response = await fetch(`${ACCOUNTS_API_URL}/create-account`, {
         method: "POST",
         headers: {

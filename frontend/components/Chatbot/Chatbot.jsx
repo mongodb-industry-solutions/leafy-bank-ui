@@ -22,13 +22,12 @@ const Chatbot = () => {
     const [isAsking, setIsAsking] = useState(false);
     const [completedMessages, setCompletedMessages] = useState({}); // Track completed messages
 
-
     const toggleChatbot = () => {
         setIsOpen(!isOpen);
     };
 
     const handleChange = (event) => {
-      setQuery(event.target.value);
+        setQuery(event.target.value);
     };
 
     const handleSuggestionOne = () => {
@@ -43,23 +42,14 @@ const Chatbot = () => {
         return text.replace(/(\d+\.\s)/g, '\n$1');
     };
 
-
-
     const handleAsk = async () => {
         const guidelines = "personal-banking-terms-conditions.pdf";
         setIsAsking(true);
 
-        console.log("Industry:", industry);
-        console.log("Demo name:", demo_name);
-        console.log("Using the file:", guidelines);
-        console.log("Query:", query);
-
         try {
             const NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL = process.env.NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL;
             const apiUrl = `${NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL}/querythepdf`;
-            console.log("apiUrl:", apiUrl);
-            
-            // For checking backend service API code, the GitHub repository is available at https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag
+
             const response = await axios.post(
                 apiUrl,
                 { industry, demo_name, query, guidelines },
@@ -73,7 +63,7 @@ const Chatbot = () => {
             const formattedAnswer = formatAnswer(response.data.answer);
             setAnswer(formattedAnswer);
             setDocs(response.data.supporting_docs);
-            setMessages([...messages, query, formattedAnswer]);
+            setMessages((prevMessages) => [...prevMessages, query, formattedAnswer]);
             setQuery("");
         } catch (error) {
             console.error("Error:", error);
@@ -82,12 +72,10 @@ const Chatbot = () => {
         }
     };
 
-    // Reference images
     const handleImageClick = (e) => {
         e.target.classList.toggle(styles.enlargedImage);
     };
 
-    // Mark a message as completed for typewriter effect
     const markCompleted = (messageId) => {
         setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
     };
@@ -116,7 +104,6 @@ const Chatbot = () => {
                             </IconButton>
                         </div>
                         <div className={styles.chatbotBody}>
-
                             <Body className={styles.introBubble}>Hi there! I'm the Leafy Bank's personal assistant, feel free to ask me any questions regarding Leafy Bank's Terms and Conditions.</Body>
 
                             {messages.map((message, index) => (
@@ -126,7 +113,7 @@ const Chatbot = () => {
                                             <Body>{message}</Body>
                                         ) : (
                                             <Body>
-                                                 <Typewriter
+                                                <Typewriter
                                                     text={message}
                                                     messageId={index}
                                                     completedMessages={completedMessages}
@@ -137,6 +124,7 @@ const Chatbot = () => {
                                     </div>
                                 </div>
                             ))}
+
                             {docs.length > 0 && (
                                 <div className={styles.referenceSection}>
                                     {docs.map((doc, index) => (

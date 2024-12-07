@@ -1,34 +1,35 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import ReactMarkdown from 'react-markdown';
+import { useState, useEffect, useRef } from "react";
 
 const Typewriter = ({ text, messageId, completedMessages, markCompleted }) => {
-    const [displayedText, setDisplayedText] = useState(completedMessages[messageId] ? text : ""); 
-    const [completed, setCompleted] = useState(!!completedMessages[messageId]);
+    const [displayedText, setDisplayedText] = useState("");
+    const typingIntervalRef = useRef(null);
 
     useEffect(() => {
-        if (!completed && text) {
-            let index = 0;
-
-            const typing = setInterval(() => {
-                if (index < text.length) {
-                    setDisplayedText((prev) => prev + text.charAt(index));
-                    index++;
-                } else {
-                    clearInterval(typing);
-                    setCompleted(true);
-                    markCompleted(messageId);  // Mark this message as completed
-                }
-            }, 30); // Adjust typing speed
-
-            return () => clearInterval(typing);
-        } else {
-            setDisplayedText(text); // Ensure the full text is displayed after typing
+        if (completedMessages[messageId]) {
+            setDisplayedText(text);
+            return;
         }
-    }, [text, completed, messageId, markCompleted]);
 
-    return <ReactMarkdown>{displayedText}</ReactMarkdown>;
+        let currentIndex = 0;
+
+        const typeNextCharacter = () => {
+            currentIndex++;
+            setDisplayedText((prev) => text.slice(0, currentIndex));
+
+            if (currentIndex >= text.length) {
+                clearInterval(typingIntervalRef.current);
+                markCompleted(messageId);
+            }
+        };
+
+        typingIntervalRef.current = setInterval(typeNextCharacter, 30);
+
+        return () => clearInterval(typingIntervalRef.current);
+    }, [text, messageId, completedMessages, markCompleted]);
+
+    return <span>{displayedText}</span>;
 };
 
 export default Typewriter;
