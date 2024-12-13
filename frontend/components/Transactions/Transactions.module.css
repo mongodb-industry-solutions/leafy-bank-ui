@@ -1,0 +1,160 @@
+.transactionsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.transactionRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem;
+  
+}
+
+.transactionSection{
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s;
+    margin-bottom: 5px;
+}
+
+.transactionIcon {
+    flex-shrink: 0;
+}
+ 
+.transactionIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.arrowDown {
+    background-color: #d1e7dd; /* Light green background */
+    color: #2c662d; /* Dark green icon color */
+}
+
+.arrowUp {
+    background-color: #ffe5d3; /* Light orange background */
+    color: #d93f0b; /* Dark orange icon color */
+}
+
+/* Adjust icon size and centering */
+.transactionIcon .lg-icon, .transactionIcon .md-icon, .transactionIcon .sm-icon {
+    margin: 0 auto;
+}
+
+
+.transactionDetails {
+    flex: 1;
+    margin-left: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.transactionName {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.transactionType {
+    color: #888;
+    font-size: 0.875rem;
+    margin-top: 2px;
+}
+
+.transactionAmount {
+    font-weight: 600;
+    margin-left: auto;
+    font-size: 1.125rem;
+}
+
+.transactionAmount.positive {
+   /* color: green;*/
+   color: #001E2B;
+
+}
+
+.transactionAmount.negative {
+ /*   color: red;*/
+    color: #001E2B;
+}
+
+.transactionActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.actionButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.actionButton:hover {
+    color: #00684a;
+}
+
+.popoverBody {
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #f5f5f5;
+}
+
+.expandableSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.transactionDateTitle{
+    margin-top: 10px;
+    color: #001E2B;
+    font-size: 14px;
+}
+
+.confirmationModal {
+    z-index: 10;
+}
+
+.confirmButton, .cancelButton {
+    margin-right: 100px; /* Space between the buttons */
+}
+
+.expandableSection{
+    padding-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .transactionRow {
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0.5rem;
+      
+    }
+    
+    .transactionAmount {
+        margin-left: 0;
+        margin-right: 20px;
+        padding-top: 11px;
+    }
+
+    .transactionActions {
+        margin-left: 0;
+        padding-top: 7px; 
+    }
+
+    .confirmationModal {
+        margin: 0 auto; /* Centers the modal horizontally */
+        padding: 0px;
+    }
+}
