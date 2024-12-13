@@ -20,8 +20,8 @@ const UserProfile = () => {
     useEffect(() => {
         // Retrieve data from localStorage
         const userString = localStorage.getItem('selectedUser');
-        const activeAccountsString = localStorage.getItem('active_accounts');
-        const recentTransactionsString = localStorage.getItem('recent_transactions');
+        const activeAccountsString = localStorage.getItem('accounts');
+        const recentTransactionsString = localStorage.getItem('transactions');
 
         // Parse the JSON strings
         const user = userString ? JSON.parse(userString) : null;

@@ -139,3 +139,111 @@ export async function fetchActiveAccountsForUser(userIdentifier) {
     const data = await response.json();
     return data;
 }
+
+/**
+ * Fetch all accounts, optionally excluding a specific account.
+ * @param {string} [excludeAccountId] - The ID of the account to exclude from the results.
+ * @returns {Promise<Array>} A list of all accounts, excluding the specified account if provided.
+ * @throws Will throw an error if the request fails.
+ */
+export async function fetchAccounts(excludeAccountId = null) {
+    // Prepare the request body conditionally
+    const bodyData = {};
+
+    if (excludeAccountId && excludeAccountId.trim() !== "") {
+        bodyData.exclude_account_id = excludeAccountId;
+    }
+
+    // Execute the fetch request
+    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-accounts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData),  // Send JSON only with meaningful keys
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching accounts: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**
+ * Fetch all active accounts, optionally excluding a specific account.
+ * @param {string} [excludeAccountId] - The ID of the account to exclude from the results.
+ * @returns {Promise<Array>} A list of all active accounts, excluding the specified account if provided.
+ * @throws Will throw an error if the request fails.
+ */
+export async function fetchActiveAccounts(excludeAccountId = null) {
+    // Prepare the request body conditionally
+    const bodyData = {};
+
+    if (excludeAccountId && excludeAccountId.trim() !== "") {
+        bodyData.exclude_account_id = excludeAccountId;
+    }
+
+    // Execute the fetch request
+    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-active-accounts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData),  // Send JSON only with meaningful keys
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching active accounts: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Find an account by its number.
+ * @param {string|number} accountNumber - The account number to search for.
+ * @returns {Promise<Object>} The account data if found.
+ * @throws Will throw an error if the request fails.
+ */
+export async function findAccountByNumber(accountNumber) {
+    const response = await fetch(`${ACCOUNTS_API_URL}/find-account-by-number`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ account_number: String(accountNumber) }), // Ensure the number is treated as a string
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error finding account: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // API responds with {"account": {...}}
+}
+
+/**  
+ * Find an active account by its number.
+ * @param {string|number} accountNumber - The account number to search for.
+ * @returns {Promise<Object>} The active account data if found.
+ * @throws Will throw an error if the request fails.
+ */
+export async function findActiveAccountByNumber(accountNumber) {
+    const response = await fetch(`${ACCOUNTS_API_URL}/find-active-account-by-number`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ account_number: String(accountNumber) }), // Ensure the number is treated as a string
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error finding active account: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data; // API responds with {"account": {...}}
+}

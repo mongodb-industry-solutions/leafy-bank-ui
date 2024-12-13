@@ -19,8 +19,8 @@ function Header({ onLogout }) {
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem('user');
-    localStorage.removeItem('active_accounts');
-    localStorage.removeItem('recent_transactions');
+    localStorage.removeItem('accounts');
+    localStorage.removeItem('transactions');
     onLogout();
   };
 

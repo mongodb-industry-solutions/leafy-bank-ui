@@ -18,7 +18,7 @@ export async function fetchUserData(userId) {
         const parsedActiveAccounts = typeof activeAccounts === 'string' ? JSON.parse(activeAccounts) : activeAccounts;
         const parsedRecentTransactions = typeof recentTransactions === 'string' ? JSON.parse(recentTransactions) : recentTransactions;
 
-        return { active_accounts: parsedActiveAccounts, recent_transactions: parsedRecentTransactions };
+        return { accounts: parsedActiveAccounts, transactions: parsedRecentTransactions };
     } catch (error) {
         console.error('Error fetching user data:', error);
         throw error;

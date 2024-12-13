@@ -10,7 +10,7 @@ import { Subtitle, Body, H3 } from '@leafygreen-ui/typography';
 import Icon from '@leafygreen-ui/icon';
 import IconButton from '@leafygreen-ui/icon-button';
 import Popover from '@leafygreen-ui/popover';
-import { createAccount } from '@/lib/api/accounts/accounts_api'; // Import the createAccount function
+import { createAccount } from '@/lib/api/accounts/accounts_api';
 
 const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
     const [accounts, setAccounts] = useState([]);
@@ -34,7 +34,7 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
 
     useEffect(() => {
         // Retrieve data from localStorage
-        const activeAccountsString = localStorage.getItem('active_accounts');
+        const activeAccountsString = localStorage.getItem('accounts');
         const accountsData = activeAccountsString ? JSON.parse(activeAccountsString) : { accounts: [] };
 
         setAccounts(accountsData.accounts);
@@ -75,7 +75,7 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
             // Update local state and localStorage with the new account
             const updatedAccounts = [...accounts, newAccount];
             setAccounts(updatedAccounts);
-            localStorage.setItem('active_accounts', JSON.stringify({ accounts: updatedAccounts }));
+            localStorage.setItem('accounts', JSON.stringify({ accounts: updatedAccounts }));
 
             handleCloseForm(); // Close the form after submitting
         } catch (error) {
