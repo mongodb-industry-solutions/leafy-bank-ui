@@ -172,7 +172,7 @@ const Home = () => {
             </div>
 
             <H3>Recent Transactions</H3>
-            <Transactions transactions={recentTransactions} userId={selectedUser.id} />
+            <Transactions transactions={recentTransactions.transactions} />
           </div>
 
         </div>
