@@ -2,131 +2,213 @@
 
 // Transactions.jsx
 
-import { useState } from "react";
-import Icon from '@leafygreen-ui/icon';
-import { Subtitle } from '@leafygreen-ui/typography';
-import IconButton from '@leafygreen-ui/icon-button';
-import Popover from '@leafygreen-ui/popover';
-import { Body } from '@leafygreen-ui/typography';
-import Code from '@leafygreen-ui/code';
+import { useState, useEffect } from "react";
+import Icon from "@leafygreen-ui/icon";
+import { Subtitle, Body } from "@leafygreen-ui/typography";
+import IconButton from "@leafygreen-ui/icon-button";
+import Popover from "@leafygreen-ui/popover";
+import Code from "@leafygreen-ui/code";
 
-import styles from './Transactions.module.css';
+import styles from "./Transactions.module.css";
 
-const Transactions = ({ transactions = [], selectedUserId }) => { // Initialize default empty array
+const Transactions = ({ transactions = [] }) => {
+  const [expandedTransactionIndex, setExpandedTransactionIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-    const [expandedTransactionIndex, setExpandedTransactionIndex] = useState(null);
-    const [hoveredIndex, setHoveredIndex] = useState(null);
+  // Fetch selectedUser from localStorage
+  useEffect(() => {
+    const userString = localStorage.getItem("selectedUser"); // Ensure the key matches how you store it
+    const user = userString ? JSON.parse(userString) : null;
 
-    // Utility function to group transactions by date
-    const groupTransactionsByDate = (transactionsArray) => {
-        // Ensure we are dealing with an actual array
-        if (!Array.isArray(transactionsArray)) return {};
+    if (user && user.id) {
+      setSelectedUser(user);
+    } else {
+      console.warn("selectedUser not found or invalid in localStorage");
+    }
+  }, []);
 
-        const today = new Date().toLocaleDateString();
-        return transactionsArray.reduce((acc, transaction) => {
-            const notifiedDateObj = transaction.TransactionDates.find(
-                dateObj => dateObj.TransactionDateType === 'TransactionNotifiedDate'
-            );
+  // Utility: Group transactions by date
+  const groupTransactionsByDate = (transactionsArray) => {
+    if (!Array.isArray(transactionsArray)) {
+      console.warn("Invalid transactions array:", transactionsArray);
+      return {};
+    }
 
-            if (!notifiedDateObj) return acc;
-            const notifiedDate = new Date(notifiedDateObj.TransactionDate).toLocaleDateString();
-            const displayDate = notifiedDate === today ? 'Today' : notifiedDate;
-            if (!acc[displayDate]) {
-                acc[displayDate] = [];
-            }
-            acc[displayDate].push(transaction);
-            return acc;
-        }, {});
-    };
+    const today = new Date().toLocaleDateString();
 
-    // Group transactions by date
-    const groupedTransactions = groupTransactionsByDate(transactions);
+    return transactionsArray.reduce((acc, transaction) => {
+      const notifiedDateObj = transaction.TransactionDates?.find(
+        (dateObj) => dateObj.TransactionDateType === "TransactionNotifiedDate"
+      );
 
-    // Initialize a unique transaction index that increments across all groups
-    let globalIndex = 0;
+      if (!notifiedDateObj) {
+        console.warn("Missing TransactionNotifiedDate for transaction:", transaction);
+        return acc;
+      }
+      const notifiedDate = new Date(notifiedDateObj.TransactionDate).toLocaleDateString();
+      const displayDate = notifiedDate === today ? "Today" : notifiedDate;
 
-    return (
-        <div className={styles.transactionsContainer}>
-            {Object.keys(groupedTransactions).length === 0 ? (
-                <p>No transactions on this account</p>
-            ) : (
-                Object.entries(groupedTransactions).map(([date, transactions]) => (
-                    <div key={date} className={styles.transactionDateGroup}>
-                        <Subtitle className={styles.transactionDateTitle}>{date}</Subtitle> {/* Title with the date */}
+      if (!acc[displayDate]) acc[displayDate] = [];
+      acc[displayDate].push(transaction);
 
-                        {transactions.map((transaction) => {
-                            const transactionType = transaction.TransactionDetails.TransactionType;
-                            const transactionPaymentMethod = transaction.TransactionDetails.TransactionPaymentMethod;
+      return acc;
+    }, {});
+  };
 
-                            const isIncoming = transaction.TransactionReferenceData.TransactionReceiver.UserId === selectedUserId;
+  // Utility: Determine if a transaction is incoming
+  const isTransactionIncoming = (transaction, selectedUserId) => {
+    if (!transaction || !selectedUserId) {
+      console.warn("Transaction or SelectedUserId is missing:", transaction, selectedUserId);
+      return false;
+    }
 
-                            const currentIndex = globalIndex++;  // Get a globally unique index
+    const receiverId = transaction.TransactionReferenceData?.TransactionReceiver?.UserId;
+    const senderId = transaction.TransactionReferenceData?.TransactionSender?.UserId;
 
-                            return (
-                                <div key={transaction._id || currentIndex} className={styles.transactionSection}>
-                                    <div className={styles.transactionRow}>
-                                        <div className={`${styles.transactionIcon} ${isIncoming ? styles.arrowDown : styles.arrowUp}`}>
-                                            <Icon glyph={isIncoming ? 'ArrowDown' : 'ArrowUp'} size="large" />
-                                        </div>
+    // A transaction is incoming if the receiver matches the selected user
+    return receiverId === selectedUserId && senderId !== selectedUserId;
+  };
 
-                                        <div className={styles.transactionDetails}>
-                                            <div className={styles.transactionName}>
-                                                <Body className={styles.transactionName}>
-                                                    {isIncoming
-                                                        ? transaction.TransactionReferenceData.TransactionSender.UserName
-                                                        : transaction.TransactionReferenceData.TransactionReceiver.UserName}
-                                                </Body>
-                                            </div>
-                                            <div className={styles.transactionType}>
-                                                <Body className={styles.transactionType}>
-                                                    {transactionType === 'DigitalPayment'
-                                                        ? transactionPaymentMethod
-                                                        : transactionType}
-                                                </Body>
-                                            </div>
-                                        </div>
+  // Utility: Determine if a transaction is internal
+  const isTransactionInternal = (transaction) => {
+    const senderId = transaction.TransactionReferenceData?.TransactionSender?.UserId;
+    const receiverId = transaction.TransactionReferenceData?.TransactionReceiver?.UserId;
 
-                                        <div className={`${styles.transactionAmount} ${isIncoming ? styles.positive : styles.negative}`}>
-                                            <Body className={styles.transactionAmount}>
-                                                {isIncoming
-                                                    ? `+${transaction.TransactionAmount}$`
-                                                    : `-${transaction.TransactionAmount}$`}
-                                            </Body>
-                                        </div>
+    return senderId === receiverId; // Internal if sender and receiver are the same
+  };
 
-                                        <div className={styles.transactionActions}>
-                                            <IconButton
-                                                className={styles.actionButton}
-                                                onClick={() => {
-                                                    setExpandedTransactionIndex(expandedTransactionIndex === currentIndex ? null : currentIndex);
-                                                }}
-                                                aria-label="Expand"
-                                                onMouseEnter={() => setHoveredIndex(currentIndex)}
-                                                onMouseLeave={() => setHoveredIndex(null)}
-                                            >
-                                                {expandedTransactionIndex === currentIndex ? <Icon glyph="Minus" /> : <Icon glyph="Plus" />}
-                                                <Popover active={hoveredIndex === currentIndex} align="top" justify="middle" usePortal={true}>
-                                                    <Body className={styles.popoverBody}>Expand</Body>
-                                                </Popover>
-                                            </IconButton>
-                                        </div>
-                                    </div>
+  // Group transactions by date
+  const groupedTransactions = groupTransactionsByDate(transactions);
+  let globalIndex = 0; // Initialize unique index
 
-                                    {expandedTransactionIndex === currentIndex && (
-                                        <div className={styles.expandableSection}>
-                                            <Code language={'json'} style={{ width: '100%' }}>
-                                                {JSON.stringify(transaction, null, 3)}
-                                            </Code>
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+  // Render: Main component
+  return (
+    <div className={styles.transactionsContainer}>
+      {Object.keys(groupedTransactions).length === 0 ? (
+        <p>No transactions on this account</p>
+      ) : (
+        Object.entries(groupedTransactions).map(([date, transactions]) => (
+          <div key={date} className={styles.transactionDateGroup}>
+            <Subtitle className={styles.transactionDateTitle}>{date}</Subtitle> {/* Date Title */}
+
+            {transactions.map((transaction) => {
+              const transactionType = transaction.TransactionDetails?.TransactionType;
+              const transactionPaymentMethod = transaction.TransactionDetails?.TransactionPaymentMethod;
+              const isInternal = isTransactionInternal(transaction);
+              const isIncoming = !isInternal && selectedUser
+                ? isTransactionIncoming(transaction, selectedUser.id)
+                : false;
+
+              const currentIndex = globalIndex++; // Globally unique index
+
+              const transactionIconClass = isInternal
+                ? styles.neutral
+                : isIncoming
+                ? styles.arrowDown
+                : styles.arrowUp;
+
+              const transactionIconGlyph = isInternal
+                ? "MultiDirectionArrow"
+                : isIncoming
+                ? "ArrowDown"
+                : "ArrowUp";
+
+              return (
+                <div key={transaction._id || currentIndex} className={styles.transactionSection}>
+                  <div className={styles.transactionRow}>
+                    {/* Icon for Transaction Direction */}
+                    <div className={`${styles.transactionIcon} ${transactionIconClass}`}>
+                      <Icon glyph={transactionIconGlyph} size="large" />
                     </div>
-                ))
-            )}
-        </div>
-    );
+
+                    {/* Transaction Details */}
+                    <div className={styles.transactionDetails}>
+                      <div className={styles.transactionName}>
+                        <Body className={styles.transactionName}>
+                          {isInternal
+                            ? transaction.TransactionReferenceData?.TransactionSender?.UserName || "Unknown User"
+                            : isIncoming
+                            ? transaction.TransactionReferenceData?.TransactionSender?.UserName || "Unknown Sender"
+                            : transaction.TransactionReferenceData?.TransactionReceiver?.UserName || "Unknown Receiver"}
+                        </Body>
+                      </div>
+                      <div className={styles.transactionType}>
+                        <Body className={styles.transactionType}>
+                          {isInternal
+                            ? "InternalTransfer"
+                            : transactionType === "DigitalPayment"
+                            ? transactionPaymentMethod || "Unknown Payment Method"
+                            : transactionType || "Unknown Type"}
+                        </Body>
+                      </div>
+                    </div>
+
+                    {/* Transaction Amount */}
+                    <div
+                      className={`${styles.transactionAmount} ${
+                        isInternal
+                          ? styles.neutral
+                          : isIncoming
+                          ? styles.positive
+                          : styles.negative
+                      }`}
+                    >
+                      <Body className={styles.transactionAmount}>
+                        {isInternal
+                          ? `${transaction.TransactionAmount || 0}$` // No sign for internal
+                          : isIncoming
+                          ? `+${transaction.TransactionAmount || 0}$`
+                          : `-${transaction.TransactionAmount || 0}$`}
+                      </Body>
+                    </div>
+
+                    {/* Expand/Collapse Button */}
+                    <div className={styles.transactionActions}>
+                      <IconButton
+                        className={styles.actionButton}
+                        onClick={() =>
+                          setExpandedTransactionIndex(
+                            expandedTransactionIndex === currentIndex ? null : currentIndex
+                          )
+                        }
+                        aria-label="Expand"
+                        onMouseEnter={() => setHoveredIndex(currentIndex)}
+                        onMouseLeave={() => setHoveredIndex(null)}
+                      >
+                        {expandedTransactionIndex === currentIndex ? (
+                          <Icon glyph="Minus" />
+                        ) : (
+                          <Icon glyph="Plus" />
+                        )}
+                        <Popover
+                          active={hoveredIndex === currentIndex}
+                          align="top"
+                          justify="middle"
+                          usePortal={true}
+                        >
+                          <Body className={styles.popoverBody}>Expand</Body>
+                        </Popover>
+                      </IconButton>
+                    </div>
+                  </div>
+
+                  {/* Expanded Transaction Details */}
+                  {expandedTransactionIndex === currentIndex && (
+                    <div className={styles.expandableSection}>
+                      <Code language={"json"} style={{ width: "100%" }}>
+                        {JSON.stringify(transaction, null, 2)}
+                      </Code>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))
+      )}
+    </div>
+  );
 };
 
 export default Transactions;

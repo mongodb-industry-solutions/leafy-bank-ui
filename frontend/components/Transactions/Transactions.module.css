@@ -43,6 +43,11 @@
     color: #d93f0b; /* Dark orange icon color */
 }
 
+.neutral {
+    background-color: #e0e0e0; /* Light grey background */
+    color: #6b6b6b; /* Dark grey icon color */
+}
+
 /* Adjust icon size and centering */
 .transactionIcon .lg-icon, .transactionIcon .md-icon, .transactionIcon .sm-icon {
     margin: 0 auto;
