@@ -126,11 +126,11 @@ const Home = () => {
               )}
             </div>
             {popupOpen && (
-              <div className={styles.popupOverlay}>
+                <div className={styles.popupOverlay}>
                 <Card className={styles.transactionCard}>
                   <Form className={styles.transactionForm} setPopupOpen={setPopupOpen} popupTitle={popupTitle} />
                 </Card>
-              </div>
+              </div>            
             )}
 
             <div className={styles.bottomMenu}>

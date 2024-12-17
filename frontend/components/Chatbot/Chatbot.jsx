@@ -11,20 +11,15 @@ import axios from "axios";
 
 import Typewriter from "./Typewriter.jsx";
 
-const Chatbot = () => {
+const Chatbot = ({ isOpen, toggleChatbot }) => {
     const industry = "fsi";
     const demo_name = "leafy_bank_assistant";
     const [query, setQuery] = useState("");
-    const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([]);
     const [answer, setAnswer] = useState("");
     const [docs, setDocs] = useState([]);
     const [isAsking, setIsAsking] = useState(false);
     const [completedMessages, setCompletedMessages] = useState({}); // Track completed messages
-
-    const toggleChatbot = () => {
-        setIsOpen(!isOpen);
-    };
 
     const handleChange = (event) => {
         setQuery(event.target.value);
@@ -81,12 +76,7 @@ const Chatbot = () => {
     };
 
     return (
-        <div>
-            <div className={styles.chatbotButton} onClick={toggleChatbot}>
-                <img src="/images/chat_icon.png" alt="Chat Icon" className={styles.chatIcon} />
-                <span><Body className={styles.chatbotText}>How can I help?</Body></span>
-            </div>
-
+        <>
             {isOpen && (
                 <div className={styles.chatbotModal}>
                     <div className={styles.chatbotOverlay} onClick={toggleChatbot}></div>
@@ -162,7 +152,7 @@ const Chatbot = () => {
                     </div>
                 </div>
             )}
-        </div>
+         </>
     );
 };
 
