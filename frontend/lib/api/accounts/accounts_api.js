@@ -141,6 +141,32 @@ export async function fetchActiveAccountsForUser(userIdentifier) {
 }
 
 /**
+ * Fetch all active accounts, ignoring the excludeAccountId parameter.
+ * @returns {Promise<Array>} A list of all active accounts.
+ * @throws Will throw an error if the request fails.
+ */
+export async function fetchActiveAccounts() {
+    // Always send an empty object in the request body
+    const bodyData = {};
+
+    // Execute the fetch request
+    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-active-accounts`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bodyData), // Send only an empty object
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching active accounts: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**
  * Fetch all accounts, optionally excluding a specific account.
  * @param {string} [excludeAccountId] - The ID of the account to exclude from the results.
  * @returns {Promise<Array>} A list of all accounts, excluding the specified account if provided.
@@ -165,37 +191,6 @@ export async function fetchAccounts(excludeAccountId = null) {
 
     if (!response.ok) {
         throw new Error(`Error fetching accounts: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-}
-
-/**
- * Fetch all active accounts, optionally excluding a specific account.
- * @param {string} [excludeAccountId] - The ID of the account to exclude from the results.
- * @returns {Promise<Array>} A list of all active accounts, excluding the specified account if provided.
- * @throws Will throw an error if the request fails.
- */
-export async function fetchActiveAccounts(excludeAccountId = null) {
-    // Prepare the request body conditionally
-    const bodyData = {};
-
-    if (excludeAccountId && excludeAccountId.trim() !== "") {
-        bodyData.exclude_account_id = excludeAccountId;
-    }
-
-    // Execute the fetch request
-    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-active-accounts`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),  // Send JSON only with meaningful keys
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error fetching active accounts: ${response.status}`);
     }
 
     const data = await response.json();
