@@ -67,7 +67,8 @@ const Home = () => {
     setIsOpen(!isOpen);
   };
 
-  const handlePaypalPayment = () => {
+  // Popup handler functions
+  const handleDigitalPayment = () => {
     setPopupTitle('New Digital Payment');
     setPopupOpen(true);
   };
@@ -81,10 +82,6 @@ const Home = () => {
     setSelectedUser(null);
     window.location.reload(); // or use a router to redirect
   };
-
-  if (!selectedUser) {
-    return <div>Please select a user to continue.</div>; // Provide feedback when no user is selected
-  }
 
   return (
     <>
@@ -116,29 +113,33 @@ const Home = () => {
             </div>
           </div>
 
+          {/*<AccountsCards></AccountsCards>*/}
+
           <div>
+            {/* Add buttons and popup at the bottom of the page*/}
             <div className={styles.fixedButtons}>
               {!popupOpen && (
                 <>
-                  <Button variant="baseGreen" onClick={handlePaypalPayment} style={{ marginRight: '2px' }}>Digital Payment</Button>
+                  <Button variant="baseGreen" onClick={handleDigitalPayment} style={{ marginRight: '2px' }}>Digital Payment</Button>
                   <Button variant="baseGreen" onClick={handleNewTransaction}>Account Transfer</Button>
                 </>
               )}
             </div>
             {popupOpen && (
-                <div className={styles.popupOverlay}>
+              <div className={styles.popupOverlay}>
                 <Card className={styles.transactionCard}>
                   <Form className={styles.transactionForm} setPopupOpen={setPopupOpen} popupTitle={popupTitle} />
                 </Card>
-              </div>            
+              </div>
             )}
 
+            {/* Mobile-only bottom menu */}
             <div className={styles.bottomMenu}>
-              <div className={styles.menuItem} onClick={handleOpenForm}>
+              <div className={styles.menuItem} onClick={handleOpenForm}> {/* New Account Button */}
                 <img src="/images/account.svg" alt="New Account Icon" className={styles.icon} />
                 <Body>New Account</Body>
               </div>
-              <div className={styles.menuItem} onClick={handlePaypalPayment}>
+              <div className={styles.menuItem} onClick={handleDigitalPayment}>
                 <img src="/images/payment.svg" alt="Payment Icon" className={styles.icon} />
                 <Body>Payment</Body>
               </div>
@@ -146,18 +147,20 @@ const Home = () => {
                 <img src="/images/transfer.svg" alt="Transfer Icon" className={styles.icon} />
                 <Body>Transfer</Body>
               </div>
-              <div className={styles.menuItem} onClick={toggleChatbot}>
+              <div className={styles.menuItem} onClick={toggleChatbot}> {/* Chatbot as Assistant button */}
                 <img src="/images/assistant.svg" alt="Assistant Icon" className={styles.icon} />
                 <Body>Assistant</Body>
               </div>
             </div>
 
+            {/* Pass isFormOpen and handleOpenForm, handleCloseForm as props */}
             <AccountsCards
               isFormOpen={isFormOpen}
               handleOpenForm={handleOpenForm}
               handleCloseForm={handleCloseForm}
             />
 
+            {/* Pass the state to Chatbot */}
             <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
 
             <div className={styles.chatbotButton} onClick={toggleChatbot}>
