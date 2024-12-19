@@ -19,7 +19,7 @@ import {
 
 const TRANSACTION_LIMIT = 500;
 
-const Form = ({ setPopupOpen, popupTitle }) => {
+const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => { 
   const [amount, setAmount] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [originator, setOriginator] = useState("");
@@ -94,19 +94,18 @@ const Form = ({ setPopupOpen, popupTitle }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateInputs()) return;
-
+  
     setLoading(true); // Set loading state to true immediately
-    console.log("Loading started...");
-
+  
     const originatorAccount = findAccountByNumber(originatorAccounts, originator);
     const beneficiaryAccount = findAccountByNumber(beneficiaryAccounts, beneficiary);
-
+  
     if (!originatorAccount || !beneficiaryAccount) {
       alert("Invalid Originator or Beneficiary account.");
       setLoading(false);
       return;
     }
-
+  
     const transactionDetails = {
       account_id_sender: originatorAccount._id,
       account_id_receiver: beneficiaryAccount._id,
@@ -120,7 +119,7 @@ const Form = ({ setPopupOpen, popupTitle }) => {
       receiver_account_number: beneficiaryAccount.AccountNumber,
       receiver_account_type: beneficiaryAccount.AccountType,
     };
-
+  
     try {
       const transactionResponse =
         popupTitle === "New Digital Payment"
@@ -129,13 +128,19 @@ const Form = ({ setPopupOpen, popupTitle }) => {
               payment_method: paymentMethod || "N/A",
             })
           : await performAccountTransfer(transactionDetails);
-
+  
       if (transactionResponse.transaction_id) {
         pushToast({
           title: `${popupTitle} was successful. Transaction ID: ${transactionResponse.transaction_id}`,
           variant: "success",
           className: styles.customToast,
         });
+  
+        // After successful transaction, trigger the data refresh
+        const user = JSON.parse(localStorage.getItem("selectedUser"));
+        await handleRefresh(user); // This refreshes both accounts and transactions
+  
+        handleCloseForm(); // Close the form after refreshing
       } else {
         throw new Error("Transaction ID not found, transaction failed.");
       }
@@ -148,7 +153,18 @@ const Form = ({ setPopupOpen, popupTitle }) => {
       });
     } finally {
       setLoading(false); // Ensure to reset loading when finished
-      console.log("Loading ended...");
+    }
+  };  
+
+  const refreshAccountData = async () => {
+    try {
+      const userAccounts = await fetchUserAccounts();
+      setOriginatorAccounts(userAccounts || []);
+
+      const activeAccounts = await fetchActiveAccounts();
+      setBeneficiaryAccounts(activeAccounts.accounts || []);
+    } catch (error) {
+      console.error("Error refreshing accounts data:", error);
     }
   };
 
@@ -183,7 +199,7 @@ const Form = ({ setPopupOpen, popupTitle }) => {
           style={{ marginTop: "10px" }}
           placeholder="Payment method"
           value={paymentMethod}
-          onChange={() => {}}
+          onChange={() => { }}
         >
           <SearchResult
             className={styles.comboboxDropdown}
@@ -215,7 +231,7 @@ const Form = ({ setPopupOpen, popupTitle }) => {
         style={{ marginTop: "10px" }}
         placeholder="Originator Account Number"
         value={originator}
-        onChange={() => {}}
+        onChange={() => { }}
       >
         {originatorAccounts.map((account) => (
           <SearchResult
@@ -232,7 +248,7 @@ const Form = ({ setPopupOpen, popupTitle }) => {
         style={{ marginTop: "10px" }}
         placeholder="Beneficiary Account Number"
         value={beneficiary}
-        onChange={() => {}}
+        onChange={() => { }}
       >
         {beneficiaryAccounts.map((account) => (
           <SearchResult

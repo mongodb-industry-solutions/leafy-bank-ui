@@ -28,30 +28,66 @@ const Home = () => {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeAccounts, setActiveAccounts] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // Initialize popupOpen and popupTitle states
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState('');
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const userString = localStorage.getItem('selectedUser');
-      if (userString) {
-        const user = JSON.parse(userString);
-        setSelectedUser(user);
-        handleRefresh(user);
-      }
+    const userString = localStorage.getItem('selectedUser');
+    if (userString) {
+      const user = JSON.parse(userString);
+      setSelectedUser((prevUser) => prevUser || user);
     }
   }, []);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (selectedUser) {
+        setLoading(true);
+        try {
+          const data = await fetchUserData(selectedUser.id);
+          localStorage.setItem('accounts', JSON.stringify(data.accounts));
+          localStorage.setItem('transactions', JSON.stringify(data.transactions));
+
+          setActiveAccounts(data.accounts);
+          setRecentTransactions(data.transactions);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchData();
+  }, [selectedUser]);
+
   const handleRefresh = async (user) => {
-    if (user) {
+    if (!user) {
+      console.error("No user selected for refresh.");
+      return;
+    }
+    try {
+      setLoading(true);
       const data = await fetchUserData(user.id);
-      localStorage.setItem('accounts', JSON.stringify(data.accounts));
-      localStorage.setItem('transactions', JSON.stringify(data.transactions));
+
+      // Store the fetched data in local storage
+      localStorage.setItem("accounts", JSON.stringify(data.accounts));
+      localStorage.setItem("transactions", JSON.stringify(data.transactions));
 
       setActiveAccounts(data.accounts);
       setRecentTransactions(data.transactions);
+
+      // Close the form after refresh is complete
+      setIsFormOpen(false);  // Close the form
+      setPopupOpen(false);    // Ensure the popup is closed as well
+
+      // Optionally, you can navigate or update other states here
+    } catch (error) {
+      console.error("Error refreshing data:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,7 +103,6 @@ const Home = () => {
     setIsOpen(!isOpen);
   };
 
-  // Popup handler functions
   const handleDigitalPayment = () => {
     setPopupTitle('New Digital Payment');
     setPopupOpen(true);
@@ -79,8 +114,9 @@ const Home = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('selectedUser');
     setSelectedUser(null);
-    window.location.reload(); // or use a router to redirect
+    window.location.reload();
   };
 
   return (
@@ -93,91 +129,96 @@ const Home = () => {
         <Header onLogout={handleLogout} />
 
         <div style={{ margin: '80px 20px', transition: 'left 0.3s ease' }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <H2>My Accounts&nbsp;</H2>
-              <IconButton
-                darkMode={false}
-                aria-label="Some Menu"
-                onClick={() => handleRefresh(selectedUser)}
-                style={{ marginTop: '5px', marginLeft: '10px' }}
-                onMouseEnter={() => setIsHovering(true)}
-                onMouseLeave={() => setIsHovering(false)}
-              >
-                <RefreshIcon />
-                <Popover active={isHovering} align="right" justify="middle" usePortal={true}>
-                  <Body style={{ padding: '10px', borderRadius: '10px', backgroundColor: '#f5f5f5' }}>Refresh</Body>
-                </Popover>
-              </IconButton>
-            </div>
-          </div>
-
-          {/*<AccountsCards></AccountsCards>*/}
-
-          <div>
-            {/* Add buttons and popup at the bottom of the page*/}
-            <div className={styles.fixedButtons}>
-              {!popupOpen && (
-                <>
-                  <Button variant="baseGreen" onClick={handleDigitalPayment} style={{ marginRight: '2px' }}>Digital Payment</Button>
-                  <Button variant="baseGreen" onClick={handleNewTransaction}>Account Transfer</Button>
-                </>
-              )}
-            </div>
-            {popupOpen && (
-              <div className={styles.popupOverlay}>
-                <Card className={styles.transactionCard}>
-                  <Form className={styles.transactionForm} setPopupOpen={setPopupOpen} popupTitle={popupTitle} />
-                </Card>
-              </div>
-            )}
-
-            {/* Mobile-only bottom menu */}
-            <div className={styles.bottomMenu}>
-              <div className={styles.menuItem} onClick={handleOpenForm}> {/* New Account Button */}
-                <img src="/images/account.svg" alt="New Account Icon" className={styles.icon} />
-                <Body>New Account</Body>
-              </div>
-              <div className={styles.menuItem} onClick={handleDigitalPayment}>
-                <img src="/images/payment.svg" alt="Payment Icon" className={styles.icon} />
-                <Body>Payment</Body>
-              </div>
-              <div className={styles.menuItem} onClick={handleNewTransaction}>
-                <img src="/images/transfer.svg" alt="Transfer Icon" className={styles.icon} />
-                <Body>Transfer</Body>
-              </div>
-              <div className={styles.menuItem} onClick={toggleChatbot}> {/* Chatbot as Assistant button */}
-                <img src="/images/assistant.svg" alt="Assistant Icon" className={styles.icon} />
-                <Body>Assistant</Body>
-              </div>
-            </div>
-
-            {/* Pass isFormOpen and handleOpenForm, handleCloseForm as props */}
-            <AccountsCards
-              isFormOpen={isFormOpen}
-              handleOpenForm={handleOpenForm}
-              handleCloseForm={handleCloseForm}
-            />
-
-            {/* Pass the state to Chatbot */}
-            <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
-
-            <div className={styles.chatbotButton} onClick={toggleChatbot}>
-              <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
-              <div className={styles.textWrapper}>
-                <span><Body className={styles.chatbotText}>Leafy Personal Assistant</Body></span>
-                <div className={styles.statusWrapper}>
-                  <div className={styles.indicator}></div>
-                  <Body>Available</Body>
+          {loading ? (
+            <div className={styles.loading}>Loading...</div>
+          ) : (
+            <>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <H2>My Accounts&nbsp;</H2>
+                  <IconButton
+                    darkMode={false}
+                    aria-label="Refresh Data"
+                    onClick={() => handleRefresh(selectedUser)}
+                    style={{ marginTop: '5px', marginLeft: '10px' }}
+                    onMouseEnter={() => setIsHovering(true)}
+                    onMouseLeave={() => setIsHovering(false)}
+                  >
+                    <RefreshIcon />
+                    <Popover active={isHovering} align="right" justify="middle" usePortal={true}>
+                      <Body style={{ padding: '10px', borderRadius: '10px', backgroundColor: '#f5f5f5' }}>Refresh</Body>
+                    </Popover>
+                  </IconButton>
                 </div>
               </div>
-            </div>
 
-            <H3>Recent Transactions</H3>
-            <Transactions transactions={recentTransactions.transactions} />
-          </div>
+              <div>
+                <div className={styles.fixedButtons}>
+                  {!popupOpen && (
+                    <>
+                      <Button variant="baseGreen" onClick={handleDigitalPayment} style={{ marginRight: '2px' }}>Digital Payment</Button>
+                      <Button variant="baseGreen" onClick={handleNewTransaction}>Account Transfer</Button>
+                    </>
+                  )}
+                </div>
+                {popupOpen && (
+                  <div className={styles.popupOverlay}>
+                    <Card className={styles.transactionCard}>
+                      <Form
+                        className={styles.transactionForm}
+                        setPopupOpen={setPopupOpen}
+                        popupTitle={popupTitle}
+                        handleCloseForm={handleCloseForm}
+                        handleRefresh={handleRefresh}
+                      />
+                    </Card>
+                  </div>
+                )}
 
+                <div className={styles.bottomMenu}>
+                  <div className={styles.menuItem} onClick={handleOpenForm}>
+                    <img src="/images/account.svg" alt="New Account Icon" className={styles.icon} />
+                    <Body>New Account</Body>
+                  </div>
+                  <div className={styles.menuItem} onClick={handleDigitalPayment}>
+                    <img src="/images/payment.svg" alt="Payment Icon" className={styles.icon} />
+                    <Body>Payment</Body>
+                  </div>
+                  <div className={styles.menuItem} onClick={handleNewTransaction}>
+                    <img src="/images/transfer.svg" alt="Transfer Icon" className={styles.icon} />
+                    <Body>Transfer</Body>
+                  </div>
+                  <div className={styles.menuItem} onClick={toggleChatbot}>
+                    <img src="/images/assistant.svg" alt="Assistant Icon" className={styles.icon} />
+                    <Body>Assistant</Body>
+                  </div>
+                </div>
+
+                <AccountsCards
+                  isFormOpen={isFormOpen}
+                  handleOpenForm={handleOpenForm}
+                  handleCloseForm={handleCloseForm}
+                  handleRefresh={handleRefresh}
+                />
+
+                <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
+
+                <div className={styles.chatbotButton} onClick={toggleChatbot}>
+                  <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
+                  <div className={styles.textWrapper}>
+                    <span><Body className={styles.chatbotText}>Leafy Personal Assistant</Body></span>
+                    <div className={styles.statusWrapper}>
+                      <div className={styles.indicator}></div>
+                      <Body>Available</Body>
+                    </div>
+                  </div>
+                </div>
+
+                <H3>Recent Transactions</H3>
+                <Transactions transactions={recentTransactions.transactions} />
+              </div>
+            </>
+          )}
         </div>
       </ToastProvider>
     </>

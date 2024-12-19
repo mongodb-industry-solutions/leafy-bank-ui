@@ -12,7 +12,7 @@ import User from '@/components/User/User';
 import { USER_MAP } from "@/lib/constants";
 import { fetchUserData } from '@/lib/api/userDataApi';
 
-const Login = () => {
+const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
     const [users, setUsers] = useState(Object.entries(USER_MAP).map(([id, name]) => ({ id, name })));
     const [selectedUser, setSelectedUser] = useState(null);
@@ -23,26 +23,32 @@ const Login = () => {
     }, []);
 
     const handleUserSelect = (user) => {
-        // Clear previous data
         localStorage.removeItem('selectedUser');
         localStorage.removeItem('accounts');
         localStorage.removeItem('transactions');
 
-        // Set new selected user
         setSelectedUser(user);
         localStorage.setItem('selectedUser', JSON.stringify(user));
 
-        // Fetch and store new data
         fetchUserData(user.id).then(data => {
             localStorage.setItem('accounts', JSON.stringify(data.accounts));
             localStorage.setItem('transactions', JSON.stringify(data.transactions));
+
+            // Notify parent component
+            onUserSelected(user);
         });
     };
 
     return (
         <Modal
             show={open}
-            onHide={() => setOpen(false)}
+            onHide={() => {
+                if (!selectedUser) {
+                    alert("You must select a user before proceeding!");
+                    return;
+                }
+                setOpen(false);
+            }}
             size="lg"
             aria-labelledby="contained-modal-title-vcenter"
             centered
@@ -52,7 +58,16 @@ const Login = () => {
         >
             <Container className='p-3 h-100'>
                 {!usersLoading && (
-                    <div className='d-flex flex-row-reverse p-1 cursorPointer' onClick={() => setOpen(false)}>
+                    <div
+                        className={`d-flex flex-row-reverse p-1 cursorPointer ${!selectedUser ? styles.disabledCloseButton : ''}`}
+                        onClick={() => {
+                            if (!selectedUser) {
+                                alert("You must select a user before proceeding!");
+                            } else {
+                                setOpen(false);
+                            }
+                        }}
+                    >
                         <Icon glyph="X" />
                     </div>
                 )}

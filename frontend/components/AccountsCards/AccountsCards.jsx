@@ -11,8 +11,9 @@ import Icon from '@leafygreen-ui/icon';
 import IconButton from '@leafygreen-ui/icon-button';
 import Popover from '@leafygreen-ui/popover';
 import { createAccount } from '@/lib/api/accounts/accounts_api';
+import { useToast } from '@leafygreen-ui/toast';
 
-const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
+const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm, handleRefresh }) => {
     const [accounts, setAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [accountType, setAccountType] = useState('');
@@ -20,12 +21,26 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
     const [accountNumber, setAccountNumber] = useState('');
     const [openPopover, setOpenPopover] = useState(null);
     const popoverRef = useRef(null);
+    const { pushToast } = useToast();
 
-    // When opening the form, set a random account number
+    const validateInputs = () => {
+        if (!accountBalance || parseInt(accountBalance, 10) <= 0) {
+            alert("Please enter a valid account balance greater than zero.");
+            return false;
+        }
+
+        if (!accountType) {
+            alert("Account type is required.");
+            return false;
+        }
+
+        return true;
+    };
+
     const openForm = () => {
         const nbr = (Math.floor(Math.random() * 900000000) + 100000000).toString();
         setAccountNumber(nbr);
-        handleOpenForm(); // Use the passed handler to open the form
+        handleOpenForm();
     };
 
     const togglePopover = (index) => {
@@ -33,7 +48,6 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
     };
 
     useEffect(() => {
-        // Retrieve data from localStorage
         const activeAccountsString = localStorage.getItem('accounts');
         const accountsData = activeAccountsString ? JSON.parse(activeAccountsString) : { accounts: [] };
 
@@ -55,32 +69,43 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
     }, [popoverRef]);
 
     const handleSubmit = async () => {
-        if (!accountBalance || !accountType) {
-            alert('Account type and balance are required');
-            return;
-        }
+        if (!validateInputs()) return;
+
+        setLoading(true);
+
         const user = JSON.parse(localStorage.getItem('selectedUser'));
 
         try {
+            // Create a new account
             const newAccount = await createAccount({
                 userName: user.name,
                 userId: user.id,
                 accountNumber: accountNumber,
                 accountBalance: parseInt(accountBalance, 10),
-                accountType: accountType
+                accountType: accountType,
             });
 
             console.log("Account creation response:", newAccount);
 
-            // Update local state and localStorage with the new account
-            const updatedAccounts = [...accounts, newAccount];
-            setAccounts(updatedAccounts);
-            localStorage.setItem('accounts', JSON.stringify({ accounts: updatedAccounts }));
+            // Trigger a full data refresh from the backend
+            await handleRefresh(user);
 
-            handleCloseForm(); // Close the form after submitting
+            pushToast({
+                title: `Account created successfully! Account ID: ${newAccount.account_id}`,
+                variant: "success",
+                className: `${styles.customToast} ${styles.centeredToast}`,
+            });
+
+            handleCloseForm(); // Close the form after refreshing
         } catch (error) {
-            console.error('Error creating account:', error);
-            alert('Failed to create account. Please try again.');
+            console.error("Error creating account:", error);
+            pushToast({
+                title: "Failed to create account. Please try again.",
+                variant: "warning",
+                className: styles.customToast,
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -127,7 +152,6 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
                                         <H3 className={styles.balance}>{account?.AccountCurrency} {account?.AccountBalance?.toLocaleString() || 'N/A'}</H3>
                                         <Body>Available Balance</Body>
                                     </div>
-
                                 </div>
                             </Card>
                         ))}
@@ -144,7 +168,6 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
                     <div className={styles.popupOverlay}>
                         <Card style={{ width: '250px' }}>
                             <div className={styles.form}>
-
                                 <Subtitle>New Account</Subtitle>
                                 <TextInput
                                     label="Account Number:"
@@ -166,8 +189,8 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm }) => {
                                     <Button size="default" onClick={handleCloseForm} style={{ marginTop: '10px', marginRight: '10px' }}>
                                         Close
                                     </Button>
-                                    <Button variant="primary" size="default" onClick={handleSubmit} style={{ marginTop: '10px' }}>
-                                        Submit
+                                    <Button variant="primary" size="default" onClick={handleSubmit} style={{ marginTop: '10px' }} disabled={loading}>
+                                        {loading ? "Submitting..." : "Submit"}
                                     </Button>
                                 </div>
                             </div>
