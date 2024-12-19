@@ -16,12 +16,13 @@ import styles from "./Header.module.css";
 function Header({ onLogout }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
+  // Updated handleLogout function
   const handleLogout = (e) => {
     e.preventDefault();
     localStorage.removeItem('user');
     localStorage.removeItem('accounts');
     localStorage.removeItem('transactions');
-    onLogout();
+    onLogout(); // Calls the logout function passed as prop
   };
 
   const toggleMenu = () => {
@@ -35,13 +36,16 @@ function Header({ onLogout }) {
       </div>
 
       <div className={`${styles["pages-container"]} ${isMenuOpen ? styles.show : ''}`}>
-        <Link href="/user" className={styles.linkHideDesktop}>
-          <Body className={styles.linkHideDesktop}>Log Out</Body>
-        </Link>
+        {/* Updated Mobile Logout - Directly using onClick */}
+        <div className={styles.linkHideDesktop} onClick={handleLogout}>
+          <Body>Log Out</Body>
+        </div>
       </div>
 
       <div className={styles["right-container"]}>
         <UserProfile />
+
+        {/* Desktop Logout Icon Button */}
         <IconButton
           aria-label="LogOut"
           onClick={handleLogout}
@@ -49,6 +53,8 @@ function Header({ onLogout }) {
         >
           <Icon glyph="LogOut" />
         </IconButton>
+
+        {/* Hamburger Menu Button */}
         <IconButton aria-label="Menu" onClick={toggleMenu} className={styles.hamburgerIcon}>
           <Icon glyph={isMenuOpen ? "X" : "Menu"} />
         </IconButton>

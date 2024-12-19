@@ -3,26 +3,17 @@
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { GeistSans } from "geist/font/sans"; 
 
-// Temporary console warning suppression logic
-const suppressedWarnings = ['findDOMNode is deprecated in StrictMode'];
-const originalConsoleError = console.error;
-console.error = (...args) => {
-  if (suppressedWarnings.some(entry => args[0].includes(entry))) {
-    return;
-  }
-  originalConsoleError.apply(console, args);
-};
-
+// This metadata is automatically applied to the head of your page.
 export const metadata = {
-  title: 'Leafy Bank',
-  description: 'A demo bank application featuring a chatbot and transaction history using MongoDB and Next.js.',
+  title: "Leafy Bank",
+  description: "A demo banking app showcasing the power of MongoDB features."
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={GeistSans.className}>
       <body>
-          {children}
+        {children}
       </body>
     </html>
   );
