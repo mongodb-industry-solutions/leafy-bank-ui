@@ -57,7 +57,7 @@ const UserProfile = () => {
                             src={`/rsc/users/${selectedUser.id}.png`}
                             alt="User Avatar"
                             width={100}
-                            height={100}
+                            height={130}
                             priority
                         />
                         <H3>{selectedUser.name}</H3>

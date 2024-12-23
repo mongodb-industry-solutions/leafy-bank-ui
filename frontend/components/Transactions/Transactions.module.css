@@ -89,6 +89,11 @@
     color: #001E2B;
 }
 
+.transactionAmount.same {
+    /*   color: red;*/
+       color: #001E2B;
+   }
+
 .transactionActions {
     display: flex;
     gap: 0.5rem;
