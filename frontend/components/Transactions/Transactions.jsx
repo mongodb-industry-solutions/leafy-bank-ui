@@ -148,7 +148,7 @@ const Transactions = ({ transactions = [] }) => {
                     <div
                       className={`${styles.transactionAmount} ${
                         isInternal
-                          ? styles.neutral
+                          ? styles.same
                           : isIncoming
                           ? styles.positive
                           : styles.negative
