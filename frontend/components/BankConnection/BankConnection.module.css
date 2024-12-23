@@ -1,0 +1,29 @@
+
+
+.button{
+    margin-top: 20px;
+}
+
+.msgBody{
+    text-align: center;
+}
+
+.combobox{
+    margin-top: 20px;
+}
+
+.modal{
+    z-index: 100;        
+    transform: translateZ(0); 
+}
+
+@media (max-width: 708px) {
+
+    .modal{
+        width: 100%;
+        margin: 0px ;
+        
+    }
+
+
+}

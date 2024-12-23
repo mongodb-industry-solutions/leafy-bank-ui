@@ -89,7 +89,6 @@
   /* Adds a small horizontal margin between buttons */
 }
 
-
 .cardHeader {
   display: flex;
   justify-content: space-between;
@@ -130,6 +129,11 @@
   position: relative;
   z-index: 250; /* Ensure it stays above the overlay */
   background-color: white;
+}
+
+.bankBadge{
+  margin-left: auto; /* Align the badge to the right */
+
 }
 
 /* Media query for smaller screens */
