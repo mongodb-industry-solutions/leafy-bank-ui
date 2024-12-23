@@ -9,7 +9,7 @@ import Card from '@leafygreen-ui/card';
 import Button from '@leafygreen-ui/button';
 import Icon from '@leafygreen-ui/icon';
 
-import styles from './userProfile.module.css';
+import styles from './UserProfile.module.css';
 
 const UserProfile = () => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
