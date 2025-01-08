@@ -20,13 +20,18 @@ const BankConnection = ({ addBankAccount }) => {
     const handleConnect = () => {
         if (!selection) return; // Only proceed if a bank is selected
 
-        setStatus('processing'); // Set status to processing
-       
+        setStatus('verification'); // Set status to verification
+
         setTimeout(() => {
-            setStatus('success'); // After 5 seconds, set status to success
-            addBankAccount(selection); // Call the callback with the selected bank name
-        }, 4000);
+            setStatus('processing'); // After 3 seconds, set status to processing
+
+            setTimeout(() => {
+                setStatus('success'); // After 4 seconds, set status to success
+                addBankAccount(selection); // Call the callback with the selected bank name
+            }, 3000);
+        }, 6000);
     };
+
 
     const handleClose = () => {
         setOpen(false); // Close modal
@@ -63,6 +68,19 @@ const BankConnection = ({ addBankAccount }) => {
                             </Button>
                         </>
                     )}
+
+                    {status === 'verification' && (
+                        <>
+                            <div className={styles.msgBody}>
+                                <div>
+                                    <img src="/images/faceID.gif" alt="ID Check Icon" width={100} />
+                                </div>
+                                <H3>ID Check</H3>
+                                <Body>Verifying your identity. Please wait.</Body>
+                            </div>
+                        </>
+                    )}
+
 
                     {status === 'processing' && (
                         <>
