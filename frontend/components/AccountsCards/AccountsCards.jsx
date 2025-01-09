@@ -12,6 +12,9 @@ import IconButton from '@leafygreen-ui/icon-button';
 import Popover from '@leafygreen-ui/popover';
 import { createAccount } from '@/lib/api/accounts/accounts_api';
 import { useToast } from '@leafygreen-ui/toast';
+import BankConnection from '../BankConnection/BankConnection';
+import Badge from "@leafygreen-ui/badge";
+
 
 const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm, handleRefresh }) => {
     const [accounts, setAccounts] = useState([]);
@@ -46,6 +49,29 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm, handleRefr
     const togglePopover = (index) => {
         setOpenPopover(openPopover === index ? null : index);
     };
+
+    const addBankAccount = (bankName) => {
+        const newAccount = {
+            accountType: 'Checking', // Default values
+            accountNumber: (Math.floor(Math.random() * 900000000) + 100000000).toString(),
+            balance: 1000, // Default balance
+            limitations: {
+                withdrawalLimit: 100000,
+                transferLimit: 1000,
+                otherLimitations: 'No Limit',
+            },
+            encryptedDetails: {
+                IBAN: `IL${(Math.floor(Math.random() * 900000000) + 100000000).toString()}`,
+            },
+            bankName, // Include the bank name
+            isNew: true,  // Ensure this is true for new accounts
+        };
+    
+        setAccounts((prevAccounts) => [...prevAccounts, newAccount]); // Update the accounts state
+    };
+    
+
+
 
     useEffect(() => {
         const activeAccountsString = localStorage.getItem('accounts');
@@ -123,6 +149,14 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm, handleRefr
                                 <div className={styles.cardContent}>
                                     <div className={styles.cardHeader}>
                                         <Subtitle>{account?.AccountType || 'N/A'}</Subtitle>
+
+                                        {/* Show badge for new accounts */}
+                                        {account?.isNew && (
+                                            <Badge variant="blue" className={styles.bankBadge}>
+                                                 {account.bankName}
+                                            </Badge>
+                                        )}
+
                                         <IconButton
                                             aria-label="Info"
                                             onClick={() => togglePopover(index)}
@@ -160,10 +194,13 @@ const AccountsCards = ({ isFormOpen, handleOpenForm, handleCloseForm, handleRefr
             )}
             <div className={styles.formContainer}>
                 {!isFormOpen && (
-                    <Button className={styles.hideOnMobile} size="default" onClick={openForm} style={{ marginTop: '10px' }}>
+                    <Button className={styles.hideOnMobile} leftGlyph={<Icon glyph="Plus" />} size="default" onClick={openForm} style={{ marginRight: '20px' }} >
                         {'Open New Account'}
                     </Button>
                 )}
+
+                <BankConnection className={styles.connectBtn} addBankAccount={addBankAccount}></BankConnection>
+
                 {isFormOpen && (
                     <div className={styles.popupOverlay}>
                         <Card style={{ width: '250px' }}>

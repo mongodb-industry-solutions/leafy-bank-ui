@@ -17,6 +17,7 @@
     "@leafygreen-ui/icon": "^12.8.0",
     "@leafygreen-ui/icon-button": "^15.0.23",
     "@leafygreen-ui/logo": "^9.2.0",
+    "@leafygreen-ui/modal": "^16.1.0",
     "@leafygreen-ui/number-input": "^1.0.19",
     "@leafygreen-ui/search-input": "^4.0.0",
     "@leafygreen-ui/skeleton-loader": "^1.3.1",
