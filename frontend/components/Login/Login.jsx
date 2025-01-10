@@ -14,7 +14,16 @@ import { fetchUserData } from '@/lib/api/userDataApi';
 
 const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
-    const [users, setUsers] = useState(Object.entries(USER_MAP).map(([id, name]) => ({ id, name })));
+
+    // Updated to include UserName and ApiKey
+    const [users, setUsers] = useState(
+        Object.entries(USER_MAP).map(([id, details]) => ({
+            id,
+            name: details.UserName,
+            apiKey: details.ApiKey,
+        }))
+    );
+
     const [selectedUser, setSelectedUser] = useState(null);
     const [usersLoading, setUsersLoading] = useState(false);
 
@@ -23,18 +32,21 @@ const Login = ({ onUserSelected }) => {
     }, []);
 
     const handleUserSelect = (user) => {
+        // Clear previous user session data
         localStorage.removeItem('selectedUser');
         localStorage.removeItem('accounts');
         localStorage.removeItem('transactions');
 
+        // Set the selected user with ApiKey included
         setSelectedUser(user);
-        localStorage.setItem('selectedUser', JSON.stringify(user));
+        localStorage.setItem('selectedUser', JSON.stringify(user)); // Store UserName, ID, and ApiKey
 
+        // Fetch and store user data
         fetchUserData(user.id).then(data => {
             localStorage.setItem('accounts', JSON.stringify(data.accounts));
             localStorage.setItem('transactions', JSON.stringify(data.transactions));
 
-            // Notify parent component
+            // Notify parent component about the selected user
             onUserSelected(user);
         });
     };
@@ -56,7 +68,7 @@ const Login = ({ onUserSelected }) => {
             className={styles.leafyFeel}
             backdrop="static"
         >
-            <Container className='p-3 h-100'>
+            <Container className="p-3 h-100">
                 {!usersLoading && (
                     <div
                         className={`d-flex flex-row-reverse p-1 cursorPointer ${!selectedUser ? styles.disabledCloseButton : ''}`}
@@ -79,6 +91,7 @@ const Login = ({ onUserSelected }) => {
                         Please select the user you would like to login as
                     </Description>
                     <div className={`${styles.usersContainer}`}>
+                        {/* Map through users and pass `user` details to the `User` component */}
                         {users.map(user => (
                             <User
                                 user={user}
