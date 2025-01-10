@@ -41,6 +41,9 @@
   position: relative;
 }
 
+.cardsContainer .selectedCard {
+  opacity: 1; /* Keep the selected card fully visible */
+}
 
 .cardContent {
   font-family: sans-serif;
@@ -136,6 +139,21 @@
 
 }
 
+/* Modal Styling */
+.modal {
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  z-index: 300; /* Above everything else */
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: center; /* Center buttons */
+  gap: 10px; /* Small space between buttons */
+  margin-top: 20px;
+}
+
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .cardsContainer {
@@ -153,6 +171,8 @@
     z-index: 0;
     padding-left: 10px;
     margin-left: 0px;
+    opacity: 0.3; /* Dims the unselected cards */
+    transition: opacity 0.3s ease-in-out;
   }
 
   .hideOnMobile {

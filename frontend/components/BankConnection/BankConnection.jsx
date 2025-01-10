@@ -1,3 +1,7 @@
+"use client";
+
+// BankConnection.jsx
+
 import React, { useState } from 'react';
 import Modal from '@leafygreen-ui/modal';
 import Button from '@leafygreen-ui/button';
@@ -6,42 +10,41 @@ import { Body, H3 } from '@leafygreen-ui/typography';
 import styles from "./BankConnection.module.css";
 import Icon from "@leafygreen-ui/icon";
 
-
 // Main BankConnection component
 const BankConnection = ({ addBankAccount }) => {
     const [open, setOpen] = useState(false);
-    const [selection, setSelection] = useState(null); // No type annotations in JavaScript
-    const [status, setStatus] = useState('idle'); // No type annotations in JavaScript
+    const [selection, setSelection] = useState(null);
+    const [status, setStatus] = useState('idle');
 
     const handleSelectionChange = (value) => {
         setSelection(value);
     };
 
-    const handleConnect = () => {
-        if (!selection) return; // Only proceed if a bank is selected
-
-        setStatus('verification'); // Set status to verification
-
-        setTimeout(() => {
-            setStatus('processing'); // After 3 seconds, set status to processing
-
-            setTimeout(() => {
-                setStatus('success'); // After 4 seconds, set status to success
-                addBankAccount(selection); // Call the callback with the selected bank name
-            }, 3000);
+    const handleConnect = async () => {
+        if (!selection) return;
+        setStatus("verification");
+        setTimeout(async () => {
+            setStatus("processing");
+            // Always attempt to fetch accounts, even for "connected" banks
+            const accountAdded = await addBankAccount(selection);
+            if (accountAdded) {
+                setTimeout(() => {
+                    setStatus("success"); // Only set success if accounts are found!
+                }, 3000);
+            } else {
+                setStatus("idle"); // Return to idle if no accounts were found
+            }
         }, 6000);
     };
 
-
     const handleClose = () => {
-        setOpen(false); // Close modal
-        setStatus('idle'); // Reset modal state
-        setSelection(null); // Reset selection
+        setOpen(false);
+        setStatus('idle');
+        setSelection(null);
     };
 
-
     return (
-        <div >
+        <div>
             <Button onClick={() => setOpen(true)} leftGlyph={<Icon glyph="Connect" />}>Connect Bank</Button>
             <Modal open={open} setOpen={setOpen} className={styles.modal}>
 
@@ -51,16 +54,14 @@ const BankConnection = ({ addBankAccount }) => {
                             <H3>Choose your bank</H3>
                             <Body>Select a bank to proceed with the connection.</Body>
 
-                            {/* Pass state to the combobox */}
                             <ComboboxExample
                                 selection={selection}
                                 setSelection={handleSelectionChange}
                             />
 
-                            {/* Disable button until a selection is made */}
                             <Button
                                 variant="baseGreen"
-                                disabled={!selection} // Disable when no selection
+                                disabled={!selection}
                                 onClick={handleConnect}
                                 className={styles.button}
                             >
@@ -81,7 +82,6 @@ const BankConnection = ({ addBankAccount }) => {
                         </>
                     )}
 
-
                     {status === 'processing' && (
                         <>
                             <div className={styles.msgBody}>
@@ -98,7 +98,6 @@ const BankConnection = ({ addBankAccount }) => {
                         <>
                             <div className={styles.msgBody}>
                                 <img src="/images/illo2.png" alt="Bank Icon" width={400} />
-
 
                                 <H3>Success</H3>
                                 <Body>Your bank has been successfully connected!</Body>
@@ -126,9 +125,9 @@ const ComboboxExample = ({
                 placeholder="Select bank"
                 onChange={setSelection}
                 value={selection}
-                onClear={() => setSelection(null)} // Clear selection on reset
+                onClear={() => setSelection(null)}
             >
-                <ComboboxOption value="GreenLeaf Banking" />
+                <ComboboxOption value="GreenLeaf Bank" />
                 <ComboboxOption value="MongoDB Bank" />
             </Combobox>
         </div>
