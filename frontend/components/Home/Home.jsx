@@ -18,6 +18,7 @@ import Header from '@/components/Header/Header';
 import AccountsCards from '@/components/AccountsCards/AccountsCards';
 import Transactions from '@/components/Transactions/Transactions';
 import Chatbot from '@/components/Chatbot/Chatbot';
+import GlobalPositioning from '@/components/GlobalPositioning/GlobalPositioning';
 import Form from '@/components/Form/Form';
 import { fetchUserData } from '@/lib/api/userDataApi';
 
@@ -134,7 +135,12 @@ const Home = () => {
           ) : (
             <>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
+
+                {/** To uncomment once aggregated view is ready 
+                <GlobalPositioning></GlobalPositioning> */}
+
                 <div style={{ display: 'flex', alignItems: 'center' }}>
+
                   <H2>My Accounts&nbsp;</H2>
                   <IconButton
                     darkMode={false}
@@ -150,6 +156,8 @@ const Home = () => {
                     </Popover>
                   </IconButton>
                 </div>
+
+
               </div>
 
               <div>

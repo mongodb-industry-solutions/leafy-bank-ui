@@ -30,7 +30,7 @@ const BankConnection = ({ addBankAccount }) => {
             if (accountAdded) {
                 setTimeout(() => {
                     setStatus("success"); // Only set success if accounts are found!
-                }, 3000);
+                }, 5000);
             } else {
                 setStatus("idle"); // Return to idle if no accounts were found
             }
@@ -45,7 +45,8 @@ const BankConnection = ({ addBankAccount }) => {
 
     return (
         <div>
-            <Button onClick={() => setOpen(true)} leftGlyph={<Icon glyph="Connect" />}>Connect Bank</Button>
+            <Button onClick={() => setOpen(true)} leftGlyph={<Icon glyph="Connect" />}  className={styles.connectBtn}>Connect Bank</Button>
+
             <Modal open={open} setOpen={setOpen} className={styles.modal}>
 
                 <div className={styles.popupOverlay}>

@@ -222,8 +222,9 @@ const AccountsCards = ({
                     {accounts.map((account, index) => (
                         <Card
                             key={index}
-                            className={`${styles.card} ${selectedAccount?.AccountNumber === account.AccountNumber ? styles.selectedCard : ""
-                                }`}
+                            className={`${styles.card} ${account.isExternalAccount ? styles.externalCard : ""} ${
+                                selectedAccount?.AccountNumber === account.AccountNumber ? styles.selectedCard : ""
+                            }`}
                         >
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>
@@ -301,7 +302,7 @@ const AccountsCards = ({
                         leftGlyph={<Icon glyph="Plus" />}
                         size="default"
                         onClick={openForm}
-                        style={{ marginRight: "20px" }}
+                        style={{ marginRight: "20px", marginTop: "40px" }}
                     >
                         {"Open New Account"}
                     </Button>
@@ -309,10 +310,10 @@ const AccountsCards = ({
 
                 
                 {/* I am commenting this out until it is fully functional */}
-                {/* <BankConnection
+                <BankConnection
                     className={styles.connectBtn}
                     addBankAccount={addBankAccount}
-                /> */}
+                /> 
 
                 {isFormOpen && (
                     <div className={styles.popupOverlay}>

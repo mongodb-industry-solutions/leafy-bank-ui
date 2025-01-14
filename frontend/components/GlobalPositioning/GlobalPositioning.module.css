@@ -1,0 +1,6 @@
+.aggregatedCards{
+    display: flex;
+    text-align: center;
+    justify-content: space-between;
+    margin: 30px;
+}

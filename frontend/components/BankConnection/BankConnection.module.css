@@ -17,6 +17,10 @@
     transform: translateZ(0); 
 }
 
+.connectBtn{
+    margin-top: 40px;
+}
+
 @media (max-width: 708px) {
 
     .modal{
