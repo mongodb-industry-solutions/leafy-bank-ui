@@ -154,6 +154,12 @@
   margin-top: 20px;
 }
 
+.externalCard {
+  border: 4px solid #a4d9ed;
+  border-radius: 8px;
+}
+
+
 /* Media query for smaller screens */
 @media (max-width: 768px) {
   .cardsContainer {
@@ -171,7 +177,7 @@
     z-index: 0;
     padding-left: 10px;
     margin-left: 0px;
-    opacity: 0.3; /* Dims the unselected cards */
+    /*opacity: 0.3;  Dims the unselected cards */
     transition: opacity 0.3s ease-in-out;
   }
 

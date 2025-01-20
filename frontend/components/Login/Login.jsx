@@ -15,12 +15,12 @@ import { fetchUserData } from '@/lib/api/userDataApi';
 const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
 
-    // Updated to include UserName and ApiKey
+    // Updated to include UserName and BearerToken
     const [users, setUsers] = useState(
         Object.entries(USER_MAP).map(([id, details]) => ({
             id,
             name: details.UserName,
-            apiKey: details.ApiKey,
+            bearerToken: details.BearerToken,
         }))
     );
 
@@ -36,10 +36,13 @@ const Login = ({ onUserSelected }) => {
         localStorage.removeItem('selectedUser');
         localStorage.removeItem('accounts');
         localStorage.removeItem('transactions');
+        // Clear previous external data
+        localStorage.removeItem('external_accounts');
+        localStorage.removeItem('external_products');
 
-        // Set the selected user with ApiKey included
+        // Set the selected user with BearerToken included
         setSelectedUser(user);
-        localStorage.setItem('selectedUser', JSON.stringify(user)); // Store UserName, ID, and ApiKey
+        localStorage.setItem('selectedUser', JSON.stringify(user)); // Store UserName, ID, and BearerToken
 
         // Fetch and store user data
         fetchUserData(user.id).then(data => {

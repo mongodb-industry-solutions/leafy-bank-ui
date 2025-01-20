@@ -1,5 +1,7 @@
 "use client";
 
+// AccountsCards.jsx
+
 import { useEffect, useState, useRef } from "react";
 import styles from "./AccountsCards.module.css";
 import Button from "@leafygreen-ui/button";
@@ -11,7 +13,6 @@ import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Popover from "@leafygreen-ui/popover";
 import { createAccount } from "@/lib/api/accounts/accounts_api";
-import { fetchExternalAccountsForUser } from "@/lib/api/open_finance/open_finance_api";
 import { useToast } from "@leafygreen-ui/toast";
 import BankConnection from "../BankConnection/BankConnection";
 import Badge from "@leafygreen-ui/badge";
@@ -23,15 +24,16 @@ const AccountsCards = ({
     handleCloseForm,
     handleRefresh,
 }) => {
-    const [accounts, setAccounts] = useState([]);
+    const [accountsAndProducts, setAccountsAndProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [connectedBanks, setConnectedBanks] = useState([]);
     const [accountType, setAccountType] = useState("");
     const [accountBalance, setAccountBalance] = useState("");
     const [accountNumber, setAccountNumber] = useState("");
     const [openPopover, setOpenPopover] = useState(null);
-    const [disconnectModalOpen, setDisconnectModalOpen] = useState(false); // Modal state
-    const [selectedAccount, setSelectedAccount] = useState(null); // Account to disconnect
+    const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
+    const [selectedAccountOrProduct, setSelectedAccountOrProduct] = useState(
+        null
+    );
     const popoverRef = useRef(null);
     const { pushToast } = useToast();
 
@@ -59,123 +61,80 @@ const AccountsCards = ({
         setOpenPopover(openPopover === index ? null : index);
     };
 
-    const addBankAccount = async (bankName) => {
-        setConnectedBanks((prevBanks) =>
-            prevBanks.includes(bankName) ? prevBanks : [...prevBanks, bankName]
+    const onBankConnected = ({ bank, accounts, products }) => {
+        // Create arrays with additional flag to determine external account/product
+        const externalAccounts = accounts.map((acc) => ({
+            ...acc,
+            isExternalAccount: true,
+        }));
+
+        const externalProducts = products.map((prod) => ({
+            ...prod,
+            isExternalProduct: true,
+        }));
+
+        // Filter out existing accounts/products from the same external bank
+        const filteredAccountsAndProducts = accountsAndProducts.filter(
+            (item) =>
+                (item.AccountBank || item.ProductBank) !== bank
         );
 
-        const fetchedAccounts = await fetchAndMergeAccounts([bankName]);
+        // Add newly connected accounts/products to existing array
+        setAccountsAndProducts([
+            ...filteredAccountsAndProducts,
+            ...externalAccounts,
+            ...externalProducts,
+        ]);
 
-        if (fetchedAccounts.length === 0) {
-            pushToast({
-                title: `No accounts found for ${bankName}.`,
-                variant: "warning",
-                className: styles.customToast,
-            });
-            return false; // Indicating no accounts were found
-        }
-        return true; // Indicating accounts were found
+        pushToast({
+            title: `Successfully connected to ${bank}!`,
+            variant: "success",
+            className: styles.customToast,
+        });
     };
 
-    const fetchAndMergeAccounts = async (banksToFetch) => {
-        const user = JSON.parse(localStorage.getItem("selectedUser"));
-        const fetchedAccounts = [];
-
-        if (!user) {
-            pushToast({
-                title: "No user selected!",
-                variant: "warning",
-                className: styles.customToast,
-            });
-            return fetchedAccounts;
-        }
-
-        try {
-            for (const bankName of banksToFetch) {
-                console.log(`Fetching accounts for bank: ${bankName}`);
-
-                const externalAccountsData = await fetchExternalAccountsForUser(
-                    user.id,
-                    bankName,
-                    user.apiKey
-                );
-
-                console.log(`Fetched data for ${bankName}:`, externalAccountsData);
-
-                const processedAccounts = externalAccountsData.accounts.map((account) => ({
-                    ...account,
-                    isExternalAccount: true,
-                    bankName,
-                }));
-
-                fetchedAccounts.push(...processedAccounts);
-            }
-
-            setAccounts((prevAccounts) => [
-                ...prevAccounts.filter(
-                    (acc) =>
-                        !fetchedAccounts.some((newAcc) => newAcc.AccountNumber === acc.AccountNumber)
-                ),
-                ...fetchedAccounts,
-            ]);
-        } catch (error) {
-            console.error("Error fetching external accounts:", error);
-            pushToast({
-                title: "Failed to fetch external accounts. Please try again.",
-                variant: "warning",
-                className: styles.customToast,
-            });
-        } finally {
-            setLoading(false);
-        }
-
-        return fetchedAccounts;
-    };
-
-    const handleDisconnectClick = (account) => {
-        setSelectedAccount(account);
+    const handleDisconnectClick = (item) => {
+        setSelectedAccountOrProduct(item);
         setDisconnectModalOpen(true);
     };
 
     const confirmDisconnect = () => {
-        if (selectedAccount) {
-            // Remove the disconnecting account from the list
-            setAccounts((prevAccounts) =>
-                prevAccounts.filter((acc) => acc.AccountNumber !== selectedAccount.AccountNumber)
+        if (selectedAccountOrProduct) {
+            const updatedAccountsAndProducts = accountsAndProducts.filter(
+                (item) => item._id !== selectedAccountOrProduct._id
             );
-
+            setAccountsAndProducts(updatedAccountsAndProducts);
             setDisconnectModalOpen(false);
-
             pushToast({
-                title: "Your external bank has been successfully disconnected.",
+                title: "Your external item has been successfully disconnected.",
                 variant: "success",
             });
-
-            setSelectedAccount(null);
+            setSelectedAccountOrProduct(null);
         }
     };
 
     useEffect(() => {
-        const initializeData = async () => {
-            const user = JSON.parse(localStorage.getItem("selectedUser"));
-            if (user) {
-                const activeAccountsString = localStorage.getItem("accounts");
-                const accountsData = activeAccountsString
-                    ? JSON.parse(activeAccountsString)
-                    : { accounts: [] };
-                setAccounts(accountsData.accounts);
-                if (connectedBanks.length > 0) {
-                    setLoading(true);
-                    await fetchAndMergeAccounts(connectedBanks);
-                } else {
-                    setLoading(false);
-                }
-            } else {
+        const initializeData = () => {
+            try {
+                const user = JSON.parse(localStorage.getItem("selectedUser"));
+                if (!user) throw new Error("No user selected");
+                const internalAccounts = JSON.parse(
+                    localStorage.getItem("accounts") || "[]"
+                );
+                setAccountsAndProducts(internalAccounts.accounts);
+            } catch (error) {
+                console.error("Error initializing account data:", error);
+                pushToast({
+                    title: "Failed to load accounts. Please try again.",
+                    variant: "warning",
+                    className: styles.customToast,
+                });
+            } finally {
                 setLoading(false);
             }
         };
         initializeData();
-    }, [connectedBanks]);
+    }, []);
 
     const handleSubmit = async () => {
         if (!validateInputs()) return;
@@ -219,18 +178,25 @@ const AccountsCards = ({
                 <div className={styles.loading}>Loading...</div>
             ) : (
                 <div className={styles.cardsContainer}>
-                    {accounts.map((account, index) => (
+                    {accountsAndProducts.map((item, index) => (
                         <Card
                             key={index}
-                            className={`${styles.card} ${selectedAccount?.AccountNumber === account.AccountNumber ? styles.selectedCard : ""
+                            className={`${styles.card} ${item.isExternalAccount || item.isExternalProduct
+                                    ? styles.externalCard
+                                    : ""
+                                } ${selectedAccountOrProduct?._id === item._id
+                                    ? styles.selectedCard
+                                    : ""
                                 }`}
                         >
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>
-                                    <Subtitle>{account?.AccountType || "N/A"}</Subtitle>
-                                    {account?.isExternalAccount && (
+                                    <Subtitle>
+                                        {item?.AccountType || item?.ProductType || "N/A"}
+                                    </Subtitle>
+                                    {(item.isExternalAccount || item.isExternalProduct) && (
                                         <Badge variant="blue" className={styles.bankBadge}>
-                                            {account.bankName || "External Bank"}
+                                            {item.AccountBank || item.ProductBank || "External Bank"}
                                         </Badge>
                                     )}
                                     <IconButton
@@ -244,11 +210,12 @@ const AccountsCards = ({
                                         aria-label="Disconnect"
                                         className={styles.disconnectButton}
                                         style={{
-                                            display: account?.isExternalAccount
-                                                ? "inline-block"
-                                                : "none",
+                                            display:
+                                                item.isExternalAccount || item.isExternalProduct
+                                                    ? "inline-block"
+                                                    : "none",
                                         }}
-                                        onClick={() => handleDisconnectClick(account)}
+                                        onClick={() => handleDisconnectClick(item)}
                                     >
                                         <Icon glyph="Disconnect" />
                                     </IconButton>
@@ -260,34 +227,81 @@ const AccountsCards = ({
                                         className={styles.popover}
                                     >
                                         <div className={styles.popoverContent}>
+                                            {item.AccountCurrency && (
+                                                <Body>
+                                                    <strong>Currency:</strong> {item.AccountCurrency}
+                                                </Body>
+                                            )}
                                             <Body>
-                                                <strong>Currency:</strong>{" "}
-                                                {account?.AccountCurrency || "N/A"}
-                                            </Body>
-                                            <Body>
-                                                <strong>Bank:</strong> {account?.AccountBank || "N/A"}
+                                                <strong>Bank:</strong>{" "}
+                                                {item.AccountBank || item.ProductBank || "N/A"}
                                             </Body>
                                             <Body>
                                                 <strong>Opening Date:</strong>{" "}
-                                                {new Date(account?.AccountDate?.OpeningDate).toLocaleDateString() || "N/A"}
+                                                {new Date(
+                                                    item.AccountDate?.OpeningDate ||
+                                                    item.ProductDate?.OpeningDate
+                                                ).toLocaleDateString() || "N/A"}
                                             </Body>
-                                            <Body>
-                                                <strong>Transfer Limit:</strong> $500
-                                            </Body>
+                                            {item.AccountBalance && (
+                                                <Body>
+                                                    <strong>Available Balance:</strong>{" "}
+                                                    {item.AccountCurrency}{" "}
+                                                    {item.AccountBalance?.toLocaleString()}
+                                                </Body>
+                                            )}
+                                            {item.ProductAmount && (
+                                                <>
+                                                    <Body>
+                                                        <strong>Current Debt:</strong>{" "}
+                                                        {item.ProductCurrency}{" "}
+                                                        {item.ProductAmount?.toLocaleString()}
+                                                    </Body>
+                                                    <Body>
+                                                        <strong>Interest Rate:</strong>{" "}
+                                                        {item.ProductInterestRate}%
+                                                    </Body>
+                                                    {item.ProductType === "Loan" ? (
+                                                        <Body>
+                                                            <strong>Repayment Period:</strong>{" "}
+                                                            {item.RepaymentPeriod} months
+                                                        </Body>
+                                                    ) : (
+                                                        <Body>
+                                                            <strong>Amortization Period:</strong>{" "}
+                                                            {item.AmortizationPeriod} months
+                                                        </Body>
+                                                    )}
+                                                </>
+                                            )}
                                         </div>
                                     </Popover>
                                 </div>
                                 <div>
                                     <Body className={styles.accNumber}>
-                                        Account Number: {account?.AccountNumber || "N/A"}
+                                        {item.AccountNumber
+                                            ? `Account Number: ${item.AccountNumber}`
+                                            : `Product ID: ${item.ProductId}`}
                                     </Body>
                                 </div>
                                 <div className={styles.accBalance}>
-                                    <H3 className={styles.balance}>
-                                        {account?.AccountCurrency}{" "}
-                                        {account?.AccountBalance?.toLocaleString() || "N/A"}
-                                    </H3>
-                                    <Body>Available Balance</Body>
+                                    {item.AccountBalance ? (
+                                        <>
+                                            <H3 className={styles.balance}>
+                                                {item.AccountCurrency}{" "}
+                                                {item.AccountBalance?.toLocaleString() || "N/A"}
+                                            </H3>
+                                            <Body>Available Balance</Body>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <H3 className={styles.balance}>
+                                                {item.ProductCurrency}{" "}
+                                                {item.ProductAmount?.toLocaleString() || "N/A"}
+                                            </H3>
+                                            <Body>Current Debt</Body>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                         </Card>
@@ -301,18 +315,16 @@ const AccountsCards = ({
                         leftGlyph={<Icon glyph="Plus" />}
                         size="default"
                         onClick={openForm}
-                        style={{ marginRight: "20px" }}
+                        style={{ marginRight: "20px", marginTop: "40px" }}
                     >
                         {"Open New Account"}
                     </Button>
                 )}
 
-                
-                {/* I am commenting this out until it is fully functional */}
-                {/* <BankConnection
+                <BankConnection
                     className={styles.connectBtn}
-                    addBankAccount={addBankAccount}
-                /> */}
+                    onBankConnected={onBankConnected}
+                />
 
                 {isFormOpen && (
                     <div className={styles.popupOverlay}>
@@ -336,15 +348,24 @@ const AccountsCards = ({
                                     value={accountType}
                                     onChange={(value) => setAccountType(value)}
                                 >
-                                    <ComboboxOption className={styles.comboboxDropdown} value="Checking" />
-                                    <ComboboxOption className={styles.comboboxDropdown} value="Savings" />
+                                    <ComboboxOption
+                                        className={styles.comboboxDropdown}
+                                        value="Checking"
+                                    />
+                                    <ComboboxOption
+                                        className={styles.comboboxDropdown}
+                                        value="Savings"
+                                    />
                                 </Combobox>
 
                                 <div className={styles.formButtons}>
                                     <Button
                                         size="default"
                                         onClick={handleCloseForm}
-                                        style={{ marginTop: "10px", marginRight: "10px" }}
+                                        style={{
+                                            marginTop: "10px",
+                                            marginRight: "10px",
+                                        }}
                                     >
                                         Close
                                     </Button>
@@ -363,23 +384,32 @@ const AccountsCards = ({
                     </div>
                 )}
 
-                {/* Disconnect Confirmation Modal */}
                 <Modal
                     open={disconnectModalOpen}
                     setOpen={setDisconnectModalOpen}
-                    className={`${styles.modal} ${disconnectModalOpen ? styles.modalOverlay : ""}`}
+                    className={`${styles.modal} ${disconnectModalOpen ? styles.modalOverlay : ""
+                        }`}
                 >
-                    {selectedAccount && (
+                    {selectedAccountOrProduct && (
                         <div className={styles.modalContent}>
-                            <img src="/images/disconnect.png" alt="Disconnect Account" width={300} />
-                            <H3>Are you sure you want to disconnect this account?</H3>
-                            <Body>Account Number: {selectedAccount.AccountNumber}</Body>
-                            <Body>Bank: {selectedAccount.bankName}</Body>
+                            <img
+                                src="/images/disconnect.png"
+                                alt="Disconnect Account"
+                                width={300}
+                            />
+                            <H3>Are you sure you want to disconnect this item?</H3>
+                            <Body>
+                                {selectedAccountOrProduct.AccountNumber
+                                    ? `Account Number: ${selectedAccountOrProduct.AccountNumber}`
+                                    : `Product ID: ${selectedAccountOrProduct.ProductId}`}
+                            </Body>
+                            <Body>
+                                Bank:{" "}
+                                {selectedAccountOrProduct.AccountBank ||
+                                    selectedAccountOrProduct.ProductBank}
+                            </Body>
                             <div className={styles.modalButtons}>
-                                <Button
-                                    variant="primary"
-                                    onClick={confirmDisconnect}
-                                >
+                                <Button variant="primary" onClick={confirmDisconnect}>
                                     Yes
                                 </Button>
                                 <Button
@@ -392,7 +422,6 @@ const AccountsCards = ({
                         </div>
                     )}
                 </Modal>
-
             </div>
         </div>
     );
