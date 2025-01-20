@@ -1,24 +1,6 @@
-
-
-.button{
-    margin-top: 20px;
-}
-
-.msgBody{
-    text-align: center;
-}
-
-.combobox{
-    margin-top: 20px;
-}
-
 .modal{
     z-index: 100;        
     transform: translateZ(0); 
-}
-
-.connectBtn{
-    margin-top: 40px;
 }
 
 .modalTitle{

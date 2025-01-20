@@ -18,9 +18,10 @@ import Header from '@/components/Header/Header';
 import AccountsCards from '@/components/AccountsCards/AccountsCards';
 import Transactions from '@/components/Transactions/Transactions';
 import Chatbot from '@/components/Chatbot/Chatbot';
-import GlobalPositioning from '@/components/GlobalPositioning/GlobalPositioning';
+import GlobalPosition from '@/components/GlobalPosition/GlobalPosition';
 import Form from '@/components/Form/Form';
 import { fetchUserData } from '@/lib/api/userDataApi';
+import { fetchUserExternalData } from '@/lib/api/userExternalDataApi';
 
 const Home = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -29,7 +30,11 @@ const Home = () => {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeAccounts, setActiveAccounts] = useState([]);
+  const [externalAccounts, setExternalAccounts] = useState([]); // External accounts
+  const [externalProducts, setExternalProducts] = useState([]); // External products
   const [loading, setLoading] = useState(true); // Loading state
+
+  const [externalDataLoading, setExternalDataLoading] = useState(false); // Loading state for external data
 
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState('');
@@ -42,8 +47,9 @@ const Home = () => {
     }
   }, []);
 
+  // Fetch user data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchInternalData = async () => {
       if (selectedUser) {
         setLoading(true);
         try {
@@ -61,8 +67,33 @@ const Home = () => {
       }
     };
 
-    fetchData();
-  }, [selectedUser]);
+    fetchInternalData();
+  }, [selectedUser]); // Fetch user data only once per user
+
+
+  // Background fetching of external data
+  useEffect(() => {
+    const fetchExternalData = async () => {
+      if (selectedUser) {
+        setExternalDataLoading(true);
+        try {
+          const externalData = await fetchUserExternalData(selectedUser.id, selectedUser.bearerToken);
+          localStorage.setItem('external_accounts', JSON.stringify(externalData.external_accounts));
+          localStorage.setItem('external_products', JSON.stringify(externalData.external_products));
+
+          setExternalAccounts(externalData.external_accounts);
+          setExternalProducts(externalData.external_products);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        } finally {
+          setExternalDataLoading(false);
+        }
+      }
+    };
+
+    fetchExternalData();
+  }, [selectedUser]); // Fetch external data only once per user
+
 
   const handleRefresh = async (user) => {
     if (!user) {
@@ -71,20 +102,22 @@ const Home = () => {
     }
     try {
       setLoading(true);
+      
       const data = await fetchUserData(user.id);
-
-      // Store the fetched data in local storage
+      // Update localStorage and state
       localStorage.setItem("accounts", JSON.stringify(data.accounts));
       localStorage.setItem("transactions", JSON.stringify(data.transactions));
-
       setActiveAccounts(data.accounts);
       setRecentTransactions(data.transactions);
 
-      // Close the form after refresh is complete
-      setIsFormOpen(false);  // Close the form
-      setPopupOpen(false);    // Ensure the popup is closed as well
+      // Optionally refresh the external data in the background
+      const externalData = await fetchUserExternalData(user.id, user.bearerToken);
+      // Update localStorage and state
+      localStorage.setItem("external_accounts", JSON.stringify(externalData.external_accounts));
+      localStorage.setItem("external_products", JSON.stringify(externalData.external_products));
+      setExternalAccounts(externalData.external_accounts);
+      setExternalProducts(externalData.external_products);
 
-      // Optionally, you can navigate or update other states here
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -136,12 +169,12 @@ const Home = () => {
             <>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
 
-                {/** To uncomment once aggregated view is ready 
-                <GlobalPositioning></GlobalPositioning> */}
+                {/* Commenting this until is fully functional */}
+                {/* <GlobalPosition></GlobalPosition> */}
 
                 <div style={{ display: 'flex', alignItems: 'center' }}>
 
-                  <H2>My Accounts&nbsp;</H2>
+                  <H2>Accounts / Products&nbsp;</H2>
                   <IconButton
                     darkMode={false}
                     aria-label="Refresh Data"
