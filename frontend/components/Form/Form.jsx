@@ -137,12 +137,14 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
           variant: "success",
           className: styles.customToast,
         });
+
+        handleCloseForm(); // Close the form after refreshing
+        setPopupOpen(false); // Ensure popup is closed after transaction
   
         // After successful transaction, trigger the data refresh
         const user = JSON.parse(localStorage.getItem("selectedUser"));
         await handleRefresh(user); // This refreshes both accounts and transactions
   
-        handleCloseForm(); // Close the form after refreshing
       } else {
         throw new Error("Transaction ID not found, transaction failed.");
       }

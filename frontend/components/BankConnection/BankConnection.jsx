@@ -13,7 +13,7 @@ import InfoModal from "../InfoWizard/InfoWizard";
 
 
 // Main BankConnection component
-const BankConnection = ({ addBankAccount }) => {
+const BankConnection = ({ onBankConnected }) => {
     const [open, setOpen] = useState(false);
     const [openHelpModal, setOpenHelpModal] = useState(false);
     const [selection, setSelection] = useState(null);
