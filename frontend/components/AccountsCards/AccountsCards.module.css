@@ -177,7 +177,7 @@
     z-index: 0;
     padding-left: 10px;
     margin-left: 0px;
-    opacity: 0.3; /* Dims the unselected cards */
+    /*opacity: 0.3;  Dims the unselected cards */
     transition: opacity 0.3s ease-in-out;
   }
 

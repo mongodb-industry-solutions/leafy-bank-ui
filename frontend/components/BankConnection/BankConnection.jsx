@@ -7,13 +7,17 @@ import { Combobox, ComboboxOption } from "@leafygreen-ui/combobox";
 import { Body, H3 } from "@leafygreen-ui/typography";
 import styles from "./BankConnection.module.css";
 import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
+import Tooltip from "@leafygreen-ui/tooltip";
 import InfoModal from "../InfoWizard/InfoWizard";
 
-const BankConnection = ({ onBankConnected }) => {
-    const [open, setOpen] = useState(false); // Controls modal visibility
-    const [openHelpModal, setOpenHelpModal] = useState(false); // Info modal visibility
-    const [selection, setSelection] = useState(null); // Track selected bank
-    const [status, setStatus] = useState("idle"); // Track the connection flow
+
+// Main BankConnection component
+const BankConnection = ({ addBankAccount }) => {
+    const [open, setOpen] = useState(false);
+    const [openHelpModal, setOpenHelpModal] = useState(false);
+    const [selection, setSelection] = useState(null);
+    const [status, setStatus] = useState('idle');
 
     const handleSelectionChange = (value) => setSelection(value);
 
@@ -67,16 +71,14 @@ const BankConnection = ({ onBankConnected }) => {
 
     return (
         <div>
-            {/* Open Modal Button */}
-            <Button onClick={() => setOpen(true)} leftGlyph={<Icon glyph="Connect" />} className={styles.connectBtn}>
-                Connect Bank
-            </Button>
+            <Button onClick={() => setOpen(true)} leftGlyph={<Icon glyph="Connect" />} className={styles.connectBtn}>Connect Bank</Button>
 
             {/* Modal */}
             <Modal open={open} setOpen={setOpen} className={styles.modal}>
                 <div className={styles.popupOverlay}>
                     {status === "idle" && (
                         <>
+
                             <div className={styles.modalTitle}>
                                 <H3>Choose your bank</H3>
                                 <div className={styles.infoModal}>
@@ -84,7 +86,7 @@ const BankConnection = ({ onBankConnected }) => {
                                         open={openHelpModal}
                                         setOpen={setOpenHelpModal}
                                         title="What is Open Finance?"
-                                        body="Open Finance refers to the concept of allowing customers to securely share their financial data with third parties, beyond traditional banking services, to enable a broader range of financial products and services."
+                                        body="Open Finance refers to the concept of allowing customers to securely share their financial data with third parties, beyond traditional banking services, to enable a broader range of financial products and services. It builds upon the principles of Open Banking, which focuses primarily on bank accounts, but extends the scope to include other financial products such as investments, insurance, pensions, and loans."
                                         tooltipText="Tell me more!"
                                         iconGlyph="Wizard"
                                         sections={[
@@ -103,6 +105,7 @@ const BankConnection = ({ onBankConnected }) => {
                                     />
                                 </div>
                             </div>
+
                             <Body>Select a bank to proceed with the connection.</Body>
                             <div className={styles.combobox}>
                                 <Combobox
