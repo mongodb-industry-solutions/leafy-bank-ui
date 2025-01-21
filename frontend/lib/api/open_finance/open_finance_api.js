@@ -20,8 +20,6 @@ export async function fetchExternalAccountsForUserAndInstitution(userIdentifier,
         institution_name: institutionName // Changed from bank_name to institution_name
     }).toString();
 
-    console.log("Fetch URL:", `${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user-and-institution/?${queryParams}`);
-
     const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user-and-institution/?${queryParams}`, {
         method: "GET",
         headers: {
@@ -49,8 +47,6 @@ export async function fetchExternalProductsForUserAndInstitution(userIdentifier,
         institution_name: institutionName // Changed from bank_name to institution_name
     }).toString();
 
-    console.log("Fetch URL:", `${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user-and-institution/?${queryParams}`);
-
     const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user-and-institution/?${queryParams}`, {
         method: "GET",
         headers: {
@@ -76,8 +72,6 @@ export async function fetchAllExternalAccountsForUser(userIdentifier, bearerToke
         user_identifier: userIdentifier
     }).toString();
 
-    console.log("Fetch URL:", `${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user/?${queryParams}`);
-
     const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user/?${queryParams}`, {
         method: "GET",
         headers: {
@@ -102,8 +96,6 @@ export async function fetchAllExternalProductsForUser(userIdentifier, bearerToke
     const queryParams = new URLSearchParams({
         user_identifier: userIdentifier
     }).toString();
-
-    console.log("Fetch URL:", `${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user/?${queryParams}`);
 
     const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user/?${queryParams}`, {
         method: "GET",
