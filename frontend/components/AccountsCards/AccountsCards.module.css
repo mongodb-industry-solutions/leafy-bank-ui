@@ -136,7 +136,7 @@
 
 .bankBadge{
   margin-left: auto; /* Align the badge to the right */
-
+  font-size: 11px;
 }
 
 /* Modal Styling */
