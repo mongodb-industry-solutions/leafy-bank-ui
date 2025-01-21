@@ -143,7 +143,7 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
   
         // After successful transaction, trigger the data refresh
         const user = JSON.parse(localStorage.getItem("selectedUser"));
-        await handleRefresh(user); // This refreshes both accounts and transactions
+        await handleRefresh(user); // This refreshes the user data
   
       } else {
         throw new Error("Transaction ID not found, transaction failed.");

@@ -39,6 +39,8 @@ const Login = ({ onUserSelected }) => {
         // Clear previous external data
         localStorage.removeItem('external_accounts');
         localStorage.removeItem('external_products');
+        localStorage.removeItem('connected_external_accounts');
+        localStorage.removeItem('connected_external_products');
 
         // Set the selected user with BearerToken included
         setSelectedUser(user);

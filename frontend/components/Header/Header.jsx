@@ -22,6 +22,11 @@ function Header({ onLogout }) {
     localStorage.removeItem('user');
     localStorage.removeItem('accounts');
     localStorage.removeItem('transactions');
+    // Clear previous external data
+    localStorage.removeItem('external_accounts');
+    localStorage.removeItem('external_products');
+    localStorage.removeItem('connected_external_accounts');
+    localStorage.removeItem('connected_external_products');
     onLogout(); // Calls the logout function passed as prop
   };
 

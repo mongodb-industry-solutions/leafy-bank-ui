@@ -1,10 +1,8 @@
 "use client";
 
-// Home.jsx
-
 import { useEffect, useState } from "react";
 import Head from 'next/head';
-import { H2, H3, Body } from '@leafygreen-ui/typography';
+import { H2, Body, H3 } from '@leafygreen-ui/typography';
 import RefreshIcon from '@leafygreen-ui/icon/dist/Refresh';
 import IconButton from '@leafygreen-ui/icon-button';
 import Popover from '@leafygreen-ui/popover';
@@ -30,14 +28,20 @@ const Home = () => {
   const [recentTransactions, setRecentTransactions] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeAccounts, setActiveAccounts] = useState([]);
-  const [externalAccounts, setExternalAccounts] = useState([]); // External accounts
-  const [externalProducts, setExternalProducts] = useState([]); // External products
-  const [loading, setLoading] = useState(true); // Loading state
-
-  const [externalDataLoading, setExternalDataLoading] = useState(false); // Loading state for external data
+  const [externalAccounts, setExternalAccounts] = useState({ accounts: [] });
+  const [externalProducts, setExternalProducts] = useState({ products: [] });
+  const [loading, setLoading] = useState(true);
+  const [externalDataLoading, setExternalDataLoading] = useState(false);
 
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupTitle, setPopupTitle] = useState('');
+
+  const [triggerGlobalPositionUpdate, setTriggerGlobalPositionUpdate] = useState(0);
+
+  // Function to trigger a re-fetch in GlobalPosition component
+  const updateGlobalPosition = () => {
+      setTriggerGlobalPositionUpdate(prev => prev + 1); // Increment to trigger update
+  };
 
   useEffect(() => {
     const userString = localStorage.getItem('selectedUser');
@@ -47,7 +51,6 @@ const Home = () => {
     }
   }, []);
 
-  // Fetch user data
   useEffect(() => {
     const fetchInternalData = async () => {
       if (selectedUser) {
@@ -68,10 +71,8 @@ const Home = () => {
     };
 
     fetchInternalData();
-  }, [selectedUser]); // Fetch user data only once per user
+  }, [selectedUser]);
 
-
-  // Background fetching of external data
   useEffect(() => {
     const fetchExternalData = async () => {
       if (selectedUser) {
@@ -84,7 +85,7 @@ const Home = () => {
           setExternalAccounts(externalData.external_accounts);
           setExternalProducts(externalData.external_products);
         } catch (error) {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching external data:", error);
         } finally {
           setExternalDataLoading(false);
         }
@@ -92,8 +93,7 @@ const Home = () => {
     };
 
     fetchExternalData();
-  }, [selectedUser]); // Fetch external data only once per user
-
+  }, [selectedUser]);
 
   const handleRefresh = async (user) => {
     if (!user) {
@@ -102,22 +102,24 @@ const Home = () => {
     }
     try {
       setLoading(true);
-      
+
+      // Fetch and store internal data
       const data = await fetchUserData(user.id);
-      // Update localStorage and state
       localStorage.setItem("accounts", JSON.stringify(data.accounts));
       localStorage.setItem("transactions", JSON.stringify(data.transactions));
       setActiveAccounts(data.accounts);
       setRecentTransactions(data.transactions);
 
-      // Optionally refresh the external data in the background
+      // Fetch and store external data
       const externalData = await fetchUserExternalData(user.id, user.bearerToken);
-      // Update localStorage and state
       localStorage.setItem("external_accounts", JSON.stringify(externalData.external_accounts));
       localStorage.setItem("external_products", JSON.stringify(externalData.external_products));
       setExternalAccounts(externalData.external_accounts);
       setExternalProducts(externalData.external_products);
 
+      // Clear previous connected external data
+      localStorage.removeItem('connected_external_accounts');
+      localStorage.removeItem('connected_external_products');
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
@@ -161,19 +163,20 @@ const Home = () => {
       </Head>
       <ToastProvider>
         <Header onLogout={handleLogout} />
-
         <div style={{ margin: '80px 20px', transition: 'left 0.3s ease' }}>
           {loading ? (
             <div className={styles.loading}>Loading...</div>
           ) : (
             <>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-
-                {/* Commenting this until is fully functional */}
-                {/* <GlobalPosition></GlobalPosition> */}
-
+                {selectedUser && !loading && !externalDataLoading && (
+                  <GlobalPosition
+                    userId={selectedUser.id}
+                    bearerToken={selectedUser.bearerToken}
+                    triggerGlobalPositionUpdate={triggerGlobalPositionUpdate}
+                  />
+                )}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-
                   <H2>Accounts / Products&nbsp;</H2>
                   <IconButton
                     darkMode={false}
@@ -189,8 +192,6 @@ const Home = () => {
                     </Popover>
                   </IconButton>
                 </div>
-
-
               </div>
 
               <div>
@@ -202,6 +203,7 @@ const Home = () => {
                     </>
                   )}
                 </div>
+
                 {popupOpen && (
                   <div className={styles.popupOverlay}>
                     <Card className={styles.transactionCard}>
@@ -240,6 +242,7 @@ const Home = () => {
                   handleOpenForm={handleOpenForm}
                   handleCloseForm={handleCloseForm}
                   handleRefresh={handleRefresh}
+                  updateGlobalPosition={updateGlobalPosition} 
                 />
 
                 <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />

@@ -23,6 +23,7 @@ const AccountsCards = ({
     handleOpenForm,
     handleCloseForm,
     handleRefresh,
+    updateGlobalPosition
 }) => {
     const [accountsAndProducts, setAccountsAndProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -31,9 +32,7 @@ const AccountsCards = ({
     const [accountNumber, setAccountNumber] = useState("");
     const [openPopover, setOpenPopover] = useState(null);
     const [disconnectModalOpen, setDisconnectModalOpen] = useState(false);
-    const [selectedAccountOrProduct, setSelectedAccountOrProduct] = useState(
-        null
-    );
+    const [selectedAccountOrProduct, setSelectedAccountOrProduct] = useState(null);
     const popoverRef = useRef(null);
     const { pushToast } = useToast();
 
@@ -80,11 +79,23 @@ const AccountsCards = ({
         );
 
         // Add newly connected accounts/products to existing array
-        setAccountsAndProducts([
+        const newAccountsAndProducts = [
             ...filteredAccountsAndProducts,
             ...externalAccounts,
             ...externalProducts,
-        ]);
+        ];
+
+        setAccountsAndProducts(newAccountsAndProducts);
+
+        // Store external accounts and products in localStorage
+        const externalAccountsData = newAccountsAndProducts.filter((item) => item.isExternalAccount);
+        const externalProductsData = newAccountsAndProducts.filter((item) => item.isExternalProduct);
+
+        localStorage.setItem('connected_external_accounts', JSON.stringify(externalAccountsData));
+        localStorage.setItem('connected_external_products', JSON.stringify(externalProductsData));
+
+        // After modifying the accounts/products, trigger the global position update
+        updateGlobalPosition(); // This will notify Home.jsx to trigger GlobalPosition update
 
         pushToast({
             title: `Successfully connected to ${bank}!`,
@@ -100,16 +111,29 @@ const AccountsCards = ({
 
     const confirmDisconnect = () => {
         if (selectedAccountOrProduct) {
+            // Remove the selected account/product from the state
             const updatedAccountsAndProducts = accountsAndProducts.filter(
                 (item) => item._id !== selectedAccountOrProduct._id
             );
             setAccountsAndProducts(updatedAccountsAndProducts);
-            setDisconnectModalOpen(false);
+    
+            // Update the connected accounts/products in localStorage
+            const externalAccountsData = updatedAccountsAndProducts.filter((item) => item.isExternalAccount);
+            const externalProductsData = updatedAccountsAndProducts.filter((item) => item.isExternalProduct);
+            
+            // Store the updated accounts and products back in localStorage
+            localStorage.setItem('connected_external_accounts', JSON.stringify(externalAccountsData));
+            localStorage.setItem('connected_external_products', JSON.stringify(externalProductsData));
+    
+            // After modifying the accounts/products, trigger the global position update
+            updateGlobalPosition(); // This will notify Home.jsx to trigger GlobalPosition update
+    
             pushToast({
                 title: "Your external item has been successfully disconnected.",
                 variant: "success",
             });
             setSelectedAccountOrProduct(null);
+            setDisconnectModalOpen(false);
         }
     };
 
@@ -182,8 +206,8 @@ const AccountsCards = ({
                         <Card
                             key={index}
                             className={`${styles.card} ${item.isExternalAccount || item.isExternalProduct
-                                    ? styles.externalCard
-                                    : ""
+                                ? styles.externalCard
+                                : ""
                                 } ${selectedAccountOrProduct?._id === item._id
                                     ? styles.selectedCard
                                     : ""
