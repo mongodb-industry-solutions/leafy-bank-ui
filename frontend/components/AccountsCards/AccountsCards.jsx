@@ -25,6 +25,7 @@ const AccountsCards = ({
     handleRefresh,
     updateGlobalPosition
 }) => {
+    // State to hold accounts and products
     const [accountsAndProducts, setAccountsAndProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [accountType, setAccountType] = useState("");
@@ -74,8 +75,7 @@ const AccountsCards = ({
 
         // Filter out existing accounts/products from the same external bank
         const filteredAccountsAndProducts = accountsAndProducts.filter(
-            (item) =>
-                (item.AccountBank || item.ProductBank) !== bank
+            (item) => (item.AccountBank || item.ProductBank) !== bank
         );
 
         // Add newly connected accounts/products to existing array
@@ -116,18 +116,18 @@ const AccountsCards = ({
                 (item) => item._id !== selectedAccountOrProduct._id
             );
             setAccountsAndProducts(updatedAccountsAndProducts);
-    
+
             // Update the connected accounts/products in localStorage
             const externalAccountsData = updatedAccountsAndProducts.filter((item) => item.isExternalAccount);
             const externalProductsData = updatedAccountsAndProducts.filter((item) => item.isExternalProduct);
-            
+
             // Store the updated accounts and products back in localStorage
             localStorage.setItem('connected_external_accounts', JSON.stringify(externalAccountsData));
             localStorage.setItem('connected_external_products', JSON.stringify(externalProductsData));
-    
+
             // After modifying the accounts/products, trigger the global position update
             updateGlobalPosition(); // This will notify Home.jsx to trigger GlobalPosition update
-    
+
             pushToast({
                 title: "Your external item has been successfully disconnected.",
                 variant: "success",
@@ -140,12 +140,23 @@ const AccountsCards = ({
     useEffect(() => {
         const initializeData = () => {
             try {
-                const user = JSON.parse(localStorage.getItem("selectedUser"));
-                if (!user) throw new Error("No user selected");
-                const internalAccounts = JSON.parse(
-                    localStorage.getItem("accounts") || "[]"
-                );
-                setAccountsAndProducts(internalAccounts.accounts);
+                const selectedUser = localStorage.getItem("selectedUser");
+                if (!selectedUser) throw new Error("No user selected");
+
+                // Retrieve internal accounts
+                const internalAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
+
+                // Retrieve external accounts and products
+                const connectedExternalAccounts = JSON.parse(localStorage.getItem('connected_external_accounts') || '[]');
+                const connectedExternalProducts = JSON.parse(localStorage.getItem('connected_external_products') || '[]');
+
+                // Combine all the accounts and products
+                setAccountsAndProducts([
+                    ...internalAccounts.accounts,
+                    ...connectedExternalAccounts,
+                    ...connectedExternalProducts,
+                ]);
+
             } catch (error) {
                 console.error("Error initializing account data:", error);
                 pushToast({
