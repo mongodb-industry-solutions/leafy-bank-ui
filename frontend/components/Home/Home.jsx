@@ -117,9 +117,6 @@ const Home = () => {
       setExternalAccounts(externalData.external_accounts);
       setExternalProducts(externalData.external_products);
 
-      // Clear previous connected external data
-      localStorage.removeItem('connected_external_accounts');
-      localStorage.removeItem('connected_external_products');
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {
