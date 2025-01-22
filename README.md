@@ -34,7 +34,7 @@ Leafy Bank UI is composed of several interconnected features that demonstrate th
 
 7. **Connect with External Institutions**  
    - Simulates connecting to external financial institutions to retrieve data.
-   - Users securely authorize the retrieval of external accounts (e.g., savings, checking) and financial products (e.g., loans, mortgages) from third-party banks.
+   - Users securely authorize the retrieval of external accounts (e.g., savings, checking) and financial products (e.g., loans, mortgages) from third-party financial institutions (e.g. banks).
 
 8. **View Global Financial Summary** 
    - Provides an aggregated view of a user's financial position, including total balances and debts across internal and external accounts and products.
