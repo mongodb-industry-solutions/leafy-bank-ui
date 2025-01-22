@@ -44,8 +44,8 @@ Leafy Bank UI is composed of several interconnected features that demonstrate th
    - Get contextual, real-time responses related to banking terms, conditions, accounts, or operational FAQs.
 
 10. **Switch Between Demo Users**  
-   - Seamlessly switch between pre-selected users.
-   - Validate and test how accounts, transactions, and balances behave within the Leafy Bank ecosystem.
+       - Seamlessly switch between pre-selected users.
+       - Validate and test how accounts, transactions, and balances behave within the Leafy Bank ecosystem.
 
 
 ## Where Does MongoDB Shine?
