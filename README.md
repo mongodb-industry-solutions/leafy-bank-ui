@@ -32,11 +32,18 @@ Leafy Bank UI is composed of several interconnected features that demonstrate th
    - Access and inspect the code and document generated for recent transactions.
    - Demonstrates backend integrations and real-time data storage on MongoDB.
 
-7. **Interact with the Leafy Personal Assistant**  
+7. **Connect with External Institutions**  
+   - Simulates connecting to external financial institutions to retrieve data.
+   - Users securely authorize the retrieval of external accounts (e.g., savings, checking) and financial products (e.g., loans, mortgages) from third-party banks.
+
+8. **View Global Financial Summary** 
+   - Provides an aggregated view of a user's financial position, including total balances and debts across internal and external accounts and products.
+
+9. **Interact with the Leafy Personal Assistant**  
    - Chat with the AI-powered chatbot.
    - Get contextual, real-time responses related to banking terms, conditions, accounts, or operational FAQs.
 
-8. **Switch Between Demo Users**  
+10. **Switch Between Demo Users**  
    - Seamlessly switch between pre-selected users.
    - Validate and test how accounts, transactions, and balances behave within the Leafy Bank ecosystem.
 
@@ -71,12 +78,21 @@ This service powers the AI chatbot, which leverages **MongoDB Atlas Vector Searc
 
 ---
 
+### 4. **Open Finance Service**
+**[Open Finance Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-openfinance)**  
+This service simulates connecting to external financial institutions to retrieve data. MongoDB’s **flexible schema** and **aggregation pipelines** are used to aggregate and analyze data from multiple sources, providing a comprehensive view of a user’s financial position. MongoDB’s powerful aggregation capabilities, combined with its BSON format, enable seamless integration with external APIs and financial data sources. The **BSON format ensures efficient data storage and processing, while its compatibility with the widely-used JSON format for API communication minimizes the need for serialization or deserialization**.
+
+![open finance diagram](diagrams/open_finance_diagram.png)
+
+---
+
 By adopting a **microservices architecture**, Leafy Bank splits features across multiple repositories. This design not only supports **scalability**, **modular development**, and **independent deployments** but also underscores MongoDB’s versatility in driving dynamic and robust systems.
 
 Explore the respective backend repositories to learn more about specific implementations and why MongoDB shines in these use cases:
 - [Accounts Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-accounts)
 - [Transactions Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-transactions)
-- [Chatbot Service Repository](https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag)
+- [Chatbot Service](https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag)
+- [Open Finance Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-openfinance)
 
 This approach reflects a **modern and practical way to develop software**, supporting the scalability, modularity, and maintainability required for financial services in today’s fast-evolving world.
 
@@ -117,6 +133,7 @@ To run the Leafy Bank UI locally, ensure the following prerequisites are met.
 NEXT_PUBLIC_ACCOUNTS_API_URL="http://localhost:8000"
 NEXT_PUBLIC_TRANSACTIONS_API_URL="http://localhost:8001"
 NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL="http://localhost:8002"
+NEXT_PUBLIC_OPEN_FINANCE_API_URL="http://localhost:8003"
 ```
 
 ### Backend Services
@@ -129,6 +146,8 @@ The UI depends on multiple backend services, which must be running to enable ful
   - *Manages digital payments and transfers, essential for showcasing transaction-related features.*  
 - [Chatbot Service](https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag) (Port **8002**)  
   - *Optional: Needed only if you wish to explore the Leafy Bank Personal Assistant.*
+- [Open Finance Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-openfinance) (Port **8003**)  
+  - *Optional: Needed only if you wish to explore external financial institution connections.*
 
 *The MongoDB database configuration details are provided within each backend service repository.*
 
