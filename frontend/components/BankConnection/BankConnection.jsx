@@ -9,7 +9,7 @@ import styles from "./BankConnection.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
-import InfoModal from "../InfoWizard/InfoWizard";
+import InfoWizard from "../InfoWizard/InfoWizard";
 
 
 // Main BankConnection component
@@ -82,7 +82,7 @@ const BankConnection = ({ onBankConnected }) => {
                             <div className={styles.modalTitle}>
                                 <H3>Choose your bank</H3>
                                 <div className={styles.infoModal}>
-                                    <InfoModal
+                                    <InfoWizard
                                         open={openHelpModal}
                                         setOpen={setOpenHelpModal}
                                         title="What is Open Finance?"

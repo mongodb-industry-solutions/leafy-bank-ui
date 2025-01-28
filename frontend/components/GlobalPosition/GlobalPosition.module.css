@@ -1,6 +1,19 @@
-.aggregatedCards{
+.globalCards{
     display: flex;
     text-align: center;
-    justify-content: space-between;
-    margin: 30px;
+    justify-content:space-evenly;
+    margin: 20px;
 }
+
+.globalCard{
+    border-radius: 8%;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+    
+    .globalCards{
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+  }

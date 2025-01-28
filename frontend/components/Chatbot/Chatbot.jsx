@@ -8,6 +8,7 @@ import Icon from '@leafygreen-ui/icon';
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
 import axios from "axios";
+import InfoWizard from "../InfoWizard/InfoWizard";
 
 import Typewriter from "./Typewriter.jsx";
 
@@ -20,6 +21,7 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
     const [docs, setDocs] = useState([]);
     const [isAsking, setIsAsking] = useState(false);
     const [completedMessages, setCompletedMessages] = useState({}); // Track completed messages
+    const [openHelpModal, setOpenHelpModal] = useState(false);
 
     const handleChange = (event) => {
         setQuery(event.target.value);
@@ -82,9 +84,37 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
                     <div className={styles.chatbotOverlay} onClick={toggleChatbot}></div>
                     <div className={styles.chatbotContent}>
                         <div className={styles.chatbotHeader}>
-                            <div className={styles.centeredBadge}>
-                                <Badge variant="blue">Leafy Personal Assistant</Badge>
+                            <div className={styles.centeredHeader}>
+                                <Badge variant="blue" className={styles.badge} >Leafy Personal Assistant</Badge>
+
+
+                                <div className={styles.infoModal}>
+                                    <InfoWizard
+                                        open={openHelpModal}
+                                        setOpen={setOpenHelpModal}
+                                        title="What is Interactive Banking?"
+                                        body="Interactive banking uses generative AI, like chatbots and virtual assistants, to provide real-time, personalized, and seamless customer experiences. It enhances self-service by resolving queries instantly, offering tailored advice, and keeping interactions within banking apps, making banking smarter, more efficient, and user-friendly."
+                                        tooltipText="Tell me more!"
+                                        iconGlyph="Wizard"
+                                        sections={[
+                                            {
+                                                heading: "What are we doing behind the scenes?",
+                                                image: {
+                                                    src: "/images/chatbot_info.png",
+                                                    alt: "Open Finance Architecture",
+                                                },
+                                            },
+                                            {
+                                                heading: "Why MongoDB?",
+                                                body: "MongoDB is an excellent choice for this solution due to its flexible document model, which allows seamless integration of structured and unstructured data, essential for AI applications. Its Atlas Vector Search capability enables efficient semantic querying, crucial for retrieving contextually relevant information in real-time interactions. Additionally, MongoDB's scalability ensures that banking applications can handle growing data volumes and user demands without compromising performance. ",
+                                            },
+                                        ]}
+                                    />
+                                </div>
+
                             </div>
+
+
                             <IconButton
                                 aria-label="X"
                                 onClick={toggleChatbot}
@@ -152,7 +182,7 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
                     </div>
                 </div>
             )}
-         </>
+        </>
     );
 };
 

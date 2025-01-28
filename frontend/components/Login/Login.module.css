@@ -28,7 +28,8 @@
 
 .descriptionModal {
     font-size: 14px;
-    display: inline-flex;
+    display: center;
+    text-align: center;
 }
 
 .customRow {
@@ -47,6 +48,22 @@
 .disabledCloseButton {
     cursor: not-allowed;
     opacity: 0.5;
+}
+
+.parentContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
+.infoBanner {
+    background-color: #E1F6FF;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #C3E7FE;
+    border-left: 5px solid #016AF8;
 }
 
 /* Remove border-radius when modal is fullscreen */

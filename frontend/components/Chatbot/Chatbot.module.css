@@ -197,10 +197,14 @@
 
 
 /* Badge centered horizontally */
-.centeredBadge {
+.centeredHeader {
     display: flex;
     justify-content: center;
     width: 100%;
+}
+
+.badge{
+    margin-top: 5px;
 }
 
 /* Speech bubble alignment */
@@ -227,6 +231,7 @@
     /* Double size */
     height: auto;
 }
+
 
 @media (max-width: 768px) {
 

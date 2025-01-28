@@ -54,16 +54,17 @@ function GlobalPosition({ userId, bearerToken, triggerGlobalPositionUpdate }) {
             {loading ? (
                 <div>Loading...</div>
             ) : (
-                <div className={styles.aggregatedCards}>
-                    <Card>
+                <div className={styles.globalCards}>
+                    <Card className={styles.globalCard}>
                         <H3>USD {totalBalance.toLocaleString()}</H3>
                         <Body>Total Balance</Body>
                     </Card>
 
-                    <Card>
+                    <Card className={styles.globalCard}>
                         <H3>USD {totalDebt.toLocaleString()}</H3>
                         <Body>Total Debt</Body>
                     </Card>
+                    
                 </div>
             )}
         </div>

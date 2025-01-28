@@ -1,23 +1,42 @@
-.modal{
-    z-index: 100;        
-    transform: translateZ(0); 
-}
-
-.modalTitle{
+.modal {
+    z-index: 1000;
+    transform: translateZ(0);
+    max-width: 100%; /* Ensures it doesn't exceed the screen width */
+    margin: 0 auto; /* Centers it horizontally */
+    padding: 16px; /* Adds space around content */
+    border-radius: 8px; /* Optional: Softer corners */
+  }
+  
+  .modalContent {
     display: flex;
-}
-
-.modalH3{
+    flex-direction: column; /* Stack content vertically */
+    gap: 16px; /* Space between content items */
+    overflow-y: auto; /* Enables scrolling for content that overflows */
+    max-height: 90vh; /* Prevents the modal from exceeding the screen height */
+  }
+  
+  .modalH3 {
     margin-top: 20px;
-}
-
-@media (max-width: 708px) {
-
-    .modal{
-        width: 100%;
-        margin: 0px ;
-        
+  }
+  
+  .modalImage {
+    width: 100%; /* Make images responsive */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 550px; /* Keeps larger images from overflowing */
+    margin: 0 auto; /* Centers images horizontally */
+    border-radius: 8px; /* Optional: Makes images look nicer */
+  }
+  
+  @media (max-width: 708px) {
+    .modal {
+      width: 100%;
+      margin: 0; /* Removes side margins on smaller screens */
+      padding: 16px; /* Keeps inner padding */
     }
-
-
-}
+  
+    .modalImage {
+      width: 100%; /* Ensures images take the full width of the container */
+      max-width: unset; /* Removes fixed width limits */
+    }
+  }
+  
