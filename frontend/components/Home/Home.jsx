@@ -174,7 +174,7 @@ const Home = () => {
                   />
                 )}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <H2>Accounts / Products&nbsp;</H2>
+                  <H2>Accounts & Products&nbsp;</H2>
                   <IconButton
                     darkMode={false}
                     aria-label="Refresh Data"

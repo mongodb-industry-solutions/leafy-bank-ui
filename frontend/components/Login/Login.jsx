@@ -5,8 +5,7 @@
 import React, { useState, useEffect } from 'react';
 import Icon from '@leafygreen-ui/icon';
 import { Modal, Container } from 'react-bootstrap';
-import { H2, Subtitle, Description } from '@leafygreen-ui/typography';
-
+import { H2, Subtitle, Description, Body } from '@leafygreen-ui/typography';
 import styles from './Login.module.css';
 import User from '@/components/User/User';
 import { USER_MAP } from "@/lib/constants";
@@ -93,8 +92,9 @@ const Login = ({ onUserSelected }) => {
                     <Subtitle className={`${styles.weightNormal} ${styles.centerText} mt-2`}>This is a MongoDB demo</Subtitle>
                     <br />
                     <Description className={styles.descriptionModal}>
-                        Please select the user you would like to login as
+                        Please select the user you would like to login as:
                     </Description>
+
                     <div className={`${styles.usersContainer}`}>
                         {/* Map through users and pass `user` details to the `User` component */}
                         {users.map(user => (
@@ -107,6 +107,14 @@ const Login = ({ onUserSelected }) => {
                             />
                         ))}
                     </div>
+
+                    <div className={styles.parentContainer}>
+                        <div className={styles.infoBanner}>
+                            <Body>Look out for  <Icon glyph="Wizard" fill="#889397" /> to find out more about what is going on behind the scenes!</Body>
+                        </div>
+
+                    </div>
+
                     <Description className={`${styles.descriptionModal} mb-3`}>
                         Note: Each user has pre-loaded data, such as recent transactions, and opened accounts. This variation is designed to showcase different scenarios, providing a more dynamic and realistic user experience for the demo.
                     </Description>

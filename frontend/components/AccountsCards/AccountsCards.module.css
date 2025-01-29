@@ -204,5 +204,9 @@
   .indicator.active {
     background-color: #00684A;
   }
+
+  .bankBadge{
+   display: none;
+  }
   
 }
