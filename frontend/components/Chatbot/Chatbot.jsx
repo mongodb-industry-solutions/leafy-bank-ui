@@ -105,12 +105,9 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
                                                     {
                                                         heading: "How to Demo",
                                                         body: [
-                                                            "Click on the “Connect Bank” button",
-                                                            "Select a fictional bank you would like to connect from the dropdown",
-                                                            "Allow the modal to go through the different steps",
-                                                            "Once the connection is completed you should see the new accounts or products displayed alongside your Leafy Bank accounts, with a blue badge indicating the name of the new bank.",
-                                                            "Your “Global Position” will also be updated accordingly following these changes.",
-                                                            "If you wish to remove a specific account/product from your list, click on the disconnect icon on the card. This card will disappear from your view, and the amount will be discounted from the global position totals."
+                                                            "Select one of the Suggested Questions or type a new one in the prompt.",
+                                                            "Click “Ask”",
+                                                            "View response",
                                                         ],
                                                     },
                                                 ],
