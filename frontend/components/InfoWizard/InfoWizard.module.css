@@ -1,42 +1,53 @@
 .modal {
-    z-index: 1000;
-    transform: translateZ(0);
-    max-width: 100%; /* Ensures it doesn't exceed the screen width */
-    margin: 0 auto; /* Centers it horizontally */
-    padding: 16px; /* Adds space around content */
-    border-radius: 8px; /* Optional: Softer corners */
+  z-index: 1000;
+  transform: translateZ(0);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers content vertically */
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 90vh;
+  height: 500px; /* Set a fixed height */
+  min-height: 500px; /* Prevent shrinking */
+}
+
+.modalH3 {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.modalImage {
+  width: 100%;
+  height: auto;
+  max-width: 550px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+@media (max-width: 708px) {
+  .modal {
+    width: 100%;
+    padding: 10px;
   }
-  
+
   .modalContent {
-    display: flex;
-    flex-direction: column; /* Stack content vertically */
-    gap: 16px; /* Space between content items */
-    overflow-y: auto; /* Enables scrolling for content that overflows */
-    max-height: 90vh; /* Prevents the modal from exceeding the screen height */
+    height: 500px; /* Adjust for smaller screens */
+    min-height: 400px;
+    margin-left: 50px;
   }
-  
-  .modalH3 {
-    margin-top: 20px;
-  }
-  
+
   .modalImage {
-    width: 100%; /* Make images responsive */
-    height: auto; /* Maintain aspect ratio */
-    max-width: 550px; /* Keeps larger images from overflowing */
-    margin: 0 auto; /* Centers images horizontally */
-    border-radius: 8px; /* Optional: Makes images look nicer */
+    width: 100%;
+    max-width: unset;
   }
-  
-  @media (max-width: 708px) {
-    .modal {
-      width: 100%;
-      margin: 0; /* Removes side margins on smaller screens */
-      padding: 16px; /* Keeps inner padding */
-    }
-  
-    .modalImage {
-      width: 100%; /* Ensures images take the full width of the container */
-      max-width: unset; /* Removes fixed width limits */
-    }
-  }
-  
+}

@@ -10,6 +10,7 @@ import styles from './Login.module.css';
 import User from '@/components/User/User';
 import { USER_MAP } from "@/lib/constants";
 import { fetchUserData } from '@/lib/api/userDataApi';
+import Banner from "@leafygreen-ui/banner";
 
 const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
@@ -109,9 +110,11 @@ const Login = ({ onUserSelected }) => {
                     </div>
 
                     <div className={styles.parentContainer}>
-                        <div className={styles.infoBanner}>
-                            <Body>Look out for  <Icon glyph="Wizard" fill="#889397" /> to find out more about what is going on behind the scenes!</Body>
-                        </div>
+
+
+                        <Banner>
+                            Look out for  <Icon glyph="Wizard" fill="#889397" /> to find out more about what is going on behind the scenes!
+                        </Banner>
 
                     </div>
 

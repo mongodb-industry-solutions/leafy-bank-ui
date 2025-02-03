@@ -92,24 +92,64 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
                                     <InfoWizard
                                         open={openHelpModal}
                                         setOpen={setOpenHelpModal}
-                                        title="What is Interactive Banking?"
-                                        body="Interactive banking uses generative AI, like chatbots and virtual assistants, to provide real-time, personalized, and seamless customer experiences. It enhances self-service by resolving queries instantly, offering tailored advice, and keeping interactions within banking apps, making banking smarter, more efficient, and user-friendly."
                                         tooltipText="Tell me more!"
                                         iconGlyph="Wizard"
                                         sections={[
                                             {
-                                                heading: "What are we doing behind the scenes?",
-                                                image: {
-                                                    src: "/images/chatbot_info.png",
-                                                    alt: "Open Finance Architecture",
-                                                },
+                                                heading: "Instructions and Talk Track",
+                                                content: [
+                                                    {
+                                                        heading: "What is Interactive Banking?",
+                                                        body: "Interactive banking uses generative AI, like chatbots and virtual assistants, to provide real-time, personalized, and seamless customer experiences. It enhances self-service by resolving queries instantly, offering tailored advice, and keeping interactions within banking apps, making banking smarter, more efficient, and user-friendly.",
+                                                    },
+                                                    {
+                                                        heading: "How to Demo",
+                                                        body: [
+                                                            "Click on the “Connect Bank” button",
+                                                            "Select a fictional bank you would like to connect from the dropdown",
+                                                            "Allow the modal to go through the different steps",
+                                                            "Once the connection is completed you should see the new accounts or products displayed alongside your Leafy Bank accounts, with a blue badge indicating the name of the new bank.",
+                                                            "Your “Global Position” will also be updated accordingly following these changes.",
+                                                            "If you wish to remove a specific account/product from your list, click on the disconnect icon on the card. This card will disappear from your view, and the amount will be discounted from the global position totals."
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                heading: "Behind the Scenes",
+                                                content: [
+                                                    {
+                                                        heading: "Data Flow",
+                                                        body: "",
+                                                    },
+                                                    {
+                                                        image: {
+                                                            src: "./images/chatbot_info.png",
+                                                            alt: "Architecture",
+                                                        },
+                                                    },
+                                                ],
                                             },
                                             {
                                                 heading: "Why MongoDB?",
-                                                body: "MongoDB is an excellent choice for this solution due to its flexible document model, which allows seamless integration of structured and unstructured data, essential for AI applications. Its Atlas Vector Search capability enables efficient semantic querying, crucial for retrieving contextually relevant information in real-time interactions. Additionally, MongoDB's scalability ensures that banking applications can handle growing data volumes and user demands without compromising performance. ",
+                                                content: [
+                                                    {
+                                                        heading: "Flexibility",
+                                                        body: "MongoDB’s flexible document model unifies structured and unstructured data, creating a consistent dataset that enhances the AI’s ability to understand and respond to complex queries. This model enables financial institutions to store and manage customer data, transaction history, and document content within a single system, streamlining interactions and making AI responses more contextually relevant.",
+                                                    },
+                                                    {
+                                                        heading: "Atlas Vector Search",
+                                                        body: "MongoDB Atlas Vector Search makes it easy to perform semantic searches on vectorized document chunks, quickly retrieving the most relevant information to answer user questions. This capability allows the AI to find precise answers within dense documents, enhancing the self-service experience for customers.",
+                                                    },
+                                                    {
+                                                        heading: "Integration with AI Models",
+                                                        body: " MongoDB integrates smoothly with major AI frameworks, facilitating rapid and efficient deployment of scalable AI applications in banks. Aligning MongoDB with cloud-based LLMs ensures accurate and real-time responses to customer queries using top tools, meeting demand effectively.",
+                                                    },
+                                                ],
                                             },
                                         ]}
                                     />
+                                   
                                 </div>
 
                             </div>
