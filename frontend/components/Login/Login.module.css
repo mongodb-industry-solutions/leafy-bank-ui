@@ -57,14 +57,7 @@
     margin: 10px;
 }
 
-.infoBanner {
-    background-color: #E1F6FF;
-    width: fit-content;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #C3E7FE;
-    border-left: 5px solid #016AF8;
-}
+
 
 /* Remove border-radius when modal is fullscreen */
 @media (max-width: 767.98px) {
