@@ -163,7 +163,7 @@ These prerequisites are essential for creating a complete and realistic demo env
 1. Navigate to the `/frontend` folder.
 2. Install dependencies by running:
 ```bash
-npm install
+npm install --legacy-peer-deps
 ```
 3. Start the frontend development server with:
 ````bash
