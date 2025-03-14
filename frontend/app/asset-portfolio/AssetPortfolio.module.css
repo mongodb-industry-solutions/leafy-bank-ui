@@ -1,0 +1,41 @@
+.container {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  
+  .gridContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two equal columns */
+    grid-template-rows: 1fr; /* Single row */
+    gap: 20px;
+    height: 50vh; /* 2/3 of the viewport height */
+  }
+  
+  .roiCard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .rightColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+  }
+  
+  .assetCard,
+  .marketCard {
+    flex: 1; /* Each takes half of the column height */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .assetsSection{
+    margin-top: 20px;
+  }
+  

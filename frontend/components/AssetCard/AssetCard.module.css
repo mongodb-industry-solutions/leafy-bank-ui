@@ -1,0 +1,77 @@
+.card {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    background-color: white;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    align-items: center;
+    margin-top: 10px;
+    transition: height 0.3s ease;
+  }
+  
+  .mainContent {
+    display: contents;
+  }
+  
+  .expanded {
+    height: auto;
+  }
+  
+  .expandedSection {
+    grid-column: span 9;
+    padding: 20px;
+   
+    border-top: 1px solid #ddd;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .cell {
+    font-size: 14px;
+    padding: 5px;
+  }
+  
+  .sentiment {
+    background-color: #fff3cd;
+    padding: 4px 8px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .neutral {
+    background-color: #FFEEA9;
+    color: #944F01;
+    padding: 4px 8px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .keep {
+    background-color: #E9FF99;
+    color: #00684A;
+    padding: 4px 8px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .reduce {
+    background-color: #FFEAE5;
+    color: #970606;
+    padding: 4px 8px;
+    border-radius: 50px;
+    width: fit-content;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .actionButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+  }
+  

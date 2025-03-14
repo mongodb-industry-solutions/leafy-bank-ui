@@ -41,6 +41,15 @@ function Header({ onLogout }) {
       </div>
 
       <div className={`${styles["pages-container"]} ${isMenuOpen ? styles.show : ''}`}>
+
+        <Link href="/" className={styles.navLink}>
+          <Body>Accounts & Transactions</Body>
+        </Link>
+
+        <Link href="/asset-portfolio" className={styles.navLink}>
+          <Body>Asset Portfolio</Body>
+        </Link>
+
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
           <Body>Log Out</Body>
