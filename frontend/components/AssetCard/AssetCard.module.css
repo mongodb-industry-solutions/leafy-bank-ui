@@ -21,7 +21,6 @@
   .expandedSection {
     grid-column: span 9;
     padding: 20px;
-   
     border-top: 1px solid #ddd;
     margin-top: 10px;
     text-align: center;
@@ -75,3 +74,14 @@
     font-size: 18px;
   }
   
+  .iframeContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+.responsiveIframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+}

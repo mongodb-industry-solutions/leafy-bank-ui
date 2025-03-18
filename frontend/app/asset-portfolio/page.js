@@ -19,9 +19,14 @@ export default function AssetPortfolio() {
 
                 <div className={styles.rightColumn}>
                     <Card className={styles.assetCard} title="Asset Distribution">
-                        Asset distribution pie chart
-                        {/**  <iframe  width="640" height="300" src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=648b19ea-4651-401c-817f-d66c5284a0d2&maxDataAge=3600&theme=light&autoRefresh=true"></iframe>
-                   */}
+
+                        <div className={styles.iframeContainer}>
+                            <iframe
+                                src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=cd8d523c-b90a-4a39-a447-2e53cd392924&maxDataAge=3600&theme=light&autoRefresh=true"
+                                className={styles.responsiveIframe}
+                            ></iframe>
+                        </div>
+
                     </Card>
 
                     <Card className={styles.marketCard} title="Market Event Calendar">
@@ -31,7 +36,7 @@ export default function AssetPortfolio() {
             </div>
 
             <div className={styles.assetsSection}>
-                
+
                 <Assets></Assets>
             </div>
         </div>
