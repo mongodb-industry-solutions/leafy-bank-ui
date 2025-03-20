@@ -4,20 +4,18 @@ import styles from "./Assets.module.css";
 import AssetCard from "../AssetCard/AssetCard";
 import { H2, Subtitle, Body } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 export default function Assets() {
-    const spyAsset = {
-        name: "SPY (S&P 500 ETF)",
-        closePrice: 495.32,
-        portfolioAllocation: "25%",
-        sentimentScore: 0.65,
-        vixSensitivity: "Neutral",
-        gdp: "Keep",
-        interestRate: "Reduce",
-        unemployment: "Keep",
-    };
+    const [assets, setAssets] = useState([]);
+
+    useEffect(() => {
+        fetch("/data/assets.json") // Update the path as needed
+            .then((response) => response.json())
+            .then((data) => setAssets(data)) // Directly store JSON data
+            .catch((error) => console.error("Error loading assets:", error));
+    }, []);
 
     const [openHelpModal, setOpenHelpModal] = useState(false);
 
@@ -76,8 +74,6 @@ export default function Assets() {
                 />
             </div>
 
-            <Subtitle>Equities</Subtitle>
-
             <div className={styles.headerRow}>
                 <span>ASSET</span>
                 <span>CLOSE PRICE ($)</span>
@@ -90,10 +86,14 @@ export default function Assets() {
                 <span>ACTIONS</span>
             </div>
 
-            <AssetCard asset={spyAsset} />
-            <AssetCard asset={spyAsset} />
-            <AssetCard asset={spyAsset} />
-            <AssetCard asset={spyAsset} />
+            {assets.length > 0 ? (
+                assets.map((asset, index) => (
+                    <AssetCard key={index} asset={asset} />
+                ))
+            ) : (
+                <p>Loading assets...</p>
+            )}
+
         </div>
     );
 }

@@ -1,0 +1,212 @@
+[
+  {
+    "_id": {
+      "$oid": "67cfb79a8714420af23e2589"
+    },
+    "headline": "SPY Sheds a Quick Billion as Selloff Gains Steam",
+    "source": "etf.com ·  via Yahoo Finance",
+    "posted": "5 hours ago",
+    "description": "The SPDR S&P 500 ETF Trust (SPY) experienced outflows of $1 billion as markets resumed their selloff, according to etf.com daily fund flows data. Major...",
+    "link": "https://finance.yahoo.com/news/spy-sheds-quick-billion-selloff-230000133.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-11T04:10:01.379Z"
+    },
+    "ticker": "SPY",
+    "article_string": "Headline: SPY Sheds a Quick Billion as Selloff Gains Steam\n/n Description: The SPDR S&P 500 ETF Trust (SPY) experienced outflows of $1 billion as markets resumed their selloff, according to etf.com daily fund flows data. Major...\n/n Source: etf.com ·  via Yahoo Finance\n/n Ticker: SPY\n/n Link: https://finance.yahoo.com/news/spy-sheds-quick-billion-selloff-230000133.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.14194346964359283,
+      "negative": 0.3854578733444214,
+      "neutral": 0.47259870171546936
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d1091d8714420af23e3699"
+    },
+    "headline": "SPY, VOO, or QQQ: Discover Which ETF Reigns Supreme for U.S. Investors",
+    "source": "TipRanks ·  via Yahoo Finance",
+    "posted": "4 days ago",
+    "description": "Three of the largest and most popular are the SPDR S&P 500 ETF Trust (SPY), the Vanguard S&P 500 ETF...",
+    "link": "https://finance.yahoo.com/news/spy-voo-qqq-discover-etf-121449469.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:04.639Z"
+    },
+    "ticker": "QQQ",
+    "article_string": "Headline: SPY, VOO, or QQQ: Discover Which ETF Reigns Supreme for U.S. Investors\n/n Description: Three of the largest and most popular are the SPDR S&P 500 ETF Trust (SPY), the Vanguard S&P 500 ETF...\n/n Source: TipRanks ·  via Yahoo Finance\n/n Ticker: QQQ\n/n Link: https://finance.yahoo.com/news/spy-voo-qqq-discover-etf-121449469.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.06362058967351913,
+      "negative": 0.015260659158229828,
+      "neutral": 0.9211187362670898
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d1091d8714420af23e36a4"
+    },
+    "headline": "Investors Poured Billions Into IVV, TLT, BIL Last Month",
+    "source": "etf.com ·  via Yahoo Finance",
+    "posted": "1 year ago",
+    "description": "Investors added $34.4 billion to U.S.-listed ETFs last month, led by U.S. equity ETFs. U.S. stock...",
+    "link": "https://finance.yahoo.com/news/investors-poured-billions-ivv-tlt-222219855.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:05.965Z"
+    },
+    "ticker": "EEM",
+    "article_string": "Headline: Investors Poured Billions Into IVV, TLT, BIL Last Month\n/n Description: Investors added $34.4 billion to U.S.-listed ETFs last month, led by U.S. equity ETFs. U.S. stock...\n/n Source: etf.com ·  via Yahoo Finance\n/n Ticker: EEM\n/n Link: https://finance.yahoo.com/news/investors-poured-billions-ivv-tlt-222219855.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.10701268911361694,
+      "negative": 0.01595417968928814,
+      "neutral": 0.8770331144332886
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67c09ba4bf0fcf4971a1492c"
+    },
+    "headline": "XLE Weekly: Buy-Side Defense Of Last Week's Key Support",
+    "source": "Seeking Alpha",
+    "posted": "2019-10-12T00:00:00.000Z",
+    "description": "No description provided",
+    "link": "https://seekingalpha.com/article/4296222-xle-weekly-buy-side-defense-last-weeks-key-support?source=partner_benzinga",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-02-27T16:34:22.223Z"
+    },
+    "ticker": "XLE",
+    "article_string": "Headline: XLE Weekly: Buy-Side Defense Of Last Week's Key Support\n/n Description: No description provided\n/n Source: Seeking Alpha\n/n Ticker: XLE\n/n Link: https://seekingalpha.com/article/4296222-xle-weekly-buy-side-defense-last-weeks-key-support?source=partner_benzinga",
+    "sentiment_score": {
+      "positive": 0.026858029887080193,
+      "negative": 0.03110802173614502,
+      "neutral": 0.9420339465141296
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d1091f8714420af23e36ae"
+    },
+    "headline": "IWX Jumps 17.5% in Assets Amid Market Recovery Rally",
+    "source": "etf.com ·  via Yahoo Finance",
+    "posted": "5 days ago",
+    "description": "On the outflows side, the iShares 20+ Year Treasury Bond ETF (TLT) experienced the largest outflows at $1.6 billion. The iShares Russell Top 200 Growth...",
+    "link": "https://finance.yahoo.com/news/iwx-jumps-17-5-assets-030000984.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:06.666Z"
+    },
+    "ticker": "TLT",
+    "article_string": "Headline: IWX Jumps 17.5% in Assets Amid Market Recovery Rally\n/n Description: On the outflows side, the iShares 20+ Year Treasury Bond ETF (TLT) experienced the largest outflows at $1.6 billion. The iShares Russell Top 200 Growth...\n/n Source: etf.com ·  via Yahoo Finance\n/n Ticker: TLT\n/n Link: https://finance.yahoo.com/news/iwx-jumps-17-5-assets-030000984.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.27374038100242615,
+      "negative": 0.05787523835897446,
+      "neutral": 0.6683843731880188
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d109208714420af23e36b4"
+    },
+    "headline": "5 ETFs Sizzle Last Week Amid Volatility",
+    "source": "Zacks ·  via Yahoo Finance",
+    "posted": "2 years ago",
+    "description": "Overall, ETFs pulled in $19.1 billion in capital for the week (ending Apr 14). U.S. equity led the way higher with $8.3 billion in inflows, closely...",
+    "link": "https://finance.yahoo.com/news/5-etfs-sizzle-last-week-141002504.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:08.050Z"
+    },
+    "ticker": "LQD",
+    "article_string": "Headline: 5 ETFs Sizzle Last Week Amid Volatility\n/n Description: Overall, ETFs pulled in $19.1 billion in capital for the week (ending Apr 14). U.S. equity led the way higher with $8.3 billion in inflows, closely...\n/n Source: Zacks ·  via Yahoo Finance\n/n Ticker: LQD\n/n Link: https://finance.yahoo.com/news/5-etfs-sizzle-last-week-141002504.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.6569238901138306,
+      "negative": 0.07396765798330307,
+      "neutral": 0.26910850405693054
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d109208714420af23e36ba"
+    },
+    "headline": "HYG Inflows Join the Post-Election Rally",
+    "source": "etf.com ·  via Yahoo Finance",
+    "posted": "4 months ago",
+    "description": "The risk-on trade that swept across financial markets Wednesday following Donald Trump’s surprisingly decisive victory over Kamala Harris included an...",
+    "link": "https://finance.yahoo.com/news/hyg-inflows-join-post-election-225309469.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:08.457Z"
+    },
+    "ticker": "HYG",
+    "article_string": "Headline: HYG Inflows Join the Post-Election Rally\n/n Description: The risk-on trade that swept across financial markets Wednesday following Donald Trump’s surprisingly decisive victory over Kamala Harris included an...\n/n Source: etf.com ·  via Yahoo Finance\n/n Ticker: HYG\n/n Link: https://finance.yahoo.com/news/hyg-inflows-join-post-election-225309469.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.06724848598241806,
+      "negative": 0.05195712670683861,
+      "neutral": 0.88079434633255
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d1091c8714420af23e368b"
+    },
+    "headline": "Trump's Tariff War Just Exploded--Markets Drops as Canada Strikes Back",
+    "source": "GuruFocus.com ·  via Yahoo Finance",
+    "posted": "11 hours ago",
+    "description": "Stocks reacted immediately, with the Dow (DIA) sinking nearly 0.8% and the S&P 500 (SPY) shedding...",
+    "link": "https://finance.yahoo.com/news/trumps-tariff-war-just-exploded-171336633.html?fr=sycsrp_catchall",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:03.265Z"
+    },
+    "ticker": "VNQ",
+    "article_string": "Headline: Trump's Tariff War Just Exploded--Markets Drops as Canada Strikes Back\n/n Description: Stocks reacted immediately, with the Dow (DIA) sinking nearly 0.8% and the S&P 500 (SPY) shedding...\n/n Source: GuruFocus.com ·  via Yahoo Finance\n/n Ticker: VNQ\n/n Link: https://finance.yahoo.com/news/trumps-tariff-war-just-exploded-171336633.html?fr=sycsrp_catchall",
+    "sentiment_score": {
+      "positive": 0.029922351241111755,
+      "negative": 0.9516875743865967,
+      "neutral": 0.018390096724033356
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67d109218714420af23e36cb"
+    },
+    "headline": "Gold Inches Higher on Safe Haven Interest",
+    "source": "Barrons.com",
+    "posted": "6 days ago",
+    "description": "Front-month gold settles up 0.2% to $2,915.30 a troy ounce. Markets across the board were on edge watching for developments in the tariffs that were...",
+    "link": "https://www.barrons.com/livecoverage/stock-market-today-030525/card/gold-inches-higher-on-safe-haven-interest-3LxVOCx5bl5irq9xRbgg?siteid=yhoof2&yptr=yahoo",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-12T04:10:08.895Z"
+    },
+    "ticker": "GLD",
+    "article_string": "Headline: Gold Inches Higher on Safe Haven Interest\n/n Description: Front-month gold settles up 0.2% to $2,915.30 a troy ounce. Markets across the board were on edge watching for developments in the tariffs that were...\n/n Source: Barrons.com\n/n Ticker: GLD\n/n Link: https://www.barrons.com/livecoverage/stock-market-today-030525/card/gold-inches-higher-on-safe-haven-interest-3LxVOCx5bl5irq9xRbgg?siteid=yhoof2&yptr=yahoo",
+    "sentiment_score": {
+      "positive": 0.929472804069519,
+      "negative": 0.034570690244436264,
+      "neutral": 0.03595653176307678
+    }
+  },
+  {
+    "_id": {
+      "$oid": "67c6d124e88c9cd9998a4bdc"
+    },
+    "headline": "APA Corporation stock drops following earnings miss By Investing.com",
+    "source": "Investing.com",
+    "posted": "5 days ago",
+    "description": "Shares of APA Corporation (NASDAQ:APA) fell 7% after the energy company’s fourth-quarter earnings...",
+    "link": "https://ph.investing.com/news/stock-market-news/apa-corporation-stock-drops-following-earnings-miss-93CH-1690692",
+    "synced": false,
+    "extraction_timestamp_utc": {
+      "$date": "2025-03-04T10:08:35.979Z"
+    },
+    "ticker": "USO",
+    "article_string": "Headline: APA Corporation stock drops following earnings miss By Investing.com\n/n Description: Shares of APA Corporation (NASDAQ:APA) fell 7% after the energy company’s fourth-quarter earnings...\n/n Source: Investing.com\n/n Ticker: USO\n/n Link: https://ph.investing.com/news/stock-market-news/apa-corporation-stock-drops-following-earnings-miss-93CH-1690692",
+    "sentiment_score": {
+      "positive": 0.008012683130800724,
+      "negative": 0.972038209438324,
+      "neutral": 0.019949130713939667
+    }
+  }
+]

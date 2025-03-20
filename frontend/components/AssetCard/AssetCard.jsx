@@ -14,20 +14,20 @@ export default function AssetCard({ asset }) {
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
-                <div className={styles.cell}>{asset.name}</div>
-                <div className={styles.cell}>{asset.closePrice}</div>
-                <div className={styles.cell}>{asset.portfolioAllocation}</div>
+                <div className={styles.cell}>{asset.symbol}</div>
+                <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
+                <div className={styles.cell}>15%</div>
                 <div className={styles.cell}>
-                    <span className={styles.sentiment}>{asset.sentimentScore}</span>
+                    <span className={styles.sentiment}>0.75</span>
                 </div>
-                <div className={`${styles.cell} ${styles[asset.vixSensitivity.toLowerCase()]}`}>
-                    {asset.vixSensitivity}
+                <div className={`${styles.cell} ${styles.reduce}`}>
+                    Neutral
                 </div>
-                <div className={`${styles.cell} ${styles.keep}`}>{asset.gdp}</div>
-                <div className={`${styles.cell} ${styles.reduce}`}>{asset.interestRate}</div>
-                <div className={`${styles.cell} ${styles.keep}`}>{asset.unemployment}</div>
-                <div className={styles.actions}>
+                <div className={`${styles.cell} ${styles.keep}`}>Keep</div>
+                <div className={`${styles.cell} ${styles.reduce}`}>Reduce</div>
+                <div className={`${styles.cell} ${styles.keep}`}>Keep</div>
 
+                <div className={styles.actions}>
                     <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Candle Stick" className={styles.actionButton} onClick={() => handleExpand("candleStick")}>
                             <Icon glyph="Diagram2" />
@@ -51,7 +51,6 @@ export default function AssetCard({ asset }) {
                     }>
                         Insights
                     </Tooltip>
-
                 </div>
             </div>
 
@@ -72,9 +71,8 @@ export default function AssetCard({ asset }) {
                         </div>
                     )}
 
-
                     {expandedSection === "docModel" && (
-                        <p>Here you can explore the document model structure for SPY.</p>
+                        <p>Here you can explore the document model structure for {asset.symbol}.</p>
                     )}
 
                     {expandedSection === "insights" && (

@@ -1,55 +1,105 @@
 .container {
-    text-align: center;
-    padding: 80px 20px;
-  }
-  
-  .gridContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* Two equal columns */
-    grid-template-rows: 1fr; /* Single row */
-    gap: 20px;
-    height: 50vh; /* 2/3 of the viewport height */
-  }
-  
-  .roiCard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    height: 100%;
-  }
-  
-  .rightColumn {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    height: 100%;
-  }
-  
-  .assetCard,
-  .marketCard {
-    flex: 1; /* Each takes half of the column height */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0px 20px;
-  }
+  text-align: center;
+  padding: 80px 20px;
+}
 
-  .assetsSection{
-    margin-top: 20px;
-  }
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Two equal columns */
+  grid-template-rows: 1fr;
+  /* Single row */
+  gap: 20px;
+  height: 50vh;
+  /* 2/3 of the viewport height */
+}
 
-  .iframeContainer {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    padding: 0px;
+.roiCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+
+.assetCard {
+  flex: 1;
+  /* Each takes half of the column height */
+
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.assetsSection {
+  margin-top: 20px;
+}
+
+.iframeContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 0px;
 }
 
 .responsiveIframe {
-    width: 100%;
-    height: 100%;
-    border: none;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-  
+.cardSubtitle{
+  text-align: left;
+  padding: 10px 10px;
+  font-size: 16px;
+}
+
+
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 0px 10px;
+  font-weight: bold;
+  color: #666;
+}
+
+.marketCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 50%;
+  padding: 0px 20px;
+}
+
+
+.eventContainer {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 5px;
+  overflow-y: auto; /* Allows scrolling if needed */
+  padding-bottom: 20px;
+ 
+}
+
+.eventCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1; /* Each event stretches evenly */
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
