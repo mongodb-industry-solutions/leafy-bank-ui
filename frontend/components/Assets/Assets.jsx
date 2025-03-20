@@ -11,7 +11,7 @@ export default function Assets() {
     const [assets, setAssets] = useState([]);
 
     useEffect(() => {
-        fetch("/data/assets.json") // Update the path as needed
+        fetch("/data/assets.json") 
             .then((response) => response.json())
             .then((data) => setAssets(data)) // Directly store JSON data
             .catch((error) => console.error("Error loading assets:", error));
