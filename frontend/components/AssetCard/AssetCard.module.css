@@ -85,3 +85,43 @@
     height: 500px;
     border: none;
 }
+
+/* INSIGHTS SECTION */
+.newsContainer {
+  margin-top: 12px;
+}
+
+.newsCard {
+  background-color: #f8f9fa;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: 600px;
+  text-align: left;
+}
+
+.newsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.newsTime {
+  font-size: 12px;
+  color: #6c757d;
+}
+
+.newsDescription {
+  margin: 4px 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Show only 2 lines */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}
+
+.newsSource {
+  font-size: 12px;
+  color: #6c757d;
+}

@@ -58,48 +58,59 @@
 
 .cardSubtitle{
   text-align: left;
-  padding: 10px 10px;
+  padding: 5px 10px;
   font-size: 16px;
 }
 
-
-
 .headerRow {
   display: flex;
-  justify-content: space-between;
   font-size: 12px;
   text-transform: uppercase;
-  padding: 0px 10px;
+  padding: 5px 10px;
   font-weight: bold;
   color: #666;
+  gap: 10px;
 }
 
-.marketCard {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 50%;
-  padding: 0px 20px;
+.headerRow span {
+  text-align: left;
 }
 
+/* Adjust column widths manually */
+.headerRow span:nth-child(1), 
+.eventCard > *:nth-child(1) { /* INDICATOR */
+  width: 35%;
+}
 
-.eventContainer {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  gap: 5px;
-  overflow-y: auto; /* Allows scrolling if needed */
-  padding-bottom: 20px;
- 
+.headerRow span:nth-child(2), 
+.eventCard > *:nth-child(2) { /* FREQUENCY */
+  width: 25%;
+}
+
+.headerRow span:nth-child(3), 
+.eventCard > *:nth-child(3) { /* LAST RELEASE DATE */
+  width: 25%;
+}
+
+.headerRow span:nth-child(4), 
+.eventCard > *:nth-child(4) { /* LAST VALUE */
+  width: 20%;
 }
 
 .eventCard {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  flex: 1; /* Each event stretches evenly */
   background: white;
-  padding: 10px;
+  padding: 7px 10px;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  margin-bottom: 5px;
 }
+
+.eventCard > * {
+  text-align: left;
+}
+
+
+

@@ -6,8 +6,6 @@ import Assets from "@/components/Assets/Assets";
 import styles from "./AssetPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
-import Badge from "@leafygreen-ui/badge";
-
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
@@ -50,14 +48,16 @@ export default function AssetPortfolio() {
                             <span>INDICATOR</span>
                             <span>FREQUENCY</span>
                             <span>LAST RELEASE DATE</span>
+                            <span>LAST VALUE</span>
                         </div>
 
                         <div className={styles.eventContainer}>
                             {marketEvents.map((event) => (
                                 <div key={event.series_id} className={styles.eventCard}>
                                     <Body>{event.title} (US)</Body>
-                                    <Badge>{event.frequency}</Badge>
+                                    <Body>{event.frequency}</Body>
                                     <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
+                                    <Body>{event.value}</Body>
                                 </div>
                             ))}
                         </div>

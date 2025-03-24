@@ -1,15 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AssetCard.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
+import { Subtitle, Body, H3, Link } from "@leafygreen-ui/typography";
 
 export default function AssetCard({ asset }) {
     const [expandedSection, setExpandedSection] = useState(null);
+    const [news, setNews] = useState([]);
+
+    useEffect(() => {
+        fetch("/data/news.json")
+            .then((res) => res.json())
+            .then((data) => setNews(data))
+            .catch((err) => console.error("Error loading news:", err));
+    }, []);
 
     const handleExpand = (section) => {
         setExpandedSection((prevSection) => (prevSection === section ? null : section));
     };
+
+    // Filter news based on asset.symbol
+    const filteredNews = news.filter((item) => item.ticker === asset.symbol);
 
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
@@ -45,6 +57,14 @@ export default function AssetCard({ asset }) {
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
+                        <IconButton aria-label="News" className={styles.actionButton} onClick={() => handleExpand("news")}>
+                            <Icon glyph="University" />
+                        </IconButton>
+                    }>
+                        News Headlines
+                    </Tooltip>
+
+                    <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Insights" className={styles.actionButton} onClick={() => handleExpand("insights")}>
                             <Icon glyph="Sparkle" />
                         </IconButton>
@@ -56,11 +76,12 @@ export default function AssetCard({ asset }) {
 
             {expandedSection && (
                 <div className={styles.expandedSection}>
-                    <h3>
+                    <H3>
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Doc Model"
-                                : "Insights"}
-                    </h3>
+                                : expandedSection === "insights" ? "Insights"
+                                    : "News Headlines"}
+                    </H3>
 
                     {expandedSection === "candleStick" && (
                         <div className={styles.iframeContainer}>
@@ -75,12 +96,36 @@ export default function AssetCard({ asset }) {
                         <p>Here you can explore the document model structure for {asset.symbol}.</p>
                     )}
 
-                    {expandedSection === "insights" && (
-                        <ul>
-                            <li>Insight 1</li>
-                            <li>Insight 2</li>
-                        </ul>
+
+                    {expandedSection === "news" && (
+                        <div className={styles.newsContainer}>
+                       
+                        {filteredNews.length > 0 ? (
+                            filteredNews.map((item) => (
+                                <div key={item._id.$oid} className={styles.newsCard}>
+                                    <div className={styles.newsHeader}>
+                                        <Link href={item.link} target="_blank" className={styles.newsHeadline}>
+                                            {item.headline}
+                                        </Link>
+                                        <span className={styles.newsTime}>{item.posted}</span>
+                                    </div>
+                                    <Body className={styles.newsDescription}>{item.description}</Body>
+                                    <Body className={styles.newsSource}>
+                                        {item.source}
+                                    </Body>
+                                </div>
+                            ))
+                        ) : (
+                            <Body>No news available for {asset.symbol}.</Body>
+                        )}
+                    </div>
                     )}
+
+
+                    {expandedSection === "insights" && (
+                        <p>Here you can explore the insights for {asset.symbol}.</p>
+                    )}
+
                 </div>
             )}
         </div>
