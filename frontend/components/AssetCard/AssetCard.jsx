@@ -4,6 +4,8 @@ import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
 import { Subtitle, Body, H3, Link } from "@leafygreen-ui/typography";
+import Code from "@leafygreen-ui/code";
+import Badge from "@leafygreen-ui/badge";
 
 export default function AssetCard({ asset }) {
     const [expandedSection, setExpandedSection] = useState(null);
@@ -32,12 +34,11 @@ export default function AssetCard({ asset }) {
                 <div className={styles.cell}>
                     <span className={styles.sentiment}>0.75</span>
                 </div>
-                <div className={`${styles.cell} ${styles.reduce}`}>
-                    Neutral
-                </div>
-                <div className={`${styles.cell} ${styles.keep}`}>Keep</div>
-                <div className={`${styles.cell} ${styles.reduce}`}>Reduce</div>
-                <div className={`${styles.cell} ${styles.keep}`}>Keep</div>
+        
+                <Badge className={`${styles.cell} ${styles.badge}`}variant="yellow">NEUTRAL</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`}variant="green">KEEP</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`}variant="red">REDUCE</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`}variant="green">KEEP</Badge>
 
                 <div className={styles.actions}>
                     <Tooltip align="top" justify="middle" trigger={
@@ -78,7 +79,7 @@ export default function AssetCard({ asset }) {
                 <div className={styles.expandedSection}>
                     <H3>
                         {expandedSection === "candleStick" ? ""
-                            : expandedSection === "docModel" ? "Doc Model"
+                            : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? "Insights"
                                     : "News Headlines"}
                     </H3>
@@ -93,32 +94,37 @@ export default function AssetCard({ asset }) {
                     )}
 
                     {expandedSection === "docModel" && (
-                        <p>Here you can explore the document model structure for {asset.symbol}.</p>
+                        <Code
+                            className={styles.documentContainer}
+                            language="json"
+                        >
+                            {JSON.stringify(asset, null, 2)}
+                        </Code>
                     )}
 
 
                     {expandedSection === "news" && (
                         <div className={styles.newsContainer}>
-                       
-                        {filteredNews.length > 0 ? (
-                            filteredNews.map((item) => (
-                                <div key={item._id.$oid} className={styles.newsCard}>
-                                    <div className={styles.newsHeader}>
-                                        <Link href={item.link} target="_blank" className={styles.newsHeadline}>
-                                            {item.headline}
-                                        </Link>
-                                        <span className={styles.newsTime}>{item.posted}</span>
+
+                            {filteredNews.length > 0 ? (
+                                filteredNews.map((item) => (
+                                    <div key={item._id.$oid} className={styles.newsCard}>
+                                        <div className={styles.newsHeader}>
+                                            <Link href={item.link} target="_blank" className={styles.newsHeadline}>
+                                                {item.headline}
+                                            </Link>
+                                            <span className={styles.newsTime}>{item.posted}</span>
+                                        </div>
+                                        <Body className={styles.newsDescription}>{item.description}</Body>
+                                        <Body className={styles.newsSource}>
+                                            {item.source}
+                                        </Body>
                                     </div>
-                                    <Body className={styles.newsDescription}>{item.description}</Body>
-                                    <Body className={styles.newsSource}>
-                                        {item.source}
-                                    </Body>
-                                </div>
-                            ))
-                        ) : (
-                            <Body>No news available for {asset.symbol}.</Body>
-                        )}
-                    </div>
+                                ))
+                            ) : (
+                                <Body>No news available for {asset.symbol}.</Body>
+                            )}
+                        </div>
                     )}
 
 

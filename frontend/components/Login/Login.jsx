@@ -11,6 +11,7 @@ import User from '@/components/User/User';
 import { USER_MAP } from "@/lib/constants";
 import { fetchUserData } from '@/lib/api/userDataApi';
 import Banner from "@leafygreen-ui/banner";
+import Card from '@leafygreen-ui/card';
 
 const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
@@ -107,6 +108,15 @@ const Login = ({ onUserSelected }) => {
                                 setLocalSelectedUser={handleUserSelect}
                             />
                         ))}
+
+                        {/**
+                        <Card>
+                            <img src={`/rsc/users/.png`} alt="User Avatar" />
+                            <Body className={styles.userName}>Mark Scout</Body>
+                        </Card>
+
+                         */}
+                         
                     </div>
 
                     <div className={styles.parentContainer}>

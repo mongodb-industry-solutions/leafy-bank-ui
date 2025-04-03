@@ -6,10 +6,12 @@ import Assets from "@/components/Assets/Assets";
 import styles from "./AssetPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
+import Chatbot from '@/components/Chatbot/Chatbot';
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
-
+    const [isOpen, setIsOpen] = useState(false);
+    
     useEffect(() => {
         async function fetchMarketData() {
             try {
@@ -23,13 +25,24 @@ export default function AssetPortfolio() {
         fetchMarketData();
     }, []);
 
+
+    const toggleChatbot = () => {
+        setIsOpen(!isOpen);
+    };
+
     return (
         <div className={styles.container}>
             <Header />
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">
-                    Return of investment bar chart
+                    <div className={styles.iframeContainer}>
+                        <iframe
+                            className={styles.responsiveIframe}
+                            src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=9de04b25-cc2f-48bb-94bd-3c3d5c6ffb20&maxDataAge=3600&theme=light&autoRefresh=true">
+                        </iframe>
+                    </div>
+
                 </Card>
 
                 <div className={styles.rightColumn}>
@@ -68,6 +81,19 @@ export default function AssetPortfolio() {
 
             <div className={styles.assetsSection}>
                 <Assets />
+            </div>
+
+            <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
+
+            <div className={styles.chatbotButton} onClick={toggleChatbot}>
+                <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
+                <div className={styles.textWrapper}>
+                    <span><Body className={styles.chatbotText}>Leafy Personal Assistant</Body></span>
+                    <div className={styles.statusWrapper}>
+                        <div className={styles.indicator}></div>
+                        <Body>Available</Body>
+                    </div>
+                </div>
             </div>
         </div>
     );
