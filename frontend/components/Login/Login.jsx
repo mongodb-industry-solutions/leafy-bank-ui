@@ -11,9 +11,11 @@ import User from '@/components/User/User';
 import { USER_MAP } from "@/lib/constants";
 import { fetchUserData } from '@/lib/api/userDataApi';
 import Banner from "@leafygreen-ui/banner";
+import { useRouter } from 'next/navigation';
 
 const Login = ({ onUserSelected }) => {
     const [open, setOpen] = useState(false);
+    const router = useRouter();
 
     // Updated to include UserName and BearerToken
     const [users, setUsers] = useState(
@@ -21,6 +23,7 @@ const Login = ({ onUserSelected }) => {
             id,
             name: details.UserName,
             bearerToken: details.BearerToken,
+            role: details.Role
         }))
     );
 
@@ -31,7 +34,8 @@ const Login = ({ onUserSelected }) => {
         setOpen(true);
     }, []);
 
-    const handleUserSelect = (user) => {
+    const handleUserSelect = async (user) => {
+
         // Clear previous user session data
         localStorage.removeItem('selectedUser');
         localStorage.removeItem('accounts');
@@ -41,20 +45,26 @@ const Login = ({ onUserSelected }) => {
         localStorage.removeItem('external_products');
         localStorage.removeItem('connected_external_accounts');
         localStorage.removeItem('connected_external_products');
-
         // Set the selected user with BearerToken included
         setSelectedUser(user);
-        localStorage.setItem('selectedUser', JSON.stringify(user)); // Store UserName, ID, and BearerToken
-
+        localStorage.setItem('selectedUser', JSON.stringify(user));
         // Fetch and store user data
-        fetchUserData(user.id).then(data => {
+        try {
+            const data = await fetchUserData(user.id);
             localStorage.setItem('accounts', JSON.stringify(data.accounts));
             localStorage.setItem('transactions', JSON.stringify(data.transactions));
-
             // Notify parent component about the selected user
             onUserSelected(user);
-        });
+        } catch (error) {
+            console.error('Failed to fetch user data', error);
+        }
+        // Redirect if role is Portfolio Manager
+        if (user.role === 'Portfolio Manager') {
+
+            router.push('/asset-portfolio');
+        }
     };
+
 
     return (
         <Modal

@@ -23,7 +23,7 @@
     justify-items: center;
     grid-template-columns: repeat(auto-fit, minmax(105px, 130px));
     justify-content: space-evenly;
-    margin: 35px 0px 25px 0px;
+    margin: 30px 0px 20px 0px;
 }
 
 .descriptionModal {

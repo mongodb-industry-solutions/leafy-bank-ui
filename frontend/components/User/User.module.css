@@ -1,24 +1,36 @@
-.userCard{
+.userCard {
     max-width: 130px;
     min-width: 105px;
     width: 100%;
-    height: 130px;
+    height: 150px;
     justify-self: center;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    padding: 110px 0px;
 }
-.userCard img{
+
+.userCard img {
     width: 100%;
     height: auto;
 }
-.userName{
+
+.userName {
     margin-top: -5px;
 }
-.userSelected{
+
+.userRole {
+    font-size: 9pt;
+    color: rgb(168, 168, 168);
+    font-weight: 500;
+    padding-bottom: 20px;
+}
+
+.userSelected {
     background-color: rgba(235, 235, 235, 0.868);
 }
+
 /* .userCard:hover{
     cursor: pointer;
 } */

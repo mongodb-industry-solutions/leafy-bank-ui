@@ -105,7 +105,7 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
                                                     {
                                                         heading: "How to Demo",
                                                         body: [
-                                                            "Select one of the Suggested Questions or type a new one in the prompt.",
+                                                            "Select one of the Suggested Questions or type a new one in the prompt",
                                                             "Click “Ask”",
                                                             "View response",
                                                         ],

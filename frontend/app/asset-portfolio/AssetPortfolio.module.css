@@ -1,0 +1,168 @@
+.container {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Two equal columns */
+  grid-template-rows: 1fr;
+  /* Single row */
+  gap: 20px;
+  height: 50vh;
+  /* 2/3 of the viewport height */
+}
+
+.roiCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100%;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+
+.assetCard {
+  flex: 1;
+  /* Each takes half of the column height */
+
+  justify-content: center;
+  align-items: center;
+  padding: 0px 20px;
+}
+
+.assetsSection {
+  margin-top: 20px;
+}
+
+.iframeContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 0px;
+}
+
+.responsiveIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.cardSubtitle{
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 16px;
+}
+
+.headerRow {
+  display: flex;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  font-weight: bold;
+  color: #666;
+  gap: 10px;
+}
+
+.headerRow span {
+  text-align: left;
+}
+
+/* Adjust column widths manually */
+.headerRow span:nth-child(1), 
+.eventCard > *:nth-child(1) { /* INDICATOR */
+  width: 35%;
+}
+
+.headerRow span:nth-child(2), 
+.eventCard > *:nth-child(2) { /* FREQUENCY */
+  width: 25%;
+}
+
+.headerRow span:nth-child(3), 
+.eventCard > *:nth-child(3) { /* LAST RELEASE DATE */
+  width: 25%;
+}
+
+.headerRow span:nth-child(4), 
+.eventCard > *:nth-child(4) { /* LAST VALUE */
+  width: 20%;
+}
+
+.eventCard {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 7px 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.eventCard > * {
+  text-align: left;
+}
+
+
+/* Chatbot button */
+.chatbotButton {
+  position: fixed;
+  bottom: 30px;
+  right: 25px;
+  background-color: white;
+  border-radius: 50px;
+  width: fit-content;
+  height: fit-content;
+  padding: 0px 15px 0px 0px;
+  display: flex;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+ 
+}
+
+.chatbotButton:hover {
+  background-color: #E5F6FE;
+}
+
+.chatbotText {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.chatIcon {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column; /* Stack text and status vertically */
+}
+
+.statusWrapper {
+  display: flex;
+    align-items: center; /* Align status text and indicator in line */
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #00ED64;
+  border-radius: 50%;
+  margin-right: 8px; /* Space between 'Available' text and indicator */
+}
+
+

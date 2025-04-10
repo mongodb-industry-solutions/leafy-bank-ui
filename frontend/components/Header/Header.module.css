@@ -69,6 +69,11 @@
   display: none;
 }
 
+.navLink{
+  padding-right: 30px;
+  text-decoration: none;
+}
+
 /* Mobile styles */
 @media (max-width: 768px) {
   .pages-container {

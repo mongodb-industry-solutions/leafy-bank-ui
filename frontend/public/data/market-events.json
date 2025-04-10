@@ -1,0 +1,46 @@
+[
+{
+  "_id": {
+    "$oid": "67c7309d41e59dadc27fa2eb"
+  },
+  "title": "Gross Domestic Product",
+  "series_id": "GDP",
+  "frequency": "Quarterly",
+  "frequency_short": "Q",
+  "units": "Billions of Dollars",
+  "units_short": "Bil. of $",
+  "date": {
+    "$date": "2024-10-01T00:00:00.000Z"
+  },
+  "value": 29719.647
+},
+{
+  "_id": {
+    "$oid": "67caf94a1d7fd75359fd7c32"
+  },
+  "title": "Unemployment Rate",
+  "series_id": "UNRATE",
+  "frequency": "Monthly",
+  "frequency_short": "M",
+  "units": "Percent",
+  "units_short": "%",
+  "date": {
+    "$date": "2025-02-01T00:00:00.000Z"
+  },
+  "value": 4.1
+},
+{
+  "_id": {
+    "$oid": "67d2596dbcc76a4de6e5c25c"
+  },
+  "title": "10-Year Real Interest Rate",
+  "series_id": "REAINTRATREARAT10Y",
+  "frequency": "Monthly",
+  "frequency_short": "M",
+  "units": "Percent",
+  "units_short": "%",
+  "date": {
+    "$date": "2025-03-01T00:00:00.000Z"
+  },
+  "value": 1.86151108
+}]
