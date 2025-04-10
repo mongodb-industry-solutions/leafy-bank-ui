@@ -16,6 +16,12 @@ export default function AssetCard({ asset }) {
     const [news, setNews] = useState([]);
     const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
+    const chartMap = {
+        SPY: "chart-id-apple",
+        VIX: "chart-id-microsoft",
+        TSLA: "chart-id-tesla",
+    };
+
     useEffect(() => {
         fetch("/data/news.json")
             .then((res) => res.json())
