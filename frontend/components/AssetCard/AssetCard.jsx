@@ -6,10 +6,15 @@ import Tooltip from "@leafygreen-ui/tooltip";
 import { Subtitle, Body, H3, Link } from "@leafygreen-ui/typography";
 import Code from "@leafygreen-ui/code";
 import Badge from "@leafygreen-ui/badge";
+import {
+    SegmentedControl,
+    SegmentedControlOption
+} from "@leafygreen-ui/segmented-control";
 
 export default function AssetCard({ asset }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [news, setNews] = useState([]);
+    const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
     useEffect(() => {
         fetch("/data/news.json")
@@ -34,11 +39,11 @@ export default function AssetCard({ asset }) {
                 <div className={styles.cell}>
                     <span className={styles.sentiment}>0.75</span>
                 </div>
-        
-                <Badge className={`${styles.cell} ${styles.badge}`}variant="yellow">NEUTRAL</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`}variant="green">KEEP</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`}variant="red">REDUCE</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`}variant="green">KEEP</Badge>
+
+                <Badge className={`${styles.cell} ${styles.badge}`} variant="yellow">NEUTRAL</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant="green">KEEP</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant="red">REDUCE</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant="green">KEEP</Badge>
 
                 <div className={styles.actions}>
                     <Tooltip align="top" justify="middle" trigger={
@@ -86,10 +91,40 @@ export default function AssetCard({ asset }) {
 
                     {expandedSection === "candleStick" && (
                         <div className={styles.iframeContainer}>
-                            <iframe
-                                src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=11452cb5-c307-4e8d-b01e-6f380bd5685d&maxDataAge=3600&theme=light&autoRefresh=true"
-                                className={styles.responsiveIframe}
-                            ></iframe>
+                            <div className={styles.segmentedControlWrapper}>
+                                <SegmentedControl
+                                    followFocus={true}
+                                    defaultValue="day"
+                                    onChange={(value) => setSelectedTimeframe(value)}
+                                    className={styles.segmentedControl}
+                                >
+                                    <SegmentedControlOption value="day">Last Day</SegmentedControlOption>
+                                    <SegmentedControlOption value="week">Last 7 Days</SegmentedControlOption>
+                                    <SegmentedControlOption value="month">Last 6 Months</SegmentedControlOption>
+                                </SegmentedControl>
+                            </div>
+
+                            {selectedTimeframe === "day" && (
+                                <iframe
+                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=dc497e8e-a010-49b4-9fcf-8dcbdcec7d8f&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    className={styles.responsiveIframe}
+                                ></iframe>
+                            )}
+
+                            {selectedTimeframe === "week" && (
+
+                                <iframe
+                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=11452cb5-c307-4e8d-b01e-6f380bd5685d&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    className={styles.responsiveIframe}
+                                ></iframe>
+
+                            )}
+
+                            {selectedTimeframe === "month" && (
+                                <iframe src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=b22df6e9-b776-4220-b21c-83180a321f4d&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    className={styles.responsiveIframe}
+                                ></iframe>
+                            )}
                         </div>
                     )}
 

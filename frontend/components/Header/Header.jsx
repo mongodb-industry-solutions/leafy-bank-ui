@@ -8,13 +8,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
-
+import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
 
 import styles from "./Header.module.css";
 
 function Header({ onLogout }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // Updated handleLogout function
   const handleLogout = (e) => {
@@ -42,13 +43,17 @@ function Header({ onLogout }) {
 
       <div className={`${styles["pages-container"]} ${isMenuOpen ? styles.show : ''}`}>
 
-        <Link href="/" className={styles.navLink}>
-          <Body>Accounts & Transactions</Body>
-        </Link>
+        {pathname === '/' && (
+          <Link href="/" className={styles.navLink}>
+            <Body>Accounts & Transactions</Body>
+          </Link>
+        )}
 
-        <Link href="/asset-portfolio" className={styles.navLink}>
-          <Body>Asset Portfolio</Body>
-        </Link>
+        {pathname === '/asset-portfolio' && (
+          <Link href="/asset-portfolio" className={styles.navLink}>
+            <Body>Asset Portfolio</Body>
+          </Link>
+        )}
 
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>

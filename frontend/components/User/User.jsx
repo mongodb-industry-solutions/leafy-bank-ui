@@ -21,7 +21,8 @@ const User = ({ user = null, isSelectedUser = false, setOpen, setLocalSelectedUs
             onClick={() => selectUserAndCloseModal()}
         >
             <img src={`/rsc/users/${user.id}.png`} alt="User Avatar" />
-            <Body className={styles.userName}>{user.name}</Body>
+            <Body className={styles.userName}>{user.name}</Body> 
+            <Body className={styles.userRole}>{user.role}</Body> 
         </Card>
     );
 };
