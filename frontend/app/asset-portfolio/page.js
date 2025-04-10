@@ -7,11 +7,13 @@ import styles from "./AssetPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
 import Chatbot from '@/components/Chatbot/Chatbot';
+import { useRouter } from 'next/navigation';
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-    
+    const router = useRouter();
+
     useEffect(() => {
         async function fetchMarketData() {
             try {
@@ -30,9 +32,15 @@ export default function AssetPortfolio() {
         setIsOpen(!isOpen);
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        router.push("/");
+    };
+
+
     return (
         <div className={styles.container}>
-            <Header />
+            <Header onLogout={handleLogout} />
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">

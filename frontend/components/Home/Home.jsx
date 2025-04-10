@@ -160,6 +160,7 @@ const Home = () => {
       </Head>
       <ToastProvider>
         <Header onLogout={handleLogout} />
+        
         <div style={{ margin: '80px 20px', transition: 'left 0.3s ease' }}>
           {loading ? (
             <div className={styles.loading}>Loading...</div>

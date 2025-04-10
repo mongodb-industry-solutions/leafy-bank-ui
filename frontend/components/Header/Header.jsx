@@ -13,7 +13,8 @@ import UserProfile from '@/components/UserProfile/UserProfile';
 
 import styles from "./Header.module.css";
 
-function Header({ onLogout }) {
+function Header({ onLogout = () => {} }) {
+  
   const [isMenuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
