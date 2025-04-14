@@ -6,12 +6,14 @@ import Assets from "@/components/Assets/Assets";
 import styles from "./AssetPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
-import Chatbot from '@/components/Chatbot/Chatbot';
+import { useRouter } from 'next/navigation';
+import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
-    
+    const router = useRouter();
+
     useEffect(() => {
         async function fetchMarketData() {
             try {
@@ -30,9 +32,15 @@ export default function AssetPortfolio() {
         setIsOpen(!isOpen);
     };
 
+    const handleLogout = () => {
+        localStorage.clear();
+        router.push("/");
+    };
+
+
     return (
         <div className={styles.container}>
-            <Header />
+            <Header onLogout={handleLogout} />
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">
@@ -83,12 +91,12 @@ export default function AssetPortfolio() {
                 <Assets />
             </div>
 
-            <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
+            <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 
             <div className={styles.chatbotButton} onClick={toggleChatbot}>
                 <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
                 <div className={styles.textWrapper}>
-                    <span><Body className={styles.chatbotText}>Leafy Personal Assistant</Body></span>
+                    <span><Body className={styles.chatbotText}>Leafy Portfolio Assistant</Body></span>
                     <div className={styles.statusWrapper}>
                         <div className={styles.indicator}></div>
                         <Body>Available</Body>

@@ -37,6 +37,8 @@ const UserProfile = () => {
         setIsPopupOpen(!isPopupOpen);
     };
 
+    const isPortfolioManager = selectedUser?.role === 'Portfolio Manager';
+
     if (!selectedUser) {
         // Redirect or show a message if no user is selected
         return <div>Please select a user to view the profile.</div>;
@@ -70,21 +72,30 @@ const UserProfile = () => {
                             <Body baseFontSize={16}>{selectedUser.name}</Body>
                         </div>
                         <div className={styles.profileItem}>
+                            <Subtitle>Role:</Subtitle>
+                            <Body baseFontSize={16}>{selectedUser.role}</Body>
+                        </div>
+                        <div className={styles.profileItem}>
                             <Subtitle>Email:</Subtitle>
-                            <Body baseFontSize={16}>{selectedUser.name + '@example.com' || 'user@example.com'}</Body>
+                            <Body baseFontSize={16}>{selectedUser.name + '@leafy.com' || 'user@leafy.com'}</Body>
                         </div>
 
-                        <div className={styles.divider}></div>
-                        <Subtitle>Account Information</Subtitle>
-                        <div className={styles.profileItem}>
-                            <Subtitle>Number of Accounts:</Subtitle>
-                            <Body baseFontSize={16}>{activeAccounts.accounts.length}</Body>
-                        </div>
-                        <div className={styles.profileItem}>
-                            <Subtitle>Recent Transactions:</Subtitle>
-                            <Body baseFontSize={16}>{recentTransactions.transactions.length}</Body>
-                        </div>
-
+                        {/* Conditionally render account info section */}
+                        {!isPortfolioManager && (
+                            <>
+                                <div className={styles.divider}></div>
+                                <Subtitle>Account Information</Subtitle>
+                                <div className={styles.profileItem}>
+                                    <Subtitle>Number of Accounts:</Subtitle>
+                                    <Body baseFontSize={16}>{activeAccounts.accounts.length}</Body>
+                                </div>
+                                <div className={styles.profileItem}>
+                                    <Subtitle>Recent Transactions:</Subtitle>
+                                    <Body baseFontSize={16}>{recentTransactions.transactions.length}</Body>
+                                </div>
+                            </>
+                        )}
+                        
                         <Button onClick={togglePopup} className={styles.closeButton}>
                             Close
                         </Button>
