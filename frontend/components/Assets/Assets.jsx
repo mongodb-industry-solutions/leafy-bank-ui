@@ -1,10 +1,11 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import styles from "./Assets.module.css";
 import AssetCard from "../AssetCard/AssetCard";
 import { H2, Subtitle, Body } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
-import React, { useState, useEffect } from "react";
+import { marketFetchAssetsClosePrice, marketFetchRecentAssetsData, fetchPortfolioAllocation } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 
 export default function Assets() {

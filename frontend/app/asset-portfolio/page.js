@@ -8,6 +8,7 @@ import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
+import { fetchMostRecentMacroIndicators } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
@@ -17,9 +18,21 @@ export default function AssetPortfolio() {
     useEffect(() => {
         async function fetchMarketData() {
             try {
-                const response = await fetch("/data/market-events.json");
-                const data = await response.json();
-                setMarketEvents(data);
+                const data = await fetchMostRecentMacroIndicators();
+                
+                // Transform the data from object format to array format
+                const transformedData = Object.entries(data.macro_indicators).map(([series_id, indicator]) => ({
+                    series_id,
+                    title: indicator.title,
+                    frequency: indicator.frequency,
+                    frequency_short: indicator.frequency_short,
+                    units: indicator.units,
+                    units_short: indicator.units_short,
+                    date: { $date: new Date(indicator.date).toISOString() },
+                    value: indicator.value
+                }));
+                
+                setMarketEvents(transformedData);
             } catch (error) {
                 console.error("Error fetching market events:", error);
             }
