@@ -15,6 +15,7 @@
     "@leafygreen-ui/card": "^11.0.0",
     "@leafygreen-ui/code": "^15.0.0",
     "@leafygreen-ui/combobox": "^10.0.0",
+    "@leafygreen-ui/confirmation-modal": "^7.0.8",
     "@leafygreen-ui/drawer": "^2.0.3",
     "@leafygreen-ui/icon": "^12.8.0",
     "@leafygreen-ui/icon-button": "^15.0.23",

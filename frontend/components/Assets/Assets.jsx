@@ -12,27 +12,33 @@ import {
     fetchMostRecentMarketAnalysisReport,
     fetchMostRecentMarketNewsReport,
     fetchAssetSuggestionsMarketVolatilityBased,
-    fetchAssetSuggestionsMacroIndicatorsBased
+    fetchAssetSuggestionsMacroIndicatorsBased,
+    fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 
 export default function Assets() {
     const [assets, setAssets] = useState([]);
     const [marketNewsReport, setMarketNewsReport] = useState(null);
+    const [chartMappings, setChartMappings] = useState({});
 
     useEffect(() => {
         async function fetchData() {
             try {
                 // Fetch asset prices, portfolio allocation, market reports, recent asset data, VIX sensitivity, and macro indicators
-                const [assetsClosePrice, allocationResponse, newsReportResponse, recentAssetsData, vixSensitivityData, macroIndicatorsData, marketAnalysisReport] = await Promise.all([
+                const [assetsClosePrice, allocationResponse, newsReportResponse, recentAssetsData, vixSensitivityData, macroIndicatorsData, marketAnalysisReport, chartMappingsResponse] = await Promise.all([
                     marketFetchAssetsClosePrice(),
                     fetchPortfolioAllocation(),
                     fetchMostRecentMarketNewsReport(),
                     marketFetchRecentAssetsData(),
                     fetchAssetSuggestionsMarketVolatilityBased(),
                     fetchAssetSuggestionsMacroIndicatorsBased(),
-                    fetchMostRecentMarketAnalysisReport()
+                    fetchMostRecentMarketAnalysisReport(),
+                    fetchChartMappings()
                 ]);
+                
+                // Store the chart mappings
+                setChartMappings(chartMappingsResponse.chart_mappings);
                 
                 // Store the market news report
                 setMarketNewsReport(newsReportResponse.market_news_report);
@@ -310,7 +316,11 @@ export default function Assets() {
 
             {assets.length > 0 ? (
                 assets.map((asset, index) => (
-                    <AssetCard key={index} asset={asset} />
+                    <AssetCard 
+                        key={index} 
+                        asset={asset} 
+                        chartData={chartMappings[asset.symbol]} 
+                    />
                 ))
             ) : (
                 <p>Loading assets...</p>

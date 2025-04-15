@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import styles from "./ChatbotPortfolio.module.css";
-import { Subtitle, Body } from '@leafygreen-ui/typography';
+import { Subtitle, Body, Overline } from '@leafygreen-ui/typography';
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
 import Badge from "@leafygreen-ui/badge";
@@ -28,12 +28,29 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
         setQuery(event.target.value);
     };
 
+    {/**
     const handleSuggestionOne = () => {
         setQuery("How well is my portfolio performing?");
     };
 
     const handleSuggestionTwo = () => {
         setQuery("My name is Mark Scout.");
+    };
+     */}
+
+    const suggestions = [
+        "Can you perform an analysis of my current portfolio? Please give me an overall diagnosis and highlight the best-performing assets.",
+        "What are the news saying about my asset GLD (Gold ETF)?",
+        "I would like to start investing in the database market. Can you search the internet for what’s going on with MDB (MongoDB)? I want to know what the press is saying.",
+        "What questions have I asked you so far, and which tools have you used to respond to me?"
+    ];
+
+    const [suggestionIndex, setSuggestionIndex] = useState(0);
+
+    const handleSuggestionClick = () => {
+        const selected = suggestions[suggestionIndex];
+        setQuery(selected);
+        setSuggestionIndex((prevIndex) => Math.min(prevIndex + 1, suggestions.length - 1));
     };
 
     const formatAnswer = (text) => {
@@ -156,9 +173,10 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                         </div>
                         <div className={styles.chatbotBody}>
 
-                            <Body className={styles.introBubble}>Hi there! I’m Leafy Bank’s portfolio assistant, here to help you as the portfolio manager.
+                            <Body className={styles.introBubble}>
+                                Hi there! 👋🏻 I’m Leafy Bank’s portfolio assistant, here to help you as the portfolio manager.
                                 <br></br> <br></br>
-                                I have memory within each chat session, so I can keep track of our conversation - I encourage you to try it out! And if you’re curious, feel free to take a look at what’s happening behind the scenes.
+                                I now have ✨<strong> long-term memory</strong> ✨ within each chat session, so I can keep track of our conversation - I encourage you to try it out!
                             </Body>
 
                             {messages.map((message, index) => {
@@ -166,7 +184,19 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                 return (
                                     <div key={index} className={styles.chatMessage}>
+
+                                        {/* Show "tools called" above each assistant response */}
+                                        {!isUserMessage && completedMessages[index] && (
+                                            <div className={styles.behindTheScenesLink}>
+
+                                                <Icon className={styles.linkIcon} glyph="Wrench" color="#889396" />
+                                                <Body className={styles.link}> Tool(s) called: </Body>
+
+                                            </div>
+                                        )}
+
                                         <div className={`${styles.speechBubble} ${isUserMessage ? styles.userBubble : styles.answerBubble}`}>
+
                                             {isUserMessage ? (
                                                 <Body>{message}</Body>
                                             ) : (
@@ -180,6 +210,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 </Body>
                                             )}
                                         </div>
+
                                     </div>
                                 );
                             })}
@@ -207,12 +238,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                  */}
                         </div>
                         <div className={styles.suggestedQuestions}>
-                            <Body>Suggested Questions:</Body>
-                            <button className={styles.suggestion} onClick={handleSuggestionOne}>
-                                How well is my portfolio performing?
-                            </button>
-                            <button className={styles.suggestion} onClick={handleSuggestionTwo}>
-                                My name is Mark Scout.
+                            <Body>Suggested Question:</Body>
+                            <button className={styles.suggestion} onClick={handleSuggestionClick}>
+                                {suggestions[suggestionIndex]}
                             </button>
                         </div>
                         <div className={styles.chatbotInputArea}>
@@ -227,16 +255,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                             </Button>
                         </div>
 
-                        {/** Chatbot Behind the scenes */}
-                        <div className={styles.pageFlip} onClick={() => setShowOverlay(true)}>
-                            <IconButton
-                                aria-label="Behind the Scenes"
-                                onClick={() => setShowOverlay(true)}
-                            >
-                                <Icon glyph="ArrowRight" />
-                            </IconButton>
-                        </div>
-
+                        {/** Chatbot Behind the scenes 
                         {showOverlay && (
                             <div className={styles.overlay}>
 
@@ -254,6 +273,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                             </div>
                         )}
+                            */}
                     </div>
                 </div>
             )}

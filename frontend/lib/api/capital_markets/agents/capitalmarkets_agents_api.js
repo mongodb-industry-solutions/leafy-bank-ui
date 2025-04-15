@@ -200,3 +200,28 @@ export async function fetchAssetSuggestionsMarketVolatilityBased() {
     const data = await response.json();
     return data;
 }
+
+/**  
+ * Charts Data
+ */
+
+/**  
+ * Fetch chart mappings from the database.
+ * @returns MessageResponse: Object containing chart mappings data.
+ */
+export async function fetchChartMappings() {
+    
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/charts/fetch-chart-mappings`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching chart mappings: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
