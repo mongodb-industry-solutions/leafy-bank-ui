@@ -11,6 +11,8 @@ import {
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
 
+import { fetchPortfolioAllocation } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
+
 export default function AssetCard({ asset }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [news, setNews] = useState([]);
@@ -41,7 +43,9 @@ export default function AssetCard({ asset }) {
             <div className={styles.mainContent}>
                 <div className={styles.cell}>{asset.symbol}</div>
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
-                <div className={styles.cell}>15%</div>
+                <div className={styles.cell}>
+                    {asset.allocation ? asset.allocation.percentage : "N/A"}
+                </div>
                 <div className={styles.cell}>
                     <span className={styles.sentiment}>0.75</span>
                 </div>

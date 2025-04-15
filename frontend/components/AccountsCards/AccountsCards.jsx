@@ -140,23 +140,35 @@ const AccountsCards = ({
     useEffect(() => {
         const initializeData = () => {
             try {
-                const selectedUser = localStorage.getItem("selectedUser");
-                if (!selectedUser) throw new Error("No user selected");
-
-                // Retrieve internal accounts
-                const internalAccounts = JSON.parse(localStorage.getItem("accounts") || "[]");
-
+                const userString = localStorage.getItem("selectedUser");
+                if (!userString) throw new Error("No user selected");
+                
+                const user = JSON.parse(userString);
+                
+                // Check if the user is a Portfolio Manager
+                if (user.role === 'Portfolio Manager') {
+                    // For Portfolio Manager, use empty arrays for all data
+                    setAccountsAndProducts([]);
+                    return; // Exit early
+                }
+                
+                // For regular users, proceed with normal data loading
+                const internalAccounts = JSON.parse(localStorage.getItem("accounts") || '{"accounts":[]}');
+                
+                // Safely access internal accounts with fallback to empty array
+                const internalAccountsList = internalAccounts && internalAccounts.accounts ? internalAccounts.accounts : [];
+                
                 // Retrieve external accounts and products
                 const connectedExternalAccounts = JSON.parse(localStorage.getItem('connected_external_accounts') || '[]');
                 const connectedExternalProducts = JSON.parse(localStorage.getItem('connected_external_products') || '[]');
-
+                
                 // Combine all the accounts and products
                 setAccountsAndProducts([
-                    ...internalAccounts.accounts,
+                    ...internalAccountsList,
                     ...connectedExternalAccounts,
                     ...connectedExternalProducts,
                 ]);
-
+    
             } catch (error) {
                 console.error("Error initializing account data:", error);
                 pushToast({

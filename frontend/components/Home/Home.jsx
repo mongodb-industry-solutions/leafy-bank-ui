@@ -56,12 +56,19 @@ const Home = () => {
       if (selectedUser) {
         setLoading(true);
         try {
-          const data = await fetchUserData(selectedUser.id);
-          localStorage.setItem('accounts', JSON.stringify(data.accounts));
-          localStorage.setItem('transactions', JSON.stringify(data.transactions));
-
-          setActiveAccounts(data.accounts);
-          setRecentTransactions(data.transactions);
+          // Skip data fetching for Portfolio Manager users
+          if (selectedUser.role === 'Portfolio Manager') {
+            // Set empty default values to avoid "not iterable" errors
+            setActiveAccounts([]);
+            setRecentTransactions({ transactions: [] });
+          } else {
+            const data = await fetchUserData(selectedUser.id);
+            localStorage.setItem('accounts', JSON.stringify(data.accounts));
+            localStorage.setItem('transactions', JSON.stringify(data.transactions));
+  
+            setActiveAccounts(data.accounts);
+            setRecentTransactions(data.transactions);
+          }
         } catch (error) {
           console.error("Error fetching user data:", error);
         } finally {
@@ -69,21 +76,28 @@ const Home = () => {
         }
       }
     };
-
+  
     fetchInternalData();
   }, [selectedUser]);
-
+  
   useEffect(() => {
     const fetchExternalData = async () => {
       if (selectedUser) {
         setExternalDataLoading(true);
         try {
-          const externalData = await fetchUserExternalData(selectedUser.id, selectedUser.bearerToken);
-          localStorage.setItem('external_accounts', JSON.stringify(externalData.external_accounts));
-          localStorage.setItem('external_products', JSON.stringify(externalData.external_products));
-
-          setExternalAccounts(externalData.external_accounts);
-          setExternalProducts(externalData.external_products);
+          // Skip external data fetching for Portfolio Manager users
+          if (selectedUser.role === 'Portfolio Manager') {
+            // Set empty default values
+            setExternalAccounts({ accounts: [] });
+            setExternalProducts({ products: [] });
+          } else {
+            const externalData = await fetchUserExternalData(selectedUser.id, selectedUser.bearerToken);
+            localStorage.setItem('external_accounts', JSON.stringify(externalData.external_accounts));
+            localStorage.setItem('external_products', JSON.stringify(externalData.external_products));
+  
+            setExternalAccounts(externalData.external_accounts);
+            setExternalProducts(externalData.external_products);
+          }
         } catch (error) {
           console.error("Error fetching external data:", error);
         } finally {
@@ -91,7 +105,7 @@ const Home = () => {
         }
       }
     };
-
+  
     fetchExternalData();
   }, [selectedUser]);
 
@@ -102,21 +116,29 @@ const Home = () => {
     }
     try {
       setLoading(true);
-
-      // Fetch and store internal data
-      const data = await fetchUserData(user.id);
-      localStorage.setItem("accounts", JSON.stringify(data.accounts));
-      localStorage.setItem("transactions", JSON.stringify(data.transactions));
-      setActiveAccounts(data.accounts);
-      setRecentTransactions(data.transactions);
-
-      // Fetch and store external data
-      const externalData = await fetchUserExternalData(user.id, user.bearerToken);
-      localStorage.setItem("external_accounts", JSON.stringify(externalData.external_accounts));
-      localStorage.setItem("external_products", JSON.stringify(externalData.external_products));
-      setExternalAccounts(externalData.external_accounts);
-      setExternalProducts(externalData.external_products);
-
+  
+      // Skip data fetching for Portfolio Manager users
+      if (user.role === 'Portfolio Manager') {
+        // Use empty default values
+        setActiveAccounts([]);
+        setRecentTransactions({ transactions: [] });
+        setExternalAccounts({ accounts: [] });
+        setExternalProducts({ products: [] });
+      } else {
+        // Fetch and store internal data
+        const data = await fetchUserData(user.id);
+        localStorage.setItem("accounts", JSON.stringify(data.accounts));
+        localStorage.setItem("transactions", JSON.stringify(data.transactions));
+        setActiveAccounts(data.accounts);
+        setRecentTransactions(data.transactions);
+  
+        // Fetch and store external data
+        const externalData = await fetchUserExternalData(user.id, user.bearerToken);
+        localStorage.setItem("external_accounts", JSON.stringify(externalData.external_accounts));
+        localStorage.setItem("external_products", JSON.stringify(externalData.external_products));
+        setExternalAccounts(externalData.external_accounts);
+        setExternalProducts(externalData.external_products);
+      }
     } catch (error) {
       console.error("Error refreshing data:", error);
     } finally {

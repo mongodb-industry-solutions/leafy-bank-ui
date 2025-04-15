@@ -19,6 +19,18 @@ function GlobalPosition({ userId, bearerToken, triggerGlobalPositionUpdate }) {
                 return;
             }
 
+            // Get the user role from localStorage
+            const userString = localStorage.getItem('selectedUser');
+            const user = userString ? JSON.parse(userString) : null;
+            
+            // If user is Portfolio Manager, set default values and skip API calls
+            if (user && user.role === 'Portfolio Manager') {
+                setTotalBalance(0);
+                setTotalDebt(0);
+                setLoading(false);
+                return;
+            }
+
             // Retrieve the external accounts and products from localStorage
             const connectedExternalAccounts = JSON.parse(localStorage.getItem('connected_external_accounts')) || [];
             const connectedExternalProducts = JSON.parse(localStorage.getItem('connected_external_products')) || [];
@@ -27,8 +39,11 @@ function GlobalPosition({ userId, bearerToken, triggerGlobalPositionUpdate }) {
             const accountIds = connectedExternalAccounts.map(account => account._id);
             const productIds = connectedExternalProducts.map(product => product._id);
 
-            console.log("Connected External Account IDs", accountIds);
-            console.log("Connected External Product IDs", productIds);
+            // Only log for non-Portfolio Manager users
+            if (user && user.role !== 'Portfolio Manager') {
+                console.log("Connected External Account IDs", accountIds);
+                console.log("Connected External Product IDs", productIds);
+            }
 
             // Calculate total balances using only the IDs
             const balanceData = await calculateTotalBalancesForUser(userId, bearerToken, accountIds);
