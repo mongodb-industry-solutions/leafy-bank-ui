@@ -12,10 +12,51 @@ export default function Assets() {
     const [assets, setAssets] = useState([]);
 
     useEffect(() => {
-        fetch("/data/assets.json") 
-            .then((response) => response.json())
-            .then((data) => setAssets(data)) // Directly store JSON data
-            .catch((error) => console.error("Error loading assets:", error));
+        async function fetchData() {
+            try {
+                // Fetch both asset prices and portfolio allocation data
+                const [priceResponse, allocationResponse] = await Promise.all([
+                    marketFetchAssetsClosePrice(),
+                    fetchPortfolioAllocation()
+                ]);
+                
+                // Transform the asset price data
+                const transformedAssets = Object.entries(priceResponse.assets_close_price)
+                    .map(([symbol, data]) => {
+                        // Get allocation data for this asset
+                        const allocation = allocationResponse.portfolio_allocation[symbol];
+                        
+                        return {
+                            symbol,
+                            close: parseFloat(data.close_price.toFixed(2)), // Round to 2 decimals
+                            timestamp: {
+                                $date: new Date(data.timestamp).toISOString()
+                            },
+                            // Include allocation data if available
+                            allocation: allocation ? {
+                                percentage: allocation.allocation_percentage,
+                                decimal: allocation.allocation_decimal,
+                                description: allocation.description,
+                                asset_type: allocation.asset_type
+                            } : null,
+                            _id: {
+                                $oid: `id-${symbol}`
+                            }
+                        };
+                    })
+                    // Filter out VIX from the assets list as it's not an actual investable asset
+                    .filter(asset => asset.symbol !== "VIX");
+                
+                // Sort assets alphabetically by symbol
+                transformedAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
+                
+                setAssets(transformedAssets);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+        
+        fetchData();
     }, []);
 
     const [openHelpModal, setOpenHelpModal] = useState(false);

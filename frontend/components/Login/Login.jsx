@@ -35,7 +35,6 @@ const Login = ({ onUserSelected }) => {
     }, []);
 
     const handleUserSelect = async (user) => {
-
         // Clear previous user session data
         localStorage.removeItem('selectedUser');
         localStorage.removeItem('accounts');
@@ -45,22 +44,27 @@ const Login = ({ onUserSelected }) => {
         localStorage.removeItem('external_products');
         localStorage.removeItem('connected_external_accounts');
         localStorage.removeItem('connected_external_products');
+        
         // Set the selected user with BearerToken included
         setSelectedUser(user);
         localStorage.setItem('selectedUser', JSON.stringify(user));
-        // Fetch and store user data
-        try {
-            const data = await fetchUserData(user.id);
-            localStorage.setItem('accounts', JSON.stringify(data.accounts));
-            localStorage.setItem('transactions', JSON.stringify(data.transactions));
-            // Notify parent component about the selected user
-            onUserSelected(user);
-        } catch (error) {
-            console.error('Failed to fetch user data', error);
+        
+        // Only fetch account and transaction data for non-Portfolio Manager users
+        if (user.role !== 'Portfolio Manager') {
+            try {
+                const data = await fetchUserData(user.id);
+                localStorage.setItem('accounts', JSON.stringify(data.accounts));
+                localStorage.setItem('transactions', JSON.stringify(data.transactions));
+            } catch (error) {
+                console.error('Failed to fetch user data', error);
+            }
         }
+        
+        // Notify parent component about the selected user
+        onUserSelected(user);
+        
         // Redirect if role is Portfolio Manager
         if (user.role === 'Portfolio Manager') {
-
             router.push('/asset-portfolio');
         }
     };

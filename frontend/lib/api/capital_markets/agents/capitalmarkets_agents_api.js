@@ -178,3 +178,25 @@ export async function fetchAssetSuggestionsMacroIndicatorsBased() {
     const data = await response.json();
     return data;
 }
+
+/**  
+ * Fetch asset suggestions based on the current portfolio and market volatility (VIX).
+ * Each asset receives a recommendation based on its VIX sensitivity.
+ * @returns MessageResponse: An object containing asset suggestions with VIX-based actions, explanations, and notes about asset sensitivity levels.
+ */
+export async function fetchAssetSuggestionsMarketVolatilityBased() {
+    
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-asset-suggestions-market-volatility-based`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching asset suggestions market volatility based: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
