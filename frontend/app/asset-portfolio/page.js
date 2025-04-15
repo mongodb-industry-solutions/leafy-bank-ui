@@ -8,11 +8,14 @@ import Card from "@leafygreen-ui/card";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
+import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
 import { fetchMostRecentMacroIndicators } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
+
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -40,6 +43,17 @@ export default function AssetPortfolio() {
         fetchMarketData();
     }, []);
 
+    useEffect(() => {
+        const agreed = localStorage.getItem("agreedToDisclaimer");
+        if (!agreed) {
+            setShowDisclaimer(true);
+        }
+    }, []);
+
+    const handleCloseDisclaimer = () => {
+        localStorage.setItem("agreedToDisclaimer", "true");
+        setShowDisclaimer(false);
+    };
 
     const toggleChatbot = () => {
         setIsOpen(!isOpen);
@@ -54,6 +68,17 @@ export default function AssetPortfolio() {
     return (
         <div className={styles.container}>
             <Header onLogout={handleLogout} />
+
+            <ConfirmationModal
+                open={showDisclaimer}
+                onConfirm={handleCloseDisclaimer}
+                title="Demo Disclaimer"
+                buttonText="I Agree"
+            >
+                The information presented in this dashboard is for informational purposes only and does not constitute financial advice. <br></br><br></br>
+                This is a demo intended to showcase MongoDB features that are well-suited for Capital Markets use cases.
+                To support this goal, many data procedures have been simplified, fixed, or emulated.
+            </ConfirmationModal>
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">

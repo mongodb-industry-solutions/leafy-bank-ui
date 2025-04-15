@@ -165,4 +165,6 @@
   margin-right: 8px; /* Space between 'Available' text and indicator */
 }
 
-
+.lg-cancel-button {
+  display: none !important;
+}

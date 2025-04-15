@@ -11,12 +11,17 @@ import {
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
 
-export default function AssetCard({ asset }) {
+export default function AssetCard({ asset, chartData }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
     const handleExpand = (section) => {
         setExpandedSection((prevSection) => (prevSection === section ? null : section));
+    };
+
+    const getChartSrc = () => {
+        if (!chartData || !chartData[selectedTimeframe]) return null;
+        return `https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=${chartData[selectedTimeframe]}&maxDataAge=3600&theme=light&autoRefresh=true`;
     };
 
     // Get the sentiment score from the asset data (default to 0 if not available)
@@ -129,24 +134,13 @@ export default function AssetCard({ asset }) {
                                 </SegmentedControl>
                             </div>
 
-                            {selectedTimeframe === "day" && (
+                            {getChartSrc() ? (
                                 <iframe
-                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=dc497e8e-a010-49b4-9fcf-8dcbdcec7d8f&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    src={getChartSrc()}
                                     className={styles.responsiveIframe}
                                 ></iframe>
-                            )}
-
-                            {selectedTimeframe === "week" && (
-                                <iframe
-                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=11452cb5-c307-4e8d-b01e-6f380bd5685d&maxDataAge=3600&theme=light&autoRefresh=true"
-                                    className={styles.responsiveIframe}
-                                ></iframe>
-                            )}
-
-                            {selectedTimeframe === "month" && (
-                                <iframe src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=b22df6e9-b776-4220-b21c-83180a321f4d&maxDataAge=3600&theme=light&autoRefresh=true"
-                                    className={styles.responsiveIframe}
-                                ></iframe>
+                            ) : (
+                                <Body>No chart available for {asset.symbol} - {selectedTimeframe}</Body>
                             )}
                         </div>
                     )}
