@@ -1,42 +1,55 @@
+//// filepath: /Users/julian.boronat/Github/mongodb/mongodb-industry-solutions/leafy-bank-ui/frontend/components/ChatbotPortfolio/ChatbotPortfolio.jsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./ChatbotPortfolio.module.css";
 import { Subtitle, Body, Overline } from '@leafygreen-ui/typography';
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
-import axios from "axios";
 import InfoWizard from "../InfoWizard/InfoWizard";
-
 import Typewriter from "./Typewriter.jsx";
+import { sendMessagetoReactAgentMarketAssistantChatbot } from "@/lib/api/capital_markets/chatbot/capitalmarkets_chatbot_api";
+
+function generateThreadId() {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const month = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(now.getUTCDate()).padStart(2, '0');
+    const hours = String(now.getUTCHours()).padStart(2, '0');
+    const minutes = String(now.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(now.getUTCSeconds()).padStart(2, '0');
+    return `thread_${year}${month}${day}_${hours}${minutes}${seconds}`;
+}
 
 const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
-    const industry = "fsi";
-    const demo_name = "leafy_bank_assistant";
     const [query, setQuery] = useState("");
     const [messages, setMessages] = useState([]);
     const [answer, setAnswer] = useState("");
-    const [docs, setDocs] = useState([]);
     const [isAsking, setIsAsking] = useState(false);
-    const [completedMessages, setCompletedMessages] = useState({}); // Track completed messages
+    const [completedMessages, setCompletedMessages] = useState({});
     const [openHelpModal, setOpenHelpModal] = useState(false);
     const [showOverlay, setShowOverlay] = useState(false);
+    const [threadId, setThreadId] = useState(null);
+
+    useEffect(() => {
+        // Generate a fresh threadId and clear history each time the chatbot is opened
+        if (isOpen) {
+            setThreadId(generateThreadId());
+        } else {
+            // When closing the chatbot, reset everything
+            setThreadId(null);
+            setMessages([]);
+            setAnswer("");
+            setCompletedMessages({});
+            setSuggestionIndex(0); // Reset suggestions index too
+        }
+    }, [isOpen]);
 
     const handleChange = (event) => {
         setQuery(event.target.value);
     };
-
-    {/**
-    const handleSuggestionOne = () => {
-        setQuery("How well is my portfolio performing?");
-    };
-
-    const handleSuggestionTwo = () => {
-        setQuery("My name is Mark Scout.");
-    };
-     */}
 
     const suggestions = [
         "Can you perform an analysis of my current portfolio? Please give me an overall diagnosis and highlight the best-performing assets.",
@@ -54,31 +67,28 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     };
 
     const formatAnswer = (text) => {
+        // Preserve newlines but still format numbered lists
         return text.replace(/(\d+\.\s)/g, '\n$1');
     };
 
     const handleAsk = async () => {
-        const guidelines = "personal-banking-terms-conditions.pdf";
         setIsAsking(true);
-
         try {
-            const NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL = process.env.NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL;
-            const apiUrl = `${NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL}/querythepdf`;
-
-            const response = await axios.post(
-                apiUrl,
-                { industry, demo_name, query, guidelines },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                }
-            );
-
-            const formattedAnswer = formatAnswer(response.data.answer);
-            setAnswer(formattedAnswer);
-            setDocs(response.data.supporting_docs);
-            setMessages((prevMessages) => [...prevMessages, query, formattedAnswer]);
+            const data = await sendMessagetoReactAgentMarketAssistantChatbot(threadId, query);
+            // The response will contain final_answer and possibly tool_calls
+            const { final_answer, tool_calls = [] } = data;
+            const responseMessage = formatAnswer(final_answer || "No response");
+    
+            setAnswer(responseMessage);
+    
+            // Store the query and agent answer as separate message objects,
+            // along with any tool calls
+            setMessages((prevMessages) => [
+                ...prevMessages,
+                { text: query, isUser: true, toolCalls: [] },
+                { text: responseMessage, isUser: false, toolCalls: tool_calls }
+            ]);
+    
             setQuery("");
         } catch (error) {
             console.error("Error:", error);
@@ -86,14 +96,10 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
             setIsAsking(false);
         }
     };
-
-    const handleImageClick = (e) => {
-        e.target.classList.toggle(styles.enlargedImage);
-    };
-
+    
     const markCompleted = (messageId) => {
-        setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
-    };
+            setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
+        };
 
     return (
         <>
@@ -104,9 +110,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                         <div className={styles.chatbotHeader}>
                             <div className={styles.centeredHeader}>
-                                <Badge variant="blue" className={styles.badge} >Leafy Portfolio Assistant</Badge>
-
-
+                                <Badge variant="blue" className={styles.badge}>Leafy Portfolio Assistant</Badge>
                                 <div className={styles.infoModal}>
                                     <InfoWizard
                                         open={openHelpModal}
@@ -151,17 +155,14 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 content: [
                                                     {
                                                         heading: "Flexibility",
-                                                        body: "MongoDB’s flexible document model unifies structured and unstructured data, creating a consistent dataset that enhances the AI’s ability to understand and respond to complex queries. This model enables financial institutions to store and manage customer data, transaction history, and document content within a single system, streamlining interactions and making AI responses more contextually relevant.",
+                                                        body: "MongoDB’s flexible document model unifies structured and unstructured data, creating a consistent dataset that enhances the AI’s ability to understand and respond to complex queries.",
                                                     }
                                                 ],
                                             },
                                         ]}
                                     />
-
                                 </div>
-
                             </div>
-
 
                             <IconButton
                                 aria-label="X"
@@ -171,38 +172,29 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                 <Icon glyph="X" />
                             </IconButton>
                         </div>
-                        <div className={styles.chatbotBody}>
 
+                        <div className={styles.chatbotBody}>
                             <Body className={styles.introBubble}>
                                 Hi there! 👋🏻 I’m Leafy Bank’s portfolio assistant, here to help you as the portfolio manager.
-                                <br></br> <br></br>
+                                <br /> <br />
                                 I now have ✨<strong> long-term memory</strong> ✨ within each chat session, so I can keep track of our conversation - I encourage you to try it out!
                             </Body>
 
                             {messages.map((message, index) => {
-                                const isUserMessage = index % 2 === 0;
-
+                                const isUserMessage = message.isUser;
                                 return (
                                     <div key={index} className={styles.chatMessage}>
-
-                                        {/* Show "tools called" above each assistant response */}
-                                        {!isUserMessage && completedMessages[index] && (
-                                            <div className={styles.behindTheScenesLink}>
-
-                                                <Icon className={styles.linkIcon} glyph="Wrench" color="#889396" />
-                                                <Body className={styles.link}> Tool(s) called: </Body>
-
-                                            </div>
-                                        )}
-
-                                        <div className={`${styles.speechBubble} ${isUserMessage ? styles.userBubble : styles.answerBubble}`}>
-
+                                        <div
+                                            className={`${styles.speechBubble} ${
+                                                isUserMessage ? styles.userBubble : styles.answerBubble
+                                            }`}
+                                        >
                                             {isUserMessage ? (
-                                                <Body>{message}</Body>
+                                                <Body>{message.text}</Body>
                                             ) : (
                                                 <Body>
                                                     <Typewriter
-                                                        text={message}
+                                                        text={message.text}
                                                         messageId={index}
                                                         completedMessages={completedMessages}
                                                         markCompleted={markCompleted}
@@ -210,39 +202,42 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 </Body>
                                             )}
                                         </div>
-
+                                        
+                                        {/* Move tool calls section AFTER the message bubble */}
+                                        {!isUserMessage && message.toolCalls && message.toolCalls.length > 0 && completedMessages[index] && (
+                                            <div className={styles.toolCallsContainer}>
+                                                <div className={styles.behindTheScenesLink}>
+                                                    <Icon className={styles.linkIcon} glyph="Wrench" color="#889396" />
+                                                    <Body className={styles.link}>Tool(s) called:</Body>
+                                                </div>
+                                                <div className={styles.toolCallsList}>
+                                                    {message.toolCalls.map((tool, idx) => (
+                                                        <div key={idx} className={styles.toolCallItem}>
+                                                            <span className={styles.toolName}>{tool.tool_name}</span>
+                                                            {tool.query && <span className={styles.toolQuery}>Query: "{tool.query}"</span>}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 );
                             })}
 
-                            {/* Always show thinking indicator at the end if isAsking */}
                             {isAsking && (
                                 <div className={styles.thinkingMessage}>
                                     The agent is thinking<span className={styles.dots}></span>
                                 </div>
                             )}
-                            {/**
-                            {docs.length > 0 && (
-                                <div className={styles.referenceSection}>
-                                    {docs.map((doc, index) => (
-                                        <img
-                                            key={index}
-                                            className={styles.referenceImage}
-                                            src={`data:image/png;base64,${doc.image}`}
-                                            alt={`Reference ${index + 1}`}
-                                            onClick={handleImageClick}
-                                        />
-                                    ))}
-                                </div>
-                            )}
-                                 */}
                         </div>
+
                         <div className={styles.suggestedQuestions}>
                             <Body>Suggested Question:</Body>
                             <button className={styles.suggestion} onClick={handleSuggestionClick}>
                                 {suggestions[suggestionIndex]}
                             </button>
                         </div>
+
                         <div className={styles.chatbotInputArea}>
                             <input
                                 type="text"
@@ -254,26 +249,6 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                 {isAsking ? "Asking..." : "Ask"}
                             </Button>
                         </div>
-
-                        {/** Chatbot Behind the scenes 
-                        {showOverlay && (
-                            <div className={styles.overlay}>
-
-                                <IconButton
-                                    aria-label="X"
-                                    onClick={() => setShowOverlay(false)}
-                                    className={styles.closeBTS}
-                                >
-                                    <Icon glyph="X" />
-                                </IconButton>
-
-                                <h3>Behind the Scenes</h3>
-                                <p>This is where the backend magic happens ✨</p>
-
-
-                            </div>
-                        )}
-                            */}
                     </div>
                 </div>
             )}

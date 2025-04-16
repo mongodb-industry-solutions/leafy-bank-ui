@@ -24,12 +24,14 @@ const Typewriter = ({ text, messageId, completedMessages, markCompleted }) => {
             }
         };
 
-        typingIntervalRef.current = setInterval(typeNextCharacter, 30);
+        // Speed up the typing by reducing the interval from 30ms to 10ms
+        typingIntervalRef.current = setInterval(typeNextCharacter, 10);
 
         return () => clearInterval(typingIntervalRef.current);
     }, [text, messageId, completedMessages, markCompleted]);
 
-    return <span>{displayedText}</span>;
+    // Preserve newlines by replacing \n with <br />
+    return <span dangerouslySetInnerHTML={{ __html: displayedText.replace(/\n/g, '<br />') }} />;
 };
 
 export default Typewriter;
