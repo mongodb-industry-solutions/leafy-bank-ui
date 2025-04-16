@@ -44,11 +44,13 @@ export default function AssetPortfolio() {
     }, []);
 
     useEffect(() => {
-        const agreed = localStorage.getItem("agreedToDisclaimer");
-        if (!agreed) {
+        if (typeof window !== "undefined") {
+          const agreed = localStorage.getItem("agreedToDisclaimer");
+          if (!agreed) {
             setShowDisclaimer(true);
+          }
         }
-    }, []);
+      }, []);
 
     const handleCloseDisclaimer = () => {
         localStorage.setItem("agreedToDisclaimer", "true");

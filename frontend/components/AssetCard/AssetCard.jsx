@@ -3,7 +3,7 @@ import styles from "./AssetCard.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
-import { Body, H3, Link } from "@leafygreen-ui/typography";
+import { Body, H3, Link, Subtitle } from "@leafygreen-ui/typography";
 import Code from "@leafygreen-ui/code";
 import Badge from "@leafygreen-ui/badge";
 import {
@@ -30,30 +30,30 @@ export default function AssetCard({ asset, chartData }) {
 
     // Get the sentiment category for color coding
     const sentimentCategory = asset.sentiment ? asset.sentiment.category : "Neutral";
-    const sentimentColor = 
+    const sentimentColor =
         sentimentCategory === "Positive" ? styles.positiveScore :
-        sentimentCategory === "Negative" ? styles.negativeScore :
-        styles.neutralScore;
-        
+            sentimentCategory === "Negative" ? styles.negativeScore :
+                styles.neutralScore;
+
     // Get the VIX sensitivity
     const vixSensitivity = asset.vixSensitivity?.sensitivity || "NEUTRAL";
-    
+
     // Set badge variant based on VIX sensitivity
-    const vixBadgeVariant = 
+    const vixBadgeVariant =
         vixSensitivity === "HIGH" ? "red" :
-        vixSensitivity === "LOW" ? "green" :
-        "yellow"; // NEUTRAL
-    
+            vixSensitivity === "LOW" ? "green" :
+                "yellow"; // NEUTRAL
+
     // Get actions from macro indicators
     const gdpAction = asset.macroIndicators?.gdp?.action || "KEEP";
-    const interestRateAction = asset.macroIndicators?.interestRate?.action || "KEEP"; 
+    const interestRateAction = asset.macroIndicators?.interestRate?.action || "KEEP";
     const unemploymentAction = asset.macroIndicators?.unemployment?.action || "KEEP";
-    
+
     // Set badge variants based on macro indicator actions
     const gdpBadgeVariant = gdpAction === "KEEP" ? "green" : "red";
     const interestRateBadgeVariant = interestRateAction === "KEEP" ? "green" : "red";
     const unemploymentBadgeVariant = unemploymentAction === "KEEP" ? "green" : "red";
-    
+
     // Get asset trend data
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
@@ -115,7 +115,7 @@ export default function AssetCard({ asset, chartData }) {
                     <H3>
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Document Model"
-                                : expandedSection === "insights" ? "Insights"
+                                : expandedSection === "insights" ? ""
                                     : "News Headlines"}
                     </H3>
 
@@ -161,7 +161,7 @@ export default function AssetCard({ asset, chartData }) {
                                         volume: item.volume
                                     })) || []
                                 };
-                                
+
                                 return JSON.stringify(displayAsset, null, 2);
                             })()}
                         </Code>
@@ -192,118 +192,123 @@ export default function AssetCard({ asset, chartData }) {
 
                     {expandedSection === "insights" && (
                         <div className={styles.insightsContainer}>
-                            <H3>{asset.symbol} Insights</H3>
-                            
+                            <H3 className={styles.insightsTitle}>{asset.symbol} Insights</H3>
+
+
                             {/* MA50 Analysis */}
                             <div className={styles.insightSection}>
                                 <div className={styles.insightHeader}>
-                                    <h4>50-Day Moving Average Analysis</h4>
+                                    <Subtitle>50-Day Moving Average Analysis</Subtitle>
                                     <Badge variant={trendBadgeVariant}>
                                         {assetTrend.charAt(0).toUpperCase() + assetTrend.slice(1)}
                                     </Badge>
                                 </div>
-                                
+
                                 <Body weight="medium">Price vs. MA50:</Body>
                                 <Body>{asset.assetTrend?.fluctuation || "No data available."}</Body>
-                                
+
                                 <Body weight="medium" className={styles.diagnosisLabel}>Diagnosis:</Body>
-                                <Body className={`${styles.diagnosis} ${
-                                    assetTrend === "uptrend" ? styles.positiveAction :
+                                <Body className={`${styles.diagnosis} ${assetTrend === "uptrend" ? styles.positiveAction :
                                     assetTrend === "downtrend" ? styles.negativeAction :
-                                    styles.neutralAction
-                                }`}>
+                                        styles.neutralAction
+                                    }`}>
                                     {asset.assetTrend?.diagnosis || "No diagnosis available."}
                                 </Body>
                             </div>
-                            
-                            {/* VIX Sensitivity Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <h4>VIX Sensitivity Analysis</h4>
-                                    <Badge variant={vixBadgeVariant}>{vixSensitivity}</Badge>
+
+                            <div className={styles.assetInsightCards}>
+                                {/* VIX Sensitivity Analysis */}
+                                <div className={styles.insightSection}>
+                                    <div className={styles.insightHeader}>
+                                        <Subtitle>VIX Sensitivity Analysis</Subtitle>
+                                        <Badge variant={vixBadgeVariant}>{vixSensitivity}</Badge>
+                                    </div>
+
+                                    <Body weight="medium">Market Volatility:</Body>
+                                    <Body>{asset.vixSensitivity?.marketData?.fluctuation || "No market volatility data available."}</Body>
+
+                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
+                                    <Body weight="medium">Action: <span className={asset.vixSensitivity?.action === "KEEP" ? styles.positiveAction : styles.negativeAction}>
+                                        {asset.vixSensitivity?.action || "KEEP"}
+                                    </span></Body>
+
+                                    <Body>{asset.vixSensitivity?.explanation || "No explanation available."}</Body>
+
+                                    {asset.vixSensitivity?.note && (
+                                        <Body className={styles.insightNote}>{asset.vixSensitivity.note}</Body>
+                                    )}
                                 </div>
-                                
-                                <Body weight="medium">Market Volatility:</Body>
-                                <Body>{asset.vixSensitivity?.marketData?.fluctuation || "No market volatility data available."}</Body>
-                                
-                                <Body weight="medium" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                <Body weight="medium">Action: <span className={asset.vixSensitivity?.action === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                    {asset.vixSensitivity?.action || "KEEP"}
-                                </span></Body>
-                                
-                                <Body>{asset.vixSensitivity?.explanation || "No explanation available."}</Body>
-                                
-                                {asset.vixSensitivity?.note && (
-                                    <Body className={styles.insightNote}>{asset.vixSensitivity.note}</Body>
-                                )}
-                            </div>
 
-                            {/* GDP Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <h4>GDP Analysis</h4>
-                                    <Badge variant={gdpBadgeVariant}>{gdpAction}</Badge>
+
+
+                                {/* GDP Analysis */}
+                                <div className={styles.insightSection}>
+                                    <div className={styles.insightHeader}>
+                                        <Subtitle>GDP Analysis</Subtitle>
+                                        <Badge variant={gdpBadgeVariant}>{gdpAction}</Badge>
+                                    </div>
+
+                                    <Body weight="medium">GDP Trend:</Body>
+                                    <Body>{asset.macroIndicators?.gdp?.marketData?.fluctuation || "No market GDP data available."}</Body>
+
+                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
+                                    <Body weight="medium">Action: <span className={gdpAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
+                                        {gdpAction}
+                                    </span></Body>
+
+                                    <Body>{asset.macroIndicators?.gdp?.explanation || "No explanation available."}</Body>
+
+                                    {asset.macroIndicators?.gdp?.note && (
+                                        <Body className={styles.insightNote}>{asset.macroIndicators.gdp.note}</Body>
+                                    )}
                                 </div>
-                                
-                                <Body weight="medium">GDP Trend:</Body>
-                                <Body>{asset.macroIndicators?.gdp?.marketData?.fluctuation || "No market GDP data available."}</Body>
-                                
-                                <Body weight="medium" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                <Body weight="medium">Action: <span className={gdpAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                    {gdpAction}
-                                </span></Body>
-                                
-                                <Body>{asset.macroIndicators?.gdp?.explanation || "No explanation available."}</Body>
-                                
-                                {asset.macroIndicators?.gdp?.note && (
-                                    <Body className={styles.insightNote}>{asset.macroIndicators.gdp.note}</Body>
-                                )}
-                            </div>
 
-                            {/* Interest Rate Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <h4>Interest Rate Analysis</h4>
-                                    <Badge variant={interestRateBadgeVariant}>{interestRateAction}</Badge>
+                                {/* Interest Rate Analysis */}
+                                <div className={styles.insightSection}>
+                                    <div className={styles.insightHeader}>
+                                        <Subtitle>Interest Rate Analysis</Subtitle>
+                                        <Badge variant={interestRateBadgeVariant}>{interestRateAction}</Badge>
+                                    </div>
+
+                                    <Body weight="medium">Interest Rate Trend:</Body>
+                                    <Body>{asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No market interest rate data available."}</Body>
+
+                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
+                                    <Body weight="medium">Action: <span className={interestRateAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
+                                        {interestRateAction}
+                                    </span></Body>
+
+                                    <Body>{asset.macroIndicators?.interestRate?.explanation || "No explanation available."}</Body>
+
+                                    {asset.macroIndicators?.interestRate?.note && (
+                                        <Body className={styles.insightNote}>{asset.macroIndicators.interestRate.note}</Body>
+                                    )}
                                 </div>
-                                
-                                <Body weight="medium">Interest Rate Trend:</Body>
-                                <Body>{asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No market interest rate data available."}</Body>
 
-                                <Body weight="medium" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                <Body weight="medium">Action: <span className={interestRateAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                    {interestRateAction}
-                                </span></Body>
-                                
-                                <Body>{asset.macroIndicators?.interestRate?.explanation || "No explanation available."}</Body>
-                                
-                                {asset.macroIndicators?.interestRate?.note && (
-                                    <Body className={styles.insightNote}>{asset.macroIndicators.interestRate.note}</Body>
-                                )}
-                            </div>
+                                {/* Unemployment Rate Analysis */}
+                                <div className={styles.insightSection}>
+                                    <div className={styles.insightHeader}>
+                                        <Subtitle>Unemployment Rate Analysis</Subtitle>
+                                        <Badge variant={unemploymentBadgeVariant}>{unemploymentAction}</Badge>
+                                    </div>
 
-                            {/* Unemployment Rate Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <h4>Unemployment Rate Analysis</h4>
-                                    <Badge variant={unemploymentBadgeVariant}>{unemploymentAction}</Badge>
+                                    <Body weight="medium">Unemployment Rate Trend:</Body>
+                                    <Body>{asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No market unemployment data available."}</Body>
+
+                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
+                                    <Body weight="medium">Action: <span className={unemploymentAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
+                                        {unemploymentAction}
+                                    </span></Body>
+
+                                    <Body>{asset.macroIndicators?.unemployment?.explanation || "No explanation available."}</Body>
+
+                                    {asset.macroIndicators?.unemployment?.note && (
+                                        <Body className={styles.insightNote}>{asset.macroIndicators.unemployment.note}</Body>
+                                    )}
                                 </div>
-                                
-                                <Body weight="medium">Unemployment Rate Trend:</Body>
-                                <Body>{asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No market unemployment data available."}</Body>
-
-                                <Body weight="medium" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                <Body weight="medium">Action: <span className={unemploymentAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                    {unemploymentAction}
-                                </span></Body>
-                                
-                                <Body>{asset.macroIndicators?.unemployment?.explanation || "No explanation available."}</Body>
-                                
-                                {asset.macroIndicators?.unemployment?.note && (
-                                    <Body className={styles.insightNote}>{asset.macroIndicators.unemployment.note}</Body>
-                                )}
                             </div>
                         </div>
+
                     )}
                 </div>
             )}

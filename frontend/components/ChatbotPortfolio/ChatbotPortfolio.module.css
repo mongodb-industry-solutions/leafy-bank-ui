@@ -231,7 +231,6 @@
 
 
 .behindTheScenesLink {
-    margin-bottom: 5px;
     margin-left: 10px;
     text-decoration: none;
     display: inline-flex;
@@ -249,22 +248,18 @@
 
 /* Tool calls formatting */
 .toolCallsContainer {
-    margin-top: 5px;
-    margin-bottom: 15px;
-    margin-left: 20px;
-    padding: 5px 10px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    width: fit-content;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  
 }
 
 .toolCallsList {
-    margin-top: 5px;
-    margin-left: 25px;
+    margin-left: 15px;
 }
 
 .toolCallItem {
     margin-bottom: 5px;
+    display: inline-flex;
 }
 
 .toolName {
@@ -276,6 +271,7 @@
 .toolQuery {
     color: #3c3c3c;
     font-style: italic;
+    margin-left: 10px;
 }
 
 /* Make sure newlines in messages are preserved */

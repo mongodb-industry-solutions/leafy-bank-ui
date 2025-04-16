@@ -213,8 +213,8 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 <div className={styles.toolCallsList}>
                                                     {message.toolCalls.map((tool, idx) => (
                                                         <div key={idx} className={styles.toolCallItem}>
-                                                            <span className={styles.toolName}>{tool.tool_name}</span>
-                                                            {tool.query && <span className={styles.toolQuery}>Query: "{tool.query}"</span>}
+                                                            <Body className={styles.toolName}>{tool.tool_name}</Body>
+                                                            {tool.query && <Body className={styles.toolQuery}>Query: "{tool.query}"</Body>}
                                                         </div>
                                                     ))}
                                                 </div>
