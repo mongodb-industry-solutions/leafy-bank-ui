@@ -33,22 +33,28 @@
   
   .sentiment {
     background-color: #fff3cd;
-    padding: 4px 8px;
+    padding: 2px 8px;
     border-radius: 50px;
     width: fit-content;
     font-weight: bold;
   }
 
   .positiveScore {
-    background-color: #C0FAE6;
+    background-color: #E3FCF7;
+    outline: solid 1px #C0FAE6;
+    color:#00674A ;
   }
 
   .negativeScore {
-    background-color: #FFCDC7;
+    background-color: #FEEAE5;
+    outline: solid 1px #FFCDC7;
+    color: #970706;
   }
 
   .neutralScore {
-    background-color: #fff3cd;
+    background-color: #FEF7DB;
+    outline: solid 1px #fff3cd;
+    color: #944F01;
   }
   
   .actions {
@@ -143,15 +149,26 @@
 
 /* Add to existing styles */
 
-.insightsContainer {
-  padding: 16px;
+.insightsTitle{
+  margin-bottom: 10px;
+}
+.insightSection {
+  padding: 10px 20px;
+  background-color: #f7f7f7;
+  border-radius: 15px;
+  text-align: left;
 }
 
-.insightSection {
-  margin-bottom: 24px;
-  padding: 16px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+.assetInsightCards {
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.assetInsightCards > * {
+  flex: 1 1 calc(50% - 8px); /* Two per row, accounting for gap */
+  box-sizing: border-box;
 }
 
 .insightHeader {
@@ -159,11 +176,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-}
-
-.insightHeader h4 {
-  margin: 0;
-  font-weight: 600;
 }
 
 .insightNote {
