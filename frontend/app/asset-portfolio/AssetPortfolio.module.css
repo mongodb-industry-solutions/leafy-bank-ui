@@ -1,5 +1,5 @@
 .container {
-  
+
   padding: 80px 20px;
 }
 
@@ -15,17 +15,23 @@
 }
 
 .roiCard {
+  padding-top: 15px;
+}
+
+.roiHeader {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-  height: 100%;
+  justify-content: flex-end;
+  margin-top: 0px;
+}
+
+.segmentedControl {
+  max-width: 300px;
 }
 
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   height: 100%;
 }
 
@@ -43,6 +49,11 @@
   margin-top: 20px;
 }
 
+.marketCard {
+  padding: 8px 24px;
+
+}
+
 .iframeContainer {
   width: 100%;
   height: 100%;
@@ -56,7 +67,7 @@
   border: none;
 }
 
-.cardSubtitle{
+.cardSubtitle {
   text-align: left;
   padding: 5px 10px;
   font-size: 16px;
@@ -76,24 +87,40 @@
   text-align: left;
 }
 
+.eventValue{
+  display: flex;
+  gap: 10px;
+}
+
+.arrowUp {
+  color: #00674A;
+}
+.arrowDown {
+  color: #c62727;
+}
+
 /* Adjust column widths manually */
-.headerRow span:nth-child(1), 
-.eventCard > *:nth-child(1) { /* INDICATOR */
+.headerRow span:nth-child(1),
+.eventCard>*:nth-child(1) {
+  /* INDICATOR */
   width: 35%;
 }
 
-.headerRow span:nth-child(2), 
-.eventCard > *:nth-child(2) { /* FREQUENCY */
+.headerRow span:nth-child(2),
+.eventCard>*:nth-child(2) {
+  /* FREQUENCY */
   width: 25%;
 }
 
-.headerRow span:nth-child(3), 
-.eventCard > *:nth-child(3) { /* LAST RELEASE DATE */
+.headerRow span:nth-child(3),
+.eventCard>*:nth-child(3) {
+  /* LAST RELEASE DATE */
   width: 25%;
 }
 
-.headerRow span:nth-child(4), 
-.eventCard > *:nth-child(4) { /* LAST VALUE */
+.headerRow span:nth-child(4),
+.eventCard>*:nth-child(4) {
+  /* LAST VALUE */
   width: 20%;
 }
 
@@ -108,7 +135,7 @@
   margin-bottom: 5px;
 }
 
-.eventCard > * {
+.eventCard>* {
   text-align: left;
 }
 
@@ -129,7 +156,7 @@
   cursor: pointer;
   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
   z-index: 100;
- 
+
 }
 
 .chatbotButton:hover {
@@ -149,12 +176,14 @@
 
 .textWrapper {
   display: flex;
-  flex-direction: column; /* Stack text and status vertically */
+  flex-direction: column;
+  /* Stack text and status vertically */
 }
 
 .statusWrapper {
   display: flex;
-    align-items: center; /* Align status text and indicator in line */
+  align-items: center;
+  /* Align status text and indicator in line */
 }
 
 .indicator {
@@ -162,7 +191,8 @@
   height: 10px;
   background-color: #00ED64;
   border-radius: 50%;
-  margin-right: 8px; /* Space between 'Available' text and indicator */
+  margin-right: 8px;
+  /* Space between 'Available' text and indicator */
 }
 
 .lg-cancel-button {

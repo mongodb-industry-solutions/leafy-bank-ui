@@ -24,6 +24,17 @@ export default function AssetCard({ asset, chartData }) {
         return `https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=${chartData[selectedTimeframe]}&maxDataAge=3600&theme=light&autoRefresh=true`;
     };
 
+    const timeAgoToMinutes = (str) => {
+        const num = parseInt(str);
+        if (str.includes("minute")) return num;
+        if (str.includes("hour")) return num * 60;
+        if (str.includes("day")) return num * 60 * 24;
+        if (str.includes("week")) return num * 60 * 24 * 7;
+        if (str.includes("month")) return num * 60 * 24 * 30;
+        if (str.includes("year")) return num * 60 * 24 * 365;
+        return Infinity; // fallback for "Just now" or unknown
+    };
+
     // Get the sentiment score from the asset data (default to 0 if not available)
     const sentimentScore = asset.sentiment ? asset.sentiment.score : 0;
     const formattedSentimentScore = sentimentScore.toFixed(2);
@@ -135,10 +146,15 @@ export default function AssetCard({ asset, chartData }) {
                             </div>
 
                             {getChartSrc() ? (
-                                <iframe
-                                    src={getChartSrc()}
-                                    className={styles.responsiveIframe}
-                                ></iframe>
+
+                                <div className={styles.chartsSection}>
+                                    <iframe
+                                        src={getChartSrc()}
+                                        className={styles.responsiveIframe}
+                                    ></iframe>
+
+                                    <Body>Any gaps in the last 7 days chart are due to weekends, during which financial markets are closed.</Body>
+                                </div>
                             ) : (
                                 <Body>No chart available for {asset.symbol} - {selectedTimeframe}</Body>
                             )}
@@ -146,47 +162,98 @@ export default function AssetCard({ asset, chartData }) {
                     )}
 
                     {expandedSection === "docModel" && (
-                        <Code
-                            className={styles.documentContainer}
-                            language="json"
-                        >
-                            {(() => {
-                                const displayAsset = {
-                                    [asset.symbol]: asset.recentData?.map(item => ({
-                                        timestamp: item.timestamp,
-                                        open: item.open,
-                                        high: item.high,
-                                        low: item.low,
-                                        close: item.close,
-                                        volume: item.volume
-                                    })) || []
-                                };
+                        <div className={styles.docModelSection}>
+                            <div className={styles.codeColumn}>
+                                <Code
+                                    className={styles.documentContainer}
+                                    language="json"
+                                >
+                                    {(() => {
+                                        const displayAsset = {
+                                            [asset.symbol]: asset.recentData?.map(item => ({
+                                                timestamp: item.timestamp,
+                                                open: item.open,
+                                                high: item.high,
+                                                low: item.low,
+                                                close: item.close,
+                                                volume: item.volume
+                                            })) || []
+                                        };
 
-                                return JSON.stringify(displayAsset, null, 2);
-                            })()}
-                        </Code>
+                                        return JSON.stringify(displayAsset, null, 2);
+                                    })()}
+                                </Code>
+                            </div>
+
+                            <div className={styles.textColumn}>
+                                <Body>
+                                  This data is stored in a{" "}
+                                    <a
+                                        href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        time series collection
+                                    </a>
+                                    . This format is ideal for financial data that evolves over time (such as stocks, crypto, or asset trends) making it perfect for storing and querying data in timelines.
+                                </Body>
+                            </div>
+                        </div>
                     )}
-
                     {expandedSection === "news" && (
-                        <div className={styles.newsContainer}>
-                            {asset.news && asset.news.length > 0 ? (
-                                asset.news.map((item, index) => (
-                                    <div key={index} className={styles.newsCard}>
-                                        <div className={styles.newsHeader}>
-                                            <Link href={item.link} target="_blank" className={styles.newsHeadline}>
-                                                {item.headline}
-                                            </Link>
-                                            <span className={styles.newsTime}>{item.posted}</span>
-                                        </div>
-                                        <Body className={styles.newsDescription}>{item.description}</Body>
-                                        <Body className={styles.newsSource}>
-                                            {item.source}
-                                        </Body>
-                                    </div>
-                                ))
-                            ) : (
-                                <Body>No news available for {asset.symbol}.</Body>
-                            )}
+
+                        <div className={styles.newsSection}>
+                            <div className={styles.newsContainer}>
+                                {asset.news && asset.news.length > 0 ? (
+                                    [...asset.news]
+                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted)) // most recent = lower value
+                                        .map((item, index) => (
+                                            <div key={index} className={styles.newsCard}>
+                                                <div className={styles.newsHeader}>
+                                                    <Link href={item.link} target="_blank" className={styles.newsHeadline}>
+                                                        {item.headline}
+                                                    </Link>
+                                                    <span className={styles.newsTime}>{item.posted}</span>
+                                                </div>
+                                                <Body className={styles.newsDescription}>{item.description}</Body>
+                                                <Body className={styles.newsSource}>{item.source}</Body>
+                                            </div>
+                                        ))
+                                ) : (
+                                    <Body>No news available for {asset.symbol}.</Body>
+                                )}
+                            </div>
+
+                            <div className={styles.explanationContainer}>
+
+                                <div className={styles.explanation}>
+
+                                    <Body>The <strong>New Sentiment Score </strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial sentiment analysis model. For each asset, the sentiment score is the average of sentiment scores from all related news articles.</Body>
+
+                                    <Body> <em> Note: To simulate dynamic behavior in this demo, a randomizer selects which news articles are displayed. In a real-world scenario, the sentiment would be computed from live data using your own logic.</em></Body>
+                                </div>
+                                <Code
+                                    className={styles.queryContainer}
+                                    language="json"
+                                >
+                                    {(() => {
+                                        const displayAsset = {
+                                            [asset.symbol]: asset.recentData?.map(item => ({
+                                                timestamp: item.timestamp,
+                                                open: item.open,
+                                                high: item.high,
+                                                low: item.low,
+                                                close: item.close,
+                                                volume: item.volume
+                                            })) || []
+                                        };
+
+                                        return JSON.stringify(displayAsset, null, 2);
+                                    })()}
+                                </Code>
+
+                            </div>
+
                         </div>
                     )}
 

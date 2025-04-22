@@ -9,15 +9,15 @@
     margin-top: 10px;
     transition: height 0.3s ease;
   }
-  
+
   .mainContent {
     display: contents;
   }
-  
+
   .expanded {
     height: auto;
   }
-  
+
   .expandedSection {
     grid-column: span 9;
     padding: 20px;
@@ -25,12 +25,12 @@
     margin-top: 10px;
     text-align: center;
   }
-  
+
   .cell {
     font-size: 14px;
     padding: 5px;
   }
-  
+
   .sentiment {
     background-color: #fff3cd;
     padding: 2px 8px;
@@ -42,7 +42,7 @@
   .positiveScore {
     background-color: #E3FCF7;
     outline: solid 1px #C0FAE6;
-    color:#00674A ;
+    color: #00674A;
   }
 
   .negativeScore {
@@ -56,162 +56,203 @@
     outline: solid 1px #fff3cd;
     color: #944F01;
   }
-  
+
   .actions {
     display: flex;
     gap: 5px;
   }
-  
+
   .actionButton {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 18px;
   }
-  
-  .iframeContainer {
-    width: 100%;
-    height: 100%;
-    display: flex;
-}
 
-.responsiveIframe {
+  .responsiveIframe {
     width: 100%;
     height: 500px;
     border: none;
-}
-.iframeContainer {
-  position: relative;
-  width: 100%;
-}
+  }
 
-.segmentedControlWrapper {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 2;
-}
+  .iframeContainer {
+    position: relative;
+    width: 100%;
+  }
 
-.responsiveIframe {
-  width: 100%;
-  height: 500px; /* adjust as needed */
-  border: none;
-}
+  .segmentedControlWrapper {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 2;
+  }
 
-/* INSIGHTS SECTION */
-.newsContainer {
-  margin-top: 12px;
-}
+  .responsiveIframe {
+    width: 100%;
+    height: 500px;
+    /* adjust as needed */
+    border: none;
+  }
 
-.newsCard {
-  background-color: #f8f9fa;
-  padding: 12px 20px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  width: 600px;
-  text-align: left;
-}
+  /* NEWS SECTION */
 
-.newsHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+  .newsSection {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+  }
 
-.newsTime {
-  font-size: 12px;
-  color: #6c757d;
-}
+  .newsContainer {
+    margin-top: 12px;
+    flex: 1;
+    min-width: 300px;
+  }
 
-.newsDescription {
-  margin: 4px 0;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Show only 2 lines */
-  line-clamp: 2; /* Standard property for compatibility */
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-}
+  .explanationContainer {
+    flex: 1;
+    min-width: 300px;
+    text-align: left;
+  }
 
-.newsSource {
-  font-size: 12px;
-  color: #6c757d;
-}
+  .explanation{
+    margin-bottom: 10px;
+  }
 
-.documentContainer{
-  text-align: left;
-}
+  .queryContainer{
+    height: 250px;
+  }
 
-.badge{
-  width: fit-content;
-}
+  .newsCard {
+    background-color: #f8f9fa;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 600px;
+    text-align: left;
+  }
 
-/* Add to existing styles */
+  .newsHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-.insightsTitle{
-  margin-bottom: 10px;
-}
-.insightSection {
-  padding: 10px 20px;
-  background-color: #f7f7f7;
-  border-radius: 15px;
-  text-align: left;
-}
+  .newsTime {
+    font-size: 12px;
+    color: #6c757d;
+  }
 
-.assetInsightCards {
-  margin-top: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-}
+  .newsDescription {
+    margin: 4px 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    /* Show only 2 lines */
+    line-clamp: 2;
+    /* Standard property for compatibility */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+  }
 
-.assetInsightCards > * {
-  flex: 1 1 calc(50% - 8px); /* Two per row, accounting for gap */
-  box-sizing: border-box;
-}
+  .newsSource {
+    font-size: 12px;
+    color: #6c757d;
+  }
 
-.insightHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
+  .docModelSection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-top: 1rem;
+    text-align: left;
 
-.insightNote {
-  margin-top: 12px;
-  font-style: italic;
-  color: #6e6e6e;
-}
+  }
+  
+  .codeColumn {
+    flex: 1;
+    min-width: 300px;
+  }
+  
+  .textColumn {
+    flex: 1 ;
+    min-width: 300px;
+    display: flex;
+  }
 
-.positiveAction {
-  color: #4caf50;
-  font-weight: bold;
-}
+  .badge {
+    width: fit-content;
+  }
 
-.negativeAction {
-  color: #f44336;
-  font-weight: bold;
-}
+  /* Add to existing styles */
 
-.diagnosisLabel {
-  margin-top: 10px;
-}
+  .insightsTitle {
+    margin-bottom: 10px;
+  }
 
-.diagnosis {
-  font-style: italic;
-}
+  .insightSection {
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-radius: 15px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
-.neutralAction {
-  color: #ff9800;
-}
+  }
 
-.recommendationLabel {
-  margin-top: 16px;
-  border-top: 1px solid #e8e8e8;
-  padding-top: 16px;
-}
+  .assetInsightCards {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
 
-.insightSection body {
-  margin-bottom: 8px;
-}
+  .assetInsightCards>* {
+    flex: 1 1 calc(50% - 8px);
+    /* Two per row, accounting for gap */
+    box-sizing: border-box;
+  }
+
+  .insightHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .insightNote {
+    margin-top: 12px;
+    font-style: italic;
+    color: #6e6e6e;
+  }
+
+  .positiveAction {
+    color: #4caf50;
+    font-weight: bold;
+  }
+
+  .negativeAction {
+    color: #f44336;
+    font-weight: bold;
+  }
+
+  .diagnosisLabel {
+    margin-top: 10px;
+  }
+
+  .diagnosis {
+    font-style: italic;
+  }
+
+  .neutralAction {
+    color: #ff9800;
+  }
+
+  .recommendationLabel {
+    margin-top: 16px;
+    border-top: 1px solid #e8e8e8;
+    padding-top: 16px;
+  }
+
+  .insightSection body {
+    margin-bottom: 8px;
+  }

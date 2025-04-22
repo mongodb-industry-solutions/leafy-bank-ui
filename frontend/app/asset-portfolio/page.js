@@ -10,19 +10,26 @@ import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
 import { fetchMostRecentMacroIndicators } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
-
+import {
+    SegmentedControl,
+    SegmentedControlOption
+} from "@leafygreen-ui/segmented-control";
+import Icon from "@leafygreen-ui/icon";
+import Tooltip from "@leafygreen-ui/tooltip";
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
     const [isOpen, setIsOpen] = useState(false);
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
+    const [selectedTimeframe, setSelectedTimeframe] = useState("month");
+
 
     useEffect(() => {
         async function fetchMarketData() {
             try {
                 const data = await fetchMostRecentMacroIndicators();
-                
+
                 // Transform the data from object format to array format
                 const transformedData = Object.entries(data.macro_indicators).map(([series_id, indicator]) => ({
                     series_id,
@@ -32,9 +39,9 @@ export default function AssetPortfolio() {
                     units: indicator.units,
                     units_short: indicator.units_short,
                     date: { $date: new Date(indicator.date).toISOString() },
-                    value: indicator.value
+                    value: indicator.value,
                 }));
-                
+
                 setMarketEvents(transformedData);
             } catch (error) {
                 console.error("Error fetching market events:", error);
@@ -45,12 +52,12 @@ export default function AssetPortfolio() {
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-          const agreed = localStorage.getItem("agreedToDisclaimer");
-          if (!agreed) {
-            setShowDisclaimer(true);
-          }
+            const agreed = localStorage.getItem("agreedToDisclaimer");
+            if (!agreed) {
+                setShowDisclaimer(true);
+            }
         }
-      }, []);
+    }, []);
 
     const handleCloseDisclaimer = () => {
         localStorage.setItem("agreedToDisclaimer", "true");
@@ -84,13 +91,33 @@ export default function AssetPortfolio() {
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">
-                    <div className={styles.iframeContainer}>
-                        <iframe
-                            className={styles.responsiveIframe}
-                            src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=9de04b25-cc2f-48bb-94bd-3c3d5c6ffb20&maxDataAge=3600&theme=light&autoRefresh=true">
-                        </iframe>
+                    <div className={styles.roiHeader}>
+                        <SegmentedControl
+                            followFocus={true}
+                            defaultValue="month"
+                            value={selectedTimeframe}
+                            onChange={(value) => setSelectedTimeframe(value)}
+                            className={styles.segmentedControl}
+                        >
+                            <SegmentedControlOption value="month">Last Month</SegmentedControlOption>
+                            <SegmentedControlOption value="6month">Last 6 Months</SegmentedControlOption>
+                        </SegmentedControl>
                     </div>
 
+                    <div className={styles.iframeContainer}>
+                        {selectedTimeframe === "month" && (
+                            <iframe
+                                className={styles.responsiveIframe}
+                                src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=9de04b25-cc2f-48bb-94bd-3c3d5c6ffb20&maxDataAge=3600&theme=light&autoRefresh=true"
+                            ></iframe>
+                        )}
+                        {selectedTimeframe === "6month" && (
+                            <iframe
+                                className={styles.responsiveIframe}
+                                src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=3658d399-d4d8-4253-abe6-833a366ad30c&maxDataAge=3600&theme=light&autoRefresh=true"
+                            ></iframe>
+                        )}
+                    </div>
                 </Card>
 
                 <div className={styles.rightColumn}>
@@ -118,7 +145,26 @@ export default function AssetPortfolio() {
                                     <Body>{event.title} (US)</Body>
                                     <Body>{event.frequency}</Body>
                                     <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
-                                    <Body>{event.value}</Body>
+
+                                    <div className={styles.eventValue}>
+                                        <Body>{event.value}</Body>
+                                        {event.arrow_direction !== "EQUAL" && (
+
+                                            <Tooltip align="top" justify="middle" trigger={
+                                                <Icon
+                                                    className={
+                                                        event.arrow_direction === "ARROW_UP"
+                                                            ? styles.arrowUp
+                                                            : styles.arrowDown
+                                                    }
+                                                    glyph={event.arrow_direction === "ARROW_UP" ? "ArrowUp" : "ArrowDown"}
+                                                />
+                                            }>
+                                                Trend relative to last value
+                                            </Tooltip>
+                                        )}
+                                    </div>
+
                                 </div>
                             ))}
                         </div>
