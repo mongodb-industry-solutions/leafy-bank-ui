@@ -119,14 +119,50 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                         iconGlyph="Wizard"
                                         sections={[
                                             {
-                                                heading: "Instructions and Talk Track",
+                                                heading: "Solution Overview",
                                                 content: [
                                                     {
-                                                        heading: "...",
-                                                        body: "",
+                                                        heading: "Agentic-AI Powered Portfolio Management",
+                                                        body: 
+                                                            "Managing the diverse data types that stem from vast and complex sources is quite a challenge in the realm of capital markets, one clear example is investment portfolio management. This demo showcases how agentic AI, combined with MongoDB as the unified data platform, provides portfolio managers with a solution that ingests data from three main sources: ",
                                                     },
+                                                    {   
+                                                        body: [
+                                                            "Yahoo Finance Market Data",
+                                                            "FRED API Macroeconomic Data",
+                                                            "Financial news from a web scraping process",
+                                                        ],
+                                                    },
+                                                    {   
+                                                        body: 
+                                                            "Our solution harnessess the power of 3 AI agents:"
+                                                    },
+                                                    {   
+                                                        body: [
+                                                            "Market Analysis Agent: Responsible for data ingestion from Yahoo Finance assets and macroeconomic indicators, processing, and storing it in MongoDB.",
+                                                            "Market News Agent: Responsible for data ingestion from market news, transforming, processing, and storing it in MongoDB.",
+                                                            "Market Assistant Agent: Manages the interactions between the investment portfolio manager (user) and the market insights derived from the data."
+                                                        ],
+                                                    },
+                                                    {   
+                                                        heading: "Why this matters?",
+                                                        body: 
+                                                            "Our solution offers an intelligent investment portfolio management experience. It allows users to interact via a chatbot to employ a smart, risk-based approach by analyzing market conditions in real-time and suggesting portfolio reallocations aligned with investment goals, delivering insightful recommendations."
+                                                    },
+                                                    {   
+                                                        heading: "MongoDB Stack",
+                                                        body: [
+                                                            "Time series collections",
+                                                            "Atlas Charts",
+                                                            "Atlas Vector Search",
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                heading: "How to Demo",
+                                                content: [
                                                     {
-                                                        heading: "How to Demo",
                                                         body: [
                                                             "Select one of the Suggested Questions or type a new one in the prompt",
                                                             "Click “Ask”",
