@@ -52,7 +52,7 @@ function Header({ onLogout = () => {} }) {
 
         {pathname === '/asset-portfolio' && (
           <Link href="/asset-portfolio" className={styles.navLink}>
-            <Body>Asset Portfolio</Body>
+            <Body>Investment Portfolio</Body>
           </Link>
         )}
 

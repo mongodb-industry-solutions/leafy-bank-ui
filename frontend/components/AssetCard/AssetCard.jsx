@@ -187,15 +187,28 @@ export default function AssetCard({ asset, chartData }) {
 
                             <div className={styles.textColumn}>
                                 <Body>
-                                  This data is stored in a{" "}
+                                    Market data is stored in a{" "}
                                     <a
-                                        href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                    href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     >
-                                        time series collection
-                                    </a>
-                                    . This format is ideal for financial data that evolves over time (such as stocks, crypto, or asset trends) making it perfect for storing and querying data in timelines.
+                                    time series collection
+                                    </a>{" "}
+                                    in MongoDB. 
+                                    This specialized collection type is designed for efficient storage and retrieval of time-based measurements, making it ideal for our financial market data that spans multiple asset classes (equities, bonds, real estate, commodities, and volatility indices).
+                                    <br /><br />
+                                    Some of the benefits are:
+                                    
+                                    <ul className={styles.benefitsList}>
+                                    <li><strong>Optimized Storage</strong>: Efficiently compresses time-based measurements while reducing storage costs</li>
+                                    <li><strong>Enhanced Query Performance</strong>: Executes time-range queries significantly faster than standard collections</li>
+                                    <li><strong>Intelligent Data Organization</strong>: Automatically clusters by instrument identifier for efficient cross-asset analysis</li>
+                                    <li><strong>Flexible Time Granularity</strong>: Handles data at various resolutions from milliseconds to seconds, minutes, hours, and days</li>
+                                    <li><strong>Built-in Data Management</strong>: Includes automated retention policies and recovery mechanisms</li>
+                                    </ul>
+                                    
+                                    While time series collections have applications across many industries, they are particularly valuable for financial applications that require historical analysis, pattern recognition, and real-time market monitoring.
                                 </Body>
                             </div>
                         </div>
@@ -224,34 +237,43 @@ export default function AssetCard({ asset, chartData }) {
                                 )}
                             </div>
 
+
                             <div className={styles.explanationContainer}>
-
                                 <div className={styles.explanation}>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial NLP model. This score is derived from analyzing relevant news articles retrieved through semantic search, representing the average sentiment across all related articles.</Body>
+                                    <Body><em>Note: To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
+                                    <br/>
 
-                                    <Body>The <strong>New Sentiment Score </strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial sentiment analysis model. For each asset, the sentiment score is the average of sentiment scores from all related news articles.</Body>
-
-                                    <Body> <em> Note: To simulate dynamic behavior in this demo, a randomizer selects which news articles are displayed. In a real-world scenario, the sentiment would be computed from live data using your own logic.</em></Body>
+                                    <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
+                                    <br/>
+                                    <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
+                                    <Body>
+                                        1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model
+                                        <br/>
+                                        2. MongoDB's vector search finds the most semantically relevant news articles
+                                        <br/>
+                                    </Body>
+                                    
+                                    <Code
+                                        className={styles.queryContainer}
+                                        language="json"
+                                    >
+{`// MongoDB Vector Search Pipeline example
+[
+  {
+    "$vectorSearch": {
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "financial_news_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
+      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
+      "numCandidates": 5,
+      "limit": 3
+    }
+  }
+]`}
+                                    </Code>
+                                    
+                                    <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
                                 </div>
-                                <Code
-                                    className={styles.queryContainer}
-                                    language="json"
-                                >
-                                    {(() => {
-                                        const displayAsset = {
-                                            [asset.symbol]: asset.recentData?.map(item => ({
-                                                timestamp: item.timestamp,
-                                                open: item.open,
-                                                high: item.high,
-                                                low: item.low,
-                                                close: item.close,
-                                                volume: item.volume
-                                            })) || []
-                                        };
-
-                                        return JSON.stringify(displayAsset, null, 2);
-                                    })()}
-                                </Code>
-
                             </div>
 
                         </div>
