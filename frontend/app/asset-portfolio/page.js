@@ -9,7 +9,7 @@ import { Subtitle, Body } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
-import { fetchMostRecentMacroIndicators } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
+import { fetchMostRecentMacroIndicators, fetchMacroIndicatorsTrend } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 import {
     SegmentedControl,
     SegmentedControlOption
@@ -28,20 +28,29 @@ export default function AssetPortfolio() {
     useEffect(() => {
         async function fetchMarketData() {
             try {
-                const data = await fetchMostRecentMacroIndicators();
-
+                // Fetch both the latest indicator values and trend information
+                const indicatorsData = await fetchMostRecentMacroIndicators();
+                const trendData = await fetchMacroIndicatorsTrend();
+    
                 // Transform the data from object format to array format
-                const transformedData = Object.entries(data.macro_indicators).map(([series_id, indicator]) => ({
-                    series_id,
-                    title: indicator.title,
-                    frequency: indicator.frequency,
-                    frequency_short: indicator.frequency_short,
-                    units: indicator.units,
-                    units_short: indicator.units_short,
-                    date: { $date: new Date(indicator.date).toISOString() },
-                    value: indicator.value,
-                }));
-
+                const transformedData = Object.entries(indicatorsData.macro_indicators).map(([series_id, indicator]) => {
+                    // Get trend information for this indicator if available
+                    const trend = trendData.trend_indicators[series_id] || {};
+                    
+                    return {
+                        series_id,
+                        title: indicator.title,
+                        frequency: indicator.frequency,
+                        frequency_short: indicator.frequency_short,
+                        units: indicator.units,
+                        units_short: indicator.units_short,
+                        date: { $date: new Date(indicator.date).toISOString() },
+                        value: indicator.value,
+                        // Add the arrow direction from trend data
+                        arrow_direction: trend.arrow_direction || "EQUAL"
+                    };
+                });
+    
                 setMarketEvents(transformedData);
             } catch (error) {
                 console.error("Error fetching market events:", error);
@@ -131,7 +140,7 @@ export default function AssetPortfolio() {
                     </Card>
 
                     <Card className={styles.marketCard}>
-                        <Subtitle className={styles.cardSubtitle}>Market Events</Subtitle>
+                        <Subtitle className={styles.cardSubtitle}>Macroeconomic Indicators</Subtitle>
                         <div className={styles.headerRow}>
                             <span>INDICATOR</span>
                             <span>FREQUENCY</span>

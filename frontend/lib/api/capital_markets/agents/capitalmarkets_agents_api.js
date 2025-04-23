@@ -109,6 +109,27 @@ export async function fetchMostRecentMacroIndicators() {
 }
 
 /**  
+ * Get the trend direction for each macroeconomic indicator by comparing the two most recent values.
+ * @returns TrendMessageResponse: Object containing trend information for each macro indicator.
+ */
+export async function fetchMacroIndicatorsTrend() {
+    
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/macro-indicators/fetch-macro-indicators-trend`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching macro indicators trend: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
  * Report Data
  */
 
