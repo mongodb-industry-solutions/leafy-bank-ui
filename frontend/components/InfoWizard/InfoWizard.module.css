@@ -51,3 +51,12 @@
     max-width: unset;
   }
 }
+
+.htmlRender p, .htmlRender li{
+  font-size: 13px;
+}
+
+.htmlRender mark {
+  background-color: rgb(216, 214, 214);
+  color: black;
+}

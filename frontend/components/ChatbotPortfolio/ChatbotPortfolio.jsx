@@ -119,18 +119,65 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                         iconGlyph="Wizard"
                                         sections={[
                                             {
-                                                heading: "Instructions and Talk Track",
+                                                heading: "Solution Overview",
                                                 content: [
                                                     {
-                                                        heading: "...",
-                                                        body: "",
+                                                        heading: "Agentic-AI Powered Portfolio Management",
+                                                        body: 
+                                                            "Managing the diverse data types that stem from vast and complex sources is quite a challenge in the realm of capital markets, one clear example is investment portfolio management. This demo showcases how agentic AI, combined with MongoDB as the unified data platform, provides portfolio managers with a solution that ingests data from three main sources: ",
                                                     },
+                                                    {   
+                                                        body: [
+                                                            "Yahoo Finance Market Data",
+                                                            "FRED API Macroeconomic Data",
+                                                            "Financial news from a web scraping process",
+                                                        ],
+                                                    },
+                                                    {   
+                                                        body: 
+                                                            "Our solution harnessess the power of 3 AI agents:"
+                                                    },
+                                                    {   
+                                                        body: `<div>
+                                                            <ol>
+                                                                <li><strong>Market Analysis Agent:</strong> Responsible for data ingestion, processing and tranformation of Yahoo Finance assets and macroeconomic indicators into MongoDB, and generating insights.</li>
+                                                                <li><strong>Market News Agent:</strong> Responsible for data ingestion, processing and tranformation of market news into MongoDB, and generating insights.</li>
+                                                                <li><strong>Market Assistant Agent:</strong> Its purpose is to serve as a financial market assistant, helping users make more informed investment decisions.</li>
+                                                            </ol>
+                                                        </div>`,
+                                                        isHTML: true
+                                                    },
+                                                    {   
+                                                        heading: "Why this matters?",
+                                                        body: 
+                                                            "Our solution offers an intelligent investment portfolio management experience. It allows users to interact via a chatbot to employ a smart, risk-based approach by analyzing market conditions in real-time and suggesting portfolio reallocations aligned with investment goals, delivering insightful recommendations."
+                                                    },
+                                                    {   
+                                                        heading: "MongoDB Stack",
+                                                        body: [
+                                                            "Time Series collections",
+                                                            "Atlas Charts",
+                                                            "Atlas Vector Search",
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                heading: "How to Demo",
+                                                content: [
                                                     {
-                                                        heading: "How to Demo",
+                                                        heading: "Leafy Portfolio Assistant",
                                                         body: [
                                                             "Select one of the Suggested Questions or type a new one in the prompt",
                                                             "Click “Ask”",
                                                             "View response",
+                                                        ],
+                                                    },
+                                                    {
+                                                        heading: "Explore the capabilities",
+                                                        body: [
+                                                            "Discover how long-term memory enhances decision-making by utilizing past interactions and facilitates more personalized experiences.",
+                                                            "Test the potential of AI agents."
                                                         ],
                                                     },
                                                 ],
@@ -140,11 +187,11 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 content: [
                                                     {
                                                         heading: "Data Flow",
-                                                        body: "",
+                                                        body: "[Diagram and flow TBC]",
                                                     },
                                                     {
                                                         image: {
-                                                            src: "./images/.png",
+                                                            src: "./images/chatbotPortfolio_info.png",
                                                             alt: "Architecture",
                                                         },
                                                     },
@@ -155,8 +202,24 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 content: [
                                                     {
                                                         heading: "Flexibility",
-                                                        body: "MongoDB’s flexible document model unifies structured and unstructured data, creating a consistent dataset that enhances the AI’s ability to understand and respond to complex queries.",
-                                                    }
+                                                        body: "MongoDB’s flexible document model unifies structured (macroeconomic indicators and market data) and unstructured data (financial news) into a single data platform that integrates with agentic AI not only to understand and respond to complex queries, but also generate valuable insights for enhanced portfolio management.",
+                                                    },
+                                                    {
+                                                        heading: "Time Series collections",
+                                                        body: "MongoDB allows the storage of time series collections, efficiently ingesting large volumes of data. This enables AI agents to process and analyze sequential interactions, learn patterns, and state changes over time." 
+                                                    },
+                                                    {
+                                                        heading: "Vector Search",
+                                                        body: "Atlas Vector Search empowers the chatbot to efficiently store and query high-dimensional embeddings, enabling it to deliver contextually accurate and relevant responses. Making AI-driven interactions within the Leafy Bank ecosystem both fast and reliable."
+                                                    },
+                                                    {
+                                                        heading: "Atlas Charts",
+                                                        body: "MongoDB Atlas Charts provides an intuitive and dynamic way to visualize real-time application data, directly accessing collections to streamline analytic workflows. This feature enables users to effectively visualize metrics such as portfolio performance over the last month, asset distribution, and candlestick charts for each asset, allowing for a comprehensive interpretation of price movements."
+                                                    },
+                                                    {
+                                                        heading: "Integration with Agentic AI",
+                                                        body: "The integration of agentic AI with MongoDB enhances portfolio management by leveraging AI-driven insights to analyze and predict market trends, optimize asset allocations, and facilitate real-time data-driven investment decisions, all powered by efficient data storage and retrieval capabilities."
+                                                    },
                                                 ],
                                             },
                                         ]}
