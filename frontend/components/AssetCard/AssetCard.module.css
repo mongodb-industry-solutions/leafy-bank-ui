@@ -281,3 +281,66 @@
       display: block;
     }
   }
+
+  .formulaContainer {
+    margin: 12px 0;
+    background-color: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 3px solid #16ad79;
+  }
+  
+  .formula {
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* Document Model Section Styles */
+.docModelSection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+}
+
+.docModelIntro {
+  text-align: left;
+  margin-bottom: 20px;
+  background-color: #f9fbfa;
+  padding: 15px;
+  border-left: 3px solid #16ad79;
+  border-radius: 4px;
+}
+
+.docModelColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+}
+
+.rawDataColumn,
+.processedDataColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dataSubtitle {
+  text-align: left;
+  margin: 10px 0 5px 0;
+  color: #1c2d38;
+}
+
+.documentContainer {
+  height: 200px;
+  overflow: auto;
+  margin-bottom: 16px;
+}
+
+.dataNote {
+  font-size: 12px;
+  font-style: italic;
+  color: #6e6e6e;
+  margin: 2px 0 8px 0;
+}

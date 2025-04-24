@@ -13,6 +13,7 @@ import {
     fetchMostRecentMarketNewsReport,
     fetchAssetSuggestionsMarketVolatilityBased,
     fetchAssetSuggestionsMacroIndicatorsBased,
+    fetchMostRecentMacroIndicators,
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
@@ -21,12 +22,13 @@ export default function Assets() {
     const [assets, setAssets] = useState([]);
     const [marketNewsReport, setMarketNewsReport] = useState(null);
     const [chartMappings, setChartMappings] = useState({});
+    const [rawMacroIndicators, setRawMacroIndicators] = useState(null);
 
     useEffect(() => {
         async function fetchData() {
             try {
                 // Fetch asset prices, portfolio allocation, market reports, recent asset data, VIX sensitivity, and macro indicators
-                const [assetsClosePrice, allocationResponse, newsReportResponse, recentAssetsData, vixSensitivityData, macroIndicatorsData, marketAnalysisReport, chartMappingsResponse] = await Promise.all([
+                const [assetsClosePrice, allocationResponse, newsReportResponse, recentAssetsData, vixSensitivityData, macroIndicatorsData, marketAnalysisReport, rawMacroIndicatorsResponse, chartMappingsResponse] = await Promise.all([
                     marketFetchAssetsClosePrice(),
                     fetchPortfolioAllocation(),
                     fetchMostRecentMarketNewsReport(),
@@ -34,8 +36,12 @@ export default function Assets() {
                     fetchAssetSuggestionsMarketVolatilityBased(),
                     fetchAssetSuggestionsMacroIndicatorsBased(),
                     fetchMostRecentMarketAnalysisReport(),
+                    fetchMostRecentMacroIndicators(),
                     fetchChartMappings()
                 ]);
+
+                // Store the raw macro indicators data
+                setRawMacroIndicators(rawMacroIndicatorsResponse);
                 
                 // Store the chart mappings
                 setChartMappings(chartMappingsResponse.chart_mappings);
@@ -320,6 +326,7 @@ export default function Assets() {
                         key={index} 
                         asset={asset} 
                         chartData={chartMappings[asset.symbol]} 
+                        rawMacroIndicators={rawMacroIndicators}
                     />
                 ))
             ) : (
