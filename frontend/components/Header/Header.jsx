@@ -13,8 +13,8 @@ import UserProfile from '@/components/UserProfile/UserProfile';
 
 import styles from "./Header.module.css";
 
-function Header({ onLogout = () => {} }) {
-  
+function Header({ onLogout = () => { } }) {
+
   const [isMenuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -46,13 +46,13 @@ function Header({ onLogout = () => {} }) {
 
         {pathname === '/' && (
           <Link href="/" className={styles.navLink}>
-            <Body>Accounts & Transactions</Body>
+            <Body className={styles.navLinkText}>Accounts & Transactions</Body>
           </Link>
         )}
 
         {pathname === '/asset-portfolio' && (
           <Link href="/asset-portfolio" className={styles.navLink}>
-            <Body>Investment Portfolio</Body>
+            <Body className={styles.navLinkText}>Investment Portfolio Dashboard</Body>
           </Link>
         )}
 
@@ -63,7 +63,7 @@ function Header({ onLogout = () => {} }) {
       </div>
 
       <div className={styles["right-container"]}>
-        <UserProfile />
+        {pathname !== '/asset-portfolio' && <UserProfile />}
 
         {/* Desktop Logout Icon Button */}
         <IconButton

@@ -10,12 +10,17 @@
   grid-template-rows: 1fr;
   /* Single row */
   gap: 20px;
-  height: 50vh;
-  /* 2/3 of the viewport height */
+  align-items: stretch;
+  /* Ensures rows stretch to max height */
 }
 
 .roiCard {
-  padding-top: 15px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 20px;
+
 }
 
 .roiHeader {
@@ -31,27 +36,24 @@
 .rightColumn {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   height: 100%;
+  gap: 12px;
 }
-
 
 .assetCard {
   flex: 1;
-  /* Each takes half of the column height */
-
-  justify-content: center;
-  align-items: center;
-  padding: 0px 20px;
-}
-
-.assetsSection {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 20px;
 }
 
 .marketCard {
-  padding: 8px 24px;
-
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 10px 20px;
 }
 
 .iframeContainer {
@@ -67,10 +69,16 @@
   border: none;
 }
 
+.pieCharts {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
 .cardSubtitle {
   text-align: left;
   padding: 5px 10px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .headerRow {
@@ -87,7 +95,7 @@
   text-align: left;
 }
 
-.eventValue{
+.eventValue {
   display: flex;
   gap: 10px;
 }
@@ -95,6 +103,7 @@
 .arrowUp {
   color: #00674A;
 }
+
 .arrowDown {
   color: #c62727;
 }
@@ -197,4 +206,30 @@
 
 .lg-cancel-button {
   display: none !important;
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+   display: inline;
+    gap: 16px;
+  }
+
+  .roiCard{
+    height: 500px;
+    margin-bottom: 20px;
+  }
+
+  .pieCharts {
+    flex-direction: column;
+  }
+  
+
+  .chatbotButton {
+    position: sticky;
+    bottom: 20px;
+  }
+
+  .cardSubtitle {
+    font-size: 12px;
+  }
 }

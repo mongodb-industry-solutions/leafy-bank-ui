@@ -31,12 +31,12 @@ export default function AssetPortfolio() {
                 // Fetch both the latest indicator values and trend information
                 const indicatorsData = await fetchMostRecentMacroIndicators();
                 const trendData = await fetchMacroIndicatorsTrend();
-    
+
                 // Transform the data from object format to array format
                 const transformedData = Object.entries(indicatorsData.macro_indicators).map(([series_id, indicator]) => {
                     // Get trend information for this indicator if available
                     const trend = trendData.trend_indicators[series_id] || {};
-                    
+
                     return {
                         series_id,
                         title: indicator.title,
@@ -50,7 +50,7 @@ export default function AssetPortfolio() {
                         arrow_direction: trend.arrow_direction || "EQUAL"
                     };
                 });
-    
+
                 setMarketEvents(transformedData);
             } catch (error) {
                 console.error("Error fetching market events:", error);
@@ -85,7 +85,7 @@ export default function AssetPortfolio() {
 
     return (
         <div className={styles.container}>
-            <Header onLogout={handleLogout} />
+            <Header className={styles.navBar} onLogout={handleLogout} />
 
             <ConfirmationModal
                 open={showDisclaimer}
@@ -100,6 +100,7 @@ export default function AssetPortfolio() {
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">
+                    <Subtitle className={styles.cardSubtitle}>Portfolio Performance in the Last Month</Subtitle>
                     <div className={styles.roiHeader}>
                         <SegmentedControl
                             followFocus={true}
@@ -130,14 +131,33 @@ export default function AssetPortfolio() {
                 </Card>
 
                 <div className={styles.rightColumn}>
-                    <Card className={styles.assetCard} title="Asset Distribution">
-                        <div className={styles.iframeContainer}>
-                            <iframe
-                                src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=cd8d523c-b90a-4a39-a447-2e53cd392924&maxDataAge=3600&theme=light&autoRefresh=true"
-                                className={styles.responsiveIframe}
-                            ></iframe>
-                        </div>
-                    </Card>
+
+                    <div className={styles.pieCharts}>
+                        <Card className={styles.assetCard} title="Asset Distribution">
+
+                            <Subtitle className={styles.cardSubtitle}>Asset Distribution by Symbol</Subtitle>
+                            <div className={styles.iframeContainer}>
+                                <iframe
+                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=cd8d523c-b90a-4a39-a447-2e53cd392924&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    className={styles.responsiveIframe}
+                                ></iframe>
+
+                            </div>
+
+                        </Card>
+                        <Card className={styles.assetCard} title="Asset Distribution">
+
+                            <Subtitle className={styles.cardSubtitle}>Asset Distribution by Type</Subtitle>
+
+                            <div className={styles.iframeContainer}>
+                                <iframe
+                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=5af0765f-51bc-47af-ae5f-92cff4fadadb&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    className={styles.responsiveIframe}
+                                ></iframe>
+                            </div>
+
+                        </Card>
+                    </div>
 
                     <Card className={styles.marketCard}>
                         <Subtitle className={styles.cardSubtitle}>Macroeconomic Indicators</Subtitle>

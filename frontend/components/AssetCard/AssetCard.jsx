@@ -81,26 +81,26 @@ export default function AssetCard({ asset, chartData }) {
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
 
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={vixBadgeVariant}>{vixSensitivity}</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={gdpBadgeVariant}>{gdpAction}</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={interestRateBadgeVariant}>{interestRateAction}</Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={unemploymentBadgeVariant}>{unemploymentAction}</Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant={vixBadgeVariant}> </Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant={gdpBadgeVariant}></Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant={interestRateBadgeVariant}></Badge>
+                <Badge className={`${styles.cell} ${styles.badge}`} variant={unemploymentBadgeVariant}></Badge>
 
                 <div className={styles.actions}>
                     <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Candle Stick" className={styles.actionButton} onClick={() => handleExpand("candleStick")}>
-                            <Icon glyph="Diagram2" />
+                            <Icon glyph="Charts" />
                         </IconButton>
                     }>
                         Candle Stick Chart
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
-                        <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleExpand("docModel")}>
-                            <Icon glyph="CurlyBraces" />
+                        <IconButton aria-label="Insights" className={styles.actionButton} onClick={() => handleExpand("insights")}>
+                            <Icon glyph="Sparkle" />
                         </IconButton>
                     }>
-                        Doc Model
+                        Insights
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
@@ -112,12 +112,13 @@ export default function AssetCard({ asset, chartData }) {
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
-                        <IconButton aria-label="Insights" className={styles.actionButton} onClick={() => handleExpand("insights")}>
-                            <Icon glyph="Sparkle" />
+                        <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleExpand("docModel")}>
+                            <Icon glyph="CurlyBraces" />
                         </IconButton>
                     }>
-                        Insights
+                        Doc Model
                     </Tooltip>
+
                 </div>
             </div>
 
@@ -189,25 +190,25 @@ export default function AssetCard({ asset, chartData }) {
                                 <Body>
                                     Market data is stored in a{" "}
                                     <a
-                                    href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
+                                        href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                     >
-                                    time series collection
+                                        time series collection
                                     </a>{" "}
-                                    in MongoDB. 
+                                    in MongoDB.
                                     This specialized collection type is designed for efficient storage and retrieval of time-based measurements, making it ideal for our financial market data that spans multiple asset classes (equities, bonds, real estate, commodities, and volatility indices).
                                     <br /><br />
                                     Some of the benefits are:
-                                    
+
                                     <ul className={styles.benefitsList}>
-                                    <li><strong>Optimized Storage</strong>: Efficiently compresses time-based measurements while reducing storage costs</li>
-                                    <li><strong>Enhanced Query Performance</strong>: Executes time-range queries significantly faster than standard collections</li>
-                                    <li><strong>Intelligent Data Organization</strong>: Automatically clusters by instrument identifier for efficient cross-asset analysis</li>
-                                    <li><strong>Flexible Time Granularity</strong>: Handles data at various resolutions from milliseconds to seconds, minutes, hours, and days</li>
-                                    <li><strong>Built-in Data Management</strong>: Includes automated retention policies and recovery mechanisms</li>
+                                        <li><strong>Optimized Storage</strong>: Efficiently compresses time-based measurements while reducing storage costs</li>
+                                        <li><strong>Enhanced Query Performance</strong>: Executes time-range queries significantly faster than standard collections</li>
+                                        <li><strong>Intelligent Data Organization</strong>: Automatically clusters by instrument identifier for efficient cross-asset analysis</li>
+                                        <li><strong>Flexible Time Granularity</strong>: Handles data at various resolutions from milliseconds to seconds, minutes, hours, and days</li>
+                                        <li><strong>Built-in Data Management</strong>: Includes automated retention policies and recovery mechanisms</li>
                                     </ul>
-                                    
+
                                     While time series collections have applications across many industries, they are particularly valuable for financial applications that require historical analysis, pattern recognition, and real-time market monitoring.
                                 </Body>
                             </div>
@@ -242,23 +243,24 @@ export default function AssetCard({ asset, chartData }) {
                                 <div className={styles.explanation}>
                                     <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial NLP model. This score is derived from analyzing relevant news articles retrieved through semantic search, representing the average sentiment across all related articles.</Body>
                                     <Body><em>Note: To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
-                                    <br/>
+                                    <br />
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
-                                    <br/>
+                                    <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
                                         1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model
-                                        <br/>
+                                        <br />
                                         2. MongoDB's vector search finds the most semantically relevant news articles
-                                        <br/>
+                                        <br />
                                     </Body>
-                                    
-                                    <Code
-                                        className={styles.queryContainer}
-                                        language="json"
-                                    >
-{`// MongoDB Vector Search Pipeline example
+
+                                    <div className={styles.queryContainer}>
+                                        <Code
+
+                                            language="json"
+                                        >
+                                            {`// MongoDB Vector Search Pipeline example
 [
   {
     "$vectorSearch": {
@@ -270,8 +272,8 @@ export default function AssetCard({ asset, chartData }) {
     }
   }
 ]`}
-                                    </Code>
-                                    
+                                        </Code>
+                                    </div>
                                     <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
                                 </div>
                             </div>
@@ -310,7 +312,7 @@ export default function AssetCard({ asset, chartData }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <Subtitle>VIX Sensitivity Analysis</Subtitle>
-                                        <Badge variant={vixBadgeVariant}>{vixSensitivity}</Badge>
+                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={vixBadgeVariant}></Badge>
                                     </div>
 
                                     <Body weight="medium">Market Volatility:</Body>
@@ -334,7 +336,7 @@ export default function AssetCard({ asset, chartData }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <Subtitle>GDP Analysis</Subtitle>
-                                        <Badge variant={gdpBadgeVariant}>{gdpAction}</Badge>
+                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={gdpBadgeVariant}></Badge>
                                     </div>
 
                                     <Body weight="medium">GDP Trend:</Body>
@@ -356,7 +358,7 @@ export default function AssetCard({ asset, chartData }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <Subtitle>Interest Rate Analysis</Subtitle>
-                                        <Badge variant={interestRateBadgeVariant}>{interestRateAction}</Badge>
+                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={interestRateBadgeVariant}></Badge>
                                     </div>
 
                                     <Body weight="medium">Interest Rate Trend:</Body>
@@ -378,7 +380,7 @@ export default function AssetCard({ asset, chartData }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <Subtitle>Unemployment Rate Analysis</Subtitle>
-                                        <Badge variant={unemploymentBadgeVariant}>{unemploymentAction}</Badge>
+                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={unemploymentBadgeVariant}></Badge>
                                     </div>
 
                                     <Body weight="medium">Unemployment Rate Trend:</Body>
