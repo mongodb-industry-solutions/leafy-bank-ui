@@ -250,7 +250,7 @@ export default function Assets() {
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
-                <H2>Assets</H2>
+                <H2>Investment Portfolio</H2>
 
                 <InfoWizard
                     open={openHelpModal}
@@ -308,9 +308,9 @@ export default function Assets() {
                 <span>PORTFOLIO ALLOCATION</span>
                 <span>NEW SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
-                <span>GDP</span>
-                <span>INT</span>
-                <span>UNEM</span>
+                <span>GROSS DOMESTIC PRODUCT</span>
+                <span>INTEREST RATE</span>
+                <span>UNEMPLOYMENT</span>
                 <span>ACTIONS</span>
             </div>
 

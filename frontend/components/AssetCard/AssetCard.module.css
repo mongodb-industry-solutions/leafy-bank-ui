@@ -100,6 +100,7 @@
     display: flex;
     gap: 20px;
     margin-top: 20px;
+    
   }
 
   .newsContainer {
@@ -114,11 +115,11 @@
     text-align: left;
   }
 
-  .explanation{
+  .explanation {
     margin-bottom: 10px;
   }
 
-  .queryContainer{
+  .queryContainer {
     height: 250px;
   }
 
@@ -126,9 +127,10 @@
     background-color: #f8f9fa;
     padding: 12px 20px;
     border-radius: 8px;
-    margin-bottom: 8px;
+    margin-bottom: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    width: 600px;
+    width: fit-content;
+    max-width: 600px;
     text-align: left;
   }
 
@@ -168,20 +170,37 @@
     text-align: left;
 
   }
-  
+
   .codeColumn {
     flex: 1;
     min-width: 300px;
   }
-  
+
   .textColumn {
-    flex: 1 ;
+    flex: 1;
     min-width: 300px;
     display: flex;
   }
 
-  .badge {
+ .badge {
+    width: 25px;
+    height: 25px;
+  }
+/*
+  .badge{
     width: fit-content;
+    padding: 12px 5px;
+  }
+*/
+
+  .icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+  }
+
+  .queryContainer{
+    margin-top: 20px;
   }
 
   /* Add to existing styles */
@@ -255,4 +274,10 @@
 
   .insightSection body {
     margin-bottom: 8px;
+  }
+
+  @media (max-width: 768px) {
+    .docModelSection, .newsSection {
+      display: block;
+    }
   }
