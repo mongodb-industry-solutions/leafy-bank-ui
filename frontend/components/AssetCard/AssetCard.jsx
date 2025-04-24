@@ -11,7 +11,7 @@ import {
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
 
-export default function AssetCard({ asset, chartData }) {
+export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
@@ -164,63 +164,186 @@ export default function AssetCard({ asset, chartData }) {
 
                     {expandedSection === "docModel" && (
                         <div className={styles.docModelSection}>
-                            <div className={styles.codeColumn}>
-                                <Code
-                                    className={styles.documentContainer}
-                                    language="json"
-                                >
-                                    {(() => {
-                                        const displayAsset = {
-                                            [asset.symbol]: asset.recentData?.map(item => ({
+                            <Body className={styles.docModelIntro}>
+                                This section illustrates the document model progression from raw ingested data to processed reports. 
+                                On the left, you can see the initial data as it's ingested into MongoDB. On the right, you'll find the 
+                                reports generated after this data has been processed by scheduled agents that apply business rules, 
+                                perform calculations, and create investment insights. Time series collections are used for efficient storage of financial data points, 
+                                while standard collections store news articles and analysis reports. This unified approach enables 
+                                seamless transitions from data ingestion to insight generation.
+                            </Body>
+                            
+                            <div className={styles.docModelColumns}>
+                                {/* LEFT COLUMN - RAW DATA */}
+                                <div className={styles.rawDataColumn}>
+                                    <H3>Raw Ingested Data</H3>
+                                    
+                                    <Subtitle className={styles.dataSubtitle}>Market Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Sample data is shown here. The actual system processes a much larger dataset.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            [asset.symbol]: (asset.recentData || []).map(item => ({
                                                 timestamp: item.timestamp,
                                                 open: item.open,
                                                 high: item.high,
                                                 low: item.low,
                                                 close: item.close,
                                                 volume: item.volume
-                                            })) || []
-                                        };
-
-                                        return JSON.stringify(displayAsset, null, 2);
-                                    })()}
-                                </Code>
-                            </div>
-
-                            <div className={styles.textColumn}>
-                                <Body>
-                                    Market data is stored in a{" "}
-                                    <a
-                                        href="https://www.mongodb.com/docs/manual/core/timeseries-collections/"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
+                                            }))
+                                        }, null, 2)}
+                                    </Code>
+                                    
+                                    <Subtitle className={styles.dataSubtitle}>Financial News Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Displaying only 3 of many news articles processed by the system.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
                                     >
-                                        time series collection
-                                    </a>{" "}
-                                    in MongoDB.
-                                    This specialized collection type is designed for efficient storage and retrieval of time-based measurements, making it ideal for our financial market data that spans multiple asset classes (equities, bonds, real estate, commodities, and volatility indices).
-                                    <br /><br />
-                                    Some of the benefits are:
+                                        {JSON.stringify((asset.news || []).slice(0, 3).map(item => ({
+                                            headline: item.headline,
+                                            description: item.description,
+                                            source: item.source,
+                                            posted: item.posted,
+                                            asset: item.asset,
+                                            link: item.link || `https://news.google.com/search?q=${asset.symbol}`
+                                        })), null, 2)}
+                                    </Code>
+                                    
+                                    <Subtitle className={styles.dataSubtitle}>Macroeconomic Indicators Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Sample data from FRED (Federal Reserve Economic Data).</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify(
+                                            rawMacroIndicators || {
+                                                // Fallback if data isn't loaded yet
+                                                "macro_indicators": {
+                                                    "GDP": {
+                                                        "title": "Gross Domestic Product",
+                                                        "frequency": "Quarterly",
+                                                        "frequency_short": "Q",
+                                                        "units": "Billions of Dollars",
+                                                        "units_short": "Bil. of $",
+                                                        "date": "2025-03-27T00:00:00",
+                                                        "value": 29723.864
+                                                    },
+                                                    "UNRATE": {
+                                                        "title": "Unemployment Rate",
+                                                        "frequency": "Monthly",
+                                                        "frequency_short": "M",
+                                                        "units": "Percent",
+                                                        "units_short": "%",
+                                                        "date": "2025-03-01T00:00:00",
+                                                        "value": 4.2
+                                                    },
+                                                    "REAINTRATREARAT10Y": {
+                                                        "title": "10-Year Real Interest Rate",
+                                                        "frequency": "Monthly",
+                                                        "frequency_short": "M",
+                                                        "units": "Percent",
+                                                        "units_short": "%",
+                                                        "date": "2025-04-10T00:00:00",
+                                                        "value": 1.66841
+                                                    }
+                                                }
+                                            }, 
+                                            null, 
+                                            2
+                                        )}
+                                    </Code>
+                                </div>
 
-                                    <ul className={styles.benefitsList}>
-                                        <li><strong>Optimized Storage</strong>: Efficiently compresses time-based measurements while reducing storage costs</li>
-                                        <li><strong>Enhanced Query Performance</strong>: Executes time-range queries significantly faster than standard collections</li>
-                                        <li><strong>Intelligent Data Organization</strong>: Automatically clusters by instrument identifier for efficient cross-asset analysis</li>
-                                        <li><strong>Flexible Time Granularity</strong>: Handles data at various resolutions from milliseconds to seconds, minutes, hours, and days</li>
-                                        <li><strong>Built-in Data Management</strong>: Includes automated retention policies and recovery mechanisms</li>
-                                    </ul>
-
-                                    While time series collections have applications across many industries, they are particularly valuable for financial applications that require historical analysis, pattern recognition, and real-time market monitoring.
-                                </Body>
+                                {/* RIGHT COLUMN - PROCESSED REPORTS */}
+                                <div className={styles.processedDataColumn}>
+                                    <H3>Processed Reports</H3>
+                                    
+                                    <Subtitle className={styles.dataSubtitle}>Market Analysis Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the full market analysis report with truncated embeddings.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            market_analysis_report: {
+                                                report: {
+                                                    market_volatility_index: {
+                                                        fluctuation_answer: asset.vixSensitivity?.marketData?.fluctuation || "No data",
+                                                        diagnosis: asset.vixSensitivity?.marketData?.diagnosis || "No data"
+                                                    },
+                                                    macro_indicators: [
+                                                        {
+                                                            macro_indicator: "GDP",
+                                                            fluctuation_answer: asset.macroIndicators?.gdp?.marketData?.fluctuation || "No data",
+                                                            diagnosis: asset.macroIndicators?.gdp?.marketData?.diagnosis || "No data"
+                                                        },
+                                                        {
+                                                            macro_indicator: "Interest Rate",
+                                                            fluctuation_answer: asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No data",
+                                                            diagnosis: asset.macroIndicators?.interestRate?.marketData?.diagnosis || "No data"
+                                                        },
+                                                        {
+                                                            macro_indicator: "Unemployment Rate",
+                                                            fluctuation_answer: asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No data",
+                                                            diagnosis: asset.macroIndicators?.unemployment?.marketData?.diagnosis || "No data"
+                                                        }
+                                                    ],
+                                                    asset_trends: [
+                                                        {
+                                                            asset: asset.symbol,
+                                                            fluctuation_answer: asset.assetTrend?.fluctuation || "No data",
+                                                            diagnosis: asset.assetTrend?.diagnosis || "No data"
+                                                        }
+                                                    ]
+                                                },
+                                                report_embedding: [0.023, 0.187, 0.452, "..."]
+                                            }
+                                        }, null, 2)}
+                                    </Code>
+                                    
+                                    <Subtitle className={styles.dataSubtitle}>Market News Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the full market news report with truncated embeddings.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            market_news_report: {
+                                                report: {
+                                                    asset_news: asset.news || [],
+                                                    asset_news_summary: [
+                                                        {
+                                                            asset: asset.symbol,
+                                                            overall_sentiment_score: asset.sentiment.originalScore,
+                                                            overall_sentiment_category: asset.sentiment.category,
+                                                            news_count: asset.news ? asset.news.length : 0
+                                                        }
+                                                    ]
+                                                },
+                                                report_embedding: [0.124, 0.394, 0.721, "..."]
+                                            }
+                                        }, null, 2)}
+                                    </Code>
+                                </div>
                             </div>
+
                         </div>
                     )}
-                    {expandedSection === "news" && (
 
+                    {expandedSection === "news" && (
                         <div className={styles.newsSection}>
                             <div className={styles.newsContainer}>
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
-                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted)) // most recent = lower value
+                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
                                         .map((item, index) => (
                                             <div key={index} className={styles.newsCard}>
                                                 <div className={styles.newsHeader}>
@@ -241,26 +364,31 @@ export default function AssetCard({ asset, chartData }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial NLP model. This score is derived from analyzing relevant news articles retrieved through semantic search, representing the average sentiment across all related articles.</Body>
-                                    <Body><em>Note: To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
-                                    <br />
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial NLP model. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    
+                                        <div className={styles.formulaContainer}>
+                                            <Body weight="medium">Sentiment Score Formula:</Body>
+                                            <Body className={styles.formula}>
+                                                {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
+                                            </Body>
+                                        </div>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
+                                    <Body><em>* To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
                                     <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
-                                        1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model
+                                        1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
                                         <br />
-                                        2. MongoDB's vector search finds the most semantically relevant news articles
+                                        2. MongoDB's vector search finds the most semantically relevant news articles.
                                         <br />
                                     </Body>
 
                                     <div className={styles.queryContainer}>
                                         <Code
-
                                             language="json"
                                         >
-                                            {`// MongoDB Vector Search Pipeline example
+{`// MongoDB Vector Search Pipeline example
 [
   {
     "$vectorSearch": {
@@ -274,10 +402,10 @@ export default function AssetCard({ asset, chartData }) {
 ]`}
                                         </Code>
                                     </div>
+                                    <br />
                                     <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
                                 </div>
                             </div>
-
                         </div>
                     )}
 
@@ -290,8 +418,8 @@ export default function AssetCard({ asset, chartData }) {
                             <div className={styles.insightSection}>
                                 <div className={styles.insightHeader}>
                                     <Subtitle>50-Day Moving Average Analysis</Subtitle>
-                                    <Badge variant={trendBadgeVariant}>
-                                        {assetTrend.charAt(0).toUpperCase() + assetTrend.slice(1)}
+                                    <Badge className={`${styles.cell} ${styles.badge}`} variant={trendBadgeVariant}>
+                                        
                                     </Badge>
                                 </div>
 
@@ -319,9 +447,7 @@ export default function AssetCard({ asset, chartData }) {
                                     <Body>{asset.vixSensitivity?.marketData?.fluctuation || "No market volatility data available."}</Body>
 
                                     <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Action: <span className={asset.vixSensitivity?.action === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                        {asset.vixSensitivity?.action || "KEEP"}
-                                    </span></Body>
+                                    <Body weight="medium">Suggestion:</Body>
 
                                     <Body>{asset.vixSensitivity?.explanation || "No explanation available."}</Body>
 
@@ -343,9 +469,7 @@ export default function AssetCard({ asset, chartData }) {
                                     <Body>{asset.macroIndicators?.gdp?.marketData?.fluctuation || "No market GDP data available."}</Body>
 
                                     <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Action: <span className={gdpAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                        {gdpAction}
-                                    </span></Body>
+                                    <Body weight="medium">Suggestion:</Body>
 
                                     <Body>{asset.macroIndicators?.gdp?.explanation || "No explanation available."}</Body>
 
@@ -365,9 +489,7 @@ export default function AssetCard({ asset, chartData }) {
                                     <Body>{asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No market interest rate data available."}</Body>
 
                                     <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Action: <span className={interestRateAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                        {interestRateAction}
-                                    </span></Body>
+                                    <Body weight="medium">Suggestion:</Body>
 
                                     <Body>{asset.macroIndicators?.interestRate?.explanation || "No explanation available."}</Body>
 
@@ -387,9 +509,7 @@ export default function AssetCard({ asset, chartData }) {
                                     <Body>{asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No market unemployment data available."}</Body>
 
                                     <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Action: <span className={unemploymentAction === "KEEP" ? styles.positiveAction : styles.negativeAction}>
-                                        {unemploymentAction}
-                                    </span></Body>
+                                    <Body weight="medium">Suggestion:</Body>
 
                                     <Body>{asset.macroIndicators?.unemployment?.explanation || "No explanation available."}</Body>
 
