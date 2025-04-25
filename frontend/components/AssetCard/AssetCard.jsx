@@ -365,12 +365,15 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial LLM model. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
  
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>
                                         {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
                                     </Banner>
+
+                                    <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge  className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge  className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
+                                    <br></br>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
                                     <Body><em>* To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
