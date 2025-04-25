@@ -5,10 +5,10 @@ import styles from "./Assets.module.css";
 import AssetCard from "../AssetCard/AssetCard";
 import { H2, Subtitle, Body } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
-import { 
-    marketFetchAssetsClosePrice, 
-    marketFetchRecentAssetsData, 
-    fetchPortfolioAllocation, 
+import {
+    marketFetchAssetsClosePrice,
+    marketFetchRecentAssetsData,
+    fetchPortfolioAllocation,
     fetchMostRecentMarketAnalysisReport,
     fetchMostRecentMarketNewsReport,
     fetchAssetSuggestionsMarketVolatilityBased,
@@ -31,26 +31,26 @@ export default function Assets() {
                 const cachedData = localStorage.getItem('portfolioData');
                 const cachedTimestamp = localStorage.getItem('portfolioDataTimestamp');
                 const dataIsStale = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp)) > (6 * 60 * 60 * 1000); // 6 hours
-    
+
                 if (cachedData && !dataIsStale) {
                     const parsedData = JSON.parse(cachedData);
                     setAssets(parsedData.assets || []);
                     setMarketNewsReport(parsedData.marketNewsReport || null);
                     setChartMappings(parsedData.chartMappings || {});
                     setRawMacroIndicators(parsedData.rawMacroIndicators || null);
-                    
+
                     // Fetch updated data in the background
                     fetchFreshData(false);
                     return;
                 }
-                
+
                 // No valid cache, fetch fresh data with loading state
                 await fetchFreshData(true);
             } catch (error) {
                 console.error("Error in fetch sequence:", error);
             }
         }
-        
+
         async function fetchFreshData(shouldShowLoading) {
             try {
                 // First batch - critical data needed for basic UI rendering
@@ -60,11 +60,11 @@ export default function Assets() {
                     fetchMostRecentMacroIndicators(),
                     fetchChartMappings()
                 ]);
-                
+
                 // Store critical data
                 setRawMacroIndicators(rawMacroIndicatorsResponse);
                 setChartMappings(chartMappingsResponse.chart_mappings);
-                
+
                 // Create basic asset data for initial render
                 if (shouldShowLoading) {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
@@ -105,34 +105,34 @@ export default function Assets() {
                             };
                         })
                         .filter(asset => asset.symbol !== "VIX");
-                    
+
                     // Sort assets alphabetically by symbol
                     basicAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
                     setAssets(basicAssets);
                 }
-                
+
                 // Second batch - fetch remaining data in the background
-                const [newsReportResponse, recentAssetsData, vixSensitivityData, 
-                       macroIndicatorsData, marketAnalysisReport] = await Promise.all([
-                    fetchMostRecentMarketNewsReport(),
-                    marketFetchRecentAssetsData(),
-                    fetchAssetSuggestionsMarketVolatilityBased(),
-                    fetchAssetSuggestionsMacroIndicatorsBased(),
-                    fetchMostRecentMarketAnalysisReport(),
-                ]);
-                
+                const [newsReportResponse, recentAssetsData, vixSensitivityData,
+                    macroIndicatorsData, marketAnalysisReport] = await Promise.all([
+                        fetchMostRecentMarketNewsReport(),
+                        marketFetchRecentAssetsData(),
+                        fetchAssetSuggestionsMarketVolatilityBased(),
+                        fetchAssetSuggestionsMacroIndicatorsBased(),
+                        fetchMostRecentMarketAnalysisReport(),
+                    ]);
+
                 // Store news report data
                 setMarketNewsReport(newsReportResponse.market_news_report);
-                
+
                 // Get market analysis report macro indicators
                 const marketMacroIndicators = marketAnalysisReport.market_analysis_report.report.macro_indicators;
                 const gdpMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "GDP");
                 const interestRateMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Interest Rate");
                 const unemploymentMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Unemployment Rate");
-                
+
                 // Get market volatility index data
                 const marketVolatilityIndex = marketAnalysisReport.market_analysis_report.report.market_volatility_index;
-                
+
                 // Function to normalize sentiment score based on category
                 const normalizeSentimentScore = (category, originalScore) => {
                     // Define the ranges for each category
@@ -141,60 +141,60 @@ export default function Assets() {
                         "Neutral": { min: 0.4, max: 0.6 },
                         "Negative": { min: 0.0, max: 0.4 }
                     };
-                    
+
                     // Get the appropriate range based on category
                     const range = ranges[category] || ranges["Neutral"];
-                    
+
                     // Generate a normalized score within the appropriate range
                     // This ensures the score aligns with the category regardless of original value
                     const rangeSize = range.max - range.min;
                     const normalizedScore = range.min + (Math.random() * rangeSize);
-                    
+
                     return parseFloat(normalizedScore.toFixed(2));
                 };
-                
+
                 // Transform the asset price data with all details
                 const transformedAssets = Object.entries(assetsClosePrice.assets_close_price)
                     .map(([symbol, data]) => {
                         // Get allocation data for this asset
                         const allocation = allocationResponse.portfolio_allocation[symbol];
-                        
+
                         // Get sentiment data for this asset from the news report
                         const sentimentData = newsReportResponse.market_news_report.report.asset_news_summary
                             .find(item => item.asset === symbol);
-                        
+
                         // Get news headlines for this asset
                         const assetNews = newsReportResponse.market_news_report.report.asset_news
                             .filter(news => news.asset === symbol);
-                        
+
                         // Get sentiment category and normalize the score to match the category
                         const sentimentCategory = sentimentData ? sentimentData.overall_sentiment_category : "Neutral";
                         const originalScore = sentimentData ? sentimentData.overall_sentiment_score : 0.5;
                         const normalizedScore = normalizeSentimentScore(sentimentCategory, originalScore);
-                        
+
                         // Get recent price data for this asset
                         const recentData = recentAssetsData.assets_data[symbol] || [];
-                        
+
                         // Get VIX sensitivity data for this asset
                         const vixData = vixSensitivityData.asset_suggestions
                             .find(item => item.asset === symbol);
-                        
+
                         // Extract VIX sensitivity info if available
                         const vixInfo = vixData?.macro_indicators?.find(indicator => indicator.indicator === "VIX");
-                        
+
                         // Get macro indicators data for this asset
                         const macroData = macroIndicatorsData.asset_suggestions
                             .find(item => item.asset === symbol);
-                        
+
                         // Extract specific macro indicators
                         const gdpInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "GDP");
                         const interestRateInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Interest Rate");
                         const unemploymentInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Unemployment Rate");
-                        
+
                         // Get asset trend (MA50) data from the market analysis report
                         const assetTrend = marketAnalysisReport.market_analysis_report.report.asset_trends
                             .find(item => item.asset === symbol);
-                        
+
                         return {
                             symbol,
                             close: parseFloat(data.close_price.toFixed(2)), // Round to 2 decimals
@@ -313,13 +313,13 @@ export default function Assets() {
                     })
                     // Filter out VIX from the assets list as it's not an actual investable asset
                     .filter(asset => asset.symbol !== "VIX");
-                
+
                 // Sort assets alphabetically by symbol
                 transformedAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
-                
+
                 // Update state with complete data
                 setAssets(transformedAssets);
-                
+
                 // Save to cache for future visits
                 try {
                     localStorage.setItem('portfolioData', JSON.stringify({
@@ -337,7 +337,7 @@ export default function Assets() {
                 console.error("Error fetching fresh data:", error);
             }
         }
-        
+
         fetchData();
     }, []);
 
@@ -358,28 +358,28 @@ export default function Assets() {
             </div>
         ));
     };
-    
+
     const LazyAssetCards = React.memo(({ assets, chartMappings, rawMacroIndicators }) => {
         const [isVisible, setIsVisible] = useState(false);
-        
+
         useEffect(() => {
             // Delay loading remaining cards to prioritize initial render
             const timer = setTimeout(() => {
                 setIsVisible(true);
             }, 200);
-            
+
             return () => clearTimeout(timer);
         }, []);
-        
+
         if (!isVisible) {
             return <div className={styles.loadingMore}>Loading more assets...</div>;
         }
-        
+
         return assets.map((asset, index) => (
-            <AssetCard 
+            <AssetCard
                 key={`lazy-${asset.symbol}-${index}`}
-                asset={asset} 
-                chartData={chartMappings[asset.symbol]} 
+                asset={asset}
+                chartData={chartMappings[asset.symbol]}
                 rawMacroIndicators={rawMacroIndicators}
             />
         ));
@@ -389,7 +389,7 @@ export default function Assets() {
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
                 <H2>Investment Portfolio</H2>
-    
+
                 <InfoWizard
                     open={openHelpModal}
                     setOpen={setOpenHelpModal}
@@ -400,14 +400,33 @@ export default function Assets() {
                             heading: "Instructions and Talk Track",
                             content: [
                                 {
-                                    heading: "WIP",
-                                    body: "WIP",
+                                    heading: "Agentic-AI Powered Investment Portfolio",
+                                    body:
+                                        "Handling the variety of data types that come from diverse and complex sources can be quite challenging in investment portfolio management. In this demo, you'll see how agentic AI, combined with MongoDB, provides portfolio managers with advanced tools that provide insights tailored to specific financial objectives and risk tolerances.",
                                 },
                                 {
                                     heading: "How to Demo",
-                                    body: [
-                                        "WIP",
-                                    ],
+                                    body: "Explore the actions from the investment portfolio by clicking on the different icons:"
+                                },
+                                {
+                                    image: {
+                                        src: "./images/actions.png",
+                                        alt: "Architecture",
+                                    },
+                                },
+                                {
+                                    body:
+
+                                        `<div>
+                                        <ul>
+                                            <li><strong>Candle Stick Chart:</strong> Visualize the price movements of an asset over various timeframes, such as the past day, week, or six months.</li>
+                                            <li><strong>Insights:</strong> Explore a comprehensive report and explore information like Price vs. 50-Day Moving Average, and more.</li>
+                                            <li><strong>News Headlines:</strong> Read news about the asset and uncover the factors influencing the sentiment score.</li>
+                                            <li><strong>Document Model:</strong> Observe how the document model progresses from data ingestion to insight generation.</li>
+                    
+                                        </ul>
+                                    </div>`,
+                                    isHTML: true
                                 },
                             ],
                         },
@@ -415,14 +434,68 @@ export default function Assets() {
                             heading: "Behind the Scenes",
                             content: [
                                 {
-                                    heading: "Data Flow",
-                                    body: "",
+                                    heading: "High-level Architecture",
                                 },
                                 {
                                     image: {
-                                        src: "./images/OF_info.png",
+                                        src: "./images/assets_info.png",
                                         alt: "Architecture",
                                     },
+                                },
+                                {
+                                    body:
+                                        `<div>
+                                        <p>
+                                            <br>
+                                            This solution is divided into three core services: 
+                                                <ol>
+                                                    <li>Capital Markets Loaders Service</li>
+                                                    <li>Capital Markets Agents Service</li>
+                                                    <li>Market Assistant ReAct Agent Chatbot</li>
+                                                </ol>
+                                        </p>
+                                        <p>
+                                            This section of the demo focuses on the first two:
+                                            <br>
+                                                <br><strong>1. Capital Markets Loaders Service</strong> 
+                                            <br>
+                                            This service is in charge of extracting, transforming, and loading data from these three sources into MongoDB Atlas for further analysis:
+                                            <ul>
+                                                <li>Yahoo Finance Market Data</li>
+                                                <li>FRED API Macroeconomic Data</li>
+                                                <li>Financial news from a web scraping process</li>
+                                            </ul>
+                                            <p>
+                                                As well as generating portfolio performance (emulation).
+                                            </p>
+
+                                            <p>
+                                                <strong>2. Capital Markets Agents Service </strong>
+                                                <br> 
+                                                After the data is stored into MongoDB, two scheduled agents perform a series of operations to analyze the data and generate insights and store the reports into MongoDB Atlas: 
+                                                <ul>
+                                                    <li>Market Analysis Agent: Analyzes asset trends, macroeconomic indicators, and market volatility to generate portfolio insights and recommendations.</li>
+                                                    <li>Market News Agent: Processes financial news, performs sentiment analysis, and produces summarized market news intelligence</li> 
+                                                </ul>
+                                            </p>
+                                        </p>
+                                    </div>`,
+                                    isHTML: true,
+                                },
+                                {
+                                    body:
+                                        `<div>
+                                        
+                                    </div>`,
+                                    isHTML: true,
+                                },
+                                {
+                                    heading: "MongoDB Stack",
+                                    body: [
+                                        "Time Series collections",
+                                        "Atlas Charts",
+                                        "Atlas Vector Search",
+                                    ],
                                 },
                             ],
                         },
@@ -431,14 +504,30 @@ export default function Assets() {
                             content: [
                                 {
                                     heading: "Flexibility",
-                                    body: "MongoDB shines in its flexibility—serving as a central data storage solution for retrieving data from external financial institutions while seamlessly supporting diverse formats and structures.",
+                                    body: "MongoDB’s flexible document model unifies structured (macroeconomic indicators and market data) and unstructured data (financial news) into a single data platform that integrates with agentic AI not only to understand and respond to complex queries, but also generate valuable insights for enhanced portfolio management.",
+                                },
+                                {
+                                    heading: "Time Series collections",
+                                    body: "MongoDB allows the storage of time series collections, efficiently ingesting large volumes of data. This enables AI agents to process and analyze sequential interactions, learn patterns, and state changes over time."
+                                },
+                                {
+                                    heading: "Vector Search",
+                                    body: "Atlas Vector Search empowers the chatbot to efficiently store and query high-dimensional embeddings, enabling it to deliver contextually accurate and relevant responses. Making AI-driven interactions within the Leafy Bank ecosystem both fast and reliable."
+                                },
+                                {
+                                    heading: "Atlas Charts",
+                                    body: "MongoDB Atlas Charts provides an intuitive and dynamic way to visualize real-time application data, directly accessing collections to streamline analytic workflows. This feature enables users to effectively visualize metrics such as portfolio performance over the last month, asset distribution, and candlestick charts for each asset, allowing for a comprehensive interpretation of price movements."
+                                },
+                                {
+                                    heading: "Integration with Agentic AI",
+                                    body: "The integration of agentic AI with MongoDB enhances portfolio management by leveraging AI-driven insights to analyze and predict market trends, optimize asset allocations, and facilitate real-time data-driven investment decisions, all powered by efficient data storage and retrieval capabilities."
                                 },
                             ],
                         },
                     ]}
                 />
             </div>
-    
+
             <div className={styles.headerRow}>
                 <span>SYMBOL</span>
                 <span>DESCRIPTION</span>
@@ -451,25 +540,25 @@ export default function Assets() {
                 <span>UNEMPLOYMENT</span>
                 <span>ACTIONS</span>
             </div>
-    
+
             {assets.length > 0 ? (
                 <>
                     {/* Load first 4 assets immediately */}
                     {assets.slice(0, 4).map((asset, index) => (
-                        <AssetCard 
+                        <AssetCard
                             key={`primary-${asset.symbol}-${index}`}
-                            asset={asset} 
-                            chartData={chartMappings[asset.symbol]} 
+                            asset={asset}
+                            chartData={chartMappings[asset.symbol]}
                             rawMacroIndicators={rawMacroIndicators}
                         />
                     ))}
-                    
+
                     {/* Load remaining assets with a slight delay */}
                     {assets.length > 4 && (
-                        <LazyAssetCards 
-                            assets={assets.slice(4)} 
-                            chartMappings={chartMappings} 
-                            rawMacroIndicators={rawMacroIndicators} 
+                        <LazyAssetCards
+                            assets={assets.slice(4)}
+                            chartMappings={chartMappings}
+                            rawMacroIndicators={rawMacroIndicators}
                         />
                     )}
                 </>

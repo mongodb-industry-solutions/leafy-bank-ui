@@ -120,65 +120,18 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                         iconGlyph="Wizard"
                                         sections={[
                                             {
-                                                heading: "Solution Overview",
-                                                content: [
-                                                    {
-                                                        heading: "Agentic-AI Powered Portfolio Management",
-                                                        body: 
-                                                            "Managing the diverse data types that stem from vast and complex sources is quite a challenge in the realm of capital markets, one clear example is investment portfolio management. This demo showcases how agentic AI, combined with MongoDB as the unified data platform, provides portfolio managers with a solution that ingests data from three main sources: ",
-                                                    },
-                                                    {   
-                                                        body: [
-                                                            "Yahoo Finance Market Data",
-                                                            "FRED API Macroeconomic Data",
-                                                            "Financial news from a web scraping process",
-                                                        ],
-                                                    },
-                                                    {   
-                                                        body: 
-                                                            "Our solution harnessess the power of 3 AI agents:"
-                                                    },
-                                                    {   
-                                                        body: `<div>
-                                                            <ol>
-                                                                <li><strong>Market Analysis Agent:</strong> Responsible for data ingestion, processing and tranformation of Yahoo Finance assets and macroeconomic indicators into MongoDB, and generating insights.</li>
-                                                                <li><strong>Market News Agent:</strong> Responsible for data ingestion, processing and tranformation of market news into MongoDB, and generating insights.</li>
-                                                                <li><strong>Market Assistant Agent:</strong> Its purpose is to serve as a financial market assistant, helping users make more informed investment decisions.</li>
-                                                            </ol>
-                                                        </div>`,
-                                                        isHTML: true
-                                                    },
-                                                    {   
-                                                        heading: "Why this matters?",
-                                                        body: 
-                                                            "Our solution offers an intelligent investment portfolio management experience. It allows users to interact via a chatbot to employ a smart, risk-based approach by analyzing market conditions in real-time and suggesting portfolio reallocations aligned with investment goals, delivering insightful recommendations."
-                                                    },
-                                                    {   
-                                                        heading: "MongoDB Stack",
-                                                        body: [
-                                                            "Time Series collections",
-                                                            "Atlas Charts",
-                                                            "Atlas Vector Search",
-                                                        ],
-                                                    },
-                                                ],
-                                            },
-                                            {
-                                                heading: "How to Demo",
+                                                heading: "Instructions and Talk Track",
                                                 content: [
                                                     {
                                                         heading: "Leafy Portfolio Assistant",
+                                                        body: "Leafy Portfolio Assistant provides portfolio managers with a tool that allows them to quickly access and analyze market data, portfolio performance, and news insights. It enhances efficiency by providing tailored responses and reducing the time spent solving the complexities behind data retrieval and analysis, enabling improved decision-making with real-time updates and contextually aware interactions."
+                                                    },
+                                                    {
+                                                        heading: "How to Demo",
                                                         body: [
                                                             "Select one of the Suggested Questions or type a new one in the prompt",
                                                             "Click “Ask”",
                                                             "View response",
-                                                        ],
-                                                    },
-                                                    {
-                                                        heading: "Explore the capabilities",
-                                                        body: [
-                                                            "Discover how long-term memory enhances decision-making by utilizing past interactions and facilitates more personalized experiences.",
-                                                            "Test the potential of AI agents."
                                                         ],
                                                     },
                                                 ],
@@ -187,14 +140,62 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 heading: "Behind the Scenes",
                                                 content: [
                                                     {
-                                                        heading: "Data Flow",
-                                                        body: "[Diagram and flow TBC]",
+                                                        heading: "High-level Architecture",
                                                     },
                                                     {
                                                         image: {
                                                             src: "./images/chatbotPortfolio_info.png",
                                                             alt: "Architecture",
                                                         },
+                                                    },
+                                                    {
+                                                        body:
+                                                            `<div>
+                                                            <p>
+                                                                <br>
+                                                                This solution is divided into three core services: 
+                                                                    <ol>
+                                                                        <li>Capital Markets Loaders Service</li>
+                                                                        <li>Capital Markets Agents Service</li>
+                                                                        <li>Market Assistant ReAct Agent Chatbot</li>
+                                                                    </ol>
+                                                            </p>
+                                                            <p>
+                                                                This section of the demo focuses on the last one:
+                                                                <br>
+                                                                    <br><strong>3. Market Assistant ReAct Agent Chatbot</strong> 
+                                                                <br>
+                                                                The Market Assistant Agent is designed to interact with users, process their questions, and provide relevant answers using various technologies and data sources.
+                                                                <br>
+                                                                Here's how it operates:
+                                                                <br>
+                                                                <ul>
+                                                                    <li><strong>User interaction: </strong> Starts with a user's question and finishes with the agent's answer.</li>
+                                                                    <li><strong>ReAct Agent: </strong> The core of the system is a ReAct (reason-and-act) agent. This agent is responsible for interpreting the question, reasoning through possible actions, and generating a response. It combines reasoning with predefined actions using available tools.</li>
+                                                                    <li><strong>Tools: </strong></li>
+                                                                        <ul>
+                                                                            <li>Aggregations: To compile and analyze data.</li>
+                                                                            <li>Vector Search: To find similar data points using embeddings.</li>
+                                                                            <li>Data Retrieval: To fetch relevant documents from the collections.</li>
+                                                                        </ul>
+                                                                    <li><strong>Models: </strong></li>
+                                                                        <ul>
+                                                                            <li>LLM: Anthropics Claude Chat Completions model - AWS Bedrock, is used for understanding and processing natural language queries.</li>
+                                                                            <li>Embedding: "voyage-finance-2" is used to numerically process and understand financial data queries (vectors).</li>
+                                                                        </ul>
+                                                                    <li><strong>MongoDB Atlas: </strong> Serves as the data layer that enables the storage of all the collections retrieved, search operations and memory retention of past interactions.</li>
+                                                                </ul>
+                                                            </p>
+                                                        </div>`,
+                                                        isHTML: true,
+                                                    },
+                                                    {
+                                                        heading: "MongoDB Stack",
+                                                        body: [
+                                                            "Time Series collections",
+                                                            "Atlas Charts",
+                                                            "Atlas Vector Search",
+                                                        ],
                                                     },
                                                 ],
                                             },
