@@ -52,8 +52,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     };
 
     const suggestions = [
-        "Can you perform an analysis of my current portfolio? Please give me an overall diagnosis and highlight the best-performing assets.",
-        "What are the news saying about my asset GLD (Gold ETF)?",
+        "Based on market condition today, what overall portfolio asset reallocation would you suggest?",
+        "What is the news sentiment about my asset GLD (Gold ETF)?",
+        "What would be the impact of replacing 50% of Equity assets with Gold?",
         "I would like to start investing in the database market. Can you search the internet for what’s going on with MDB (MongoDB)? I want to know what the press is saying.",
         "What questions have I asked you so far, and which tools have you used to respond to me?"
     ];
