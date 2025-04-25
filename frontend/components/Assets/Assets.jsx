@@ -27,26 +27,101 @@ export default function Assets() {
     useEffect(() => {
         async function fetchData() {
             try {
-                // Fetch asset prices, portfolio allocation, market reports, recent asset data, VIX sensitivity, and macro indicators
-                const [assetsClosePrice, allocationResponse, newsReportResponse, recentAssetsData, vixSensitivityData, macroIndicatorsData, marketAnalysisReport, rawMacroIndicatorsResponse, chartMappingsResponse] = await Promise.all([
+                // First, check for cached data and use it immediately if available
+                const cachedData = localStorage.getItem('portfolioData');
+                const cachedTimestamp = localStorage.getItem('portfolioDataTimestamp');
+                const dataIsStale = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp)) > (6 * 60 * 60 * 1000); // 6 hours
+    
+                if (cachedData && !dataIsStale) {
+                    const parsedData = JSON.parse(cachedData);
+                    setAssets(parsedData.assets || []);
+                    setMarketNewsReport(parsedData.marketNewsReport || null);
+                    setChartMappings(parsedData.chartMappings || {});
+                    setRawMacroIndicators(parsedData.rawMacroIndicators || null);
+                    
+                    // Fetch updated data in the background
+                    fetchFreshData(false);
+                    return;
+                }
+                
+                // No valid cache, fetch fresh data with loading state
+                await fetchFreshData(true);
+            } catch (error) {
+                console.error("Error in fetch sequence:", error);
+            }
+        }
+        
+        async function fetchFreshData(shouldShowLoading) {
+            try {
+                // First batch - critical data needed for basic UI rendering
+                const [assetsClosePrice, allocationResponse, rawMacroIndicatorsResponse, chartMappingsResponse] = await Promise.all([
                     marketFetchAssetsClosePrice(),
                     fetchPortfolioAllocation(),
+                    fetchMostRecentMacroIndicators(),
+                    fetchChartMappings()
+                ]);
+                
+                // Store critical data
+                setRawMacroIndicators(rawMacroIndicatorsResponse);
+                setChartMappings(chartMappingsResponse.chart_mappings);
+                
+                // Create basic asset data for initial render
+                if (shouldShowLoading) {
+                    const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
+                        .map(([symbol, data]) => {
+                            const allocation = allocationResponse.portfolio_allocation[symbol];
+                            return {
+                                symbol,
+                                close: parseFloat(data.close_price.toFixed(2)),
+                                timestamp: {
+                                    $date: new Date(data.timestamp).toISOString()
+                                },
+                                allocation: allocation ? {
+                                    percentage: allocation.allocation_percentage,
+                                    decimal: allocation.allocation_decimal,
+                                    description: allocation.description,
+                                    asset_type: allocation.asset_type
+                                } : null,
+                                sentiment: {
+                                    score: 0.5,
+                                    category: "Neutral",
+                                    originalScore: 0.5
+                                },
+                                news: [],
+                                recentData: [],
+                                vixSensitivity: {
+                                    sensitivity: "NEUTRAL",
+                                    action: "KEEP",
+                                    explanation: "Loading data...",
+                                    marketData: { fluctuation: "Loading...", diagnosis: "Loading..." }
+                                },
+                                macroIndicators: {
+                                    gdp: { action: "KEEP", explanation: "Loading data...", marketData: { fluctuation: "Loading...", diagnosis: "Loading..." } },
+                                    interestRate: { action: "KEEP", explanation: "Loading data...", marketData: { fluctuation: "Loading...", diagnosis: "Loading..." } },
+                                    unemployment: { action: "KEEP", explanation: "Loading data...", marketData: { fluctuation: "Loading...", diagnosis: "Loading..." } }
+                                },
+                                assetTrend: { fluctuation: "Loading...", diagnosis: "Loading...", trend: "neutral" },
+                                _id: { $oid: `id-${symbol}` }
+                            };
+                        })
+                        .filter(asset => asset.symbol !== "VIX");
+                    
+                    // Sort assets alphabetically by symbol
+                    basicAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
+                    setAssets(basicAssets);
+                }
+                
+                // Second batch - fetch remaining data in the background
+                const [newsReportResponse, recentAssetsData, vixSensitivityData, 
+                       macroIndicatorsData, marketAnalysisReport] = await Promise.all([
                     fetchMostRecentMarketNewsReport(),
                     marketFetchRecentAssetsData(),
                     fetchAssetSuggestionsMarketVolatilityBased(),
                     fetchAssetSuggestionsMacroIndicatorsBased(),
                     fetchMostRecentMarketAnalysisReport(),
-                    fetchMostRecentMacroIndicators(),
-                    fetchChartMappings()
                 ]);
-
-                // Store the raw macro indicators data
-                setRawMacroIndicators(rawMacroIndicatorsResponse);
                 
-                // Store the chart mappings
-                setChartMappings(chartMappingsResponse.chart_mappings);
-                
-                // Store the market news report
+                // Store news report data
                 setMarketNewsReport(newsReportResponse.market_news_report);
                 
                 // Get market analysis report macro indicators
@@ -78,7 +153,7 @@ export default function Assets() {
                     return parseFloat(normalizedScore.toFixed(2));
                 };
                 
-                // Transform the asset price data
+                // Transform the asset price data with all details
                 const transformedAssets = Object.entries(assetsClosePrice.assets_close_price)
                     .map(([symbol, data]) => {
                         // Get allocation data for this asset
@@ -242,9 +317,24 @@ export default function Assets() {
                 // Sort assets alphabetically by symbol
                 transformedAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
                 
+                // Update state with complete data
                 setAssets(transformedAssets);
+                
+                // Save to cache for future visits
+                try {
+                    localStorage.setItem('portfolioData', JSON.stringify({
+                        assets: transformedAssets,
+                        marketNewsReport: newsReportResponse.market_news_report,
+                        chartMappings: chartMappingsResponse.chart_mappings,
+                        rawMacroIndicators: rawMacroIndicatorsResponse
+                    }));
+                    localStorage.setItem('portfolioDataTimestamp', Date.now().toString());
+                } catch (storageError) {
+                    console.warn("Could not save to localStorage:", storageError);
+                    // Continue without caching if localStorage fails
+                }
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Error fetching fresh data:", error);
             }
         }
         
@@ -253,11 +343,53 @@ export default function Assets() {
 
     const [openHelpModal, setOpenHelpModal] = useState(false);
 
+    const LoadingSkeleton = () => {
+        return Array(4).fill(0).map((_, index) => (
+            <div key={index} className={styles.skeletonCard}>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+                <div className={styles.skeletonCell}></div>
+            </div>
+        ));
+    };
+    
+    const LazyAssetCards = React.memo(({ assets, chartMappings, rawMacroIndicators }) => {
+        const [isVisible, setIsVisible] = useState(false);
+        
+        useEffect(() => {
+            // Delay loading remaining cards to prioritize initial render
+            const timer = setTimeout(() => {
+                setIsVisible(true);
+            }, 200);
+            
+            return () => clearTimeout(timer);
+        }, []);
+        
+        if (!isVisible) {
+            return <div className={styles.loadingMore}>Loading more assets...</div>;
+        }
+        
+        return assets.map((asset, index) => (
+            <AssetCard 
+                key={`lazy-${asset.symbol}-${index}`}
+                asset={asset} 
+                chartData={chartMappings[asset.symbol]} 
+                rawMacroIndicators={rawMacroIndicators}
+            />
+        ));
+    });
+
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
                 <H2>Investment Portfolio</H2>
-
+    
                 <InfoWizard
                     open={openHelpModal}
                     setOpen={setOpenHelpModal}
@@ -275,7 +407,6 @@ export default function Assets() {
                                     heading: "How to Demo",
                                     body: [
                                         "WIP",
-
                                     ],
                                 },
                             ],
@@ -307,32 +438,43 @@ export default function Assets() {
                     ]}
                 />
             </div>
-
+    
             <div className={styles.headerRow}>
                 <span>ASSET</span>
                 <span>CLOSE PRICE ($)</span>
                 <span>PORTFOLIO ALLOCATION</span>
-                <span>NEW SENTIMENT SCORE</span>
+                <span>NEWS SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
                 <span>GROSS DOMESTIC PRODUCT</span>
                 <span>INTEREST RATE</span>
                 <span>UNEMPLOYMENT</span>
                 <span>ACTIONS</span>
             </div>
-
+    
             {assets.length > 0 ? (
-                assets.map((asset, index) => (
-                    <AssetCard 
-                        key={index} 
-                        asset={asset} 
-                        chartData={chartMappings[asset.symbol]} 
-                        rawMacroIndicators={rawMacroIndicators}
-                    />
-                ))
+                <>
+                    {/* Load first 4 assets immediately */}
+                    {assets.slice(0, 4).map((asset, index) => (
+                        <AssetCard 
+                            key={`primary-${asset.symbol}-${index}`}
+                            asset={asset} 
+                            chartData={chartMappings[asset.symbol]} 
+                            rawMacroIndicators={rawMacroIndicators}
+                        />
+                    ))}
+                    
+                    {/* Load remaining assets with a slight delay */}
+                    {assets.length > 4 && (
+                        <LazyAssetCards 
+                            assets={assets.slice(4)} 
+                            chartMappings={chartMappings} 
+                            rawMacroIndicators={rawMacroIndicators} 
+                        />
+                    )}
+                </>
             ) : (
-                <p>Loading assets...</p>
+                <LoadingSkeleton />
             )}
-
         </div>
     );
 }
