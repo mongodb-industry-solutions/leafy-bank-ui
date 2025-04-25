@@ -3,13 +3,14 @@ import styles from "./AssetCard.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
-import { Body, H3, Link, Subtitle } from "@leafygreen-ui/typography";
+import { Body, H3, H2, Link, Subtitle } from "@leafygreen-ui/typography";
 import Code from "@leafygreen-ui/code";
 import Badge from "@leafygreen-ui/badge";
 import {
     SegmentedControl,
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
+import Banner from "@leafygreen-ui/banner";
 
 export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
     const [expandedSection, setExpandedSection] = useState(null);
@@ -81,10 +82,10 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
 
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={vixBadgeVariant}> </Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={gdpBadgeVariant}></Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={interestRateBadgeVariant}></Badge>
-                <Badge className={`${styles.cell} ${styles.badge}`} variant={unemploymentBadgeVariant}></Badge>
+                <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
+                <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
+                <div className={`${styles.cell} ${styles.circle} ${styles[interestRateBadgeVariant]}`}></div>
+                <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
 
                 <div className={styles.actions}>
                     <Tooltip align="top" justify="middle" trigger={
@@ -164,19 +165,19 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                     {expandedSection === "docModel" && (
                         <div className={styles.docModelSection}>
-                            <Body className={styles.docModelIntro}>
+                            <Banner>
                                 This section illustrates the document model progression from raw ingested data to processed reports. 
                                 On the left, you can see the initial data as it's ingested into MongoDB. On the right, you'll find the 
                                 reports generated after this data has been processed by scheduled agents that apply business rules, 
                                 perform calculations, and create investment insights. Time series collections are used for efficient storage of financial data points, 
                                 while standard collections store news articles and analysis reports. This unified approach enables 
                                 seamless transitions from data ingestion to insight generation.
-                            </Body>
+                            </Banner>
                             
                             <div className={styles.docModelColumns}>
                                 {/* LEFT COLUMN - RAW DATA */}
                                 <div className={styles.rawDataColumn}>
-                                    <H3>Raw Ingested Data</H3>
+                                    <H2>Raw Ingested Data</H2>
                                     
                                     <Subtitle className={styles.dataSubtitle}>Market Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data is shown here. The actual system processes a much larger dataset.</Body>
@@ -262,7 +263,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                                 {/* RIGHT COLUMN - PROCESSED REPORTS */}
                                 <div className={styles.processedDataColumn}>
-                                    <H3>Processed Reports</H3>
+                                    <H2>Processed Reports</H2>
                                     
                                     <Subtitle className={styles.dataSubtitle}>Market Analysis Report</Subtitle>
                                     <Body className={styles.dataNote}>* Simplified view of the full market analysis report with truncated embeddings.</Body>
@@ -364,14 +365,12 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial NLP model. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
-                                    
-                                        <div className={styles.formulaContainer}>
-                                            <Body weight="medium">Sentiment Score Formula:</Body>
-                                            <Body className={styles.formula}>
-                                                {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
-                                            </Body>
-                                        </div>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, a financial LLM model. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+ 
+                                    <Banner className={styles.formulaContainer}>
+                                        <Body weight="medium">Sentiment Score Formula</Body>
+                                        {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
+                                    </Banner>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
                                     <Body><em>* To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
@@ -417,10 +416,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             {/* MA50 Analysis */}
                             <div className={styles.insightSection}>
                                 <div className={styles.insightHeader}>
-                                    <Subtitle>50-Day Moving Average Analysis</Subtitle>
-                                    <Badge className={`${styles.cell} ${styles.badge}`} variant={trendBadgeVariant}>
-                                        
-                                    </Badge>
+                                    <H2 className={styles.insightH2}>50-Day Moving Average Analysis</H2>
+                                     <div className={`${styles.cell} ${styles.circle} ${styles[trendBadgeVariant]}`}></div>
                                 </div>
 
                                 <Body weight="medium">Price vs. MA50:</Body>
@@ -439,8 +436,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {/* VIX Sensitivity Analysis */}
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
-                                        <Subtitle>VIX Sensitivity Analysis</Subtitle>
-                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={vixBadgeVariant}></Badge>
+                                        <H2 className={styles.insightH2}>VIX Sensitivity Analysis</H2>
+                                         <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Market Volatility:</Body>
@@ -461,8 +458,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {/* GDP Analysis */}
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
-                                        <Subtitle>GDP Analysis</Subtitle>
-                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={gdpBadgeVariant}></Badge>
+                                        <H2 className={styles.insightH2}>GDP Analysis</H2>
+                                         <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">GDP Trend:</Body>
@@ -481,8 +478,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {/* Interest Rate Analysis */}
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
-                                        <Subtitle>Interest Rate Analysis</Subtitle>
-                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={interestRateBadgeVariant}></Badge>
+                                        <H2 className={styles.insightH2}>Interest Rate Analysis</H2>
+                                        <div className={`${styles.cell} ${styles.circle} ${styles[interestRateBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Interest Rate Trend:</Body>
@@ -501,8 +498,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {/* Unemployment Rate Analysis */}
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
-                                        <Subtitle>Unemployment Rate Analysis</Subtitle>
-                                        <Badge  className={`${styles.cell} ${styles.badge}`} variant={unemploymentBadgeVariant}></Badge>
+                                        <H2 className={styles.insightH2}>Unemployment Rate Analysis</H2>
+                                        <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Unemployment Rate Trend:</Body>

@@ -19,14 +19,40 @@ import Tooltip from "@leafygreen-ui/tooltip";
 
 export default function AssetPortfolio() {
     const [marketEvents, setMarketEvents] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
     const [selectedTimeframe, setSelectedTimeframe] = useState("month");
 
-
     useEffect(() => {
         async function fetchMarketData() {
+            try {
+                // Check for cached indicators data
+                const cachedData = localStorage.getItem('macroIndicatorsData');
+                const cachedTimestamp = localStorage.getItem('macroIndicatorsTimestamp');
+                const dataIsStale = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp)) > (6 * 60 * 60 * 1000); // 6 hours
+                
+                if (cachedData && !dataIsStale) {
+                    // Use cached data immediately
+                    const parsedData = JSON.parse(cachedData);
+                    setMarketEvents(parsedData);
+                    setIsLoading(false);
+                    
+                    // Still fetch fresh data in the background
+                    fetchFreshData(false);
+                    return;
+                }
+                
+                // No valid cache, fetch fresh data
+                await fetchFreshData(true);
+            } catch (error) {
+                console.error("Error in market data sequence:", error);
+                setIsLoading(false);
+            }
+        }
+        
+        async function fetchFreshData(updateLoadingState) {
             try {
                 // Fetch both the latest indicator values and trend information
                 const indicatorsData = await fetchMostRecentMacroIndicators();
@@ -52,10 +78,25 @@ export default function AssetPortfolio() {
                 });
 
                 setMarketEvents(transformedData);
+                if (updateLoadingState) {
+                    setIsLoading(false);
+                }
+                
+                // Save to cache
+                try {
+                    localStorage.setItem('macroIndicatorsData', JSON.stringify(transformedData));
+                    localStorage.setItem('macroIndicatorsTimestamp', Date.now().toString());
+                } catch (storageError) {
+                    console.warn("Could not save macro indicators to localStorage:", storageError);
+                }
             } catch (error) {
                 console.error("Error fetching market events:", error);
+                if (updateLoadingState) {
+                    setIsLoading(false);
+                }
             }
         }
+        
         fetchMarketData();
     }, []);
 
@@ -82,6 +123,21 @@ export default function AssetPortfolio() {
         router.push("/");
     };
 
+    // Loading skeleton for macroeconomic indicators
+    const IndicatorsSkeleton = () => (
+        <>
+            {[1, 2, 3].map((item) => (
+                <div key={item} className={styles.eventCard}>
+                    <div className={styles.skeletonText}></div>
+                    <div className={styles.skeletonText}></div>
+                    <div className={styles.skeletonText}></div>
+                    <div className={styles.skeletonValue}>
+                        <div className={styles.skeletonText}></div>
+                    </div>
+                </div>
+            ))}
+        </>
+    );
 
     return (
         <div className={styles.container}>
@@ -169,33 +225,40 @@ export default function AssetPortfolio() {
                         </div>
 
                         <div className={styles.eventContainer}>
-                            {marketEvents.map((event) => (
-                                <div key={event.series_id} className={styles.eventCard}>
-                                    <Body>{event.title} (US)</Body>
-                                    <Body>{event.frequency}</Body>
-                                    <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
+                            {isLoading ? (
+                                <IndicatorsSkeleton />
+                            ) : marketEvents.length > 0 ? (
+                                marketEvents.map((event) => (
+                                    <div key={event.series_id} className={styles.eventCard}>
+                                        <Body>{event.title} (US)</Body>
+                                        <Body>{event.frequency}</Body>
+                                        <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
 
-                                    <div className={styles.eventValue}>
-                                        <Body>{event.value}</Body>
-                                        {event.arrow_direction !== "EQUAL" && (
+                                        <div className={styles.eventValue}>
+                                            <Body>{event.value}</Body>
+                                            {event.arrow_direction !== "EQUAL" && (
 
-                                            <Tooltip align="top" justify="middle" trigger={
-                                                <Icon
-                                                    className={
-                                                        event.arrow_direction === "ARROW_UP"
-                                                            ? styles.arrowUp
-                                                            : styles.arrowDown
-                                                    }
-                                                    glyph={event.arrow_direction === "ARROW_UP" ? "ArrowUp" : "ArrowDown"}
-                                                />
-                                            }>
-                                                Trend relative to last value
-                                            </Tooltip>
-                                        )}
+                                                <Tooltip align="top" justify="middle" trigger={
+                                                    <Icon
+                                                        className={
+                                                            event.arrow_direction === "ARROW_UP"
+                                                                ? styles.arrowUp
+                                                                : styles.arrowDown
+                                                        }
+                                                        glyph={event.arrow_direction === "ARROW_UP" ? "ArrowUp" : "ArrowDown"}
+                                                    />
+                                                }>
+                                                    Trend relative to last value
+                                                </Tooltip>
+                                            )}
+                                        </div>
                                     </div>
-
+                                ))
+                            ) : (
+                                <div className={styles.noData}>
+                                    <Body>No macroeconomic indicators available</Body>
                                 </div>
-                            ))}
+                            )}
                         </div>
                     </Card>
 

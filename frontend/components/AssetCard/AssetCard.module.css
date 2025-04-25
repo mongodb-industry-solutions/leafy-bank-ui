@@ -31,6 +31,26 @@
     padding: 5px;
   }
 
+  .circle {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+   
+  }
+  
+  .red {
+    background-color: #c62727;
+  }
+  
+  .yellow {
+    background-color: #FCD34D;
+  }
+  
+  .green {
+    background-color: #00ED64;
+  }
+
   .sentiment {
     background-color: #fff3cd;
     padding: 2px 8px;
@@ -209,6 +229,10 @@
     margin-bottom: 10px;
   }
 
+  .insightH2{
+    font-size: 20px;
+  }
+
   .insightSection {
     padding: 10px 20px;
     background-color: #f8f9fa;
@@ -328,7 +352,7 @@
 
 .dataSubtitle {
   text-align: left;
-  margin: 10px 0 5px 0;
+  margin-top: 10px;
   color: #1c2d38;
 }
 
@@ -342,5 +366,5 @@
   font-size: 12px;
   font-style: italic;
   color: #6e6e6e;
-  margin: 2px 0 8px 0;
+  margin: 0;
 }

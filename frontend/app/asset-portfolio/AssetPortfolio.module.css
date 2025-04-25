@@ -233,3 +233,28 @@
     font-size: 12px;
   }
 }
+
+.skeletonText {
+  height: 20px;
+  width: 80%;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeletonValue {
+  display: flex;
+  align-items: center;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.6; }
+}
