@@ -95,10 +95,7 @@
   text-align: left;
 }
 
-.eventValue {
-  display: flex;
-  gap: 10px;
-}
+
 
 .arrowUp {
   color: #00674A;
@@ -118,19 +115,25 @@
 .headerRow span:nth-child(2),
 .eventCard>*:nth-child(2) {
   /* FREQUENCY */
-  width: 25%;
+  width: 20%;
 }
 
 .headerRow span:nth-child(3),
 .eventCard>*:nth-child(3) {
   /* LAST RELEASE DATE */
-  width: 25%;
+  width: 20%;
 }
 
 .headerRow span:nth-child(4),
 .eventCard>*:nth-child(4) {
   /* LAST VALUE */
   width: 20%;
+}
+
+.headerRow span:nth-child(5),
+.eventCard>*:nth-child(5) {
+  /* TREND */
+  width: 5%;
 }
 
 .eventCard {
