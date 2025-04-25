@@ -428,10 +428,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <Body>{asset.assetTrend?.fluctuation || "No data available."}</Body>
 
                                 <Body weight="medium" className={styles.diagnosisLabel}>Diagnosis:</Body>
-                                <Body className={`${styles.diagnosis} ${assetTrend === "uptrend" ? styles.positiveAction :
-                                    assetTrend === "downtrend" ? styles.negativeAction :
-                                        styles.neutralAction
-                                    }`}>
+                                <Body className={styles.diagnosis} >
                                     {asset.assetTrend?.diagnosis || "No diagnosis available."}
                                 </Body>
                             </div>

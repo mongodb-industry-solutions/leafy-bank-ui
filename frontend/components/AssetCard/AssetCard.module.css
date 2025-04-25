@@ -264,7 +264,7 @@
 
   .insightNote {
     margin-top: 12px;
-    font-style: italic;
+    
     color: #6e6e6e;
   }
 
@@ -282,9 +282,7 @@
     margin-top: 10px;
   }
 
-  .diagnosis {
-    font-style: italic;
-  }
+  
 
   .neutralAction {
     color: #ff9800;
