@@ -57,8 +57,8 @@
     position: relative;
     background-color: #F8FAF9;
     border-radius: 15px;
-    width: 800px;
-    height: 700px;
+    width: 1000px;
+    height: 750px;
     padding: 0px 0px 20px 0px;
     z-index: 1000;
     display: flex;
@@ -255,11 +255,13 @@
 
 .toolCallsList {
     margin-left: 15px;
+  
 }
 
 .toolCallItem {
     margin-bottom: 5px;
-    display: inline-flex;
+    display:flex;
+
 }
 
 .toolName {

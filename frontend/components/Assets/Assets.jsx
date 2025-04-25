@@ -440,7 +440,8 @@ export default function Assets() {
             </div>
     
             <div className={styles.headerRow}>
-                <span>ASSET</span>
+                <span>SYMBOL</span>
+                <span>DESCRIPTION</span>
                 <span>CLOSE PRICE ($)</span>
                 <span>PORTFOLIO ALLOCATION</span>
                 <span>NEWS SENTIMENT SCORE</span>

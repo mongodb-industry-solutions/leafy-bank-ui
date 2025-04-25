@@ -222,6 +222,7 @@ export default function AssetPortfolio() {
                             <span>FREQUENCY</span>
                             <span>LAST RELEASE DATE</span>
                             <span>LAST VALUE</span>
+                            <span>TREND</span>
                         </div>
 
                         <div className={styles.eventContainer}>
@@ -234,8 +235,9 @@ export default function AssetPortfolio() {
                                         <Body>{event.frequency}</Body>
                                         <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
 
-                                        <div className={styles.eventValue}>
-                                            <Body>{event.value}</Body>
+                                        <Body>{event.value}</Body>
+
+                                        <div>
                                             {event.arrow_direction !== "EQUAL" && (
 
                                                 <Tooltip align="top" justify="middle" trigger={

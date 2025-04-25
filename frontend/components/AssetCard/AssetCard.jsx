@@ -73,7 +73,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
-                <div className={styles.cell}>{asset.symbol} ({asset.allocation?.description})</div>
+                <div className={styles.cell}> <strong>{asset.symbol}</strong> </div>
+                <div className={styles.cell}>{asset.allocation?.description}</div>
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
                 <div className={styles.cell}>
                     {asset.allocation ? asset.allocation.percentage : "N/A"}
@@ -166,19 +167,19 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                     {expandedSection === "docModel" && (
                         <div className={styles.docModelSection}>
                             <Banner>
-                                This section illustrates the document model progression from raw ingested data to processed reports. 
-                                On the left, you can see the initial data as it's ingested into MongoDB. On the right, you'll find the 
-                                reports generated after this data has been processed by scheduled agents that apply business rules, 
-                                perform calculations, and create investment insights. Time series collections are used for efficient storage of financial data points, 
-                                while standard collections store news articles and analysis reports. This unified approach enables 
+                                This section illustrates the document model progression from raw ingested data to processed reports.
+                                On the left, you can see the initial data as it's ingested into MongoDB. On the right, you'll find the
+                                reports generated after this data has been processed by scheduled agents that apply business rules,
+                                perform calculations, and create investment insights. Time series collections are used for efficient storage of financial data points,
+                                while standard collections store news articles and analysis reports. This unified approach enables
                                 seamless transitions from data ingestion to insight generation.
                             </Banner>
-                            
+
                             <div className={styles.docModelColumns}>
                                 {/* LEFT COLUMN - RAW DATA */}
                                 <div className={styles.rawDataColumn}>
                                     <H2>Raw Ingested Data</H2>
-                                    
+
                                     <Subtitle className={styles.dataSubtitle}>Market Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data is shown here. The actual system processes a much larger dataset.</Body>
                                     <Code
@@ -197,7 +198,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                             }))
                                         }, null, 2)}
                                     </Code>
-                                    
+
                                     <Subtitle className={styles.dataSubtitle}>Financial News Data</Subtitle>
                                     <Body className={styles.dataNote}>* Displaying only 3 of many news articles processed by the system.</Body>
                                     <Code
@@ -214,7 +215,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                             link: item.link || `https://news.google.com/search?q=${asset.symbol}`
                                         })), null, 2)}
                                     </Code>
-                                    
+
                                     <Subtitle className={styles.dataSubtitle}>Macroeconomic Indicators Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data from FRED (Federal Reserve Economic Data).</Body>
                                     <Code
@@ -254,8 +255,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                                         "value": 1.66841
                                                     }
                                                 }
-                                            }, 
-                                            null, 
+                                            },
+                                            null,
                                             2
                                         )}
                                     </Code>
@@ -264,8 +265,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {/* RIGHT COLUMN - PROCESSED REPORTS */}
                                 <div className={styles.processedDataColumn}>
                                     <H2>Processed Reports</H2>
-                                    
-                                    <Subtitle className={styles.dataSubtitle}>Market Analysis Report</Subtitle>
+
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market Analysis Report</Subtitle>
                                     <Body className={styles.dataNote}>* Simplified view of the full market analysis report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -308,8 +309,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                             }
                                         }, null, 2)}
                                     </Code>
-                                    
-                                    <Subtitle className={styles.dataSubtitle}>Market News Report</Subtitle>
+
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market News Report</Subtitle>
                                     <Body className={styles.dataNote}>* Simplified view of the full market news report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -366,13 +367,13 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
                                     <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
- 
+
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>
                                         {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
                                     </Banner>
 
-                                    <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge  className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge  className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
+                                    <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
                                     <br></br>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
@@ -390,7 +391,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                         <Code
                                             language="json"
                                         >
-{`// MongoDB Vector Search Pipeline example
+                                            {`// MongoDB Vector Search Pipeline example
 [
   {
     "$vectorSearch": {
@@ -420,7 +421,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             <div className={styles.insightSection}>
                                 <div className={styles.insightHeader}>
                                     <H2 className={styles.insightH2}>50-Day Moving Average Analysis</H2>
-                                     <div className={`${styles.cell} ${styles.circle} ${styles[trendBadgeVariant]}`}></div>
+                                    <div className={`${styles.cell} ${styles.circle} ${styles[trendBadgeVariant]}`}></div>
                                 </div>
 
                                 <Body weight="medium">Price vs. MA50:</Body>
@@ -440,7 +441,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>VIX Sensitivity Analysis</H2>
-                                         <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Market Volatility:</Body>
@@ -462,7 +463,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>GDP Analysis</H2>
-                                         <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">GDP Trend:</Body>
