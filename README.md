@@ -86,6 +86,30 @@ This service simulates connecting to external financial institutions to retrieve
 
 ---
 
+### 5. **Capital Markets - Loaders Service**
+**[Capital Markets - Loaders Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-loaders)**
+This service handles the extraction, transformation, and loading (ETL) of financial data from various sources, including Yahoo Finance and the Federal Reserve Economic Data (FRED) API, as well as financial news processing from Yahoo Search. MongoDB's Time Series collections provide optimized storage and efficient querying for market data from Yahoo Finance, while the flexible document model accommodates financial news articles and their corresponding embeddings.
+
+![cm loaders service diagram](diagrams/cm_loaders_diagram.png)
+
+---
+
+### 6. **Capital Markets - Scheduled Agents Service**
+**[Capital Markets - Scheduled Agents Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-agents)**
+This service delivers automated financial intelligence through scheduled AI workflows. MongoDB provides the ideal foundation for its agent-based architecture, with the document model aligning perfectly with complex agent state representation in JSON format. The service includes two scheduled agents: the Market Analysis Agent to analyze asset trends and macroeconomic indicators, and the Market News Agent to provide sentiment analysis on financial news.
+
+![cm scheduled agents service diagram](diagrams/cm_scheduled_agents_diagram.png)
+
+---
+
+### 7. **Capital Markets - Market Assistant ReAct Agent Chatbot Service**
+**[Capital Markets - Market Assistant ReAct Agent Chatbot Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot)**
+This service provides an AI-powered market assistant using the **ReAct (Reason and Act)** pattern implemented through LangGraph. MongoDB excels in this implementation through the **MongoDB Checkpointer**, which enables long-term memory by storing agent state at every interaction step. The agent uses Atlas Vector Search to find semantically relevant market analysis and news reports using the finance-optimized voyage-finance-2 embedding model.
+
+![cm market assistant react service diagram](diagrams/cm_market_assistant_react_agent_diagram.png)
+
+---
+
 By adopting a **microservices architecture**, Leafy Bank splits features across multiple repositories. This design not only supports **scalability**, **modular development**, and **independent deployments** but also underscores MongoDB’s versatility in driving dynamic and robust systems.
 
 Explore the respective backend repositories to learn more about specific implementations and why MongoDB shines in these use cases:
@@ -93,6 +117,9 @@ Explore the respective backend repositories to learn more about specific impleme
 - [Transactions Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-transactions)
 - [Chatbot Service](https://github.com/mongodb-industry-solutions/cross-backend-pdf-rag)
 - [Open Finance Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-openfinance)
+- [Capital Markets - Loaders Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-loaders)
+- [Capital Markets - Scheduled Agents Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-agents)
+- [Capital Markets - Market Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot)
 
 This approach reflects a **modern and practical way to develop software**, supporting the scalability, modularity, and maintainability required for financial services in today’s fast-evolving world.
 
@@ -134,6 +161,9 @@ NEXT_PUBLIC_ACCOUNTS_API_URL="http://localhost:8000"
 NEXT_PUBLIC_TRANSACTIONS_API_URL="http://localhost:8001"
 NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL="http://localhost:8002"
 NEXT_PUBLIC_OPEN_FINANCE_API_URL="http://localhost:8003"
+NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL="http://localhost:8004"
+NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL="http://localhost:8005"
+NEXT_PUBLIC_CAPITALMARKETS_CHATBOT_API_URL="http://localhost:8006"
 ```
 
 ### Backend Services
@@ -148,6 +178,12 @@ The UI depends on multiple backend services, which must be running to enable ful
   - *Optional: Needed only if you wish to explore the Leafy Bank Personal Assistant.*
 - [Open Finance Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-openfinance) (Port **8003**)  
   - *Optional: Needed only if you wish to explore external financial institution connections.*
+- [Capital Markets - Loaders Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-loaders) (Port **8004**)  
+  - *Optional: Needed only if you wish to explore the Capital Markets Loaders Service.*
+- [Capital Markets - Scheduled Agents Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-agents) (Port **8005**)  
+  - *Optional: Needed only if you wish to explore the Capital Markets Scheduled Agents Service.*
+- [Capital Markets - Market Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot) (Port **8006**)  
+  - *Optional: Needed only if you wish to explore the Capital Markets Market Assistant ReAct Agent Chatbot Service.*
 
 *The MongoDB database configuration details are provided within each backend service repository.*
 
