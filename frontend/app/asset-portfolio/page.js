@@ -156,7 +156,7 @@ export default function AssetPortfolio() {
 
             <div className={styles.gridContainer}>
                 <Card className={styles.roiCard} title="ROI">
-                    <Subtitle className={styles.cardSubtitle}>Portfolio Performance in the Last Month</Subtitle>
+                    <Subtitle className={styles.cardSubtitle}>Portfolio Performance</Subtitle>
                     <div className={styles.roiHeader}>
                         <SegmentedControl
                             followFocus={true}
