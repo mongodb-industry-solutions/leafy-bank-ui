@@ -23,7 +23,7 @@ export default function AssetPortfolio() {
     const [isOpen, setIsOpen] = useState(false);
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
-    const [selectedTimeframe, setSelectedTimeframe] = useState("month");
+    const [selectedTimeframe, setSelectedTimeframe] = useState("6month");
 
     useEffect(() => {
         async function fetchMarketData() {
@@ -160,7 +160,7 @@ export default function AssetPortfolio() {
                     <div className={styles.roiHeader}>
                         <SegmentedControl
                             followFocus={true}
-                            defaultValue="month"
+                            defaultValue="6month"
                             value={selectedTimeframe}
                             onChange={(value) => setSelectedTimeframe(value)}
                             className={styles.segmentedControl}
