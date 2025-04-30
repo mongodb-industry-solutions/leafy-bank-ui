@@ -9,6 +9,7 @@ import { Subtitle, Body } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
+import Banner from "@leafygreen-ui/banner";
 import { fetchMostRecentMacroIndicators, fetchMacroIndicatorsTrend } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 import {
     SegmentedControl,
@@ -142,16 +143,27 @@ export default function AssetPortfolio() {
     return (
         <div className={styles.container}>
             <Header className={styles.navBar} onLogout={handleLogout} />
+            
+            {/* Add persistent disclaimer banner */}
+            <Banner 
+                variant="warning"
+                className={styles.disclaimerBanner}
+            >
+                <strong>Important Notice:</strong> This application demonstrates MongoDB's capabilities for Capital Markets and contains simulated data. 
+                The visualizations and analytics are for demonstration purposes only and should not be used for investment decisions. 
+                Many data procedures have been simplified for this demo.
+            </Banner>
 
+            {/* Keep the modal for first-time visitors */}
             <ConfirmationModal
                 open={showDisclaimer}
                 onConfirm={handleCloseDisclaimer}
                 title="Demo Disclaimer"
                 buttonText="I Agree"
             >
-                The information presented in this dashboard is for informational purposes only and does not constitute financial advice. <br></br><br></br>
-                This is a demo intended to showcase MongoDB features that are well-suited for Capital Markets use cases.
-                To support this goal, many data procedures have been simplified, fixed, or emulated.
+                This application demonstrates MongoDB's capabilities for Capital Markets and contains simulated data. <br></br><br></br>
+                The visualizations and analytics are for demonstration purposes only and should not be used for investment decisions. 
+                Many data procedures have been simplified for this demo.
             </ConfirmationModal>
 
             <div className={styles.gridContainer}>
@@ -222,6 +234,7 @@ export default function AssetPortfolio() {
                             <span>FREQUENCY</span>
                             <span>LAST RELEASE DATE</span>
                             <span>LAST VALUE</span>
+                            <span>UNITS</span>
                             <span>TREND</span>
                         </div>
 
@@ -231,28 +244,61 @@ export default function AssetPortfolio() {
                             ) : marketEvents.length > 0 ? (
                                 marketEvents.map((event) => (
                                     <div key={event.series_id} className={styles.eventCard}>
-                                        <Body>{event.title} (US)</Body>
+                                        <Body>
+                                        {event.title === "Gross Domestic Product" 
+                                            ? "GDP (US)" 
+                                            : event.title === "Federal Funds Effective Rate" 
+                                            ? "Interest Rate (US)" 
+                                            : `${event.title} (US)`}
+                                        </Body>
                                         <Body>{event.frequency}</Body>
                                         <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
 
-                                        <Body>{event.value}</Body>
+                                        <Body>{(() => {
+                                            // Try to parse the value as a number
+                                            const numValue = parseFloat(event.value);
+                                            
+                                            // Check if it's a valid number
+                                            if (!isNaN(numValue)) {
+                                                // If it's GDP, divide by 1000 to convert from billions to trillions
+                                                if (event.title === "Gross Domestic Product") {
+                                                    return (numValue / 1000).toFixed(2);
+                                                } else {
+                                                    return numValue.toFixed(2);
+                                                }
+                                            } else {
+                                                return event.value;
+                                            }
+                                        })()}</Body>
+
+                                        {/* Add the new units column here */}
+                                        <Body>
+                                            {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $" 
+                                                ? "Tril. of $" 
+                                                : event.units_short}
+                                        </Body>
 
                                         <div>
-                                            {event.arrow_direction !== "EQUAL" && (
-
-                                                <Tooltip align="top" justify="middle" trigger={
-                                                    <Icon
-                                                        className={
-                                                            event.arrow_direction === "ARROW_UP"
-                                                                ? styles.arrowUp
-                                                                : styles.arrowDown
-                                                        }
-                                                        glyph={event.arrow_direction === "ARROW_UP" ? "ArrowUp" : "ArrowDown"}
-                                                    />
-                                                }>
-                                                    Trend relative to last value
-                                                </Tooltip>
-                                            )}
+                                            <Tooltip align="top" justify="middle" trigger={
+                                                <Icon
+                                                    className={
+                                                        event.arrow_direction === "ARROW_UP"
+                                                            ? styles.arrowUp
+                                                            : event.arrow_direction === "ARROW_DOWN"
+                                                                ? styles.arrowDown
+                                                                : styles.arrowEqual
+                                                    }
+                                                    glyph={
+                                                        event.arrow_direction === "ARROW_UP"
+                                                            ? "ArrowUp"
+                                                            : event.arrow_direction === "ARROW_DOWN"
+                                                                ? "ArrowDown"
+                                                                : "Minus"
+                                                    }
+                                                />
+                                            }>
+                                                Trend relative to last value
+                                            </Tooltip>
                                         </div>
                                     </div>
                                 ))

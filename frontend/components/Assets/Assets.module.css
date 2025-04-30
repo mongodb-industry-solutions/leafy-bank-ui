@@ -12,7 +12,7 @@
   
   .headerRow {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 0.8fr 1.5fr 0.8fr 0.8fr 1fr 1fr 0.8fr 0.8fr 0.8fr 0.8fr;
     font-size: 12px;
     text-transform: uppercase;
     padding: 10px;
@@ -29,7 +29,7 @@
   
   .skeletonCard {
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
+    grid-template-columns: repeat(11, 1fr); /* Updated from 9 to 11 columns */
     gap: 10px;
     padding: 15px;
     margin-bottom: 10px;
