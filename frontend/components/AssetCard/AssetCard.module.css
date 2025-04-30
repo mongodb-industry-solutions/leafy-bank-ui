@@ -1,6 +1,6 @@
   .card {
     display: grid;
-    grid-template-columns: 0.5fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 0.5fr 0.8fr 1.5fr 0.8fr 0.8fr 1fr 1fr 0.8fr 0.8fr 0.8fr 0.8fr;
     background-color: white;
     padding: 12px;
     border-radius: 10px;
@@ -19,7 +19,7 @@
   }
 
   .expandedSection {
-    grid-column: span 9;
+    grid-column: span 11;
     padding: 20px;
     border-top: 1px solid #ddd;
     margin-top: 10px;

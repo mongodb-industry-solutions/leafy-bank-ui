@@ -74,6 +74,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
                 <div className={styles.cell}> <strong>{asset.symbol}</strong> </div>
+                <div className={styles.cell}>{asset.allocation?.asset_type || "Unknown"}</div>
                 <div className={styles.cell}>{asset.allocation?.description}</div>
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
                 <div className={styles.cell}>
@@ -228,13 +229,13 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                                 // Fallback if data isn't loaded yet
                                                 "macro_indicators": {
                                                     "GDP": {
-                                                        "title": "Gross Domestic Product",
+                                                        "title": "GDP",
                                                         "frequency": "Quarterly",
                                                         "frequency_short": "Q",
-                                                        "units": "Billions of Dollars",
-                                                        "units_short": "Bil. of $",
+                                                        "units": "Trillion of Dollars",
+                                                        "units_short": "Tril. of $",
                                                         "date": "2025-03-27T00:00:00",
-                                                        "value": 29723.864
+                                                        "value": 29.72
                                                     },
                                                     "UNRATE": {
                                                         "title": "Unemployment Rate",
@@ -245,14 +246,14 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                                         "date": "2025-03-01T00:00:00",
                                                         "value": 4.2
                                                     },
-                                                    "REAINTRATREARAT10Y": {
-                                                        "title": "10-Year Real Interest Rate",
-                                                        "frequency": "Monthly",
-                                                        "frequency_short": "M",
+                                                    "DFF": {
+                                                        "title": "Interest Rate",
+                                                        "frequency": "Daily",
+                                                        "frequency_short": "D",
                                                         "units": "Percent",
                                                         "units_short": "%",
-                                                        "date": "2025-04-10T00:00:00",
-                                                        "value": 1.66841
+                                                        "date": "2025-04-28T00:00:00.000+00:00",
+                                                        "value": 4.33
                                                     }
                                                 }
                                             },
@@ -287,7 +288,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                                             diagnosis: asset.macroIndicators?.gdp?.marketData?.diagnosis || "No data"
                                                         },
                                                         {
-                                                            macro_indicator: "Interest Rate",
+                                                            macro_indicator: "Effective Interest Rate",
                                                             fluctuation_answer: asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No data",
                                                             diagnosis: asset.macroIndicators?.interestRate?.marketData?.diagnosis || "No data"
                                                         },

@@ -106,8 +106,22 @@ export default function Assets() {
                         })
                         .filter(asset => asset.symbol !== "VIX");
 
-                    // Sort assets alphabetically by symbol
-                    basicAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
+                    // Sort assets by asset_type first, then alphabetically by symbol
+                    basicAssets.sort((a, b) => {
+                        // First compare by asset_type
+                        const typeA = a.allocation?.asset_type || 'Unknown';
+                        const typeB = b.allocation?.asset_type || 'Unknown';
+                        
+                        const typeComparison = typeA.localeCompare(typeB);
+                        
+                        // If asset types are different, return the type comparison result
+                        if (typeComparison !== 0) {
+                            return typeComparison;
+                        }
+                        
+                        // If asset types are the same, sort alphabetically by symbol
+                        return a.symbol.localeCompare(b.symbol);
+                    });
                     setAssets(basicAssets);
                 }
 
@@ -127,7 +141,7 @@ export default function Assets() {
                 // Get market analysis report macro indicators
                 const marketMacroIndicators = marketAnalysisReport.market_analysis_report.report.macro_indicators;
                 const gdpMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "GDP");
-                const interestRateMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Interest Rate");
+                const interestRateMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Effective Interest Rate");
                 const unemploymentMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Unemployment Rate");
 
                 // Get market volatility index data
@@ -188,7 +202,7 @@ export default function Assets() {
 
                         // Extract specific macro indicators
                         const gdpInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "GDP");
-                        const interestRateInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Interest Rate");
+                        const interestRateInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Effective Interest Rate");
                         const unemploymentInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Unemployment Rate");
 
                         // Get asset trend (MA50) data from the market analysis report
@@ -314,8 +328,22 @@ export default function Assets() {
                     // Filter out VIX from the assets list as it's not an actual investable asset
                     .filter(asset => asset.symbol !== "VIX");
 
-                // Sort assets alphabetically by symbol
-                transformedAssets.sort((a, b) => a.symbol.localeCompare(b.symbol));
+                // Sort transformed assets by asset_type first, then alphabetically by symbol
+                transformedAssets.sort((a, b) => {
+                    // First compare by asset_type
+                    const typeA = a.allocation?.asset_type || 'Unknown';
+                    const typeB = b.allocation?.asset_type || 'Unknown';
+                    
+                    const typeComparison = typeA.localeCompare(typeB);
+                    
+                    // If asset types are different, return the type comparison result
+                    if (typeComparison !== 0) {
+                        return typeComparison;
+                    }
+                    
+                    // If asset types are the same, sort alphabetically by symbol
+                    return a.symbol.localeCompare(b.symbol);
+                });
 
                 // Update state with complete data
                 setAssets(transformedAssets);
@@ -346,6 +374,7 @@ export default function Assets() {
     const LoadingSkeleton = () => {
         return Array(4).fill(0).map((_, index) => (
             <div key={index} className={styles.skeletonCard}>
+                <div className={styles.skeletonCell}></div>
                 <div className={styles.skeletonCell}></div>
                 <div className={styles.skeletonCell}></div>
                 <div className={styles.skeletonCell}></div>
@@ -530,12 +559,13 @@ export default function Assets() {
 
             <div className={styles.headerRow}>
                 <span>SYMBOL</span>
+                <span>ASSET TYPE</span>
                 <span>DESCRIPTION</span>
                 <span>CLOSE PRICE ($)</span>
-                <span>PORTFOLIO ALLOCATION</span>
+                <span>ALLOCATION</span>
                 <span>NEWS SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
-                <span>GROSS DOMESTIC PRODUCT</span>
+                <span>GDP</span>
                 <span>INTEREST RATE</span>
                 <span>UNEMPLOYMENT</span>
                 <span>ACTIONS</span>
