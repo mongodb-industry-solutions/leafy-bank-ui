@@ -1,5 +1,6 @@
 /* Add this to your existing CSS */
 .disclaimerBanner {
+  margin-top: 5px;
   margin-bottom: 20px;
   width: 100%;
   max-width: 100%;
@@ -13,6 +14,7 @@
 /* Make the banner responsive */
 @media (max-width: 768px) {
   .disclaimerBanner {
+    margin-top: 5px;
     margin-bottom: 15px;
   }
 }
@@ -121,6 +123,11 @@
 
 .arrowEqual {
   color: #888888;
+}
+
+/* Center align the data in the event cards for consistency */
+.eventCard > * {
+  text-align: center;
 }
 
 /* Adjust column widths manually */
@@ -284,4 +291,16 @@
   0% { opacity: 0.6; }
   50% { opacity: 0.8; }
   100% { opacity: 0.6; }
+}
+
+.indicatorLink {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.indicatorLink:hover {
+  text-decoration: underline;
 }
