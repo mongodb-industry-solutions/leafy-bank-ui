@@ -143,16 +143,6 @@ export default function AssetPortfolio() {
     return (
         <div className={styles.container}>
             <Header className={styles.navBar} onLogout={handleLogout} />
-            
-            {/* Add persistent disclaimer banner */}
-            <Banner 
-                variant="warning"
-                className={styles.disclaimerBanner}
-            >
-                <strong>Important Notice:</strong> This application demonstrates MongoDB's capabilities for Capital Markets and contains simulated data. 
-                The visualizations and analytics are for demonstration purposes only and should not be used for investment decisions. 
-                Many data procedures have been simplified for this demo.
-            </Banner>
 
             {/* Keep the modal for first-time visitors */}
             <ConfirmationModal
@@ -161,9 +151,7 @@ export default function AssetPortfolio() {
                 title="Demo Disclaimer"
                 buttonText="I Agree"
             >
-                This application demonstrates MongoDB's capabilities for Capital Markets and contains simulated data. <br></br><br></br>
-                The visualizations and analytics are for demonstration purposes only and should not be used for investment decisions. 
-                Many data procedures have been simplified for this demo.
+                The content of this page is for information, training and demonstration purposes and not intended as an investment advice.
             </ConfirmationModal>
 
             <div className={styles.gridContainer}>
@@ -177,7 +165,7 @@ export default function AssetPortfolio() {
                             onChange={(value) => setSelectedTimeframe(value)}
                             className={styles.segmentedControl}
                         >
-                            <SegmentedControlOption value="month">Last Month</SegmentedControlOption>
+                            <SegmentedControlOption value="month">This Month</SegmentedControlOption>
                             <SegmentedControlOption value="6month">Last 6 Months</SegmentedControlOption>
                         </SegmentedControl>
                     </div>
@@ -242,66 +230,87 @@ export default function AssetPortfolio() {
                             {isLoading ? (
                                 <IndicatorsSkeleton />
                             ) : marketEvents.length > 0 ? (
-                                marketEvents.map((event) => (
-                                    <div key={event.series_id} className={styles.eventCard}>
-                                        <Body>
-                                        {event.title === "Gross Domestic Product" 
-                                            ? "GDP (US)" 
-                                            : event.title === "Federal Funds Effective Rate" 
-                                            ? "Interest Rate (US)" 
-                                            : `${event.title} (US)`}
-                                        </Body>
-                                        <Body>{event.frequency}</Body>
-                                        <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
-
-                                        <Body>{(() => {
-                                            // Try to parse the value as a number
-                                            const numValue = parseFloat(event.value);
-                                            
-                                            // Check if it's a valid number
-                                            if (!isNaN(numValue)) {
-                                                // If it's GDP, divide by 1000 to convert from billions to trillions
-                                                if (event.title === "Gross Domestic Product") {
-                                                    return (numValue / 1000).toFixed(2);
+                                marketEvents.map((event) => {
+                                    // Determine source URL based on indicator title
+                                    let sourceUrl = "";
+                                    const displayTitle = event.title === "Gross Domestic Product" 
+                                        ? "GDP (US)" 
+                                        : event.title === "Federal Funds Effective Rate" 
+                                        ? "Interest Rate (US)" 
+                                        : `${event.title} (US)`;
+                                        
+                                    // Map the title to the correct source URL
+                                    if (displayTitle === "GDP (US)") {
+                                        sourceUrl = "https://fred.stlouisfed.org/series/GDP";
+                                    } else if (displayTitle === "Unemployment Rate (US)") {
+                                        sourceUrl = "https://fred.stlouisfed.org/series/UNRATE";
+                                    } else if (displayTitle === "Interest Rate (US)") {
+                                        sourceUrl = "https://fred.stlouisfed.org/series/DFF";
+                                    }
+                                    
+                                    return (
+                                        <div key={event.series_id} className={styles.eventCard}>
+                                            {sourceUrl ? (
+                                                <a 
+                                                    href={sourceUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className={`${styles.indicatorLink} ${styles.eventColumn}`}
+                                                    title={`View source for ${displayTitle} on FRED`}
+                                                >
+                                                    <Body>{displayTitle}</Body>
+                                                </a>
+                                            ) : (
+                                                <Body className={styles.eventColumn}>{displayTitle}</Body>
+                                            )}
+                                            <Body>{event.frequency}</Body>
+                                            <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
+                                            <Body>{(() => {
+                                                // Try to parse the value as a number
+                                                const numValue = parseFloat(event.value);
+                                                
+                                                // Check if it's a valid number
+                                                if (!isNaN(numValue)) {
+                                                    // If it's GDP, divide by 1000 to convert from billions to trillions
+                                                    if (event.title === "Gross Domestic Product") {
+                                                        return (numValue / 1000).toFixed(2);
+                                                    } else {
+                                                        return numValue.toFixed(2);
+                                                    }
                                                 } else {
-                                                    return numValue.toFixed(2);
+                                                    return event.value;
                                                 }
-                                            } else {
-                                                return event.value;
-                                            }
-                                        })()}</Body>
-
-                                        {/* Add the new units column here */}
-                                        <Body>
-                                            {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $" 
-                                                ? "Tril. of $" 
-                                                : event.units_short}
-                                        </Body>
-
-                                        <div>
-                                            <Tooltip align="top" justify="middle" trigger={
-                                                <Icon
-                                                    className={
-                                                        event.arrow_direction === "ARROW_UP"
-                                                            ? styles.arrowUp
-                                                            : event.arrow_direction === "ARROW_DOWN"
-                                                                ? styles.arrowDown
-                                                                : styles.arrowEqual
-                                                    }
-                                                    glyph={
-                                                        event.arrow_direction === "ARROW_UP"
-                                                            ? "ArrowUp"
-                                                            : event.arrow_direction === "ARROW_DOWN"
-                                                                ? "ArrowDown"
-                                                                : "Minus"
-                                                    }
-                                                />
-                                            }>
-                                                Trend relative to last value
-                                            </Tooltip>
+                                            })()}</Body>
+                                            <Body>
+                                                {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $" 
+                                                    ? "Tril. of $" 
+                                                    : event.units_short}
+                                            </Body>
+                                            <div>
+                                                <Tooltip align="top" justify="middle" trigger={
+                                                    <Icon
+                                                        className={
+                                                            event.arrow_direction === "ARROW_UP"
+                                                                ? styles.arrowUp
+                                                                : event.arrow_direction === "ARROW_DOWN"
+                                                                    ? styles.arrowDown
+                                                                    : styles.arrowEqual
+                                                        }
+                                                        glyph={
+                                                            event.arrow_direction === "ARROW_UP"
+                                                                ? "ArrowUp"
+                                                                : event.arrow_direction === "ARROW_DOWN"
+                                                                    ? "ArrowDown"
+                                                                    : "Minus"
+                                                        }
+                                                    />
+                                                }>
+                                                    Trend relative to last value
+                                                </Tooltip>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))
+                                    );
+                                })
                             ) : (
                                 <div className={styles.noData}>
                                     <Body>No macroeconomic indicators available</Body>
@@ -316,6 +325,14 @@ export default function AssetPortfolio() {
             <div className={styles.assetsSection}>
                 <Assets />
             </div>
+
+            {/* Add persistent disclaimer banner */}
+            <Banner 
+                variant="warning"
+                className={styles.disclaimerBanner}
+            >
+                <strong>Important Notice:</strong> The content of this page is for information, training and demonstration purposes and not intended as an investment advice.
+            </Banner>
 
             <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 
