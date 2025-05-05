@@ -467,7 +467,7 @@ export default function Assets() {
                                 },
                                 {
                                     image: {
-                                        src: "./images/assets_info.png",
+                                        src: "./images/chatbotPortfolio_info.png",
                                         alt: "Architecture",
                                     },
                                 },
