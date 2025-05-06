@@ -490,14 +490,11 @@ export default function Assets() {
                                             <br>
                                             This service is in charge of extracting, transforming, and loading data from these three sources into MongoDB Atlas for further analysis:
                                             <ul>
-                                                <li>Yahoo Finance Market Data</li>
-                                                <li>FRED API Macroeconomic Data</li>
-                                                <li>Financial news from a web scraping process</li>
+                                                <li><strong>Yahoo Finance Market Data</strong> - updated weekly from Tue to Sat at 4 am UTC.</li> 
+                                                <li><strong>FRED API Macroeconomic Data</strong> - updated daily at 4:05 am UTC.</li>
+                                                <li><strong>Financial news from a web scraping process</strong> - one time only, it is a fixed dataset.</li>
+                                                <li><strong>Portfolio performance (emulation)</strong> - updated daily at 4:10 am UTC.</li>
                                             </ul>
-                                            <p>
-                                                As well as generating portfolio performance (emulation).
-                                            </p>
-
                                             <p>
                                                 <strong>2. Capital Markets Agents Service </strong>
                                                 <br> 
@@ -506,6 +503,7 @@ export default function Assets() {
                                                     <li>Market Analysis Agent: Analyzes asset trends, macroeconomic indicators, and market volatility to generate portfolio insights and recommendations.</li>
                                                     <li>Market News Agent: Processes financial news, performs sentiment analysis, and produces summarized market news intelligence</li> 
                                                 </ul>
+                                                <br>
                                             </p>
                                         </p>
                                     </div>`,
