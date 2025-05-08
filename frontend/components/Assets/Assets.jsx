@@ -440,7 +440,8 @@ export default function Assets() {
                                 {
                                     image: {
                                         src: "./images/actions.png",
-                                        alt: "Architecture",
+                                        alt: "Actions",
+                                        width: 150,
                                     },
                                 },
                                 {

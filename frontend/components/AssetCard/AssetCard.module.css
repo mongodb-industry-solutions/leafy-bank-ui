@@ -1,6 +1,7 @@
   .card {
     display: grid;
-    grid-template-columns: 0.5fr 0.9fr 1.3fr 0.9fr 0.8fr 1.2fr 1fr 0.8fr 0.9fr 1fr 1fr;
+    grid-template-columns: 0.5fr 0.9fr 1.3fr 0.9fr 0.8fr 1.1fr 1fr 0.8fr 0.9fr 1.1fr 1fr;
+
     background-color: white;
     padding: 12px;
     border-radius: 10px;
@@ -11,6 +12,7 @@
   }
 
   .mainContent {
+    text-align: center;
     display: contents;
   }
 
@@ -29,6 +31,9 @@
   .cell {
     font-size: 14px;
     padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .circle {
@@ -36,7 +41,7 @@
     height: 14px;
     border-radius: 50%;
     display: inline-block;
-   
+    margin: auto; /* 💡 Center horizontally AND vertically inside flex parent */
   }
   
   .red {
@@ -80,6 +85,8 @@
   .actions {
     display: flex;
     gap: 5px;
+    align-items: center;
+justify-content: center;
   }
 
   .actionButton {

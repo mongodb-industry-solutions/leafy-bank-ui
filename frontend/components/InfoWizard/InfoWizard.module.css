@@ -27,10 +27,10 @@
 }
 
 .modalImage {
-  width: 100%;
+  display: block;        
   height: auto;
-  max-width: 550px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0 auto;        
   border-radius: 8px;
 }
 
