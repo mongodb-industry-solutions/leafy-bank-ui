@@ -105,13 +105,12 @@
   font-weight: bold;
   color: #666;
   gap: 10px;
+  text-align: center; /* NEW */
 }
 
 .headerRow span {
-  text-align: left;
+  text-align: center; /* UPDATED */
 }
-
-
 
 .arrowUp {
   color: #00674A;
@@ -125,16 +124,12 @@
   color: #888888;
 }
 
-/* Center align the data in the event cards for consistency */
-.eventCard > * {
-  text-align: center;
-}
-
 /* Adjust column widths manually */
 .headerRow span:nth-child(1),
 .eventCard>*:nth-child(1) {
   /* INDICATOR */
   width: 30%;
+  
 }
 
 .headerRow span:nth-child(2),
@@ -165,6 +160,7 @@
 .eventCard>*:nth-child(6) {
   /* TREND */
   width: 10%;
+  
 }
 
 .eventCard {
@@ -176,12 +172,15 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   gap: 10px;
   margin-bottom: 5px;
+  text-align: center;
 }
 
-.eventCard>* {
-  text-align: left;
+.eventCard a, .eventCard .eventColumn {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  
 }
-
 
 /* Chatbot button */
 .chatbotButton {
@@ -244,7 +243,7 @@
 
 @media (max-width: 768px) {
   .gridContainer {
-   display: inline;
+    display: inline;
     gap: 16px;
   }
 
@@ -299,6 +298,7 @@
   display: inline-flex;
   align-items: center;
   gap: 2px;
+  text-align: center;
 }
 
 .indicatorLink:hover {

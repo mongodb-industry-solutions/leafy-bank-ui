@@ -440,7 +440,8 @@ export default function Assets() {
                                 {
                                     image: {
                                         src: "./images/actions.png",
-                                        alt: "Architecture",
+                                        alt: "Actions",
+                                        width: 150,
                                     },
                                 },
                                 {
@@ -500,8 +501,8 @@ export default function Assets() {
                                                 <br> 
                                                 After the data is stored into MongoDB, two scheduled agents perform a series of operations to analyze the data and generate insights and store the reports into MongoDB Atlas: 
                                                 <ul>
-                                                    <li>Market Analysis Agent: Analyzes asset trends, macroeconomic indicators, and market volatility to generate portfolio insights and recommendations.</li>
-                                                    <li>Market News Agent: Processes financial news, performs sentiment analysis, and produces summarized market news intelligence</li> 
+                                                    <li><strong>Market Analysis Agent</strong>: Analyzes asset trends, macroeconomic indicators, and market volatility to generate portfolio insights and recommendations. Executed on daily basis at 5 am UTC.</li>
+                                                    <li><strong>Market News Agent</strong>: Processes financial news, performs sentiment analysis, and produces summarized market news intelligence. Executed on daily basis at 5:10 am UTC.</li> 
                                                 </ul>
                                                 <br>
                                             </p>
