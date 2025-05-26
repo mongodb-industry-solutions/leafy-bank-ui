@@ -90,13 +90,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                 <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
 
                 <div className={styles.actions}>
-                    <Tooltip align="top" justify="middle" trigger={
-                        <IconButton aria-label="Candle Stick" className={styles.actionButton} onClick={() => handleExpand("candleStick")}>
-                            <Icon glyph="Charts" />
-                        </IconButton>
-                    }>
-                        Candle Stick Chart
-                    </Tooltip>
+                    
 
                     <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Insights" className={styles.actionButton} onClick={() => handleExpand("insights")}>
@@ -104,6 +98,14 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         </IconButton>
                     }>
                         Insights
+                    </Tooltip>
+
+                    <Tooltip align="top" justify="middle" trigger={
+                        <IconButton aria-label="Candle Stick" className={styles.actionButton} onClick={() => handleExpand("candleStick")}>
+                            <Icon glyph="Charts" />
+                        </IconButton>
+                    }>
+                        Candle Stick Chart
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
@@ -422,7 +424,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             <div className={styles.insightSection}>
                                 <div className={styles.insightHeader}>
                                     <H2 className={styles.insightH2}>50-Day Moving Average Analysis</H2>
-                                    <div className={`${styles.cell} ${styles.circle} ${styles[trendBadgeVariant]}`}></div>
+                                    <div className={`${styles.cell} ${styles.circleInsight} ${styles[trendBadgeVariant]}`}></div>
                                 </div>
 
                                 <Body weight="medium">Price vs. MA50:</Body>
@@ -439,7 +441,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>VIX Sensitivity Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[vixBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Market Volatility:</Body>
@@ -461,7 +463,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>GDP Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[gdpBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">GDP Trend:</Body>
@@ -481,7 +483,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>Interest Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circle} ${styles[interestRateBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[interestRateBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Interest Rate Trend:</Body>
@@ -501,7 +503,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.insightSection}>
                                     <div className={styles.insightHeader}>
                                         <H2 className={styles.insightH2}>Unemployment Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
+                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[unemploymentBadgeVariant]}`}></div>
                                     </div>
 
                                     <Body weight="medium">Unemployment Rate Trend:</Body>

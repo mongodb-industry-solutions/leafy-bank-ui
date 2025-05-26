@@ -337,7 +337,7 @@ export default function AssetPortfolio() {
             <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 
             <div className={styles.chatbotButton} onClick={toggleChatbot}>
-                <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
+                <img src="/images/coachGTM_Headshot.png" alt="Chat Icon" className={styles.chatIcon} />
                 <div className={styles.textWrapper}>
                     <span><Body className={styles.chatbotText}>Leafy Portfolio Assistant</Body></span>
                     <div className={styles.statusWrapper}>
