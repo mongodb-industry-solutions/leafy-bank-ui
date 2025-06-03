@@ -182,7 +182,19 @@
   
 }
 
-/* Chatbot button */
+/* Pulsing shadow animation */
+@keyframes pulseShadow {
+  0% {
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0px 4px 30px #00A35C;
+  }
+  100% {
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
 .chatbotButton {
   position: fixed;
   bottom: 30px;
@@ -191,18 +203,25 @@
   border-radius: 50px;
   width: fit-content;
   height: fit-content;
-  padding: 0px 15px 0px 0px;
+  padding: 3px 15px 3px 0px;
   display: flex;
   align-items: center;
   color: black;
   cursor: pointer;
-  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
   z-index: 100;
-
+  animation: pulseShadow 2s infinite;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
 }
 
+/* Optional hover effect */
 .chatbotButton:hover {
   background-color: #E5F6FE;
+}
+
+.chatIcon {
+  width: 50px;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .chatbotText {
@@ -210,10 +229,48 @@
   font-weight: 500;
 }
 
-.chatIcon {
-  width: 50px;
-  margin-right: 10px;
-  margin-left: 10px;
+/* Speech bubble styling */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.speechBubble {
+  position: absolute;
+  bottom: 55px;
+  right: 10px;
+  background-color: #00A35C;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.fadeIn {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.fadeOut {
+  animation: fadeOutDown 0.5s ease-in forwards;
 }
 
 .textWrapper {

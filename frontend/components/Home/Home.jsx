@@ -40,7 +40,7 @@ const Home = () => {
 
   // Function to trigger a re-fetch in GlobalPosition component
   const updateGlobalPosition = () => {
-      setTriggerGlobalPositionUpdate(prev => prev + 1); // Increment to trigger update
+    setTriggerGlobalPositionUpdate(prev => prev + 1); // Increment to trigger update
   };
 
   useEffect(() => {
@@ -65,7 +65,7 @@ const Home = () => {
             const data = await fetchUserData(selectedUser.id);
             localStorage.setItem('accounts', JSON.stringify(data.accounts));
             localStorage.setItem('transactions', JSON.stringify(data.transactions));
-  
+
             setActiveAccounts(data.accounts);
             setRecentTransactions(data.transactions);
           }
@@ -76,10 +76,10 @@ const Home = () => {
         }
       }
     };
-  
+
     fetchInternalData();
   }, [selectedUser]);
-  
+
   useEffect(() => {
     const fetchExternalData = async () => {
       if (selectedUser) {
@@ -94,7 +94,7 @@ const Home = () => {
             const externalData = await fetchUserExternalData(selectedUser.id, selectedUser.bearerToken);
             localStorage.setItem('external_accounts', JSON.stringify(externalData.external_accounts));
             localStorage.setItem('external_products', JSON.stringify(externalData.external_products));
-  
+
             setExternalAccounts(externalData.external_accounts);
             setExternalProducts(externalData.external_products);
           }
@@ -105,7 +105,7 @@ const Home = () => {
         }
       }
     };
-  
+
     fetchExternalData();
   }, [selectedUser]);
 
@@ -116,7 +116,7 @@ const Home = () => {
     }
     try {
       setLoading(true);
-  
+
       // Skip data fetching for Portfolio Manager users
       if (user.role === 'Portfolio Manager') {
         // Use empty default values
@@ -131,7 +131,7 @@ const Home = () => {
         localStorage.setItem("transactions", JSON.stringify(data.transactions));
         setActiveAccounts(data.accounts);
         setRecentTransactions(data.transactions);
-  
+
         // Fetch and store external data
         const externalData = await fetchUserExternalData(user.id, user.bearerToken);
         localStorage.setItem("external_accounts", JSON.stringify(externalData.external_accounts));
@@ -182,7 +182,7 @@ const Home = () => {
       </Head>
       <ToastProvider>
         <Header onLogout={handleLogout} />
-        
+
         <div style={{ margin: '80px 20px', transition: 'left 0.3s ease' }}>
           {loading ? (
             <div className={styles.loading}>Loading...</div>
@@ -262,12 +262,13 @@ const Home = () => {
                   handleOpenForm={handleOpenForm}
                   handleCloseForm={handleCloseForm}
                   handleRefresh={handleRefresh}
-                  updateGlobalPosition={updateGlobalPosition} 
+                  updateGlobalPosition={updateGlobalPosition}
                 />
 
                 <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />
 
                 <div className={styles.chatbotButton} onClick={toggleChatbot}>
+
                   <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
                   <div className={styles.textWrapper}>
                     <span><Body className={styles.chatbotText}>Leafy Personal Assistant</Body></span>
