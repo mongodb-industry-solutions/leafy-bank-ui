@@ -10,7 +10,7 @@ import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
 import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
-
+import RiskProfileSelector from '@/components/RiskProfileSelector/RiskProfileSelector';
 import styles from "./Header.module.css";
 
 function Header({ onLogout = () => { } }) {
@@ -65,6 +65,8 @@ function Header({ onLogout = () => { } }) {
       <div className={styles["right-container"]}>
         {pathname !== '/asset-portfolio' && <UserProfile />}
 
+        {pathname === '/asset-portfolio' && <RiskProfileSelector />}
+
         {/* Desktop Logout Icon Button */}
         <IconButton
           aria-label="LogOut"
@@ -79,7 +81,7 @@ function Header({ onLogout = () => { } }) {
           <Icon glyph={isMenuOpen ? "X" : "Menu"} />
         </IconButton>
       </div>
-    </div>
+    </div >
   );
 }
 
