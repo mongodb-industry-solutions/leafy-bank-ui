@@ -79,9 +79,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
             // The response will contain final_answer and possibly tool_calls
             const { final_answer, tool_calls = [] } = data;
             const responseMessage = formatAnswer(final_answer || "No response");
-    
+
             setAnswer(responseMessage);
-    
+
             // Store the query and agent answer as separate message objects,
             // along with any tool calls
             setMessages((prevMessages) => [
@@ -89,7 +89,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                 { text: query, isUser: true, toolCalls: [] },
                 { text: responseMessage, isUser: false, toolCalls: tool_calls }
             ]);
-    
+
             setQuery("");
         } catch (error) {
             console.error("Error:", error);
@@ -97,10 +97,10 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
             setIsAsking(false);
         }
     };
-    
+
     const markCompleted = (messageId) => {
-            setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
-        };
+        setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
+    };
 
     return (
         <>
@@ -113,44 +113,44 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                             <div className={styles.centeredHeader}>
                                 <Badge variant="blue" className={styles.badge}>Leafy Portfolio Assistant</Badge>
                                 <div className={styles.infoModal}>
-                                <InfoWizard
-                                    open={openHelpModal}
-                                    setOpen={setOpenHelpModal}
-                                    tooltipText="Tell me more!"
-                                    iconGlyph="Wizard"
-                                    sections={[
-                                        {
-                                            heading: "Instructions and Talk Track",
-                                            content: [
-                                                {
-                                                    heading: "Leafy Portfolio Assistant",
-                                                    body: "Leafy Portfolio Assistant provides portfolio managers with a tool that allows them to quickly access and analyze market data, portfolio performance, and news insights. It enhances efficiency by providing tailored responses and reducing the time spent solving the complexities behind data retrieval and analysis, enabling improved decision-making with real-time updates and contextually aware interactions."
-                                                },
-                                                {
-                                                    heading: "How to Demo",
-                                                    body: [
-                                                        "Select one of the Suggested Questions or type a new one in the prompt",
-                                                        "Click 'Ask'",
-                                                        "View response",
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            heading: "Behind the Scenes",
-                                            content: [
-                                                {
-                                                    heading: "High-level Architecture",
-                                                },
-                                                {
-                                                    image: {
-                                                        src: "./images/chatbotPortfolio_info.png",
-                                                        alt: "Architecture",
+                                    <InfoWizard
+                                        open={openHelpModal}
+                                        setOpen={setOpenHelpModal}
+                                        tooltipText="Tell me more!"
+                                        iconGlyph="Wizard"
+                                        sections={[
+                                            {
+                                                heading: "Instructions and Talk Track",
+                                                content: [
+                                                    {
+                                                        heading: "Leafy Portfolio Assistant",
+                                                        body: "Leafy Portfolio Assistant provides portfolio managers with a tool that allows them to quickly access and analyze market data, portfolio performance, and news insights. It enhances efficiency by providing tailored responses and reducing the time spent solving the complexities behind data retrieval and analysis, enabling improved decision-making with real-time updates and contextually aware interactions."
                                                     },
-                                                },
-                                                {
-                                                    body:
-                                                        `<div>
+                                                    {
+                                                        heading: "How to Demo",
+                                                        body: [
+                                                            "Select one of the Suggested Questions or type a new one in the prompt",
+                                                            "Click 'Ask'",
+                                                            "View response",
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                heading: "Behind the Scenes",
+                                                content: [
+                                                    {
+                                                        heading: "High-level Architecture",
+                                                    },
+                                                    {
+                                                        image: {
+                                                            src: "./images/chatbotPortfolio_info.png",
+                                                            alt: "Architecture",
+                                                        },
+                                                    },
+                                                    {
+                                                        body:
+                                                            `<div>
                                                         <p>
                                                             <br>
                                                             This solution is divided into three core services: 
@@ -187,21 +187,21 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                             </ul>
                                                         </p>
                                                     </div>`,
-                                                    isHTML: true,
-                                                },
-                                                {
-                                                    heading: "ReAct Pattern",
-                                                    body: "The Leafy Portfolio Assistant uses the ReAct (Reason and Act) pattern, which allows the agent to think step-by-step and take actions as needed. This pattern enables the agent to analyze user queries, reason through the appropriate tools to use, and synthesize coherent responses based on retrieved information."
-                                                },
-                                                {
-                                                    image: {
-                                                        src: "./images/react_pattern.png",
-                                                        alt: "ReAct Pattern",
+                                                        isHTML: true,
                                                     },
-                                                },
-                                                {
-                                                    heading: "Agent Flow and Interaction Model",
-                                                    body: `<div>
+                                                    {
+                                                        heading: "ReAct Pattern",
+                                                        body: "The Leafy Portfolio Assistant uses the ReAct (Reason and Act) pattern, which allows the agent to think step-by-step and take actions as needed. This pattern enables the agent to analyze user queries, reason through the appropriate tools to use, and synthesize coherent responses based on retrieved information."
+                                                    },
+                                                    {
+                                                        image: {
+                                                            src: "./images/react_pattern.png",
+                                                            alt: "ReAct Pattern",
+                                                        },
+                                                    },
+                                                    {
+                                                        heading: "Agent Flow and Interaction Model",
+                                                        body: `<div>
                                                         <p>When you interact with the Leafy Portfolio Assistant, your experience is powered by a sophisticated ReAct (Reason and Act) workflow:</p>
                                                         <ol>
                                                             <li><strong>User Query Processing:</strong> When you ask a question (e.g., "Based on market condition today, what overall portfolio asset reallocation would you suggest?"), the ReAct agent examines your query to determine what information you need.</li>
@@ -222,11 +222,11 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                         </ol>
                                                         <p>Throughout this process, the agent maintains a conversation state in MongoDB, enabling it to reference previous interactions and provide contextually relevant responses over time.</p>
                                                     </div>`,
-                                                    isHTML: true,
-                                                },
-                                                {
-                                                    heading: "Agent Memory Management",
-                                                    body: `<div>
+                                                        isHTML: true,
+                                                    },
+                                                    {
+                                                        heading: "Agent Memory Management",
+                                                        body: `<div>
                                                         <p>The Leafy Portfolio Assistant uses MongoDB as a long-term memory store to maintain context across conversation sessions:</p>
                                                         <ul>
                                                             <li><strong>Memory Storage:</strong> Two key collections—<code>checkpoints_aio</code> and <code>checkpoint_writes_aio</code>—store the complete state of agent interactions, including reasoning steps, tool calls, and observations.</li>
@@ -235,11 +235,11 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                         </ul>
                                                         <p>This memory management approach balances the benefits of persistent conversation context with database efficiency, allowing users to continue discussions throughout their workday while automatically clearing older interactions.</p>
                                                     </div>`,
-                                                    isHTML: true,
-                                                },
-                                                {
-                                                    heading: "Specialized Financial Tools",
-                                                    body: `<div>
+                                                        isHTML: true,
+                                                    },
+                                                    {
+                                                        heading: "Specialized Financial Tools",
+                                                        body: `<div>
                                                         <p>The Leafy Portfolio Assistant leverages specialized tools to access and analyze financial data from various sources:</p>
                                                         <p><strong>Portfolio-Specific Tools:</strong></p>
                                                         <ul>
@@ -254,52 +254,52 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                             <li><strong>Tavily Search Tool</strong> (<code>tavily_search_tool</code>): Supplements portfolio-specific tools with broader financial data and news via the Tavily API, particularly useful for questions about assets not in the portfolio or general market concepts.</li>
                                                         </ul>
                                                     </div>`,
-                                                    isHTML: true,
-                                                },
-                                                {
-                                                    heading: "MongoDB Stack",
-                                                    body: [
-                                                        "Atlas Vector Search",
-                                                        "Aggregation Pipelines",
-                                                        "Atlas Charts",
-                                                        "Time Series collections",
-                                                        "AsyncMongoClient",
-                                                        "AsyncMongoDBSaver",
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                        {
-                                            heading: "Why MongoDB?",
-                                            content: [
-                                                {
-                                                    heading: "Integration with Agentic AI",
-                                                    body: "The integration of agentic AI with MongoDB enhances portfolio management by leveraging AI-driven insights to analyze and predict market trends, optimize asset allocations, and facilitate real-time data-driven investment decisions, all powered by efficient data storage and retrieval capabilities."
-                                                },
-                                                {
-                                                    heading: "Perfect for Agent Memory Management",
-                                                    body: "MongoDB's document model is ideal for storing complex agent state through the MongoDB Checkpointer, providing seamless memory persistence across conversations. This enables the assistant to maintain context over time using collections like `checkpoints_aio` and `checkpoint_writes_aio`, delivering more personalized, contextually relevant responses to financial queries."
-                                                },
-                                                {
-                                                    heading: "Vector Search",
-                                                    body: "Atlas Vector Search empowers the chatbot to efficiently store and query high-dimensional embeddings, enabling it to deliver contextually accurate and relevant responses. Making AI-driven interactions within the Leafy Bank ecosystem both fast and reliable."
-                                                },
-                                                {
-                                                    heading: "Flexibility",
-                                                    body: "MongoDB's flexible document model unifies structured (macroeconomic indicators and market data) and unstructured data (financial news) into a single data platform that integrates with agentic AI not only to understand and respond to complex queries, but also generate valuable insights for enhanced portfolio management.",
-                                                },
-                                                {
-                                                    heading: "Time Series collections",
-                                                    body: "MongoDB allows the storage of time series collections, efficiently ingesting large volumes of data. This enables AI agents to process and analyze sequential interactions, learn patterns, and state changes over time." 
-                                                },
-                                                {
-                                                    heading: "Atlas Charts",
-                                                    body: "MongoDB Atlas Charts provides an intuitive and dynamic way to visualize real-time application data, directly accessing collections to streamline analytic workflows. This feature enables users to effectively visualize metrics such as portfolio performance over the last month, asset distribution, and candlestick charts for each asset, allowing for a comprehensive interpretation of price movements."
-                                                }
-                                            ],
-                                        },
-                                    ]}
-                                />
+                                                        isHTML: true,
+                                                    },
+                                                    {
+                                                        heading: "MongoDB Stack",
+                                                        body: [
+                                                            "Atlas Vector Search",
+                                                            "Aggregation Pipelines",
+                                                            "Atlas Charts",
+                                                            "Time Series collections",
+                                                            "AsyncMongoClient",
+                                                            "AsyncMongoDBSaver",
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                            {
+                                                heading: "Why MongoDB?",
+                                                content: [
+                                                    {
+                                                        heading: "Integration with Agentic AI",
+                                                        body: "The integration of agentic AI with MongoDB enhances portfolio management by leveraging AI-driven insights to analyze and predict market trends, optimize asset allocations, and facilitate real-time data-driven investment decisions, all powered by efficient data storage and retrieval capabilities."
+                                                    },
+                                                    {
+                                                        heading: "Perfect for Agent Memory Management",
+                                                        body: "MongoDB's document model is ideal for storing complex agent state through the MongoDB Checkpointer, providing seamless memory persistence across conversations. This enables the assistant to maintain context over time using collections like `checkpoints_aio` and `checkpoint_writes_aio`, delivering more personalized, contextually relevant responses to financial queries."
+                                                    },
+                                                    {
+                                                        heading: "Vector Search",
+                                                        body: "Atlas Vector Search empowers the chatbot to efficiently store and query high-dimensional embeddings, enabling it to deliver contextually accurate and relevant responses. Making AI-driven interactions within the Leafy Bank ecosystem both fast and reliable."
+                                                    },
+                                                    {
+                                                        heading: "Flexibility",
+                                                        body: "MongoDB's flexible document model unifies structured (macroeconomic indicators and market data) and unstructured data (financial news) into a single data platform that integrates with agentic AI not only to understand and respond to complex queries, but also generate valuable insights for enhanced portfolio management.",
+                                                    },
+                                                    {
+                                                        heading: "Time Series collections",
+                                                        body: "MongoDB allows the storage of time series collections, efficiently ingesting large volumes of data. This enables AI agents to process and analyze sequential interactions, learn patterns, and state changes over time."
+                                                    },
+                                                    {
+                                                        heading: "Atlas Charts",
+                                                        body: "MongoDB Atlas Charts provides an intuitive and dynamic way to visualize real-time application data, directly accessing collections to streamline analytic workflows. This feature enables users to effectively visualize metrics such as portfolio performance over the last month, asset distribution, and candlestick charts for each asset, allowing for a comprehensive interpretation of price movements."
+                                                    }
+                                                ],
+                                            },
+                                        ]}
+                                    />
                                 </div>
                             </div>
 
@@ -324,13 +324,21 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                 return (
                                     <div key={index} className={styles.chatMessage}>
                                         <div
-                                            className={`${styles.speechBubble} ${
-                                                isUserMessage ? styles.userBubble : styles.answerBubble
-                                            }`}
+                                            className={`${styles.speechBubble} ${isUserMessage ? styles.userBubble : styles.answerBubble
+                                                }`}
                                         >
                                             {isUserMessage ? (
                                                 <Body>{message.text}</Body>
                                             ) : (
+                                                <>
+                                                <div className={styles.agentHeader}>
+                                                    <img
+                                                        src="/images/coachGTM_Headshot.png"
+                                                        alt="Agent"
+                                                        className={styles.agentImage}
+                                                    />
+                                                    <Subtitle className={styles.agentPrefix}>Agent's response:</Subtitle>
+                                                </div>
                                                 <Body>
                                                     <Typewriter
                                                         text={message.text}
@@ -339,9 +347,10 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                         markCompleted={markCompleted}
                                                     />
                                                 </Body>
+                                            </>
                                             )}
                                         </div>
-                                        
+
                                         {/* Move tool calls section AFTER the message bubble */}
                                         {!isUserMessage && message.toolCalls && message.toolCalls.length > 0 && completedMessages[index] && (
                                             <div className={styles.toolCallsContainer}>
@@ -364,8 +373,16 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                             })}
 
                             {isAsking && (
-                                <div className={styles.thinkingMessage}>
-                                    The agent is thinking<span className={styles.dots}></span>
+
+                                <div className={styles.thinkingSection}>
+                                    <img
+                                        src="/images/animated_bot.gif"
+                                        alt="Thinking bot"
+                                        className={styles.thinkingGif}
+                                    />
+                                    <div className={styles.thinkingMessage}>
+                                        The agent is thinking<span className={styles.dots}></span>
+                                    </div>
                                 </div>
                             )}
                         </div>

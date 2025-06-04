@@ -26,6 +26,18 @@ export default function AssetPortfolio() {
     const router = useRouter();
     const [selectedTimeframe, setSelectedTimeframe] = useState("6month");
 
+    // "Can I help you?" Chatbot bubble //
+    const [showBubble, setShowBubble] = useState(true);
+    const [bubbleFade, setBubbleFade] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setBubbleFade(true); // trigger fade out
+            setTimeout(() => setShowBubble(false), 500); // remove element after animation
+        }, 8000);
+        return () => clearTimeout(timer);
+    }, []);
+
     useEffect(() => {
         async function fetchMarketData() {
             try {
@@ -33,18 +45,18 @@ export default function AssetPortfolio() {
                 const cachedData = localStorage.getItem('macroIndicatorsData');
                 const cachedTimestamp = localStorage.getItem('macroIndicatorsTimestamp');
                 const dataIsStale = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp)) > (6 * 60 * 60 * 1000); // 6 hours
-                
+
                 if (cachedData && !dataIsStale) {
                     // Use cached data immediately
                     const parsedData = JSON.parse(cachedData);
                     setMarketEvents(parsedData);
                     setIsLoading(false);
-                    
+
                     // Still fetch fresh data in the background
                     fetchFreshData(false);
                     return;
                 }
-                
+
                 // No valid cache, fetch fresh data
                 await fetchFreshData(true);
             } catch (error) {
@@ -52,7 +64,7 @@ export default function AssetPortfolio() {
                 setIsLoading(false);
             }
         }
-        
+
         async function fetchFreshData(updateLoadingState) {
             try {
                 // Fetch both the latest indicator values and trend information
@@ -82,7 +94,7 @@ export default function AssetPortfolio() {
                 if (updateLoadingState) {
                     setIsLoading(false);
                 }
-                
+
                 // Save to cache
                 try {
                     localStorage.setItem('macroIndicatorsData', JSON.stringify(transformedData));
@@ -97,7 +109,7 @@ export default function AssetPortfolio() {
                 }
             }
         }
-        
+
         fetchMarketData();
     }, []);
 
@@ -233,12 +245,12 @@ export default function AssetPortfolio() {
                                 marketEvents.map((event) => {
                                     // Determine source URL based on indicator title
                                     let sourceUrl = "";
-                                    const displayTitle = event.title === "Gross Domestic Product" 
-                                        ? "GDP (US)" 
-                                        : event.title === "Federal Funds Effective Rate" 
-                                        ? "Interest Rate (US)" 
-                                        : `${event.title} (US)`;
-                                        
+                                    const displayTitle = event.title === "Gross Domestic Product"
+                                        ? "GDP (US)"
+                                        : event.title === "Federal Funds Effective Rate"
+                                            ? "Interest Rate (US)"
+                                            : `${event.title} (US)`;
+
                                     // Map the title to the correct source URL
                                     if (displayTitle === "GDP (US)") {
                                         sourceUrl = "https://fred.stlouisfed.org/series/GDP";
@@ -247,11 +259,11 @@ export default function AssetPortfolio() {
                                     } else if (displayTitle === "Interest Rate (US)") {
                                         sourceUrl = "https://fred.stlouisfed.org/series/DFF";
                                     }
-                                    
+
                                     return (
                                         <div key={event.series_id} className={styles.eventCard}>
                                             {sourceUrl ? (
-                                                <a 
+                                                <a
                                                     href={sourceUrl}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
@@ -268,7 +280,7 @@ export default function AssetPortfolio() {
                                             <Body>{(() => {
                                                 // Try to parse the value as a number
                                                 const numValue = parseFloat(event.value);
-                                                
+
                                                 // Check if it's a valid number
                                                 if (!isNaN(numValue)) {
                                                     // If it's GDP, divide by 1000 to convert from billions to trillions
@@ -282,8 +294,8 @@ export default function AssetPortfolio() {
                                                 }
                                             })()}</Body>
                                             <Body>
-                                                {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $" 
-                                                    ? "Tril. of $" 
+                                                {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $"
+                                                    ? "Tril. of $"
                                                     : event.units_short}
                                             </Body>
                                             <div>
@@ -327,7 +339,7 @@ export default function AssetPortfolio() {
             </div>
 
             {/* Add persistent disclaimer banner */}
-            <Banner 
+            <Banner
                 variant="warning"
                 className={styles.disclaimerBanner}
             >
@@ -337,7 +349,14 @@ export default function AssetPortfolio() {
             <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 
             <div className={styles.chatbotButton} onClick={toggleChatbot}>
-                <img src="/images/bot.svg" alt="Chat Icon" className={styles.chatIcon} />
+                {showBubble && (
+                    <div
+                        className={`${styles.speechBubble} ${bubbleFade ? styles.fadeOut : styles.fadeIn}`}
+                    >
+                        Can I help you?
+                    </div>
+                )}
+                <img src="/images/coachGTM_Headshot.png" alt="Chat Icon" className={styles.chatIcon} />
                 <div className={styles.textWrapper}>
                     <span><Body className={styles.chatbotText}>Leafy Portfolio Assistant</Body></span>
                     <div className={styles.statusWrapper}>

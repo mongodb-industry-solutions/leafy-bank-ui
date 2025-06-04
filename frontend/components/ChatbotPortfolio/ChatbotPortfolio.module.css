@@ -180,6 +180,22 @@
     opacity: 1;
 }
 
+.agentHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid lightgray;
+    padding: 5px;
+  }
+  
+  .agentImage {
+    width: 40px;
+  }
+
+  .agentPrefix{
+    font-size: 14px;
+  }
 
 .introBubble {
     background-color: white;
@@ -281,11 +297,21 @@
     white-space: pre-line;
 }
 
+.thinkingSection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Optional: centers vertically if needed */
+    text-align: center;
+    margin-top: 20px;
+}
+
 .thinkingMessage {
     margin: 8px 0 0 10px;
-    color: gray;
+    color: #00684A;
     font-style: italic;
     font-size: 14px;
+    font-weight: 600;
     animation: fadeIn 0.3s ease-in;
 }
 
@@ -295,6 +321,10 @@
     width: 1em;
     text-align: left;
     animation: dots 1.2s steps(4, end) infinite;
+}
+
+.thinkingGif{
+    width: 150px;
 }
 
 @keyframes dots {

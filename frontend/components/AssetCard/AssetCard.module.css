@@ -43,6 +43,13 @@
     display: inline-block;
     margin: auto; /* 💡 Center horizontally AND vertically inside flex parent */
   }
+
+  .circleInsight{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+  }
   
   .red {
     background-color: #c62727;
