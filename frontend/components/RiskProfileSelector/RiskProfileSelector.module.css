@@ -1,8 +1,19 @@
-.comboBoxWrapper{
+.comboBoxWrapper {
   display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.riskTooltip{
-  margin-right: 10px;
-  margin-top: 5px;
+.selectorLabel {
+  white-space: nowrap;
+  margin-right: 0;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.riskTooltip {
+  margin-right: -5px;
+  display: flex;
+  align-items: center; 
+
 }

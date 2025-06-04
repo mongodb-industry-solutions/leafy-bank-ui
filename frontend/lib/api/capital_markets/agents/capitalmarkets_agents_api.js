@@ -246,3 +246,69 @@ export async function fetchChartMappings() {
     const data = await response.json();
     return data;
 }
+
+/**  
+ * Risk Profiles Data
+ */
+
+/**  
+ * Fetch all risk profiles.
+ * @returns Array: An array containing risk profile objects.
+ */
+export async function listRiskProfiles() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Error fetching risk profiles: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Get the currently active risk profile.
+ * @returns Object: The active risk profile.
+ */
+export async function getActiveRiskProfile() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/active`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Error fetching active risk profile: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Set a specific risk profile as active.
+ * @param {string} riskId - The risk profile ID to activate.
+ * @returns Object: The updated active risk profile.
+ */
+export async function setActiveRiskProfile(riskId) {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/active`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ risk_id: riskId })
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Error setting active risk profile: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+}
