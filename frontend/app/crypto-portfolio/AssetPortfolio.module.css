@@ -1,0 +1,363 @@
+/* Add this to your existing CSS */
+.disclaimerBanner {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Adjust the container padding if needed */
+.container {
+  padding: 80px 20px 20px 20px; /* Reduced bottom padding to account for banner */
+}
+
+/* Make the banner responsive */
+@media (max-width: 768px) {
+  .disclaimerBanner {
+    margin-top: 5px;
+    margin-bottom: 15px;
+  }
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  /* Two equal columns */
+  grid-template-rows: 1fr;
+  /* Single row */
+  gap: 20px;
+  align-items: stretch;
+  /* Ensures rows stretch to max height */
+}
+
+.roiCard {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 20px;
+
+}
+
+.roiHeader {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0px;
+}
+
+.segmentedControl {
+  max-width: 300px;
+}
+
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+}
+
+.assetCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.marketCard {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 10px 20px;
+}
+
+.iframeContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 0px;
+}
+
+.responsiveIframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.pieCharts {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+}
+
+.cardSubtitle {
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.headerRow {
+  display: flex;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  font-weight: bold;
+  color: #666;
+  gap: 10px;
+  text-align: center; /* NEW */
+}
+
+.headerRow span {
+  text-align: center; /* UPDATED */
+}
+
+.arrowUp {
+  color: #00674A;
+}
+
+.arrowDown {
+  color: #c62727;
+}
+
+.arrowEqual {
+  color: #888888;
+}
+
+/* Adjust column widths manually */
+.headerRow span:nth-child(1),
+.eventCard>*:nth-child(1) {
+  /* INDICATOR */
+  width: 30%;
+  
+}
+
+.headerRow span:nth-child(2),
+.eventCard>*:nth-child(2) {
+  /* FREQUENCY */
+  width: 15%;
+}
+
+.headerRow span:nth-child(3),
+.eventCard>*:nth-child(3) {
+  /* LAST RELEASE DATE */
+  width: 15%;
+}
+
+.headerRow span:nth-child(4),
+.eventCard>*:nth-child(4) {
+  /* LAST VALUE */
+  width: 15%;
+}
+
+.headerRow span:nth-child(5),
+.eventCard>*:nth-child(5) {
+  /* UNITS */
+  width: 15%;
+}
+
+.headerRow span:nth-child(6),
+.eventCard>*:nth-child(6) {
+  /* TREND */
+  width: 10%;
+  
+}
+
+.eventCard {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 7px 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.eventCard a, .eventCard .eventColumn {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  
+}
+
+/* Pulsing shadow animation */
+@keyframes pulseShadow {
+  0% {
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0px 4px 30px #00A35C;
+  }
+  100% {
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.chatbotButton {
+  position: fixed;
+  bottom: 30px;
+  right: 25px;
+  background-color: white;
+  border-radius: 50px;
+  width: fit-content;
+  height: fit-content;
+  padding: 15px 20px 15px 8px;
+  display: flex;
+  align-items: center;
+  color: black;
+  cursor: pointer;
+  z-index: 100;
+  animation: pulseShadow 2s infinite;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Optional hover effect */
+.chatbotButton:hover {
+  background-color: #E5F6FE;
+}
+
+.chatIcon {
+  width: 50px;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.chatbotText {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Speech bubble styling */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+.speechBubble {
+  position: absolute;
+  bottom: 90px;
+  right: 10px;
+  background-color: #00A35C;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.fadeIn {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+.fadeOut {
+  animation: fadeOutDown 0.5s ease-in forwards;
+}
+
+.textWrapper {
+  display: flex;
+  flex-direction: column;
+  /* Stack text and status vertically */
+}
+
+.statusWrapper {
+  display: flex;
+  align-items: center;
+  /* Align status text and indicator in line */
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  background-color: #00ED64;
+  border-radius: 50%;
+  margin-right: 8px;
+  /* Space between 'Available' text and indicator */
+}
+
+.lg-cancel-button {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .gridContainer {
+    display: inline;
+    gap: 16px;
+  }
+
+  .roiCard{
+    height: 500px;
+    margin-bottom: 20px;
+  }
+
+  .pieCharts {
+    flex-direction: column;
+  }
+  
+
+  .chatbotButton {
+    position: sticky;
+    bottom: 20px;
+  }
+
+  .cardSubtitle {
+    font-size: 12px;
+  }
+}
+
+.skeletonText {
+  height: 20px;
+  width: 80%;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeletonValue {
+  display: flex;
+  align-items: center;
+}
+
+.noData {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.6; }
+}
+
+.indicatorLink {
+  color: inherit;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  text-align: center;
+}
+
+.indicatorLink:hover {
+  text-decoration: underline;
+}

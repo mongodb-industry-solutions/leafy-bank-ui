@@ -56,6 +56,12 @@ function Header({ onLogout = () => { } }) {
           </Link>
         )}
 
+       
+          <Link href="/crypto-portfolio" className={styles.navLink}>
+            <Body className={styles.navLinkText}>Crypto Portfolio Dashboard</Body>
+          </Link>
+    
+
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
           <Body>Log Out</Body>

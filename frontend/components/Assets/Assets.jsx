@@ -417,7 +417,7 @@ export default function Assets() {
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
-                <H2>Investment Portfolio</H2>
+                <H2>Traditional Investment Portfolio</H2>
 
                 <InfoWizard
                     open={openHelpModal}
