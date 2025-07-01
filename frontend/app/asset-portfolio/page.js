@@ -5,7 +5,7 @@ import Header from "@/components/Header/Header";
 import Assets from "@/components/Assets/Assets";
 import styles from "./AssetPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
-import { Subtitle, Body } from "@leafygreen-ui/typography";
+import { Subtitle, Body, H3, H2 } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
@@ -154,6 +154,9 @@ export default function AssetPortfolio() {
 
     return (
         <div className={styles.container}>
+
+            <H2> Traditional Investment Portfolio</H2>
+            
             <Header className={styles.navBar} onLogout={handleLogout} />
 
             {/* Keep the modal for first-time visitors */}
@@ -199,6 +202,30 @@ export default function AssetPortfolio() {
                 </Card>
 
                 <div className={styles.rightColumn}>
+
+                    <div className={styles.totalFigures}>
+        
+                        <Card className={styles.figureCard}>
+                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
+                            <H3> USD 100.000</H3>
+                            <Body>Total</Body>
+                        </Card>
+
+
+                        <Card className={styles.figureCard}>
+                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
+                            <H3> USD 10.000</H3>
+                            <Body>Total Cash</Body>
+                        </Card>
+
+                    
+                        <Card className={styles.figureCard}>
+                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
+                            <H3> USD 90.000</H3>
+                            <Body>Total Amount Invested</Body>
+                        </Card>
+
+                    </div>
 
                     <div className={styles.pieCharts}>
                         <Card className={styles.assetCard} title="Asset Distribution">

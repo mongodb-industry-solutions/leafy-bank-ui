@@ -79,6 +79,12 @@
   font-size: 16px;
 }
 
+.activeLink .navLinkText {
+  text-decoration: underline;
+  color: #00684A;
+  font-weight: 600;
+}
+
 
 /* Mobile styles */
 @media (max-width: 768px) {

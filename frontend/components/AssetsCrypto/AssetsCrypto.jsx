@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import styles from "./Assets.module.css";
-import AssetCard from "../AssetCard/AssetCard";
+//import AssetCard from "../AssetCard/AssetCard";
+import AssetCardCrypto from "../AssetCardCrypto/AssetCard";
 import { H2, Subtitle, Body, H3 } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
 import {
@@ -18,7 +19,7 @@ import {
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 
-export default function Assets() {
+export default function AssetsCrypto() {
     const [assets, setAssets] = useState([]);
     const [marketNewsReport, setMarketNewsReport] = useState(null);
     const [chartMappings, setChartMappings] = useState({});
@@ -111,14 +112,14 @@ export default function Assets() {
                         // First compare by asset_type
                         const typeA = a.allocation?.asset_type || 'Unknown';
                         const typeB = b.allocation?.asset_type || 'Unknown';
-                        
+
                         const typeComparison = typeA.localeCompare(typeB);
-                        
+
                         // If asset types are different, return the type comparison result
                         if (typeComparison !== 0) {
                             return typeComparison;
                         }
-                        
+
                         // If asset types are the same, sort alphabetically by symbol
                         return a.symbol.localeCompare(b.symbol);
                     });
@@ -333,14 +334,14 @@ export default function Assets() {
                     // First compare by asset_type
                     const typeA = a.allocation?.asset_type || 'Unknown';
                     const typeB = b.allocation?.asset_type || 'Unknown';
-                    
+
                     const typeComparison = typeA.localeCompare(typeB);
-                    
+
                     // If asset types are different, return the type comparison result
                     if (typeComparison !== 0) {
                         return typeComparison;
                     }
-                    
+
                     // If asset types are the same, sort alphabetically by symbol
                     return a.symbol.localeCompare(b.symbol);
                 });
@@ -405,7 +406,7 @@ export default function Assets() {
         }
 
         return assets.map((asset, index) => (
-            <AssetCard
+            <AssetCardCrypto
                 key={`lazy-${asset.symbol}-${index}`}
                 asset={asset}
                 chartData={chartMappings[asset.symbol]}
@@ -417,7 +418,7 @@ export default function Assets() {
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
-                <H3>Traditional Assets</H3>
+                <H3>Crypto Assets</H3>
 
                 <InfoWizard
                     open={openHelpModal}
@@ -558,11 +559,11 @@ export default function Assets() {
 
             <div className={styles.headerRow}>
                 <span>SYMBOL</span>
-                <span>ASSET TYPE</span>
-                <span>DESCRIPTION</span>
+                <span>ASSET NAME</span>
                 <span>CLOSE PRICE ($)</span>
                 <span>ALLOCATION</span>
                 <span>NEWS SENTIMENT SCORE</span>
+                <span>SOCIAL SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
                 <span>GDP</span>
                 <span>INTEREST RATE</span>
@@ -574,7 +575,7 @@ export default function Assets() {
                 <>
                     {/* Load first 4 assets immediately */}
                     {assets.slice(0, 4).map((asset, index) => (
-                        <AssetCard
+                        <AssetCardCrypto
                             key={`primary-${asset.symbol}-${index}`}
                             asset={asset}
                             chartData={chartMappings[asset.symbol]}

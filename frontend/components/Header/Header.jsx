@@ -2,7 +2,7 @@
 
 // Header.jsx
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Body } from '@leafygreen-ui/typography';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -17,6 +17,19 @@ function Header({ onLogout = () => { } }) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isPortfolioManager, setIsPortfolioManager] = useState(false);
+
+  useEffect(() => {
+    const storedUserString = localStorage.getItem('selectedUser');
+    const user = storedUserString ? JSON.parse(storedUserString) : null;
+    setSelectedUser(user);
+    setIsPortfolioManager(user?.role === 'Portfolio Manager');
+  }, []);
+
+  console.log("Selected user:", selectedUser);
+  console.log("Is portfolio manager:", isPortfolioManager);
 
   // Updated handleLogout function
   const handleLogout = (e) => {
@@ -44,23 +57,38 @@ function Header({ onLogout = () => { } }) {
 
       <div className={`${styles["pages-container"]} ${isMenuOpen ? styles.show : ''}`}>
 
-        {pathname === '/' && (
-          <Link href="/" className={styles.navLink}>
+
+        {/**  {pathname === '/' && (
+          <Link
+            href="/"
+            className={`${styles.navLink} ${pathname === '/' ? styles.activeLink : ''}`}
+          >
+            <Body className={styles.navLinkText}>Accounts & Transactions</Body>
+          </Link>
+        )} */}
+
+        {!isPortfolioManager && (
+          <Link
+            href="/"
+            className={`${styles.navLink} ${pathname === '/' ? styles.activeLink : ''}`}
+          >
             <Body className={styles.navLinkText}>Accounts & Transactions</Body>
           </Link>
         )}
 
-        {pathname === '/asset-portfolio' && (
-          <Link href="/asset-portfolio" className={styles.navLink}>
-            <Body className={styles.navLinkText}>Investment Portfolio Dashboard</Body>
-          </Link>
-        )}
+        <Link
+          href="/asset-portfolio"
+          className={`${styles.navLink} ${pathname === '/asset-portfolio' ? styles.activeLink : ''}`}
+        >
+          <Body className={styles.navLinkText}>Traditional Portfolio</Body>
+        </Link>
 
-       
-          <Link href="/crypto-portfolio" className={styles.navLink}>
-            <Body className={styles.navLinkText}>Crypto Portfolio Dashboard</Body>
-          </Link>
-    
+        <Link
+          href="/crypto-portfolio"
+          className={`${styles.navLink} ${pathname === '/crypto-portfolio' ? styles.activeLink : ''}`}
+        >
+          <Body className={styles.navLinkText}>Crypto Portfolio</Body>
+        </Link>
 
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
@@ -69,9 +97,15 @@ function Header({ onLogout = () => { } }) {
       </div>
 
       <div className={styles["right-container"]}>
-        {pathname !== '/asset-portfolio' && <UserProfile />}
 
-        {pathname === '/asset-portfolio' && <RiskProfileSelector />}
+
+        {['/asset-portfolio', '/crypto-portfolio'].includes(pathname) && (
+          <>
+            <RiskProfileSelector />
+          </>
+        )}
+
+        <UserProfile></UserProfile>
 
         {/* Desktop Logout Icon Button */}
         <IconButton

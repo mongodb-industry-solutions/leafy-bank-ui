@@ -28,6 +28,7 @@
   gap: 20px;
   align-items: stretch;
   /* Ensures rows stretch to max height */
+    margin-top: 20px;
 }
 
 .roiCard {
@@ -62,6 +63,17 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 10px 20px;
+}
+
+.totalFigures {
+  display: flex;
+  gap: 12px;
+}
+
+.figureCard {
+  text-align: center;
+  justify-content: space-evenly;
+  flex: 1;
 }
 
 .marketCard {
@@ -215,7 +227,7 @@
 
 /* Optional hover effect */
 .chatbotButton:hover {
-  background-color: #E5F6FE;
+  background-color: #eefbee;
 }
 
 .chatIcon {

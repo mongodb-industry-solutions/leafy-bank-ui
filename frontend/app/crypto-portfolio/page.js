@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header/Header";
-import Assets from "@/components/Assets/Assets";
-import styles from "./AssetPortfolio.module.css";
+//import Assets from "@/components/Assets/Assets";
+import AssetsCrypto from "@/components/AssetsCrypto/AssetsCrypto";
+import styles from "./CryptoPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
-import { Subtitle, Body } from "@leafygreen-ui/typography";
+import { Subtitle, Body, H2, H3 } from "@leafygreen-ui/typography";
 import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
@@ -156,6 +157,9 @@ export default function AssetPortfolio() {
         <div className={styles.container}>
             <Header className={styles.navBar} onLogout={handleLogout} />
 
+            <H2> Crypto Investment Portfolio</H2>
+
+
             {/* Keep the modal for first-time visitors */}
             <ConfirmationModal
                 open={showDisclaimer}
@@ -200,6 +204,30 @@ export default function AssetPortfolio() {
 
                 <div className={styles.rightColumn}>
 
+                    <div className={styles.totalFigures}>
+
+                        <Card className={styles.figureCard}>
+                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
+                            <H3> USD 100.000</H3>
+                            <Body>Total</Body>
+                        </Card>
+
+
+                        <Card className={styles.figureCard}>
+                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
+                            <H3> USD 10.000</H3>
+                            <Body>Total Cash</Body>
+                        </Card>
+
+
+                        <Card className={styles.figureCard}>
+                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
+                            <H3> USD 90.000</H3>
+                            <Body>Total Amount Invested</Body>
+                        </Card>
+
+                    </div>
+
                     <div className={styles.pieCharts}>
                         <Card className={styles.assetCard} title="Asset Distribution">
 
@@ -213,6 +241,8 @@ export default function AssetPortfolio() {
                             </div>
 
                         </Card>
+
+                        {/* 
                         <Card className={styles.assetCard} title="Asset Distribution">
 
                             <Subtitle className={styles.cardSubtitle}>Asset Distribution by Type</Subtitle>
@@ -225,6 +255,8 @@ export default function AssetPortfolio() {
                             </div>
 
                         </Card>
+
+                        */}
                     </div>
 
                     <Card className={styles.marketCard}>
@@ -335,7 +367,7 @@ export default function AssetPortfolio() {
             </div>
 
             <div className={styles.assetsSection}>
-                <Assets />
+                <AssetsCrypto />
             </div>
 
             {/* Add persistent disclaimer banner */}
