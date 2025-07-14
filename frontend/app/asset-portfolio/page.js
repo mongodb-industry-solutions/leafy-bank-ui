@@ -155,7 +155,7 @@ export default function AssetPortfolio() {
     return (
         <div className={styles.container}>
 
-            <H2> Traditional Investment Portfolio</H2>
+            <H2> Investment Portfolio</H2>
             
             <Header className={styles.navBar} onLogout={handleLogout} />
 
@@ -203,29 +203,30 @@ export default function AssetPortfolio() {
 
                 <div className={styles.rightColumn}>
 
+                     {/* NOT INCLUDING FOR NOW 
+
                     <div className={styles.totalFigures}>
-        
+
                         <Card className={styles.figureCard}>
-                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
                             <H3> USD 100.000</H3>
                             <Body>Total</Body>
                         </Card>
 
 
                         <Card className={styles.figureCard}>
-                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
                             <H3> USD 10.000</H3>
                             <Body>Total Cash</Body>
                         </Card>
 
-                    
+
                         <Card className={styles.figureCard}>
-                           {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/} 
                             <H3> USD 90.000</H3>
                             <Body>Total Amount Invested</Body>
                         </Card>
 
                     </div>
+
+                    */}
 
                     <div className={styles.pieCharts}>
                         <Card className={styles.assetCard} title="Asset Distribution">
@@ -361,17 +362,17 @@ export default function AssetPortfolio() {
                 </div>
             </div>
 
-            <div className={styles.assetsSection}>
-                <Assets />
-            </div>
-
-            {/* Add persistent disclaimer banner */}
+             {/* Add persistent disclaimer banner */}
             <Banner
                 variant="warning"
                 className={styles.disclaimerBanner}
             >
                 <strong>Important Notice:</strong> The content of this page is for information, training and demonstration purposes and not intended as an investment advice.
             </Banner>
+
+            <div className={styles.assetsSection}>
+                <Assets />
+            </div>
 
             <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 

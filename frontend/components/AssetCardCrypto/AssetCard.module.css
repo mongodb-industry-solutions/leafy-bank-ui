@@ -1,6 +1,6 @@
   .card {
     display: grid;
-    grid-template-columns: 0.5fr 1fr 0.7fr 0.9fr 1fr 1fr 1fr 0.8fr 0.8fr 0.8fr 1fr;
+    grid-template-columns: 0.5fr 1fr 1fr 0.8fr 1.5fr 1.5fr 1fr 1.5fr;
 
     background-color: white;
     padding: 12px;
@@ -41,24 +41,25 @@
     height: 14px;
     border-radius: 50%;
     display: inline-block;
-    margin: auto; /* 💡 Center horizontally AND vertically inside flex parent */
+    margin: auto;
+    /* 💡 Center horizontally AND vertically inside flex parent */
   }
 
-  .circleInsight{
+  .circleInsight {
     width: 14px;
     height: 14px;
     border-radius: 50%;
     display: inline-block;
   }
-  
+
   .red {
     background-color: #c62727;
   }
-  
+
   .yellow {
     background-color: #FCD34D;
   }
-  
+
   .green {
     background-color: #00ED64;
   }
@@ -93,7 +94,7 @@
     display: flex;
     gap: 5px;
     align-items: center;
-justify-content: center;
+    justify-content: center;
   }
 
   .actionButton {
@@ -134,7 +135,7 @@ justify-content: center;
     display: flex;
     gap: 20px;
     margin-top: 20px;
-    
+
   }
 
   .newsContainer {
@@ -157,43 +158,20 @@ justify-content: center;
     height: 250px;
   }
 
-  .newsCard {
-    background-color: #f8f9fa;
-    padding: 12px 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    width: fit-content;
-    max-width: 600px;
-    text-align: left;
-  }
 
-  .newsHeader {
+  /* REDDIT */
+
+   .socialSection {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+
   }
 
-  .newsTime {
-    font-size: 12px;
-    color: #6c757d;
-  }
-
-  .newsDescription {
-    margin: 4px 0;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    /* Show only 2 lines */
-    line-clamp: 2;
-    /* Standard property for compatibility */
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-  }
-
-  .newsSource {
-    font-size: 12px;
-    color: #6c757d;
+   .socialContainer {
+    margin-top: 12px;
+    flex: 1;
+    min-width: 300px;
   }
 
   .docModelSection {
@@ -216,11 +194,12 @@ justify-content: center;
     display: flex;
   }
 
- .badge {
+  .badge {
     width: 25px;
     height: 25px;
   }
-/*
+
+  /*
   .badge{
     width: fit-content;
     padding: 12px 5px;
@@ -233,7 +212,7 @@ justify-content: center;
     margin-right: 4px;
   }
 
-  .queryContainer{
+  .queryContainer {
     margin-top: 20px;
   }
 
@@ -243,7 +222,7 @@ justify-content: center;
     margin-bottom: 10px;
   }
 
-  .insightH2{
+  .insightH2 {
     font-size: 20px;
   }
 
@@ -278,7 +257,7 @@ justify-content: center;
 
   .insightNote {
     margin-top: 12px;
-    
+
     color: #6e6e6e;
   }
 
@@ -296,7 +275,7 @@ justify-content: center;
     margin-top: 10px;
   }
 
-  
+
 
   .neutralAction {
     color: #ff9800;
@@ -313,7 +292,9 @@ justify-content: center;
   }
 
   @media (max-width: 768px) {
-    .docModelSection, .newsSection {
+
+    .docModelSection,
+    .newsSection {
       display: block;
     }
   }
@@ -321,62 +302,62 @@ justify-content: center;
   .formulaContainer {
     margin: 12px 0;
   }
-  
+
   .formula {
     margin-top: 8px;
     font-style: italic;
   }
 
-  .inlineBadge{
+  .inlineBadge {
     margin: 0px 3px;
   }
 
   /* Document Model Section Styles */
-.docModelSection {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 20px;
-}
+  .docModelSection {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+  }
 
-.docModelIntro {
-  text-align: left;
-  margin-bottom: 20px;
-  background-color: #f9fbfa;
-  padding: 15px;
-  border-left: 3px solid #16ad79;
-  border-radius: 4px;
-}
+  .docModelIntro {
+    text-align: left;
+    margin-bottom: 20px;
+    background-color: #f9fbfa;
+    padding: 15px;
+    border-left: 3px solid #16ad79;
+    border-radius: 4px;
+  }
 
-.docModelColumns {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  width: 100%;
-}
+  .docModelColumns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    width: 100%;
+  }
 
-.rawDataColumn,
-.processedDataColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+  .rawDataColumn,
+  .processedDataColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
 
-.dataSubtitle {
-  text-align: left;
-  margin-top: 10px;
-  color: #1c2d38;
-}
+  .dataSubtitle {
+    text-align: left;
+    margin-top: 10px;
+    color: #1c2d38;
+  }
 
-.documentContainer {
-  height: 200px;
-  overflow: auto;
-  margin-bottom: 16px;
-}
+  .documentContainer {
+    height: 200px;
+    overflow: auto;
+    margin-bottom: 16px;
+  }
 
-.dataNote {
-  font-size: 12px;
-  font-style: italic;
-  color: #6e6e6e;
-  margin: 0;
-}
+  .dataNote {
+    font-size: 12px;
+    font-style: italic;
+    color: #6e6e6e;
+    margin: 0;
+  }

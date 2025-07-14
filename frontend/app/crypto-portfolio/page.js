@@ -157,7 +157,7 @@ export default function AssetPortfolio() {
         <div className={styles.container}>
             <Header className={styles.navBar} onLogout={handleLogout} />
 
-            <H2> Crypto Investment Portfolio</H2>
+            <H2> Crypto Portfolio</H2>
 
 
             {/* Keep the modal for first-time visitors */}
@@ -204,29 +204,30 @@ export default function AssetPortfolio() {
 
                 <div className={styles.rightColumn}>
 
+                    {/* NOT INCLUDING FOR NOW 
+
                     <div className={styles.totalFigures}>
 
                         <Card className={styles.figureCard}>
-                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
                             <H3> USD 100.000</H3>
                             <Body>Total</Body>
                         </Card>
 
 
                         <Card className={styles.figureCard}>
-                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
                             <H3> USD 10.000</H3>
                             <Body>Total Cash</Body>
                         </Card>
 
 
                         <Card className={styles.figureCard}>
-                            {/* <H3>USD {totalBalance.toLocaleString()}</H3>*/}
                             <H3> USD 90.000</H3>
                             <Body>Total Amount Invested</Body>
                         </Card>
 
                     </div>
+
+                    */}
 
                     <div className={styles.pieCharts}>
                         <Card className={styles.assetCard} title="Asset Distribution">
@@ -242,24 +243,13 @@ export default function AssetPortfolio() {
 
                         </Card>
 
-                        {/* 
-                        <Card className={styles.assetCard} title="Asset Distribution">
-
-                            <Subtitle className={styles.cardSubtitle}>Asset Distribution by Type</Subtitle>
-
-                            <div className={styles.iframeContainer}>
-                                <iframe
-                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=5af0765f-51bc-47af-ae5f-92cff4fadadb&maxDataAge=3600&theme=light&autoRefresh=true"
-                                    className={styles.responsiveIframe}
-                                ></iframe>
-                            </div>
-
-                        </Card>
-
-                        */}
                     </div>
 
                     <Card className={styles.marketCard}>
+
+                  
+
+                        {/**
                         <Subtitle className={styles.cardSubtitle}>Macroeconomic Indicators</Subtitle>
                         <div className={styles.headerRow}>
                             <span>INDICATOR</span>
@@ -361,13 +351,10 @@ export default function AssetPortfolio() {
                                 </div>
                             )}
                         </div>
+ */}
                     </Card>
 
                 </div>
-            </div>
-
-            <div className={styles.assetsSection}>
-                <AssetsCrypto />
             </div>
 
             {/* Add persistent disclaimer banner */}
@@ -377,6 +364,10 @@ export default function AssetPortfolio() {
             >
                 <strong>Important Notice:</strong> The content of this page is for information, training and demonstration purposes and not intended as an investment advice.
             </Banner>
+
+            <div className={styles.assetsSection}>
+                <AssetsCrypto />
+            </div>
 
             <ChatbotPortfolio isOpen={isOpen} toggleChatbot={toggleChatbot}></ChatbotPortfolio>
 

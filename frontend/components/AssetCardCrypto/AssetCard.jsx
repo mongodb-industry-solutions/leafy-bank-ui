@@ -11,6 +11,8 @@ import {
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
 import Banner from "@leafygreen-ui/banner";
+import NewsCard from "../NewsCard/NewsCard";
+import RedditCard from "../RedditCard/RedditCard";
 
 export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }) {
     const [expandedSection, setExpandedSection] = useState(null);
@@ -85,12 +87,9 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                 </div>
 
                 <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[interestRateBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
 
                 <div className={styles.actions}>
-                    
+
 
                     <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Insights" className={styles.actionButton} onClick={() => handleExpand("insights")}>
@@ -117,6 +116,14 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
+                        <IconButton aria-label="Social" className={styles.actionButton} onClick={() => handleExpand("social")}>
+                            <Icon glyph="SMS" />
+                        </IconButton>
+                    }>
+                        Social Listening
+                    </Tooltip>
+
+                    <Tooltip align="top" justify="middle" trigger={
                         <IconButton aria-label="Doc Model" className={styles.actionButton} onClick={() => handleExpand("docModel")}>
                             <Icon glyph="CurlyBraces" />
                         </IconButton>
@@ -133,7 +140,8 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
-                                    : "News Headlines"}
+                                    : expandedSection === "social" ? "Social Listening"
+                                        : "News Headlines"}
                     </H3>
 
                     {expandedSection === "candleStick" && (
@@ -350,6 +358,8 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
                                         .map((item, index) => (
+
+                                            /** 
                                             <div key={index} className={styles.newsCard}>
                                                 <div className={styles.newsHeader}>
                                                     <Link href={item.link} target="_blank" className={styles.newsHeadline}>
@@ -360,6 +370,10 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                                 <Body className={styles.newsDescription}>{item.description}</Body>
                                                 <Body className={styles.newsSource}>{item.source}</Body>
                                             </div>
+                                            */
+
+                                            <NewsCard key={index} item={item} />
+
                                         ))
                                 ) : (
                                     <Body>No news available for {asset.symbol}.</Body>
@@ -415,6 +429,44 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                         </div>
                     )}
 
+                    {expandedSection === "social" && (
+                        <div className={styles.socialSection}>
+                            <div className={styles.socialContainer}>
+
+                                {asset.news && asset.news.length > 0 ? (
+                                    [...asset.news]
+                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
+                                        // .sort((a, b) => timeAgoToMinutes(a.create_at_utc) - timeAgoToMinutes(b.create_at_utc))
+
+                                        .map((item, index) => (
+
+                                            <RedditCard key={index} item={item} />
+
+                                        ))
+                                ) : (
+                                    <Body>No social posts available for {asset.symbol}</Body>
+                                )}
+
+                            </div>
+
+
+                            <div className={styles.explanationContainer}>
+                                <div className={styles.explanation}>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+
+                                    <Banner className={styles.formulaContainer}>
+                                        <Body weight="medium">Sentiment Score Formula</Body>
+                                        {asset.symbol} Sentiment Score = Sum of semantically relevant article sentiment scores ÷ Number of relevant articles
+                                    </Banner>
+
+                                    <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
+                                    <br></br>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {expandedSection === "insights" && (
                         <div className={styles.insightsContainer}>
                             <H3 className={styles.insightsTitle}>{asset.symbol} Insights</H3>
@@ -457,67 +509,6 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                     )}
                                 </div>
 
-
-
-                                {/* GDP Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>GDP Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[gdpBadgeVariant]}`}></div>
-                                    </div>
-
-                                    <Body weight="medium">GDP Trend:</Body>
-                                    <Body>{asset.macroIndicators?.gdp?.marketData?.fluctuation || "No market GDP data available."}</Body>
-
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.gdp?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.gdp?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.gdp.note}</Body>
-                                    )}
-                                </div>
-
-                                {/* Interest Rate Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>Interest Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[interestRateBadgeVariant]}`}></div>
-                                    </div>
-
-                                    <Body weight="medium">Interest Rate Trend:</Body>
-                                    <Body>{asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No market interest rate data available."}</Body>
-
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.interestRate?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.interestRate?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.interestRate.note}</Body>
-                                    )}
-                                </div>
-
-                                {/* Unemployment Rate Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>Unemployment Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[unemploymentBadgeVariant]}`}></div>
-                                    </div>
-
-                                    <Body weight="medium">Unemployment Rate Trend:</Body>
-                                    <Body>{asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No market unemployment data available."}</Body>
-
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.unemployment?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.unemployment?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.unemployment.note}</Body>
-                                    )}
-                                </div>
                             </div>
                         </div>
 

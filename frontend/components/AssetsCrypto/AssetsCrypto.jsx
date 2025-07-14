@@ -565,9 +565,6 @@ export default function AssetsCrypto() {
                 <span>NEWS SENTIMENT SCORE</span>
                 <span>SOCIAL SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
-                <span>GDP</span>
-                <span>INTEREST RATE</span>
-                <span>UNEMPLOYMENT</span>
                 <span>ACTIONS</span>
             </div>
 

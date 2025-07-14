@@ -1,8 +1,6 @@
-/* Add this to your existing CSS */
 .disclaimerBanner {
-  margin-top: 5px;
-  margin-bottom: 20px;
-  width: 100%;
+  margin-top: 25px;
+  width: fit-content;
   max-width: 100%;
 }
 

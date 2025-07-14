@@ -1,0 +1,62 @@
+.socialCard {
+  background-color: #ffffff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  max-width: 800px;
+  text-align: left;
+}
+.socialHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.socialIcon {
+  width: 30px;
+  height: auto;
+  margin-right: 5px;
+}
+.headerTextContainer {
+  flex: 1;
+  display: inline;
+}
+.newsTime {
+  font-size: 0.85rem;
+  color: #888;
+}
+.postTitle {
+  margin: 4px 0;
+}
+.author {
+  color: #555;
+}
+.newsDescription {
+  color: #333;
+}
+.commentsContainer {
+  background-color: #f9f9f9;
+  border-left: 3px solid #ccc;
+  padding-left: 12px;
+  margin-top: 10px;
+}
+.commentsHeader {
+  font-size: 0.95rem;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #555;
+}
+.comment {
+  margin-bottom: 8px;
+  padding: 6px 0;
+  border-bottom: 1px solid #eee;
+}
+.commentAuthor {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.commentText {
+  font-size: 0.9rem;
+  color: #444;
+}

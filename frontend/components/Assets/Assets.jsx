@@ -559,10 +559,10 @@ export default function Assets() {
             <div className={styles.headerRow}>
                 <span>SYMBOL</span>
                 <span>ASSET TYPE</span>
-                <span>DESCRIPTION</span>
                 <span>CLOSE PRICE ($)</span>
                 <span>ALLOCATION</span>
                 <span>NEWS SENTIMENT SCORE</span>
+                <span>SOCIAL SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
                 <span>GDP</span>
                 <span>INTEREST RATE</span>

@@ -80,7 +80,7 @@ function Header({ onLogout = () => { } }) {
           href="/asset-portfolio"
           className={`${styles.navLink} ${pathname === '/asset-portfolio' ? styles.activeLink : ''}`}
         >
-          <Body className={styles.navLinkText}>Traditional Portfolio</Body>
+          <Body className={styles.navLinkText}>Investment Portfolio</Body>
         </Link>
 
         <Link

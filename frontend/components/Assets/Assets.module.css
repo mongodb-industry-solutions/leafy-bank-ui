@@ -1,62 +1,72 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 20px;
-    text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
+  text-align: left;
+}
+
+.assetsHeader {
+  display: flex;
+}
+
+.headerRow {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr 0.7fr 0.9fr 1fr 1fr 1fr 0.8fr 0.8fr 0.8fr 1fr;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 10px;
+  font-weight: bold;
+  color: #666;
+  text-align: center;
+  /* NEW */
+}
+
+.assetCard {
+  background-color: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.skeletonCard {
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  /* Updated from 9 to 11 columns */
+  gap: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeletonCell {
+  height: 24px;
+  background-color: #e9ecef;
+  border-radius: 4px;
+}
+
+.loadingMore {
+  text-align: center;
+  padding: 15px;
+  color: #666;
+  font-style: italic;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
   }
 
-  .assetsHeader{
-    display: flex;
+  50% {
+    opacity: 0.8;
   }
-  
-  .headerRow {
-    display: grid;
-    grid-template-columns: 0.5fr 0.9fr 1.3fr 0.9fr 0.8fr 1.1fr 1fr 0.8fr 0.9fr 1.1fr 1fr;
-    font-size: 12px;
-    text-transform: uppercase;
-    padding: 10px;
-    font-weight: bold;
-    color: #666;
-    text-align: center; /* NEW */
+
+  100% {
+    opacity: 0.6;
   }
-  
-  .assetCard {
-    background-color: white;
-    border-radius: 10px;
-    padding: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .skeletonCard {
-    display: grid;
-    grid-template-columns: repeat(11, 1fr); /* Updated from 9 to 11 columns */
-    gap: 10px;
-    padding: 15px;
-    margin-bottom: 10px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    animation: pulse 1.5s infinite ease-in-out;
-  }
-  
-  .skeletonCell {
-    height: 24px;
-    background-color: #e9ecef;
-    border-radius: 4px;
-  }
-  
-  .loadingMore {
-    text-align: center;
-    padding: 15px;
-    color: #666;
-    font-style: italic;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    margin: 10px 0;
-  }
-  
-  @keyframes pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 0.8; }
-    100% { opacity: 0.6; }
-  }
+}
