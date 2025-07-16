@@ -157,7 +157,7 @@ export default function AssetPortfolio() {
         <div className={styles.container}>
             <Header className={styles.navBar} onLogout={handleLogout} />
 
-            <H2> Crypto Portfolio</H2>
+            <H2> Crypto Investment</H2>
 
 
             {/* Keep the modal for first-time visitors */}

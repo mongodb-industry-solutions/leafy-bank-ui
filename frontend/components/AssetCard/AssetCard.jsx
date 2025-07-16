@@ -126,7 +126,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             <Icon glyph="SMS" />
                         </IconButton>
                     }>
-                        Social Listening
+                        Social Media
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
@@ -146,7 +146,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
-                                     : expandedSection === "social" ? "Social Listening"
+                                     : expandedSection === "social" ? "Social Media"
                                         : "News Headlines"}
                     </H3>
 

@@ -155,7 +155,7 @@ export default function AssetPortfolio() {
     return (
         <div className={styles.container}>
 
-            <H2> Investment Portfolio</H2>
+            <H2> Stock Investment </H2>
             
             <Header className={styles.navBar} onLogout={handleLogout} />
 

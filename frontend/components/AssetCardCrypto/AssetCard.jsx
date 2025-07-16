@@ -120,7 +120,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                             <Icon glyph="SMS" />
                         </IconButton>
                     }>
-                        Social Listening
+                        Social Media
                     </Tooltip>
 
                     <Tooltip align="top" justify="middle" trigger={
@@ -140,7 +140,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
-                                    : expandedSection === "social" ? "Social Listening"
+                                    : expandedSection === "social" ? "Social Media"
                                         : "News Headlines"}
                     </H3>
 
@@ -359,19 +359,6 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
                                         .map((item, index) => (
 
-                                            /** 
-                                            <div key={index} className={styles.newsCard}>
-                                                <div className={styles.newsHeader}>
-                                                    <Link href={item.link} target="_blank" className={styles.newsHeadline}>
-                                                        {item.headline}
-                                                    </Link>
-                                                    <span className={styles.newsTime}>{item.posted}</span>
-                                                </div>
-                                                <Body className={styles.newsDescription}>{item.description}</Body>
-                                                <Body className={styles.newsSource}>{item.source}</Body>
-                                            </div>
-                                            */
-
                                             <NewsCard key={index} item={item} />
 
                                         ))
@@ -408,18 +395,6 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         <Code
                                             language="json"
                                         >
-                                            {`// MongoDB Vector Search Pipeline example
-[
-  {
-    "$vectorSearch": {
-      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "financial_news_VS_IDX"
-      "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
-      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
-      "numCandidates": 5,
-      "limit": 3
-    }
-  }
-]`}
                                         </Code>
                                     </div>
                                     <br />

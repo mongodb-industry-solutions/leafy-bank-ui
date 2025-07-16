@@ -80,14 +80,14 @@ function Header({ onLogout = () => { } }) {
           href="/asset-portfolio"
           className={`${styles.navLink} ${pathname === '/asset-portfolio' ? styles.activeLink : ''}`}
         >
-          <Body className={styles.navLinkText}>Investment Portfolio</Body>
+          <Body className={styles.navLinkText}>Stock Investment</Body>
         </Link>
 
         <Link
           href="/crypto-portfolio"
           className={`${styles.navLink} ${pathname === '/crypto-portfolio' ? styles.activeLink : ''}`}
         >
-          <Body className={styles.navLinkText}>Crypto Portfolio</Body>
+          <Body className={styles.navLinkText}>Crypto Investment</Body>
         </Link>
 
         {/* Updated Mobile Logout - Directly using onClick */}
