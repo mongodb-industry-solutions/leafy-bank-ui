@@ -232,10 +232,10 @@ export default function AssetPortfolio() {
                     <div className={styles.pieCharts}>
                         <Card className={styles.assetCard} title="Asset Distribution">
 
-                            <Subtitle className={styles.cardSubtitle}>Asset Distribution by Symbol</Subtitle>
+                            <Subtitle className={styles.cardSubtitle}>Crypto Asset Distribution by Symbol</Subtitle>
                             <div className={styles.iframeContainer}>
                                 <iframe
-                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=cd8d523c-b90a-4a39-a447-2e53cd392924&maxDataAge=3600&theme=light&autoRefresh=true"
+                                    src="https://charts.mongodb.com/charts-jeffn-zsdtj/embed/charts?id=cfd11f4a-b8b8-446d-91fe-ba8c03bc3ce9&maxDataAge=3600&theme=light&autoRefresh=true"
                                     className={styles.responsiveIframe}
                                 ></iframe>
 
