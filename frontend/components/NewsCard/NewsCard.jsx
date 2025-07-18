@@ -2,6 +2,7 @@ import { Body, H3, H2, Link, Subtitle } from "@leafygreen-ui/typography";
 import styles from "./NewsCard.module.css";
 
 export default function NewsCard({ item }) {
+  
   return (
     <div className={styles.newsCard}>
       <div className={styles.newsHeader}>

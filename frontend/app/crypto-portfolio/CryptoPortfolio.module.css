@@ -6,7 +6,7 @@
 
 /* Adjust the container padding if needed */
 .container {
-  padding: 80px 20px 20px 20px; /* Reduced bottom padding to account for banner */
+  padding: 80px 20px 70px 20px; /* Reduced bottom padding to account for banner */
 }
 
 /* Make the banner responsive */

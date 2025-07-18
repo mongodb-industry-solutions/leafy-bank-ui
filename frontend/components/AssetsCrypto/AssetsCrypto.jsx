@@ -18,13 +18,65 @@ import {
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
+import cryptoSuggestionsData from "/public/data/fetch-crypto-suggestions-comprehensive.json";
+import allocationData from "/public/data/reports_crypto_news.json";
+import reportsCryptoNews from "/public/data/reports_crypto_news.json";
 
 export default function AssetsCrypto() {
     const [assets, setAssets] = useState([]);
-    const [marketNewsReport, setMarketNewsReport] = useState(null);
+    //const [marketNewsReport, setMarketNewsReport] = useState(null);
     const [chartMappings, setChartMappings] = useState({});
     const [rawMacroIndicators, setRawMacroIndicators] = useState(null);
 
+    useEffect(() => {
+
+        const portfolioAllocations = allocationData.portfolio_allocation;
+
+        const formattedAssets = cryptoSuggestionsData.crypto_suggestions.map((item) => {
+            const allocationEntry = portfolioAllocations.find(
+                entry => entry.asset === item.asset
+            );
+
+            const sentimentEntry = (reportsCryptoNews?.report?.asset_news_sentiments || []).find(
+                entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
+            );
+
+            const finalSentimentScore = sentimentEntry?.final_sentiment_score ?? 0.5;
+
+            const sentimentCategory =
+                finalSentimentScore >= 0.6 ? "Positive" :
+                    finalSentimentScore >= 0.4 ? "Neutral" :
+                        "Negative";
+
+            return {
+                symbol: item.asset,
+                allocation: {
+                    description: item.description,
+                    asset_type: item.asset_type,
+                    percentage: allocationEntry?.allocation_percentage || "N/A",
+                    decimal: null
+                },
+                sentiment: {
+                    score: finalSentimentScore,
+                    category: sentimentCategory,
+                    originalScore: finalSentimentScore
+                },
+                close: null,
+                timestamp: { $date: new Date().toISOString() },
+                news: [],
+                recentData: [],
+                vixSensitivity: {},
+                macroIndicators: {},
+                assetTrend: {},
+                crypto_indicators: item.crypto_indicators || [],
+                _id: { $oid: `id-${item.asset}` }
+            };
+        });
+
+        setAssets(formattedAssets);
+    }, []);
+
+    {/***
     useEffect(() => {
         async function fetchData() {
             try {
@@ -369,6 +421,10 @@ export default function AssetsCrypto() {
 
         fetchData();
     }, []);
+
+     */}
+
+
 
     const [openHelpModal, setOpenHelpModal] = useState(false);
 

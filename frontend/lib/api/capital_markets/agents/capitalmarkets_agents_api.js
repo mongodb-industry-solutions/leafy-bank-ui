@@ -83,6 +83,7 @@ export async function fetchPortfolioAllocation() {
     return data;
 }
 
+
 /**  
  * Macro Indicators Data
  */

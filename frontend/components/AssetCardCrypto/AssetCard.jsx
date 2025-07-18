@@ -58,6 +58,19 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
             vixSensitivity === "LOW" ? "green" :
                 "yellow"; // NEUTRAL
 
+    // Set badge variant based on trend direction
+    const getTrendBadgeVariant = (trendDirection) => {
+        switch ((trendDirection || "").toLowerCase()) {
+            case "above":
+                return "green";
+            case "below":
+                return "red";
+            case "at":
+                return "yellow";
+            default:
+                return "gray";
+        }
+    };
     // Get actions from macro indicators
     const gdpAction = asset.macroIndicators?.gdp?.action || "KEEP";
     const interestRateAction = asset.macroIndicators?.interestRate?.action || "KEEP";
@@ -72,13 +85,14 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
 
+    
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
                 <div className={styles.cell}> <strong>{asset.symbol}</strong> </div>
-                <div className={styles.cell}>{asset.allocation?.asset_type || "Unknown"}</div>
+                <div className={styles.cell}>{asset.allocation.description || "Unknown"}</div>
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
-                <div className={styles.cell}> {asset.allocation ? asset.allocation.percentage : "N/A"}</div>
+                <div className={styles.cell}>  {asset.allocation?.percentage || "N/A"}</div>
                 <div className={styles.cell}>
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
@@ -353,6 +367,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
 
                     {expandedSection === "news" && (
                         <div className={styles.newsSection}>
+                            
                             <div className={styles.newsContainer}>
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
@@ -446,50 +461,152 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                         <div className={styles.insightsContainer}>
                             <H3 className={styles.insightsTitle}>{asset.symbol} Insights</H3>
 
-
-                            {/* MA50 Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <H2 className={styles.insightH2}>50-Day Moving Average Analysis</H2>
-                                    <div className={`${styles.cell} ${styles.circleInsight} ${styles[trendBadgeVariant]}`}></div>
-                                </div>
-
-                                <Body weight="medium">Price vs. MA50:</Body>
-                                <Body>{asset.assetTrend?.fluctuation || "No data available."}</Body>
-
-                                <Body weight="medium" className={styles.diagnosisLabel}>Diagnosis:</Body>
-                                <Body className={styles.diagnosis} >
-                                    {asset.assetTrend?.diagnosis || "No diagnosis available."}
-                                </Body>
-                            </div>
-
                             <div className={styles.assetInsightCards}>
-                                {/* VIX Sensitivity Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>VIX Sensitivity Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[vixBadgeVariant]}`}></div>
-                                    </div>
+                                {[
+                                    "MA9 Moving Average Analysis",
+                                    "MA21 Moving Average Analysis",
+                                    "MA50 Moving Average Analysis",
+                                    "RSI Analysis",
+                                    "Volume Analysis",
+                                    "VWAP Analysis"
+                                ].map((indicatorTitle) => {
+                                    const data = asset.crypto_indicators?.find(
+                                        (ind) => ind.indicator === indicatorTitle
+                                    );
 
-                                    <Body weight="medium">Market Volatility:</Body>
-                                    <Body>{asset.vixSensitivity?.marketData?.fluctuation || "No market volatility data available."}</Body>
+                                    if (!data) return null;
 
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
+                                    return (
+                                        <div key={indicatorTitle} className={styles.insightSection}>
+                                            <div className={styles.insightHeader}>
+                                                <H2 className={styles.insightH2}>{indicatorTitle}</H2>
+                                                <div
+                                                    className={`${styles.cell} ${styles.circleInsight} ${indicatorTitle.includes("Moving Average")
+                                                            ? styles[getTrendBadgeVariant(data.trend_direction)]
+                                                            : ""
+                                                        }`}
+                                                />
+                                            </div>
 
-                                    <Body>{asset.vixSensitivity?.explanation || "No explanation available."}</Body>
+                                            {data.explanation && (
+                                                <Body>{data.explanation}</Body>
+                                            )}
 
-                                    {asset.vixSensitivity?.note && (
-                                        <Body className={styles.insightNote}>{asset.vixSensitivity.note}</Body>
-                                    )}
-                                </div>
+                                            {/**
+                                            {(data.trend_direction || data.percentage_difference) && (
+                                                <div>
+                                                    <div className={styles.row}>
+                                                        {data.trend_direction && (
+                                                            <div className={styles.col}>
+                                                                <Body className={styles.insightSubtitles}>Trend Direction:</Body>
+                                                                <Body>{data.trend_direction}</Body>
+                                                            </div>
+                                                        )}
+                                                        {data.percentage_difference && (
+                                                            <div className={styles.col}>
+                                                                <Body className={styles.insightSubtitles}>Percentage Difference:</Body>
+                                                                <Body>{data.percentage_difference}</Body>
+                                                            </div>
+                                                        )}
 
+
+                                                    </div>
+                                                    <hr className={styles.hr}></hr>
+                                                </div>
+                                            )
+                                            }
+                                             */}
+
+
+                                            {
+                                                data.rsi_value && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>RSI Value:</Body>
+                                                        <Body>{data.rsi_value}</Body>
+                                                    </>
+                                                )
+                                            }
+
+                                            {/** 
+                                            {data.current_volume && data.avg_volume && data.volume_ratio && (
+                                                <div>
+                                                    <div className={styles.row}>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>Current Volume:</Body>
+                                                            <Body>{data.current_volume}</Body>
+                                                        </div>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>21-Day Avg Volume:</Body>
+                                                            <Body>{data.avg_volume}</Body>
+                                                        </div>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>Volume Ratio:</Body>
+                                                            <Body>{data.volume_ratio}</Body>
+                                                        </div>
+                                                    </div>
+                                                    <hr className={styles.hr}></hr>
+                                                </div>
+                                            )}
+
+                                            {data.vwap_value && data.current_price && data.price_vs_vwap && (
+                                                <div>
+                                                    <div className={styles.row}>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>VWAP:</Body>
+                                                            <Body>{data.vwap_value}</Body>
+                                                        </div>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>Current Price:</Body>
+                                                            <Body>{data.current_price}</Body>
+                                                        </div>
+                                                        <div className={styles.col}>
+                                                            <Body className={styles.insightSubtitles}>Price vs VWAP:</Body>
+                                                            <Body>{data.price_vs_vwap}</Body>
+                                                        </div>
+                                                    </div>
+                                                    <hr className={styles.hr}></hr>
+                                                </div>
+                                            )}
+
+                                            */}
+                                            {
+                                                data.suggestion && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Asset Specific Diagnosis:</Body>
+                                                        <Body>{data.suggestion}</Body>
+                                                    </>
+                                                )
+                                            }
+
+                                            {/**
+                                            {
+                                                data.diagnosis && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Diagnosis:</Body>
+                                                        <Body>{data.diagnosis}</Body>
+                                                    </>
+                                                )
+                                            }
+
+                                             */}
+
+                                            {
+                                                data.note && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Note:</Body>
+                                                        <Body className={styles.insightNote}>{data.note}</Body>
+                                                    </>
+                                                )
+                                            }
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
-
                     )}
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }

@@ -161,14 +161,14 @@
 
   /* REDDIT */
 
-   .socialSection {
+  .socialSection {
     display: flex;
     gap: 20px;
     margin-top: 20px;
 
   }
 
-   .socialContainer {
+  .socialContainer {
     margin-top: 12px;
     flex: 1;
     min-width: 300px;
@@ -255,10 +255,25 @@
     margin-bottom: 12px;
   }
 
-  .insightNote {
-    margin-top: 12px;
+  .insightSubtitles {
+    font-weight: bold;
+    margin-top: 8px;
+  }
 
-    color: #6e6e6e;
+  .row {
+    display: flex;
+    gap: 1rem;
+    /* or adjust based on spacing */
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .col {
+    flex: 1 1 200px;
+  }
+
+  .hr{
+    border: 1px solid gray;
   }
 
   .positiveAction {
