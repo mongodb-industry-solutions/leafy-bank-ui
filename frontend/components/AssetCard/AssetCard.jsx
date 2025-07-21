@@ -387,17 +387,6 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
                                         .map((item, index) => (
-                                            /*
-                                            <div key={index} className={styles.newsCard}>
-                                                <div className={styles.newsHeader}>
-                                                    <Link href={item.link} target="_blank" className={styles.newsHeadline}>
-                                                        {item.headline}
-                                                    </Link>
-                                                    <span className={styles.newsTime}>{item.posted}</span>
-                                                </div>
-                                                <Body className={styles.newsDescription}>{item.description}</Body>
-                                                <Body className={styles.newsSource}>{item.source}</Body>
-                                            </div>*/
 
                                             <NewsCard key={index} item={item} />
                                         ))

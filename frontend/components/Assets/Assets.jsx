@@ -72,16 +72,13 @@ export default function Assets() {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
                         .map(([symbol, data]) => {
 
-                            // Social sentiment score
                             const socialSentimentEntry = (reportsMarketSM?.report?.asset_sm_sentiments || []).find(
-                                entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
+                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
                             );
-                            const socialSentimentScore = socialSentimentEntry?.final_sentiment_score ?? 0;
 
-                            // Reddit posts + comments
-                            const redditPosts = (reportsMarketSM?.report?.asset_subreddits || []).filter(
-                                post => post.asset.toUpperCase() === item.asset.toUpperCase()
-                            );
+                            const redditPosts = (reportsMarketSM?.report?.asset_subreddits || []).find(
+                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
+                            )?.posts || [];
 
                             const allocation = allocationResponse.portfolio_allocation[symbol];
                             return {
@@ -103,10 +100,10 @@ export default function Assets() {
                                 },
                                 news: [],
                                 socialSentiment: {
-                                    score: socialSentimentScore,
+                                    score: socialSentimentEntry?.final_sentiment_score ?? 0,
                                     category: socialSentimentEntry?.sentiment_category || "Neutral"
                                 },
-                                reddit: redditPosts || [],
+                                reddit: redditPosts,
                                 recentData: [],
                                 vixSensitivity: {
                                     sensitivity: "NEUTRAL",

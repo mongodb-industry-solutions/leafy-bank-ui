@@ -107,6 +107,19 @@ export default function AssetsCrypto() {
         setAssets(formattedAssets);
     }, []);
 
+    useEffect(() => {
+        async function fetchAndSetChartMappings() {
+            try {
+                const chartMappingsResponse = await fetchChartMappings();
+                setChartMappings(chartMappingsResponse.chart_mappings);
+            } catch (error) {
+                console.error("Error fetching chart mappings:", error);
+            }
+        }
+
+        fetchAndSetChartMappings();
+    }, []);
+
     {/***
     useEffect(() => {
         async function fetchData() {

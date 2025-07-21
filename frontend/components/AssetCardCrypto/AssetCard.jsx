@@ -271,6 +271,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         })), null, 2)}
                                     </Code>
 
+                                    {/**
                                     <Subtitle className={styles.dataSubtitle}>Macroeconomic Indicators Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data from FRED (Federal Reserve Economic Data).</Body>
                                     <Code
@@ -315,6 +316,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                             2
                                         )}
                                     </Code>
+                                     */}
                                 </div>
 
                                 {/* RIGHT COLUMN - PROCESSED REPORTS */}
