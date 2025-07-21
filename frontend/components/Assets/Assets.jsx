@@ -17,6 +17,8 @@ import {
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
+import reportsMarketSM from "/public/data/reports_market_sm.json";
+
 
 export default function Assets() {
     const [assets, setAssets] = useState([]);
@@ -69,6 +71,18 @@ export default function Assets() {
                 if (shouldShowLoading) {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
                         .map(([symbol, data]) => {
+
+                            // Social sentiment score
+                            const socialSentimentEntry = (reportsMarketSM?.report?.asset_sm_sentiments || []).find(
+                                entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
+                            );
+                            const socialSentimentScore = socialSentimentEntry?.final_sentiment_score ?? 0;
+
+                            // Reddit posts + comments
+                            const redditPosts = (reportsMarketSM?.report?.asset_subreddits || []).filter(
+                                post => post.asset.toUpperCase() === item.asset.toUpperCase()
+                            );
+
                             const allocation = allocationResponse.portfolio_allocation[symbol];
                             return {
                                 symbol,
@@ -88,6 +102,11 @@ export default function Assets() {
                                     originalScore: 0.5
                                 },
                                 news: [],
+                                socialSentiment: {
+                                    score: socialSentimentScore,
+                                    category: socialSentimentEntry?.sentiment_category || "Neutral"
+                                },
+                                reddit: redditPosts || [],
                                 recentData: [],
                                 vixSensitivity: {
                                     sensitivity: "NEUTRAL",
@@ -111,14 +130,14 @@ export default function Assets() {
                         // First compare by asset_type
                         const typeA = a.allocation?.asset_type || 'Unknown';
                         const typeB = b.allocation?.asset_type || 'Unknown';
-                        
+
                         const typeComparison = typeA.localeCompare(typeB);
-                        
+
                         // If asset types are different, return the type comparison result
                         if (typeComparison !== 0) {
                             return typeComparison;
                         }
-                        
+
                         // If asset types are the same, sort alphabetically by symbol
                         return a.symbol.localeCompare(b.symbol);
                     });
@@ -333,14 +352,14 @@ export default function Assets() {
                     // First compare by asset_type
                     const typeA = a.allocation?.asset_type || 'Unknown';
                     const typeB = b.allocation?.asset_type || 'Unknown';
-                    
+
                     const typeComparison = typeA.localeCompare(typeB);
-                    
+
                     // If asset types are different, return the type comparison result
                     if (typeComparison !== 0) {
                         return typeComparison;
                     }
-                    
+
                     // If asset types are the same, sort alphabetically by symbol
                     return a.symbol.localeCompare(b.symbol);
                 });

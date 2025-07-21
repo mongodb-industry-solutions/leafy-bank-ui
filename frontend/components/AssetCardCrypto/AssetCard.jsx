@@ -38,16 +38,40 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
         return Infinity; // fallback for "Just now" or unknown
     };
 
-    // Get the sentiment score from the asset data (default to 0 if not available)
-    const sentimentScore = asset.sentiment ? asset.sentiment.score : 0;
-    const formattedSentimentScore = sentimentScore.toFixed(2);
+
+    // NEWS sentiment
+    const newsSentimentScore = asset.sentiment?.score ?? 0;
+    const newsCategory = asset.sentiment?.category ?? null;
+    const {
+        formattedScore: formattedSentimentScore,
+        colorClass: sentimentColor
+    } = getSentimentInfo(newsSentimentScore, newsCategory);
+
+    // SOCIAL sentiment
+    const socialSentimentScore = asset.socialSentiment?.score ?? 0;
+    const socialCategory = asset.socialSentiment?.category ?? null;
+    const {
+        formattedScore: formattedSocialSentimentScore,
+        colorClass: socialSentimentColor
+    } = getSentimentInfo(socialSentimentScore, socialCategory);
 
     // Get the sentiment category for color coding
-    const sentimentCategory = asset.sentiment ? asset.sentiment.category : "Neutral";
-    const sentimentColor =
-        sentimentCategory === "Positive" ? styles.positiveScore :
-            sentimentCategory === "Negative" ? styles.negativeScore :
-                styles.neutralScore;
+    function getSentimentInfo(score = 0.5, categoryOverride = null) {
+        const category = categoryOverride ||
+            (score >= 0.6 ? "Positive" :
+                score >= 0.4 ? "Neutral" : "Negative");
+
+        const colorClass =
+            category === "Positive" ? styles.positiveScore :
+                category === "Negative" ? styles.negativeScore :
+                    styles.neutralScore;
+
+        return {
+            formattedScore: score.toFixed(2),
+            category,
+            colorClass
+        };
+    }
 
     // Get the VIX sensitivity
     const vixSensitivity = asset.vixSensitivity?.sensitivity || "NEUTRAL";
@@ -85,19 +109,25 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
 
-    
+
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
+
                 <div className={styles.cell}> <strong>{asset.symbol}</strong> </div>
+
                 <div className={styles.cell}>{asset.allocation.description || "Unknown"}</div>
+
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
+
                 <div className={styles.cell}>  {asset.allocation?.percentage || "N/A"}</div>
+
                 <div className={styles.cell}>
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
+
                 <div className={styles.cell}>
-                    <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
+                    <span className={`${styles.sentiment} ${socialSentimentColor}`}>{formattedSocialSentimentScore}</span>
                 </div>
 
                 <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
@@ -367,11 +397,12 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
 
                     {expandedSection === "news" && (
                         <div className={styles.newsSection}>
-                            
+
                             <div className={styles.newsContainer}>
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
+                                        .slice(0, 3) // Limit to first 3
                                         .map((item, index) => (
 
                                             <NewsCard key={index} item={item} />
@@ -421,22 +452,19 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
 
                     {expandedSection === "social" && (
                         <div className={styles.socialSection}>
+
                             <div className={styles.socialContainer}>
-
-                                {asset.news && asset.news.length > 0 ? (
-                                    [...asset.news]
-                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
-                                        // .sort((a, b) => timeAgoToMinutes(a.create_at_utc) - timeAgoToMinutes(b.create_at_utc))
-
+                                {asset.reddit && asset.reddit.length > 0 ? (
+                                    [...asset.reddit]
+                                        // Optional: Sort by recency if you have a date field like `posted`
+                                        .sort((a, b) => new Date(b.posted) - new Date(a.posted))
+                                        .slice(0, 3) // Limit to 3 posts
                                         .map((item, index) => (
-
                                             <RedditCard key={index} item={item} />
-
                                         ))
                                 ) : (
-                                    <Body>No social posts available for {asset.symbol}</Body>
+                                    <Body>No Reddit posts available for {asset.symbol}.</Body>
                                 )}
-
                             </div>
 
 
@@ -482,8 +510,8 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                                 <H2 className={styles.insightH2}>{indicatorTitle}</H2>
                                                 <div
                                                     className={`${styles.cell} ${styles.circleInsight} ${indicatorTitle.includes("Moving Average")
-                                                            ? styles[getTrendBadgeVariant(data.trend_direction)]
-                                                            : ""
+                                                        ? styles[getTrendBadgeVariant(data.trend_direction)]
+                                                        : ""
                                                         }`}
                                                 />
                                             </div>

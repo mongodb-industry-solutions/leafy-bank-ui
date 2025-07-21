@@ -19,8 +19,8 @@ import {
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 import cryptoSuggestionsData from "/public/data/fetch-crypto-suggestions-comprehensive.json";
-import allocationData from "/public/data/reports_crypto_news.json";
-import reportsCryptoNews from "/public/data/reports_crypto_news.json";
+import reportsCrypto from "/public/data/reports_crypto_news.json";
+import reportsCryptoSM from "/public/data/reports_crypto_sm.json";
 
 export default function AssetsCrypto() {
     const [assets, setAssets] = useState([]);
@@ -30,23 +30,49 @@ export default function AssetsCrypto() {
 
     useEffect(() => {
 
-        const portfolioAllocations = allocationData.portfolio_allocation;
+        const portfolioAllocations = reportsCrypto.portfolio_allocation;
 
         const formattedAssets = cryptoSuggestionsData.crypto_suggestions.map((item) => {
+
+            // Portfolio Allocation
             const allocationEntry = portfolioAllocations.find(
                 entry => entry.asset === item.asset
             );
 
-            const sentimentEntry = (reportsCryptoNews?.report?.asset_news_sentiments || []).find(
+            // News sentiment score
+            const sentimentEntry = (reportsCrypto?.report?.asset_news_sentiments || []).find(
                 entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
             );
 
-            const finalSentimentScore = sentimentEntry?.final_sentiment_score ?? 0.5;
+            const finalSentimentScore = sentimentEntry?.final_sentiment_score ?? 0;
 
             const sentimentCategory =
                 finalSentimentScore >= 0.6 ? "Positive" :
                     finalSentimentScore >= 0.4 ? "Neutral" :
                         "Negative";
+
+            // News posts
+            const assetNews = (reportsCrypto?.report?.asset_news || []).filter(
+                entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
+            ).map(({ headline, description, source, posted, link, sentiment_score }) => ({
+                headline,
+                description,
+                source,
+                posted,
+                link,
+                sentiment_score
+            }));
+
+            // Social sentiment score
+            const socialSentimentEntry = (reportsCryptoSM?.report?.asset_sm_sentiments || []).find(
+                entry => entry.asset.toUpperCase() === item.asset.toUpperCase()
+            );
+            const socialSentimentScore = socialSentimentEntry?.final_sentiment_score ?? 0;
+
+            // Reddit posts + comments
+            const redditPosts = (reportsCryptoSM?.report?.asset_subreddits || []).filter(
+                post => post.asset.toUpperCase() === item.asset.toUpperCase()
+            );
 
             return {
                 symbol: item.asset,
@@ -61,15 +87,20 @@ export default function AssetsCrypto() {
                     category: sentimentCategory,
                     originalScore: finalSentimentScore
                 },
+                news: assetNews,
                 close: null,
                 timestamp: { $date: new Date().toISOString() },
-                news: [],
                 recentData: [],
                 vixSensitivity: {},
                 macroIndicators: {},
                 assetTrend: {},
                 crypto_indicators: item.crypto_indicators || [],
-                _id: { $oid: `id-${item.asset}` }
+                _id: { $oid: `id-${item.asset}` },
+                socialSentiment: {
+                    score: socialSentimentScore,
+                    category: socialSentimentEntry?.sentiment_category || "Neutral"
+                },
+                reddit: redditPosts || [],
             };
         });
 

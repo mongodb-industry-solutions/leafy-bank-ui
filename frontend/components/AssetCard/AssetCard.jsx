@@ -38,16 +38,39 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
         return Infinity; // fallback for "Just now" or unknown
     };
 
-    // Get the sentiment score from the asset data (default to 0 if not available)
-    const sentimentScore = asset.sentiment ? asset.sentiment.score : 0;
-    const formattedSentimentScore = sentimentScore.toFixed(2);
+    // NEWS sentiment
+    const newsSentimentScore = asset.sentiment?.score ?? 0;
+    const newsCategory = asset.sentiment?.category ?? null;
+    const {
+        formattedScore: formattedSentimentScore,
+        colorClass: sentimentColor
+    } = getSentimentInfo(newsSentimentScore, newsCategory);
+
+    // SOCIAL sentiment
+    const socialSentimentScore = asset.socialSentiment?.score ?? 0;
+    const socialCategory = asset.socialSentiment?.category ?? null;
+    const {
+        formattedScore: formattedSocialSentimentScore,
+        colorClass: socialSentimentColor
+    } = getSentimentInfo(socialSentimentScore, socialCategory);
 
     // Get the sentiment category for color coding
-    const sentimentCategory = asset.sentiment ? asset.sentiment.category : "Neutral";
-    const sentimentColor =
-        sentimentCategory === "Positive" ? styles.positiveScore :
-            sentimentCategory === "Negative" ? styles.negativeScore :
-                styles.neutralScore;
+    function getSentimentInfo(score = 0.5, categoryOverride = null) {
+        const category = categoryOverride ||
+            (score >= 0.6 ? "Positive" :
+                score >= 0.4 ? "Neutral" : "Negative");
+
+        const colorClass =
+            category === "Positive" ? styles.positiveScore :
+                category === "Negative" ? styles.negativeScore :
+                    styles.neutralScore;
+
+        return {
+            formattedScore: score.toFixed(2),
+            category,
+            colorClass
+        };
+    }
 
     // Get the VIX sensitivity
     const vixSensitivity = asset.vixSensitivity?.sensitivity || "NEUTRAL";
@@ -86,7 +109,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
                 <div className={styles.cell}>
-                    <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
+                    <span className={`${styles.sentiment} ${socialSentimentColor}`}>{formattedSocialSentimentScore}</span>
                 </div>
 
                 <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
@@ -146,7 +169,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         {expandedSection === "candleStick" ? ""
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
-                                     : expandedSection === "social" ? "Social Media"
+                                    : expandedSection === "social" ? "Social Media"
                                         : "News Headlines"}
                     </H3>
 
@@ -435,21 +458,13 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                     {expandedSection === "social" && (
                         <div className={styles.socialSection}>
                             <div className={styles.socialContainer}>
-
-                                {asset.news && asset.news.length > 0 ? (
-                                    [...asset.news]
-                                        .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
-                                        // .sort((a, b) => timeAgoToMinutes(a.create_at_utc) - timeAgoToMinutes(b.create_at_utc))
-
-                                        .map((item, index) => (
-
-                                            <RedditCard key={index} item={item} />
-
-                                        ))
+                                {asset.reddit && asset.reddit.length > 0 ? (
+                                    asset.reddit
+                                        .slice(0, 3)
+                                        .map((item, index) => <RedditCard key={index} item={item} />)
                                 ) : (
-                                    <Body>No social posts available for {asset.symbol}</Body>
+                                    <Body>No Reddit posts available for {asset.symbol}.</Body>
                                 )}
-
                             </div>
 
 
@@ -469,7 +484,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             </div>
                         </div>
                     )}
-                    
+
                     {expandedSection === "insights" && (
                         <div className={styles.insightsContainer}>
                             <H3 className={styles.insightsTitle}>{asset.symbol} Insights</H3>
