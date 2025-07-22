@@ -1,0 +1,260 @@
+{
+  "assets_data": {
+    "ADA": [
+      {
+        "symbol": "ADA",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 0.8214,
+        "high": 0.822,
+        "low": 0.8206,
+        "close": 0.8216,
+        "volume": 182049.3,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "ADA",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 0.8239,
+        "high": 0.8242,
+        "low": 0.8211,
+        "close": 0.8214,
+        "volume": 173833.1,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "ADA",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 0.8237,
+        "high": 0.8245,
+        "low": 0.8236,
+        "close": 0.8239,
+        "volume": 230429.3,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "BTC": [
+      {
+        "symbol": "BTC",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 119200.02,
+        "high": 119200.03,
+        "low": 119170.52,
+        "close": 119177.56,
+        "volume": 7.0706,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "BTC",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 119208.3,
+        "high": 119230.67,
+        "low": 119200.02,
+        "close": 119200.03,
+        "volume": 4.91598,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "BTC",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 119230.61,
+        "high": 119230.61,
+        "low": 119200,
+        "close": 119208.3,
+        "volume": 5.20112,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "DOGE": [
+      {
+        "symbol": "DOGE",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 0.21774,
+        "high": 0.21826,
+        "low": 0.21767,
+        "close": 0.21826,
+        "volume": 712603,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "DOGE",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 0.21811,
+        "high": 0.21818,
+        "low": 0.21768,
+        "close": 0.21774,
+        "volume": 719504,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "DOGE",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 0.21784,
+        "high": 0.21819,
+        "low": 0.2178,
+        "close": 0.21812,
+        "volume": 566635,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "ETH": [
+      {
+        "symbol": "ETH",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 3473.37,
+        "high": 3476.88,
+        "low": 3472.8,
+        "close": 3476.87,
+        "volume": 239.3181,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "ETH",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 3475.47,
+        "high": 3475.89,
+        "low": 3472.56,
+        "close": 3473.37,
+        "volume": 193.9114,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "ETH",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 3473.88,
+        "high": 3475.99,
+        "low": 3473.88,
+        "close": 3475.47,
+        "volume": 232.7998,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "FDUSD": [
+      {
+        "symbol": "FDUSD",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 0.9978,
+        "high": 0.9979,
+        "low": 0.9977,
+        "close": 0.9978,
+        "volume": 405248,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "FDUSD",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 0.9978,
+        "high": 0.9979,
+        "low": 0.9978,
+        "close": 0.9978,
+        "volume": 683945,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "FDUSD",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 0.9978,
+        "high": 0.9979,
+        "low": 0.9978,
+        "close": 0.9978,
+        "volume": 368879,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "SOL": [
+      {
+        "symbol": "SOL",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 175.76,
+        "high": 175.88,
+        "low": 175.71,
+        "close": 175.87,
+        "volume": 2494.582,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "SOL",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 175.77,
+        "high": 175.81,
+        "low": 175.61,
+        "close": 175.76,
+        "volume": 2304.223,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "SOL",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 175.62,
+        "high": 175.79,
+        "low": 175.62,
+        "close": 175.77,
+        "volume": 1298.011,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "USDC": [
+      {
+        "symbol": "USDC",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 0.9993,
+        "high": 0.9993,
+        "low": 0.9992,
+        "close": 0.9992,
+        "volume": 1259050,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "USDC",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 0.9993,
+        "high": 0.9993,
+        "low": 0.9992,
+        "close": 0.9993,
+        "volume": 221710,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "USDC",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 0.9993,
+        "high": 0.9993,
+        "low": 0.9992,
+        "close": 0.9993,
+        "volume": 4784292,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ],
+    "XRP": [
+      {
+        "symbol": "XRP",
+        "timestamp": "2025-07-17T23:59:00",
+        "open": 3.4809,
+        "high": 3.485,
+        "low": 3.4742,
+        "close": 3.4814,
+        "volume": 390696.4,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "XRP",
+        "timestamp": "2025-07-17T23:58:00",
+        "open": 3.4956,
+        "high": 3.4973,
+        "low": 3.4795,
+        "close": 3.4809,
+        "volume": 1099750.7,
+        "date_load_iso_utc": "20250718051014"
+      },
+      {
+        "symbol": "XRP",
+        "timestamp": "2025-07-17T23:57:00",
+        "open": 3.4959,
+        "high": 3.4995,
+        "low": 3.4936,
+        "close": 3.4956,
+        "volume": 221211.9,
+        "date_load_iso_utc": "20250718051014"
+      }
+    ]
+  }
+}

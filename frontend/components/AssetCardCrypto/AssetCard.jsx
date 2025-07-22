@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./AssetCard.module.css";
+import styles from "./AssetCardCrypto.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
@@ -14,7 +14,7 @@ import Banner from "@leafygreen-ui/banner";
 import NewsCard from "../NewsCard/NewsCard";
 import RedditCard from "../RedditCard/RedditCard";
 
-export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }) {
+export default function AssetCardCrypto({ asset, chartData }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
@@ -73,14 +73,59 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
         };
     }
 
-    // Get the VIX sensitivity
-    const vixSensitivity = asset.vixSensitivity?.sensitivity || "NEUTRAL";
+    // Get the RSI analysis data (replacing VIX sensitivity)
+    const rsiAnalysis = asset.rsiAnalysis;
 
-    // Set badge variant based on VIX sensitivity
-    const vixBadgeVariant =
-        vixSensitivity === "HIGH" ? "red" :
-            vixSensitivity === "LOW" ? "green" :
-                "yellow"; // NEUTRAL
+    // Get RSI traffic light color based on RSI value
+    const getRSITrafficLightColor = (rsiValue) => {
+        if (!rsiValue) return "gray";
+        
+        if (rsiValue >= 70) return "red"; // Overbought - potential sell signal
+        if (rsiValue <= 30) return "red"; // Oversold - potential risk
+        if (rsiValue >= 60 || rsiValue <= 40) return "yellow"; // Moderate conditions
+        return "green"; // Neutral/good conditions (40-60)
+    };
+
+    // Get Volume Analysis traffic light color based on volume ratio
+    const getVolumeTrafficLightColor = (volumeRatio) => {
+        if (!volumeRatio) return "gray";
+        
+        const ratio = parseFloat(volumeRatio);
+        if (ratio >= 2.0) return "green"; // High volume - strong signal
+        if (ratio >= 1.2) return "yellow"; // Moderate volume
+        return "red"; // Low volume - weak signal
+    };
+
+    // Get VWAP Analysis traffic light color based on VWAP position
+    const getVWAPTrafficLightColor = (vwapPosition) => {
+        if (!vwapPosition) return "gray";
+        
+        // Parse the percentage value from the string (e.g., "(-0.1%)" -> -0.1)
+        const percentageMatch = vwapPosition.toString().match(/([-+]?\d*\.?\d+)%/);
+        if (!percentageMatch) return "gray";
+        
+        const percentage = parseFloat(percentageMatch[1]);
+        if (percentage >= 1.0) return "green"; // Above VWAP by 1%+ - bullish
+        if (percentage >= -1.0) return "yellow"; // Around VWAP (-1% to +1%) - neutral
+        return "red"; // Below VWAP by more than 1% - bearish
+    };
+
+    // Get the combined crypto indicators traffic light color
+    const getCryptoIndicatorColor = (indicatorTitle, data) => {
+        if (indicatorTitle.includes("Moving Average")) {
+            return getTrendBadgeVariant(data.trend_direction);
+        } else if (indicatorTitle === "RSI Analysis") {
+            return getRSITrafficLightColor(data.rsi_value);
+        } else if (indicatorTitle === "Volume Analysis") {
+            return getVolumeTrafficLightColor(data.volume_ratio);
+        } else if (indicatorTitle === "VWAP Analysis") {
+            return getVWAPTrafficLightColor(data.vwap_position);
+        }
+        return "gray";
+    };
+
+    // Set badge variant based on RSI analysis
+    const rsiBadgeVariant = rsiAnalysis ? getRSITrafficLightColor(rsiAnalysis.rsi_value) : "gray";
 
     // Set badge variant based on trend direction
     const getTrendBadgeVariant = (trendDirection) => {
@@ -95,16 +140,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                 return "gray";
         }
     };
-    // Get actions from macro indicators
-    const gdpAction = asset.macroIndicators?.gdp?.action || "KEEP";
-    const interestRateAction = asset.macroIndicators?.interestRate?.action || "KEEP";
-    const unemploymentAction = asset.macroIndicators?.unemployment?.action || "KEEP";
-
-    // Set badge variants based on macro indicator actions
-    const gdpBadgeVariant = gdpAction === "KEEP" ? "green" : "red";
-    const interestRateBadgeVariant = interestRateAction === "KEEP" ? "green" : "red";
-    const unemploymentBadgeVariant = unemploymentAction === "KEEP" ? "green" : "red";
-
+ 
     // Get asset trend data
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
@@ -130,7 +166,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                     <span className={`${styles.sentiment} ${socialSentimentColor}`}>{formattedSocialSentimentScore}</span>
                 </div>
 
-                <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
+                <div className={`${styles.cell} ${styles.circle} ${styles[rsiBadgeVariant]}`}></div>
 
                 <div className={styles.actions}>
 
@@ -235,7 +271,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                 <div className={styles.rawDataColumn}>
                                     <H2>Raw Ingested Data</H2>
 
-                                    <Subtitle className={styles.dataSubtitle}>Market Data</Subtitle>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data is shown here. The actual system processes a much larger dataset.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -254,7 +290,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         }, null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>Financial News Data</Subtitle>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto News Data</Subtitle>
                                     <Body className={styles.dataNote}>* Displaying only 3 of many news articles processed by the system.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -271,94 +307,53 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         })), null, 2)}
                                     </Code>
 
-                                    {/**
-                                    <Subtitle className={styles.dataSubtitle}>Macroeconomic Indicators Data</Subtitle>
-                                    <Body className={styles.dataNote}>* Sample data from FRED (Federal Reserve Economic Data).</Body>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto Social Media Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Displaying only 3 of many social media posts processed by the system.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
-                                        {JSON.stringify(
-                                            rawMacroIndicators || {
-                                                // Fallback if data isn't loaded yet
-                                                "macro_indicators": {
-                                                    "GDP": {
-                                                        "title": "GDP",
-                                                        "frequency": "Quarterly",
-                                                        "frequency_short": "Q",
-                                                        "units": "Trillion of Dollars",
-                                                        "units_short": "Tril. of $",
-                                                        "date": "2025-03-27T00:00:00",
-                                                        "value": 29.72
-                                                    },
-                                                    "UNRATE": {
-                                                        "title": "Unemployment Rate",
-                                                        "frequency": "Monthly",
-                                                        "frequency_short": "M",
-                                                        "units": "Percent",
-                                                        "units_short": "%",
-                                                        "date": "2025-03-01T00:00:00",
-                                                        "value": 4.2
-                                                    },
-                                                    "DFF": {
-                                                        "title": "Interest Rate",
-                                                        "frequency": "Daily",
-                                                        "frequency_short": "D",
-                                                        "units": "Percent",
-                                                        "units_short": "%",
-                                                        "date": "2025-04-28T00:00:00.000+00:00",
-                                                        "value": 4.33
-                                                    }
-                                                }
-                                            },
-                                            null,
-                                            2
-                                        )}
+                                        {JSON.stringify((asset.reddit || []).slice(0, 3).map(item => ({
+                                            selftext: item.selftext ? item.selftext.substring(0, 80) + "..." : "",
+                                            title: item.title,
+                                            source: item.source,
+                                            posted: item.posted,
+                                            asset: item.asset,
+                                            sentiment_score: item.sentiment_score
+                                        })), null, 2)}
                                     </Code>
-                                     */}
                                 </div>
 
                                 {/* RIGHT COLUMN - PROCESSED REPORTS */}
                                 <div className={styles.processedDataColumn}>
                                     <H2>Processed Reports</H2>
 
-                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market Analysis Report</Subtitle>
-                                    <Body className={styles.dataNote}>* Simplified view of the full market analysis report with truncated embeddings.</Body>
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Analysis Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto analysis with RSI and technical indicators.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
                                         {JSON.stringify({
-                                            market_analysis_report: {
+                                            crypto_analysis_report: {
                                                 report: {
-                                                    market_volatility_index: {
-                                                        fluctuation_answer: asset.vixSensitivity?.marketData?.fluctuation || "No data",
-                                                        diagnosis: asset.vixSensitivity?.marketData?.diagnosis || "No data"
+                                                    rsi_analysis: {
+                                                        rsi_value: asset.rsiAnalysis?.rsi_value || "No data",
+                                                        interpretation: asset.rsiAnalysis?.interpretation || "No data",
+                                                        diagnosis: asset.rsiAnalysis?.diagnosis || "No data"
                                                     },
-                                                    macro_indicators: [
-                                                        {
-                                                            macro_indicator: "GDP",
-                                                            fluctuation_answer: asset.macroIndicators?.gdp?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.gdp?.marketData?.diagnosis || "No data"
-                                                        },
-                                                        {
-                                                            macro_indicator: "Effective Interest Rate",
-                                                            fluctuation_answer: asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.interestRate?.marketData?.diagnosis || "No data"
-                                                        },
-                                                        {
-                                                            macro_indicator: "Unemployment Rate",
-                                                            fluctuation_answer: asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.unemployment?.marketData?.diagnosis || "No data"
-                                                        }
-                                                    ],
+                                                    crypto_indicators: asset.crypto_indicators?.map(indicator => ({
+                                                        indicator: indicator.indicator,
+                                                        action: indicator.action,
+                                                        explanation: indicator.explanation
+                                                    })) || [],
                                                     asset_trends: [
                                                         {
                                                             asset: asset.symbol,
-                                                            fluctuation_answer: asset.assetTrend?.fluctuation || "No data",
-                                                            diagnosis: asset.assetTrend?.diagnosis || "No data"
+                                                            moving_averages: asset.crypto_indicators?.filter(ind => ind.indicator.includes("Moving Average")) || [],
+                                                            momentum_indicators: asset.crypto_indicators?.filter(ind => !ind.indicator.includes("Moving Average")) || []
                                                         }
                                                     ]
                                                 },
@@ -367,15 +362,15 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         }, null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market News Report</Subtitle>
-                                    <Body className={styles.dataNote}>* Simplified view of the full market news report with truncated embeddings.</Body>
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto News Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto news report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
                                         {JSON.stringify({
-                                            market_news_report: {
+                                            crypto_news_report: {
                                                 report: {
                                                     asset_news: asset.news || [],
                                                     asset_news_summary: [
@@ -388,6 +383,30 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                                     ]
                                                 },
                                                 report_embedding: [0.124, 0.394, 0.721, "..."]
+                                            }
+                                        }, null, 2)}
+                                    </Code>
+
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Social Media Report is missing here</Subtitle>
+                                    <Body className={styles.dataNote}>* Leafy Portfolio Assistant</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            crypto_sm_report: {
+                                                report: {
+                                                    asset_subreddits: asset.reddit || [],
+                                                    asset_sm_sentiments: [
+                                                        {
+                                                            asset: asset.symbol,
+                                                            final_sentiment_score: asset.socialSentiment?.score || 0.5,
+                                                            sentiment_category: asset.socialSentiment?.category || "Neutral"
+                                                        }
+                                                    ]
+                                                },
+                                                report_embedding: [0.156, 0.428, 0.693, "..."]
                                             }
                                         }, null, 2)}
                                     </Code>
@@ -511,42 +530,15 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                             <div className={styles.insightHeader}>
                                                 <H2 className={styles.insightH2}>{indicatorTitle}</H2>
                                                 <div
-                                                    className={`${styles.cell} ${styles.circleInsight} ${indicatorTitle.includes("Moving Average")
-                                                        ? styles[getTrendBadgeVariant(data.trend_direction)]
-                                                        : ""
-                                                        }`}
+                                                    className={`${styles.cell} ${styles.circleInsight} ${
+                                                        styles[getCryptoIndicatorColor(indicatorTitle, data)]
+                                                    }`}
                                                 />
                                             </div>
 
                                             {data.explanation && (
                                                 <Body>{data.explanation}</Body>
                                             )}
-
-                                            {/**
-                                            {(data.trend_direction || data.percentage_difference) && (
-                                                <div>
-                                                    <div className={styles.row}>
-                                                        {data.trend_direction && (
-                                                            <div className={styles.col}>
-                                                                <Body className={styles.insightSubtitles}>Trend Direction:</Body>
-                                                                <Body>{data.trend_direction}</Body>
-                                                            </div>
-                                                        )}
-                                                        {data.percentage_difference && (
-                                                            <div className={styles.col}>
-                                                                <Body className={styles.insightSubtitles}>Percentage Difference:</Body>
-                                                                <Body>{data.percentage_difference}</Body>
-                                                            </div>
-                                                        )}
-
-
-                                                    </div>
-                                                    <hr className={styles.hr}></hr>
-                                                </div>
-                                            )
-                                            }
-                                             */}
-
 
                                             {
                                                 data.rsi_value && (
@@ -557,48 +549,35 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                                 )
                                             }
 
-                                            {/** 
-                                            {data.current_volume && data.avg_volume && data.volume_ratio && (
-                                                <div>
-                                                    <div className={styles.row}>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>Current Volume:</Body>
-                                                            <Body>{data.current_volume}</Body>
-                                                        </div>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>21-Day Avg Volume:</Body>
-                                                            <Body>{data.avg_volume}</Body>
-                                                        </div>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>Volume Ratio:</Body>
-                                                            <Body>{data.volume_ratio}</Body>
-                                                        </div>
-                                                    </div>
-                                                    <hr className={styles.hr}></hr>
-                                                </div>
-                                            )}
+                                            {
+                                                data.volume_ratio && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Volume Ratio:</Body>
+                                                        <Body>{data.volume_ratio}</Body>
+                                                    </>
+                                                )
+                                            }
 
-                                            {data.vwap_value && data.current_price && data.price_vs_vwap && (
-                                                <div>
-                                                    <div className={styles.row}>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>VWAP:</Body>
-                                                            <Body>{data.vwap_value}</Body>
-                                                        </div>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>Current Price:</Body>
-                                                            <Body>{data.current_price}</Body>
-                                                        </div>
-                                                        <div className={styles.col}>
-                                                            <Body className={styles.insightSubtitles}>Price vs VWAP:</Body>
-                                                            <Body>{data.price_vs_vwap}</Body>
-                                                        </div>
-                                                    </div>
-                                                    <hr className={styles.hr}></hr>
-                                                </div>
-                                            )}
+                                            {
+                                                data.vwap_position && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>VWAP Position:</Body>
+                                                        <Body>{data.vwap_position}</Body>
+                                                    </>
+                                                )
+                                            }
 
-                                            */}
+                                            {
+                                                (data.ma9_value || data.ma21_value || data.ma50_value) && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Moving Average Values:</Body>
+                                                        {data.ma9_value && <Body>MA9: {data.ma9_value}</Body>}
+                                                        {data.ma21_value && <Body>MA21: {data.ma21_value}</Body>}
+                                                        {data.ma50_value && <Body>MA50: {data.ma50_value}</Body>}
+                                                    </>
+                                                )
+                                            }
+
                                             {
                                                 data.suggestion && (
                                                     <>
@@ -607,18 +586,6 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                                     </>
                                                 )
                                             }
-
-                                            {/**
-                                            {
-                                                data.diagnosis && (
-                                                    <>
-                                                        <Body className={styles.insightSubtitles}>Diagnosis:</Body>
-                                                        <Body>{data.diagnosis}</Body>
-                                                    </>
-                                                )
-                                            }
-
-                                             */}
 
                                             {
                                                 data.note && (
@@ -631,6 +598,7 @@ export default function AssetCardCrypto({ asset, chartData, rawMacroIndicators }
                                         </div>
                                     );
                                 })}
+                                
                             </div>
                         </div>
                     )}

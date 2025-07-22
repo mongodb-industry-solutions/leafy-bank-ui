@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Header from "@/components/Header/Header";
-//import Assets from "@/components/Assets/Assets";
 import AssetsCrypto from "@/components/AssetsCrypto/AssetsCrypto";
 import styles from "./CryptoPortfolio.module.css";
 import Card from "@leafygreen-ui/card";
@@ -11,17 +10,12 @@ import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
 import Banner from "@leafygreen-ui/banner";
-import { fetchMostRecentMacroIndicators, fetchMacroIndicatorsTrend } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 import {
     SegmentedControl,
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
-import Icon from "@leafygreen-ui/icon";
-import Tooltip from "@leafygreen-ui/tooltip";
 
 export default function AssetPortfolio() {
-    const [marketEvents, setMarketEvents] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
@@ -37,81 +31,6 @@ export default function AssetPortfolio() {
             setTimeout(() => setShowBubble(false), 500); // remove element after animation
         }, 8000);
         return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        async function fetchMarketData() {
-            try {
-                // Check for cached indicators data
-                const cachedData = localStorage.getItem('macroIndicatorsData');
-                const cachedTimestamp = localStorage.getItem('macroIndicatorsTimestamp');
-                const dataIsStale = !cachedTimestamp || (Date.now() - parseInt(cachedTimestamp)) > (6 * 60 * 60 * 1000); // 6 hours
-
-                if (cachedData && !dataIsStale) {
-                    // Use cached data immediately
-                    const parsedData = JSON.parse(cachedData);
-                    setMarketEvents(parsedData);
-                    setIsLoading(false);
-
-                    // Still fetch fresh data in the background
-                    fetchFreshData(false);
-                    return;
-                }
-
-                // No valid cache, fetch fresh data
-                await fetchFreshData(true);
-            } catch (error) {
-                console.error("Error in market data sequence:", error);
-                setIsLoading(false);
-            }
-        }
-
-        async function fetchFreshData(updateLoadingState) {
-            try {
-                // Fetch both the latest indicator values and trend information
-                const indicatorsData = await fetchMostRecentMacroIndicators();
-                const trendData = await fetchMacroIndicatorsTrend();
-
-                // Transform the data from object format to array format
-                const transformedData = Object.entries(indicatorsData.macro_indicators).map(([series_id, indicator]) => {
-                    // Get trend information for this indicator if available
-                    const trend = trendData.trend_indicators[series_id] || {};
-
-                    return {
-                        series_id,
-                        title: indicator.title,
-                        frequency: indicator.frequency,
-                        frequency_short: indicator.frequency_short,
-                        units: indicator.units,
-                        units_short: indicator.units_short,
-                        date: { $date: new Date(indicator.date).toISOString() },
-                        value: indicator.value,
-                        // Add the arrow direction from trend data
-                        arrow_direction: trend.arrow_direction || "EQUAL"
-                    };
-                });
-
-                setMarketEvents(transformedData);
-                if (updateLoadingState) {
-                    setIsLoading(false);
-                }
-
-                // Save to cache
-                try {
-                    localStorage.setItem('macroIndicatorsData', JSON.stringify(transformedData));
-                    localStorage.setItem('macroIndicatorsTimestamp', Date.now().toString());
-                } catch (storageError) {
-                    console.warn("Could not save macro indicators to localStorage:", storageError);
-                }
-            } catch (error) {
-                console.error("Error fetching market events:", error);
-                if (updateLoadingState) {
-                    setIsLoading(false);
-                }
-            }
-        }
-
-        fetchMarketData();
     }, []);
 
     useEffect(() => {
@@ -136,22 +55,6 @@ export default function AssetPortfolio() {
         localStorage.clear();
         router.push("/");
     };
-
-    // Loading skeleton for macroeconomic indicators
-    const IndicatorsSkeleton = () => (
-        <>
-            {[1, 2, 3].map((item) => (
-                <div key={item} className={styles.eventCard}>
-                    <div className={styles.skeletonText}></div>
-                    <div className={styles.skeletonText}></div>
-                    <div className={styles.skeletonText}></div>
-                    <div className={styles.skeletonValue}>
-                        <div className={styles.skeletonText}></div>
-                    </div>
-                </div>
-            ))}
-        </>
-    );
 
     return (
         <div className={styles.container}>
@@ -244,115 +147,6 @@ export default function AssetPortfolio() {
                         </Card>
 
                     </div>
-
-                    <Card className={styles.marketCard}>
-
-                  
-
-                        {/**
-                        <Subtitle className={styles.cardSubtitle}>Macroeconomic Indicators</Subtitle>
-                        <div className={styles.headerRow}>
-                            <span>INDICATOR</span>
-                            <span>FREQUENCY</span>
-                            <span>LAST RELEASE DATE</span>
-                            <span>LAST VALUE</span>
-                            <span>UNITS</span>
-                            <span>TREND</span>
-                        </div>
-
-                        <div className={styles.eventContainer}>
-                            {isLoading ? (
-                                <IndicatorsSkeleton />
-                            ) : marketEvents.length > 0 ? (
-                                marketEvents.map((event) => {
-                                    // Determine source URL based on indicator title
-                                    let sourceUrl = "";
-                                    const displayTitle = event.title === "Gross Domestic Product"
-                                        ? "GDP (US)"
-                                        : event.title === "Federal Funds Effective Rate"
-                                            ? "Interest Rate (US)"
-                                            : `${event.title} (US)`;
-
-                                    // Map the title to the correct source URL
-                                    if (displayTitle === "GDP (US)") {
-                                        sourceUrl = "https://fred.stlouisfed.org/series/GDP";
-                                    } else if (displayTitle === "Unemployment Rate (US)") {
-                                        sourceUrl = "https://fred.stlouisfed.org/series/UNRATE";
-                                    } else if (displayTitle === "Interest Rate (US)") {
-                                        sourceUrl = "https://fred.stlouisfed.org/series/DFF";
-                                    }
-
-                                    return (
-                                        <div key={event.series_id} className={styles.eventCard}>
-                                            {sourceUrl ? (
-                                                <a
-                                                    href={sourceUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className={`${styles.indicatorLink} ${styles.eventColumn}`}
-                                                    title={`View source for ${displayTitle} on FRED`}
-                                                >
-                                                    <Body>{displayTitle}</Body>
-                                                </a>
-                                            ) : (
-                                                <Body className={styles.eventColumn}>{displayTitle}</Body>
-                                            )}
-                                            <Body>{event.frequency}</Body>
-                                            <Body>{new Date(event.date.$date).toLocaleDateString()}</Body>
-                                            <Body>{(() => {
-                                                // Try to parse the value as a number
-                                                const numValue = parseFloat(event.value);
-
-                                                // Check if it's a valid number
-                                                if (!isNaN(numValue)) {
-                                                    // If it's GDP, divide by 1000 to convert from billions to trillions
-                                                    if (event.title === "Gross Domestic Product") {
-                                                        return (numValue / 1000).toFixed(2);
-                                                    } else {
-                                                        return numValue.toFixed(2);
-                                                    }
-                                                } else {
-                                                    return event.value;
-                                                }
-                                            })()}</Body>
-                                            <Body>
-                                                {event.title === "Gross Domestic Product" || event.units_short === "Bil. of $"
-                                                    ? "Tril. of $"
-                                                    : event.units_short}
-                                            </Body>
-                                            <div>
-                                                <Tooltip align="top" justify="middle" trigger={
-                                                    <Icon
-                                                        className={
-                                                            event.arrow_direction === "ARROW_UP"
-                                                                ? styles.arrowUp
-                                                                : event.arrow_direction === "ARROW_DOWN"
-                                                                    ? styles.arrowDown
-                                                                    : styles.arrowEqual
-                                                        }
-                                                        glyph={
-                                                            event.arrow_direction === "ARROW_UP"
-                                                                ? "ArrowUp"
-                                                                : event.arrow_direction === "ARROW_DOWN"
-                                                                    ? "ArrowDown"
-                                                                    : "Minus"
-                                                        }
-                                                    />
-                                                }>
-                                                    Trend relative to last value
-                                                </Tooltip>
-                                            </div>
-                                        </div>
-                                    );
-                                })
-                            ) : (
-                                <div className={styles.noData}>
-                                    <Body>No macroeconomic indicators available</Body>
-                                </div>
-                            )}
-                        </div>
- */}
-                    </Card>
 
                 </div>
             </div>

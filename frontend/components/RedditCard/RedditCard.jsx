@@ -12,6 +12,14 @@ function formatTimeAgo(utcString) {
 }
 
 export default function RedditCard({ item }) {
+    // Limit text to max 80 words and add "then..."
+    const limitText = (text, maxWords = 80) => {
+        if (!text) return "";
+        const words = text.split(' ');
+        if (words.length <= maxWords) return text;
+        return words.slice(0, maxWords).join(' ') + " then...";
+    };
+
     return (
         <div className={styles.socialCard}>
             <div className={styles.socialHeader}>
@@ -30,19 +38,25 @@ export default function RedditCard({ item }) {
             <Subtitle className={styles.postTitle}>{item.title}</Subtitle>
 
             {item.description && (
-                <Body className={styles.newsDescription}>{item.description}</Body>
+                <Body className={styles.newsDescription}>{limitText(item.description)}</Body>
+            )}
+
+            {item.selftext && (
+                <Body className={styles.newsDescription}>{limitText(item.selftext)}</Body>
             )}
 
             {/* Comments */}
             {item.comments?.length > 0 && (
                 <div className={styles.commentsContainer}>
                     <Subtitle className={styles.commentsHeader}>Comments</Subtitle>
-                    {item.comments.map((comment, idx) => (
-                        <div key={idx} className={styles.comment}>
-                            <Body className={styles.commentAuthor}>u/{comment.author}</Body>
-                            <Body className={styles.commentText}>{comment.body}</Body>
-                        </div>
-                    ))}
+                    {item.comments.map((comment, idx) => {
+                        return (
+                            <div key={idx} className={styles.comment}>
+                                <Body className={styles.commentAuthor}>u/{comment.author}</Body>
+                                <Body className={styles.commentText}>{limitText(comment.body)}</Body>
+                            </div>
+                        );
+                    })}
                 </div>
             )}
         </div>

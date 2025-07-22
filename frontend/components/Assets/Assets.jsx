@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Assets.module.css";
 import AssetCard from "../AssetCard/AssetCard";
-import { H2, Subtitle, Body, H3 } from "@leafygreen-ui/typography";
+import { H3 } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
 import {
     marketFetchAssetsClosePrice,
