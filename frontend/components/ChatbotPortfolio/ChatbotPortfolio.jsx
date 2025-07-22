@@ -11,7 +11,7 @@ import Button from "@leafygreen-ui/button";
 import { Tabs, Tab } from '@leafygreen-ui/tabs';
 //import InfoWizard from "../InfoWizard/InfoWizard";
 import Typewriter from "./Typewriter.jsx";
-import { sendMessagetoReactAgentMarketAssistantChatbot } from "@/lib/api/capital_markets/chatbot/capitalmarkets_chatbot_api";
+import { sendMessagetoReactAgentMarketAssistantChatbot } from "@/lib/api/capital_markets/chatbots/capitalmarkets_react_stock_api";
 
 function generateThreadId() {
     const now = new Date();

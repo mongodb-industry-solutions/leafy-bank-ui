@@ -7,14 +7,19 @@ import AssetCardCrypto from "../AssetCardCrypto/AssetCard";
 import { H2, Subtitle, Body, H3 } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
 import {
-    marketFetchAssetsClosePrice,
-    marketFetchRecentAssetsData,
+    // Crypto Data
+    cryptoFetchAssetsClosePrice,
+    cryptoFetchRecentAssetsData,
+    // Portfolio Allocation
     fetchPortfolioAllocation,
-    fetchMostRecentMarketAnalysisReport,
-    fetchMostRecentMarketNewsReport,
-    fetchAssetSuggestionsMarketVolatilityBased,
-    fetchAssetSuggestionsMacroIndicatorsBased,
-    fetchMostRecentMacroIndicators,
+    // Reports
+    fetchMostRecentCryptoAnalysisReport,
+    fetchMostRecentCryptoNewsReport,
+    fetchMostRecentCryptoSocialMediaReport,
+    // Suggestions
+    fetchCryptoSuggestionsTrendBased,
+    fetchCryptoSuggestionsMomentumBased,
+    fetchCryptoSuggestionsComprehensive,
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 

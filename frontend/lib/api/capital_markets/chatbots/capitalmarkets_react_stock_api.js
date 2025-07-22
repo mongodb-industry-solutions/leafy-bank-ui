@@ -1,11 +1,10 @@
 /**  
- * This file contains functions to interact with the Capital Markets Chatbot endpoints.  
+ * This file contains functions to interact with the Capital Markets Chatbot capitalmarkets_react_stock_api endpoints.  
  * The backend services are implemented in Python (FastAPI).  
- * For more details, please refer to the Capital Markets Chatbot documentation.  
- * @module capitalmarkets_chatbot_api  
+ * @module capitalmarkets_react_stock_api  
  */
 
-const CAPITALMARKETS_CHATBOT_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_CHATBOT_API_URL;
+const CAPITALMARKETS_REACT_STOCK_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL;
 
 /**  
  * Chatbot Interaction
@@ -24,7 +23,7 @@ export async function sendMessagetoReactAgentMarketAssistantChatbot(thread_id, m
         message: message
     };
     
-    const response = await fetch(`${CAPITALMARKETS_CHATBOT_API_URL}/market-assistant/send-message`, {
+    const response = await fetch(`${CAPITALMARKETS_REACT_STOCK_API_URL}/market-assistant/send-message`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
