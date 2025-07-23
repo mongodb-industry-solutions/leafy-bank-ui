@@ -11,6 +11,7 @@ import {
     fetchPortfolioAllocation,
     fetchMostRecentMarketAnalysisReport,
     fetchMostRecentMarketNewsReport,
+    fetchMostRecentMarketSocialMediaReport,
     fetchAssetSuggestionsMarketVolatilityBased,
     fetchAssetSuggestionsMacroIndicatorsBased,
     fetchMostRecentMacroIndicators,
