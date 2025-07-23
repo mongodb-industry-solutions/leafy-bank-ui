@@ -125,7 +125,6 @@ const Login = ({ onUserSelected }) => {
 
                     <div className={styles.parentContainer}>
 
-
                         <Banner>
                             Look out for  <Icon glyph="Wizard" fill="#889397" /> to find out more about what is going on behind the scenes!
                         </Banner>

@@ -1,0 +1,548 @@
+{
+  "crypto_suggestions": [
+    {
+      "asset": "ETH",
+      "asset_type": "Cryptocurrency",
+      "description": "Ethereum",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH close price is $3,371.35, and its MA9 is $3,368.93.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.07%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA9: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH close price is $3,371.35, and its MA21 is $3,367.09.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.13%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA21: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH close price is $3,371.35, and its MA50 is $3,361.92.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.28%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH RSI (14-day) is 60.27 on 2025-07-16.",
+          "rsi_value": 60.27,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 60.27 shows bullish momentum. Upward price pressure likely to continue.",
+          "suggestion": "RSI at 60.27 shows bullish momentum. Upward price pressure likely to continue.",
+          "note": "RSI Trend: ETH RSI (14-day) is 60.27 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH volume is 344.96 vs 21-day avg of 296.58 on 2025-07-16.",
+          "current_volume": 344.96,
+          "avg_volume": 296.58,
+          "volume_ratio": "1.2x",
+          "diagnosis": "Normal volume levels (1.2x average). Standard trading activity.",
+          "interpretation": "Normal trading activity",
+          "suggestion": "Normal volume levels (1.2x average). Standard trading activity.",
+          "note": "Volume Trend: ETH volume is 344.96 vs 21-day avg of 296.58 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "ETH VWAP (14-day) is $3,368.43 vs current price $3,371.35 on 2025-07-16.",
+          "vwap_value": 3368.43,
+          "current_price": 3371.35,
+          "price_vs_vwap": "+0.1%",
+          "diagnosis": "Price 3371.35 trading near VWAP 3368.43 (+0.1%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 3371.35 trading near VWAP 3368.43 (+0.1%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: ETH VWAP (14-day) is $3,368.43 vs current price $3,371.35 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "BTC",
+      "asset_type": "Cryptocurrency",
+      "description": "Bitcoin",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC close price is $118,630.43, and its MA9 is $118,662.35.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.03%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA9: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC close price is $118,630.43, and its MA21 is $118,732.17.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.09%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA21: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC close price is $118,630.43, and its MA50 is $118,654.19.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.02%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA50: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC RSI (14-day) is 45.01 on 2025-07-16.",
+          "rsi_value": 45.01,
+          "interpretation": "Bearish momentum - below neutral",
+          "diagnosis": "RSI at 45.01 shows bearish momentum. Downward pressure may persist.",
+          "suggestion": "RSI at 45.01 shows bearish momentum. Downward pressure may persist.",
+          "note": "RSI Trend: BTC RSI (14-day) is 45.01 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC volume is 2.82 vs 21-day avg of 3.95 on 2025-07-16.",
+          "current_volume": 2.82,
+          "avg_volume": 3.95,
+          "volume_ratio": "0.7x",
+          "diagnosis": "Normal volume levels (0.7x average). Standard trading activity.",
+          "interpretation": "Normal trading activity",
+          "suggestion": "Normal volume levels (0.7x average). Standard trading activity.",
+          "note": "Volume Trend: BTC volume is 2.82 vs 21-day avg of 3.95 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "BTC VWAP (14-day) is $118,690.79 vs current price $118,630.43 on 2025-07-16.",
+          "vwap_value": 118690.79,
+          "current_price": 118630.43,
+          "price_vs_vwap": "-0.1%",
+          "diagnosis": "Price 118630.43 trading near VWAP 118690.79 (-0.1%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 118630.43 trading near VWAP 118690.79 (-0.1%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: BTC VWAP (14-day) is $118,690.79 vs current price $118,630.43 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "FDUSD",
+      "asset_type": "Stablecoin",
+      "description": "First Digital USD",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD close price is $0.998000, and its MA9 is $0.997956.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA9: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD close price is $0.998000, and its MA21 is $0.997948.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.01%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA21: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD close price is $0.998000, and its MA50 is $0.997966.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD RSI (14-day) is 51.75 on 2025-07-16.",
+          "rsi_value": 51.75,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 51.75 normal for stablecoin. Price stability maintained around peg.",
+          "suggestion": "RSI at 51.75 normal for stablecoin. Price stability maintained around peg.",
+          "note": "RSI Trend: FDUSD RSI (14-day) is 51.75 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD volume is 315,407 vs 21-day avg of 272,698 on 2025-07-16.",
+          "current_volume": 315407,
+          "avg_volume": 272698,
+          "volume_ratio": "1.2x",
+          "diagnosis": "Normal volume levels (1.2x average). Standard trading activity.",
+          "interpretation": "Normal trading activity",
+          "suggestion": "Normal volume levels (1.2x average). Standard trading activity.",
+          "note": "Volume Trend: FDUSD volume is 315,407 vs 21-day avg of 272,698 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "FDUSD VWAP (14-day) is $0.997951 vs current price $0.998000 on 2025-07-16.",
+          "vwap_value": 0.997951,
+          "current_price": 0.998,
+          "price_vs_vwap": "+0.0%",
+          "diagnosis": "Price 0.9980 vs VWAP 0.9980. Stablecoin trading close to volume-weighted average, maintaining stability.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 0.9980 vs VWAP 0.9980. Stablecoin trading close to volume-weighted average, maintaining stability.",
+          "note": "VWAP Trend: FDUSD VWAP (14-day) is $0.997951 vs current price $0.998000 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "USDC",
+      "asset_type": "Stablecoin",
+      "description": "USD Coin",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC close price is $0.999500, and its MA9 is $0.999456.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA9: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC close price is $0.999500, and its MA21 is $0.999433.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.01%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA21: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC close price is $0.999500, and its MA50 is $0.999416.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.01%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC RSI (14-day) is 54.93 on 2025-07-16.",
+          "rsi_value": 54.93,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 54.93 normal for stablecoin. Price stability maintained around peg.",
+          "suggestion": "RSI at 54.93 normal for stablecoin. Price stability maintained around peg.",
+          "note": "RSI Trend: USDC RSI (14-day) is 54.93 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC volume is 44,470 vs 21-day avg of 603,911 on 2025-07-16.",
+          "current_volume": 44470,
+          "avg_volume": 603911,
+          "volume_ratio": "0.1x",
+          "diagnosis": "Below average volume (0.1x average). Low market activity.",
+          "interpretation": "Low trading activity - reduced market interest",
+          "suggestion": "Below average volume (0.1x average). Low market activity.",
+          "note": "Volume Trend: USDC volume is 44,470 vs 21-day avg of 603,911 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "USDC VWAP (14-day) is $0.999441 vs current price $0.999500 on 2025-07-16.",
+          "vwap_value": 0.999441,
+          "current_price": 0.9995,
+          "price_vs_vwap": "+0.0%",
+          "diagnosis": "Price 0.9995 vs VWAP 0.9994. Stablecoin trading close to volume-weighted average, maintaining stability.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 0.9995 vs VWAP 0.9994. Stablecoin trading close to volume-weighted average, maintaining stability.",
+          "note": "VWAP Trend: USDC VWAP (14-day) is $0.999441 vs current price $0.999500 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "SOL",
+      "asset_type": "Cryptocurrency",
+      "description": "Solana",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL close price is $173.63, and its MA9 is $173.65.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.01%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA9: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL close price is $173.63, and its MA21 is $173.66.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.02%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA21: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL close price is $173.63, and its MA50 is $173.33.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.17%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL RSI (14-day) is 55.86 on 2025-07-16.",
+          "rsi_value": 55.86,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 55.86 shows bullish momentum. Upward price pressure likely to continue.",
+          "suggestion": "RSI at 55.86 shows bullish momentum. Upward price pressure likely to continue.",
+          "note": "RSI Trend: SOL RSI (14-day) is 55.86 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL volume is 1,160 vs 21-day avg of 2,045 on 2025-07-16.",
+          "current_volume": 1160,
+          "avg_volume": 2045,
+          "volume_ratio": "0.6x",
+          "diagnosis": "Below average volume (0.6x average). Low market activity.",
+          "interpretation": "Low trading activity - reduced market interest",
+          "suggestion": "Below average volume (0.6x average). Low market activity.",
+          "note": "Volume Trend: SOL volume is 1,160 vs 21-day avg of 2,045 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "SOL VWAP (14-day) is $173.62 vs current price $173.63 on 2025-07-16.",
+          "vwap_value": 173.62,
+          "current_price": 173.63,
+          "price_vs_vwap": "+0.0%",
+          "diagnosis": "Price 173.63 trading near VWAP 173.62 (+0.0%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 173.63 trading near VWAP 173.62 (+0.0%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: SOL VWAP (14-day) is $173.62 vs current price $173.63 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "XRP",
+      "asset_type": "Cryptocurrency",
+      "description": "XRP",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP close price is $3.04, and its MA9 is $3.04.",
+          "trend_direction": "at",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price at moving average suggests consolidation",
+          "note": "Price vs. MA9: Price at moving average suggests consolidation"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP close price is $3.04, and its MA21 is $3.04.",
+          "trend_direction": "at",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price at moving average suggests consolidation",
+          "note": "Price vs. MA21: Price at moving average suggests consolidation"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP close price is $3.04, and its MA50 is $3.04.",
+          "trend_direction": "at",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price at moving average suggests consolidation",
+          "note": "Price vs. MA50: Price at moving average suggests consolidation"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP RSI (14-day) is 50.7 on 2025-07-16.",
+          "rsi_value": 50.7,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 50.7 shows bullish momentum. Upward price pressure likely to continue.",
+          "suggestion": "RSI at 50.7 shows bullish momentum. Upward price pressure likely to continue.",
+          "note": "RSI Trend: XRP RSI (14-day) is 50.7 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP volume is 94,868 vs 21-day avg of 115,140 on 2025-07-16.",
+          "current_volume": 94868,
+          "avg_volume": 115140,
+          "volume_ratio": "0.8x",
+          "diagnosis": "Normal volume levels (0.8x average). Standard trading activity.",
+          "interpretation": "Normal trading activity",
+          "suggestion": "Normal volume levels (0.8x average). Standard trading activity.",
+          "note": "Volume Trend: XRP volume is 94,868 vs 21-day avg of 115,140 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "XRP VWAP (14-day) is $3.04 vs current price $3.04 on 2025-07-16.",
+          "vwap_value": 3.04,
+          "current_price": 3.04,
+          "price_vs_vwap": "+0.0%",
+          "diagnosis": "Price 3.04 trading near VWAP 3.04 (-0.1%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 3.04 trading near VWAP 3.04 (-0.1%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: XRP VWAP (14-day) is $3.04 vs current price $3.04 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "DOGE",
+      "asset_type": "Cryptocurrency",
+      "description": "Dogecoin",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE close price is $0.212700, and its MA9 is $0.212734.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.02%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA9: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE close price is $0.212700, and its MA21 is $0.212915.",
+          "trend_direction": "below",
+          "percentage_difference": "-0.10%",
+          "suggestion": "Price below moving average suggests downward momentum",
+          "note": "Price vs. MA21: Price below moving average suggests downward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE close price is $0.212700, and its MA50 is $0.212618.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.04%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE RSI (14-day) is 50.18 on 2025-07-16.",
+          "rsi_value": 50.18,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 50.18 shows bullish momentum. Upward price pressure likely to continue.",
+          "suggestion": "RSI at 50.18 shows bullish momentum. Upward price pressure likely to continue.",
+          "note": "RSI Trend: DOGE RSI (14-day) is 50.18 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE volume is 1,548,862 vs 21-day avg of 834,969 on 2025-07-16.",
+          "current_volume": 1548862,
+          "avg_volume": 834969,
+          "volume_ratio": "1.9x",
+          "diagnosis": "Above average volume (1.9x average). Increased market interest.",
+          "interpretation": "High trading activity - increased market interest",
+          "suggestion": "Above average volume (1.9x average). Increased market interest.",
+          "note": "Volume Trend: DOGE volume is 1,548,862 vs 21-day avg of 834,969 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "DOGE VWAP (14-day) is $0.213011 vs current price $0.212700 on 2025-07-16.",
+          "vwap_value": 0.213011,
+          "current_price": 0.2127,
+          "price_vs_vwap": "-0.1%",
+          "diagnosis": "Price 0.21 trading near VWAP 0.21 (-0.1%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 0.21 trading near VWAP 0.21 (-0.1%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: DOGE VWAP (14-day) is $0.213011 vs current price $0.212700 on 2025-07-16."
+        }
+      ]
+    },
+    {
+      "asset": "ADA",
+      "asset_type": "Cryptocurrency",
+      "description": "Cardano",
+      "crypto_indicators": [
+        {
+          "indicator": "MA9 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA close price is $0.764400, and its MA9 is $0.764211.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.02%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA9: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA21 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA close price is $0.764400, and its MA21 is $0.764362.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.00%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA21: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "MA50 Moving Average Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA close price is $0.764400, and its MA50 is $0.763074.",
+          "trend_direction": "above",
+          "percentage_difference": "+0.17%",
+          "suggestion": "Price above moving average suggests upward momentum",
+          "note": "Price vs. MA50: Price above moving average suggests upward momentum"
+        },
+        {
+          "indicator": "RSI Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA RSI (14-day) is 54.67 on 2025-07-16.",
+          "rsi_value": 54.67,
+          "interpretation": "Bullish momentum - above neutral",
+          "diagnosis": "RSI at 54.67 shows bullish momentum. Upward price pressure likely to continue.",
+          "suggestion": "RSI at 54.67 shows bullish momentum. Upward price pressure likely to continue.",
+          "note": "RSI Trend: ADA RSI (14-day) is 54.67 on 2025-07-16."
+        },
+        {
+          "indicator": "Volume Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA volume is 9,256 vs 21-day avg of 70,413 on 2025-07-16.",
+          "current_volume": 9256,
+          "avg_volume": 70413,
+          "volume_ratio": "0.1x",
+          "diagnosis": "Below average volume (0.1x average). Low market activity.",
+          "interpretation": "Low trading activity - reduced market interest",
+          "suggestion": "Below average volume (0.1x average). Low market activity.",
+          "note": "Volume Trend: ADA volume is 9,256 vs 21-day avg of 70,413 on 2025-07-16."
+        },
+        {
+          "indicator": "VWAP Analysis",
+          "action": "MONITOR",
+          "explanation": "ADA VWAP (14-day) is $0.764514 vs current price $0.764400 on 2025-07-16.",
+          "vwap_value": 0.764514,
+          "current_price": 0.7644,
+          "price_vs_vwap": "-0.0%",
+          "diagnosis": "Price 0.76 trading near VWAP 0.76 (-0.0%). Balanced market with neutral sentiment.",
+          "interpretation": "Price near VWAP - balanced market sentiment",
+          "suggestion": "Price 0.76 trading near VWAP 0.76 (-0.0%). Balanced market with neutral sentiment.",
+          "note": "VWAP Trend: ADA VWAP (14-day) is $0.764514 vs current price $0.764400 on 2025-07-16."
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "./AssetCard.module.css";
+import styles from "./AssetCardCrypto.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Tooltip from "@leafygreen-ui/tooltip";
@@ -14,7 +14,7 @@ import Banner from "@leafygreen-ui/banner";
 import NewsCard from "../NewsCard/NewsCard";
 import RedditCard from "../RedditCard/RedditCard";
 
-export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
+export default function AssetCardCrypto({ asset, chartData }) {
     const [expandedSection, setExpandedSection] = useState(null);
     const [selectedTimeframe, setSelectedTimeframe] = useState("day");
 
@@ -37,6 +37,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
         if (str.includes("year")) return num * 60 * 24 * 365;
         return Infinity; // fallback for "Just now" or unknown
     };
+
 
     // NEWS sentiment
     const newsSentimentScore = asset.sentiment?.score ?? 0;
@@ -72,50 +73,100 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
         };
     }
 
-    // Get the VIX sensitivity
-    const vixSensitivity = asset.vixSensitivity?.sensitivity || "NEUTRAL";
+    // Get the RSI analysis data (replacing VIX sensitivity)
+    const rsiAnalysis = asset.rsiAnalysis;
 
-    // Set badge variant based on VIX sensitivity
-    const vixBadgeVariant =
-        vixSensitivity === "HIGH" ? "red" :
-            vixSensitivity === "LOW" ? "green" :
-                "yellow"; // NEUTRAL
+    // Get RSI traffic light color based on RSI value
+    const getRSITrafficLightColor = (rsiValue) => {
+        if (!rsiValue) return "gray";
+        
+        if (rsiValue >= 70) return "red"; // Overbought - potential sell signal
+        if (rsiValue <= 30) return "red"; // Oversold - potential risk
+        if (rsiValue >= 60 || rsiValue <= 40) return "yellow"; // Moderate conditions
+        return "green"; // Neutral/good conditions (40-60)
+    };
 
-    // Get actions from macro indicators
-    const gdpAction = asset.macroIndicators?.gdp?.action || "KEEP";
-    const interestRateAction = asset.macroIndicators?.interestRate?.action || "KEEP";
-    const unemploymentAction = asset.macroIndicators?.unemployment?.action || "KEEP";
+    // Get Volume Analysis traffic light color based on volume ratio
+    const getVolumeTrafficLightColor = (volumeRatio) => {
+        if (!volumeRatio) return "gray";
+        
+        const ratio = parseFloat(volumeRatio);
+        if (ratio >= 2.0) return "green"; // High volume - strong signal
+        if (ratio >= 1.2) return "yellow"; // Moderate volume
+        return "red"; // Low volume - weak signal
+    };
 
-    // Set badge variants based on macro indicator actions
-    const gdpBadgeVariant = gdpAction === "KEEP" ? "green" : "red";
-    const interestRateBadgeVariant = interestRateAction === "KEEP" ? "green" : "red";
-    const unemploymentBadgeVariant = unemploymentAction === "KEEP" ? "green" : "red";
+    // Get VWAP Analysis traffic light color based on VWAP position
+    const getVWAPTrafficLightColor = (vwapPosition) => {
+        if (!vwapPosition) return "gray";
+        
+        // Parse the percentage value from the string (e.g., "(-0.1%)" -> -0.1)
+        const percentageMatch = vwapPosition.toString().match(/([-+]?\d*\.?\d+)%/);
+        if (!percentageMatch) return "gray";
+        
+        const percentage = parseFloat(percentageMatch[1]);
+        if (percentage >= 1.0) return "green"; // Above VWAP by 1%+ - bullish
+        if (percentage >= -1.0) return "yellow"; // Around VWAP (-1% to +1%) - neutral
+        return "red"; // Below VWAP by more than 1% - bearish
+    };
 
+    // Get the combined crypto indicators traffic light color
+    const getCryptoIndicatorColor = (indicatorTitle, data) => {
+        if (indicatorTitle.includes("Moving Average")) {
+            return getTrendBadgeVariant(data.trend_direction);
+        } else if (indicatorTitle === "RSI Analysis") {
+            return getRSITrafficLightColor(data.rsi_value);
+        } else if (indicatorTitle === "Volume Analysis") {
+            return getVolumeTrafficLightColor(data.volume_ratio);
+        } else if (indicatorTitle === "VWAP Analysis") {
+            return getVWAPTrafficLightColor(data.vwap_position);
+        }
+        return "gray";
+    };
+
+    // Set badge variant based on RSI analysis
+    const rsiBadgeVariant = rsiAnalysis ? getRSITrafficLightColor(rsiAnalysis.rsi_value) : "gray";
+
+    // Set badge variant based on trend direction
+    const getTrendBadgeVariant = (trendDirection) => {
+        switch ((trendDirection || "").toLowerCase()) {
+            case "above":
+                return "green";
+            case "below":
+                return "red";
+            case "at":
+                return "yellow";
+            default:
+                return "gray";
+        }
+    };
+ 
     // Get asset trend data
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
 
+
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
+
                 <div className={styles.cell}> <strong>{asset.symbol}</strong> </div>
-                <div className={styles.cell}>{asset.allocation?.asset_type || "Unknown"}</div>
-                {/* <div className={styles.cell}>{asset.allocation?.description}</div>*/}
+
+                <div className={styles.cell}>{asset.allocation.description || "Unknown"}</div>
+
                 <div className={styles.cell}>{asset.close ? asset.close.toFixed(2) : "No Price"}</div>
-                <div className={styles.cell}>
-                    {asset.allocation ? asset.allocation.percentage : "N/A"}
-                </div>
+
+                <div className={styles.cell}>  {asset.allocation?.percentage || "N/A"}</div>
+
                 <div className={styles.cell}>
                     <span className={`${styles.sentiment} ${sentimentColor}`}>{formattedSentimentScore}</span>
                 </div>
+
                 <div className={styles.cell}>
                     <span className={`${styles.sentiment} ${socialSentimentColor}`}>{formattedSocialSentimentScore}</span>
                 </div>
 
-                <div className={`${styles.cell} ${styles.circle} ${styles[vixBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[gdpBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[interestRateBadgeVariant]}`}></div>
-                <div className={`${styles.cell} ${styles.circle} ${styles[unemploymentBadgeVariant]}`}></div>
+                <div className={`${styles.cell} ${styles.circle} ${styles[rsiBadgeVariant]}`}></div>
 
                 <div className={styles.actions}>
 
@@ -220,7 +271,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.rawDataColumn}>
                                     <H2>Raw Ingested Data</H2>
 
-                                    <Subtitle className={styles.dataSubtitle}>Market Data</Subtitle>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto Data</Subtitle>
                                     <Body className={styles.dataNote}>* Sample data is shown here. The actual system processes a much larger dataset.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -239,7 +290,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                         }, null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>Financial News Data</Subtitle>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto News Data</Subtitle>
                                     <Body className={styles.dataNote}>* Displaying only 3 of many news articles processed by the system.</Body>
                                     <Code
                                         className={styles.documentContainer}
@@ -247,58 +298,39 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                         copyable={true}
                                     >
                                         {JSON.stringify((asset.news || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
                                             headline: item.headline,
                                             description: item.description,
                                             source: item.source,
-                                            posted: item.posted,
-                                            asset: item.asset,
                                             link: item.link || `https://news.google.com/search?q=${asset.symbol}`
                                         })), null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>Macroeconomic Indicators Data</Subtitle>
-                                    <Body className={styles.dataNote}>* Sample data from FRED (Federal Reserve Economic Data).</Body>
+                                    <Subtitle className={styles.dataSubtitle}>Crypto Social Media Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Displaying only 3 of many social media posts processed by the system.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
-                                        {JSON.stringify(
-                                            rawMacroIndicators || {
-                                                // Fallback if data isn't loaded yet
-                                                "macro_indicators": {
-                                                    "GDP": {
-                                                        "title": "GDP",
-                                                        "frequency": "Quarterly",
-                                                        "frequency_short": "Q",
-                                                        "units": "Trillion of Dollars",
-                                                        "units_short": "Tril. of $",
-                                                        "date": "2025-03-27T00:00:00",
-                                                        "value": 29.72
-                                                    },
-                                                    "UNRATE": {
-                                                        "title": "Unemployment Rate",
-                                                        "frequency": "Monthly",
-                                                        "frequency_short": "M",
-                                                        "units": "Percent",
-                                                        "units_short": "%",
-                                                        "date": "2025-03-01T00:00:00",
-                                                        "value": 4.2
-                                                    },
-                                                    "DFF": {
-                                                        "title": "Interest Rate",
-                                                        "frequency": "Daily",
-                                                        "frequency_short": "D",
-                                                        "units": "Percent",
-                                                        "units_short": "%",
-                                                        "date": "2025-04-28T00:00:00.000+00:00",
-                                                        "value": 4.33
-                                                    }
-                                                }
-                                            },
-                                            null,
-                                            2
-                                        )}
+                                        {JSON.stringify((asset.reddit || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
+                                            subreddit: item.subreddit,
+                                            url: item.url,
+                                            selftext: item.selftext ? item.selftext.substring(0, 80) + "..." : "",
+                                            title: item.title,
+                                            author: item.author,
+                                            author_fullname: item.author_fullname,
+                                            posted: item.posted,
+                                            comments: Array.isArray(item.comments)
+                                                ? item.comments.map(comment => {
+                                                    const { create_at_utc, ...rest } = comment;
+                                                    return rest;
+                                                })
+                                                : item.comments,
+                                            ups: item.ups,
+                                            downs: item.downs
+                                        })), null, 2)}
                                     </Code>
                                 </div>
 
@@ -306,42 +338,31 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 <div className={styles.processedDataColumn}>
                                     <H2>Processed Reports</H2>
 
-                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market Analysis Report</Subtitle>
-                                    <Body className={styles.dataNote}>* Simplified view of the full market analysis report with truncated embeddings.</Body>
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Analysis Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto analysis report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
                                         {JSON.stringify({
-                                            market_analysis_report: {
+                                            crypto_analysis_report: {
                                                 report: {
-                                                    market_volatility_index: {
-                                                        fluctuation_answer: asset.vixSensitivity?.marketData?.fluctuation || "No data",
-                                                        diagnosis: asset.vixSensitivity?.marketData?.diagnosis || "No data"
+                                                    rsi_analysis: {
+                                                        rsi_value: asset.rsiAnalysis?.rsi_value || "No data",
+                                                        interpretation: asset.rsiAnalysis?.interpretation || "No data",
+                                                        diagnosis: asset.rsiAnalysis?.diagnosis || "No data"
                                                     },
-                                                    macro_indicators: [
-                                                        {
-                                                            macro_indicator: "GDP",
-                                                            fluctuation_answer: asset.macroIndicators?.gdp?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.gdp?.marketData?.diagnosis || "No data"
-                                                        },
-                                                        {
-                                                            macro_indicator: "Effective Interest Rate",
-                                                            fluctuation_answer: asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.interestRate?.marketData?.diagnosis || "No data"
-                                                        },
-                                                        {
-                                                            macro_indicator: "Unemployment Rate",
-                                                            fluctuation_answer: asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No data",
-                                                            diagnosis: asset.macroIndicators?.unemployment?.marketData?.diagnosis || "No data"
-                                                        }
-                                                    ],
+                                                    crypto_indicators: asset.crypto_indicators?.map(indicator => ({
+                                                        indicator: indicator.indicator,
+                                                        action: indicator.action,
+                                                        explanation: indicator.explanation
+                                                    })) || [],
                                                     asset_trends: [
                                                         {
                                                             asset: asset.symbol,
-                                                            fluctuation_answer: asset.assetTrend?.fluctuation || "No data",
-                                                            diagnosis: asset.assetTrend?.diagnosis || "No data"
+                                                            moving_averages: asset.crypto_indicators?.filter(ind => ind.indicator.includes("Moving Average")) || [],
+                                                            momentum_indicators: asset.crypto_indicators?.filter(ind => !ind.indicator.includes("Moving Average")) || []
                                                         }
                                                     ]
                                                 },
@@ -350,15 +371,15 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                         }, null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market News Report</Subtitle>
-                                    <Body className={styles.dataNote}>* Simplified view of the full market news report with truncated embeddings.</Body>
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto News Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto news report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
                                         copyable={true}
                                     >
                                         {JSON.stringify({
-                                            market_news_report: {
+                                            crypto_news_report: {
                                                 report: {
                                                     asset_news: asset.news || [],
                                                     asset_news_summary: [
@@ -374,6 +395,30 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                             }
                                         }, null, 2)}
                                     </Code>
+
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Social Media Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto social media report with truncated embeddings.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            crypto_sm_report: {
+                                                report: {
+                                                    asset_subreddits: asset.reddit || [],
+                                                    asset_sm_sentiments: [
+                                                        {
+                                                            asset: asset.symbol,
+                                                            final_sentiment_score: asset.socialSentiment?.score || 0.5,
+                                                            sentiment_category: asset.socialSentiment?.category || "Neutral"
+                                                        }
+                                                    ]
+                                                },
+                                                report_embedding: [0.156, 0.428, 0.693, "..."]
+                                            }
+                                        }, null, 2)}
+                                    </Code>
                                 </div>
                             </div>
 
@@ -382,13 +427,16 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                     {expandedSection === "news" && (
                         <div className={styles.newsSection}>
+
                             <div className={styles.newsContainer}>
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
+                                        .slice(0, 3) // Limit to first 3
                                         .map((item, index) => (
 
                                             <NewsCard key={index} item={item} />
+
                                         ))
                                 ) : (
                                     <Body>No news available for {asset.symbol}.</Body>
@@ -413,7 +461,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
-                                        1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
+                                        1. We generate a semantic query embedding for <em>"financial news about {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
                                         <br />
                                         2. MongoDB's vector search finds the most semantically relevant news articles.
                                         <br />
@@ -427,15 +475,36 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 [
   {
     "$vectorSearch": {
-      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "financial_news_VS_IDX"
-      "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "crypto_social_media_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "post_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"asset_id": "${asset.symbol}"}
+        ]
+      },
       "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
-      "numCandidates": 5,
+      "numCandidates": 20,
       "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$asset_id",
+      "subreddit": 1,
+      "url": 1,
+      "author": 1,
+      "title": 1,
+      "description": "$selftext",
+      ...
+      },
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
     }
   }
 ]`}
                                         </Code>
+                                        <br></br>
+                                        <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
                                     </div>
                                     <br />
                                     <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
@@ -446,11 +515,16 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                     {expandedSection === "social" && (
                         <div className={styles.socialSection}>
+
                             <div className={styles.socialContainer}>
                                 {asset.reddit && asset.reddit.length > 0 ? (
-                                    asset.reddit
-                                        .slice(0, 3)
-                                        .map((item, index) => <RedditCard key={index} item={item} />)
+                                    [...asset.reddit]
+                                        // Optional: Sort by recency if you have a date field like `posted`
+                                        .sort((a, b) => new Date(b.posted) - new Date(a.posted))
+                                        .slice(0, 3) // Limit to 3 posts
+                                        .map((item, index) => (
+                                            <RedditCard key={index} item={item} />
+                                        ))
                                 ) : (
                                     <Body>No Reddit posts available for {asset.symbol}.</Body>
                                 )}
@@ -469,6 +543,54 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
                                     <br></br>
 
+                                <Body>The <strong>social media posts are retrieved using a semantic search query</strong> that finds the most relevant posts based on the asset's symbol and description.</Body>
+
+                                    <br />
+                                    <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
+                                    <Body>
+                                        1. We generate a semantic query embedding for <em>"sentiment analysis discussion about {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
+                                        <br />
+                                        2. MongoDB's vector search finds the most semantically relevant news articles.
+                                        <br />
+                                    </Body>
+
+                                    <div className={styles.queryContainer}>
+                                        <Code
+                                            language="json"
+                                        >
+                                            {`// MongoDB Vector Search Pipeline example
+[
+  {
+    "$vectorSearch": {
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "crypto_news_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"ticker": "${asset.symbol}"}
+        ]
+      },
+      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
+      "numCandidates": 15,
+      "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$ticker",
+      "headline": 1,
+      "description": 1,
+      "source": 1,
+      "link": 1,
+      ...
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
+    }
+  }
+]`}
+                                        </Code>
+                                        <br></br>
+                                        <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -478,111 +600,101 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         <div className={styles.insightsContainer}>
                             <H3 className={styles.insightsTitle}>{asset.symbol} Insights</H3>
 
-
-                            {/* MA50 Analysis */}
-                            <div className={styles.insightSection}>
-                                <div className={styles.insightHeader}>
-                                    <H2 className={styles.insightH2}>50-Day Moving Average Analysis</H2>
-                                    <div className={`${styles.cell} ${styles.circleInsight} ${styles[trendBadgeVariant]}`}></div>
-                                </div>
-
-                                <Body weight="medium">Price vs. MA50:</Body>
-                                <Body>{asset.assetTrend?.fluctuation || "No data available."}</Body>
-
-                                <Body weight="medium" className={styles.diagnosisLabel}>Diagnosis:</Body>
-                                <Body className={styles.diagnosis} >
-                                    {asset.assetTrend?.diagnosis || "No diagnosis available."}
-                                </Body>
-                            </div>
-
                             <div className={styles.assetInsightCards}>
-                                {/* VIX Sensitivity Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>VIX Sensitivity Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[vixBadgeVariant]}`}></div>
-                                    </div>
+                                {[
+                                    "MA9 Moving Average Analysis",
+                                    "MA21 Moving Average Analysis",
+                                    "MA50 Moving Average Analysis",
+                                    "RSI Analysis",
+                                    "Volume Analysis",
+                                    "VWAP Analysis"
+                                ].map((indicatorTitle) => {
+                                    const data = asset.crypto_indicators?.find(
+                                        (ind) => ind.indicator === indicatorTitle
+                                    );
 
-                                    <Body weight="medium">Market Volatility:</Body>
-                                    <Body>{asset.vixSensitivity?.marketData?.fluctuation || "No market volatility data available."}</Body>
+                                    if (!data) return null;
 
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
+                                    return (
+                                        <div key={indicatorTitle} className={styles.insightSection}>
+                                            <div className={styles.insightHeader}>
+                                                <H2 className={styles.insightH2}>{indicatorTitle}</H2>
+                                                <div
+                                                    className={`${styles.cell} ${styles.circleInsight} ${
+                                                        styles[getCryptoIndicatorColor(indicatorTitle, data)]
+                                                    }`}
+                                                />
+                                            </div>
 
-                                    <Body>{asset.vixSensitivity?.explanation || "No explanation available."}</Body>
+                                            {data.explanation && (
+                                                <Body>{data.explanation}</Body>
+                                            )}
 
-                                    {asset.vixSensitivity?.note && (
-                                        <Body className={styles.insightNote}>{asset.vixSensitivity.note}</Body>
-                                    )}
-                                </div>
+                                            {
+                                                data.rsi_value && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>RSI Value:</Body>
+                                                        <Body>{data.rsi_value}</Body>
+                                                    </>
+                                                )
+                                            }
 
+                                            {
+                                                data.volume_ratio && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Volume Ratio:</Body>
+                                                        <Body>{data.volume_ratio}</Body>
+                                                    </>
+                                                )
+                                            }
 
+                                            {
+                                                data.vwap_position && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>VWAP Position:</Body>
+                                                        <Body>{data.vwap_position}</Body>
+                                                    </>
+                                                )
+                                            }
 
-                                {/* GDP Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>GDP Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[gdpBadgeVariant]}`}></div>
-                                    </div>
+                                            {
+                                                (data.ma9_value || data.ma21_value || data.ma50_value) && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Moving Average Values:</Body>
+                                                        {data.ma9_value && <Body>MA9: {data.ma9_value}</Body>}
+                                                        {data.ma21_value && <Body>MA21: {data.ma21_value}</Body>}
+                                                        {data.ma50_value && <Body>MA50: {data.ma50_value}</Body>}
+                                                    </>
+                                                )
+                                            }
 
-                                    <Body weight="medium">GDP Trend:</Body>
-                                    <Body>{asset.macroIndicators?.gdp?.marketData?.fluctuation || "No market GDP data available."}</Body>
+                                            {
+                                                data.suggestion && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Asset Specific Diagnosis:</Body>
+                                                        <Body>{data.suggestion}</Body>
+                                                    </>
+                                                )
+                                            }
 
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.gdp?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.gdp?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.gdp.note}</Body>
-                                    )}
-                                </div>
-
-                                {/* Interest Rate Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>Interest Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[interestRateBadgeVariant]}`}></div>
-                                    </div>
-
-                                    <Body weight="medium">Interest Rate Trend:</Body>
-                                    <Body>{asset.macroIndicators?.interestRate?.marketData?.fluctuation || "No market interest rate data available."}</Body>
-
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.interestRate?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.interestRate?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.interestRate.note}</Body>
-                                    )}
-                                </div>
-
-                                {/* Unemployment Rate Analysis */}
-                                <div className={styles.insightSection}>
-                                    <div className={styles.insightHeader}>
-                                        <H2 className={styles.insightH2}>Unemployment Rate Analysis</H2>
-                                        <div className={`${styles.cell} ${styles.circleInsight} ${styles[unemploymentBadgeVariant]}`}></div>
-                                    </div>
-
-                                    <Body weight="medium">Unemployment Rate Trend:</Body>
-                                    <Body>{asset.macroIndicators?.unemployment?.marketData?.fluctuation || "No market unemployment data available."}</Body>
-
-                                    <Body weight="bold" className={styles.recommendationLabel}>Asset-Specific Recommendation:</Body>
-                                    <Body weight="medium">Suggestion:</Body>
-
-                                    <Body>{asset.macroIndicators?.unemployment?.explanation || "No explanation available."}</Body>
-
-                                    {asset.macroIndicators?.unemployment?.note && (
-                                        <Body className={styles.insightNote}>{asset.macroIndicators.unemployment.note}</Body>
-                                    )}
-                                </div>
+                                            {
+                                                data.note && (
+                                                    <>
+                                                        <Body className={styles.insightSubtitles}>Note:</Body>
+                                                        <Body className={styles.insightNote}>{data.note}</Body>
+                                                    </>
+                                                )
+                                            }
+                                        </div>
+                                    );
+                                })}
+                                
                             </div>
                         </div>
-
                     )}
                 </div>
-            )}
-        </div>
+            )
+            }
+        </div >
     );
 }

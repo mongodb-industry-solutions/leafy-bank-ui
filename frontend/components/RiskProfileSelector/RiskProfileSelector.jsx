@@ -5,6 +5,9 @@ import { Combobox, ComboboxOption } from "@leafygreen-ui/combobox";
 import Tooltip from "@leafygreen-ui/tooltip";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
+import Badge from "@leafygreen-ui/badge";
+import Modal from "@leafygreen-ui/modal";
+import { Body, Subtitle } from "@leafygreen-ui/typography";
 import {
   listRiskProfiles,
   getActiveRiskProfile,
@@ -16,6 +19,8 @@ export default function RiskProfileSelector() {
   const [riskProfiles, setRiskProfiles] = useState([]);
   const [activeProfile, setActiveProfile] = useState("");
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
 
   useEffect(() => {
     async function fetchProfiles() {
@@ -43,38 +48,52 @@ export default function RiskProfileSelector() {
   };
 
   if (loading) {
-    return <div>Loading risk profiles...</div>;
+    return <div className={styles.selectorLabel}> <Body>Loading risk profiles...</Body></div>;
   }
 
-return (
+  return (
+
     <div className={styles.comboBoxWrapper}>
-      <Tooltip
-        trigger={
-          <IconButton
-            className={styles.riskTooltip}
-            aria-label="Risk profile info"
+      <Body className={styles.selectorLabel}>Current Risk Profile:</Body>
+      <div className={styles.badgeContainer}>
+        <Badge variant="lightgray">{activeProfile}</Badge>
+        <IconButton
+          className={styles.editButton}
+          aria-label="Edit Risk Profile"
+          onClick={() => setModalOpen(true)}
+        >
+          <Icon glyph="Edit" />
+        </IconButton>
+      </div>
+
+      <Modal
+        open={modalOpen}
+        setOpen={setModalOpen}
+        className={styles.riskModal}
+      >
+        <div className={styles.modalContent}>
+          <Subtitle>Select a New Risk Profile</Subtitle>
+          <Body className={styles.tooltipText}>
+            Changes to your risk profile will apply starting the next day, when your portfolio is reanalyzed.
+          </Body>
+
+          <Combobox
+            multiselect={false}
+            value={activeProfile}
+            onChange={handleChange}
+            clearable={false}
           >
-            <Icon glyph="InfoWithCircle" />
-          </IconButton>
-        }
-      >
-        Changes to your risk profile will apply starting the next day, when your portfolio is reanalyzed.
-      </Tooltip>
-      <label className={styles.selectorLabel}>Selected Risk Profile:</label>
-      <Combobox
-        multiselect={false}
-        value={activeProfile}
-        onChange={handleChange}
-        clearable={false}
-      >
-        {riskProfiles.map(({ risk_id, short_description }) => (
-          <ComboboxOption
-            key={risk_id}
-            value={risk_id}
-            description={short_description}
-          />
-        ))}
-      </Combobox>
+            {riskProfiles.map(({ risk_id, short_description }) => (
+              <ComboboxOption
+                key={risk_id}
+                value={risk_id}
+                description={short_description}
+              />
+            ))}
+          </Combobox>
+        </div>
+      </Modal>
     </div>
+
   );
 }

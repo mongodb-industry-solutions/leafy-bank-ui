@@ -12,8 +12,10 @@
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
-  z-index: 100;        /* New stacking context with its own hierarchy */
-  transform: translateZ(0);  /* This will force the creation of a new stacking context */
+  z-index: 100;
+  /* New stacking context with its own hierarchy */
+  transform: translateZ(0);
+  /* This will force the creation of a new stacking context */
 
 }
 
@@ -34,7 +36,7 @@
   cursor: pointer;
 }
 
-.linkTag{
+.linkTag {
   font-weight: 500;
   font-size: 14px;
   padding-top: 2px;
@@ -45,12 +47,15 @@
 }
 
 .active .linkTag {
-  color: #00684A; /* Highlight color, e.g., a blue shade */
-  font-weight: bold; /* Make the active link bold */
-  border-bottom: 2px solid #00684A; /* Optional: underline effect */
+  color: #00684A;
+  /* Highlight color, e.g., a blue shade */
+  font-weight: bold;
+  /* Make the active link bold */
+  border-bottom: 2px solid #00684A;
+  /* Optional: underline effect */
 }
 
-.logoutIcon{
+.logoutIcon {
   margin-left: 10px;
   margin-top: 5px;
 }
@@ -60,23 +65,40 @@
   cursor: pointer;
 }
 
-.instructionsBtn{
+.instructionsBtn {
   margin-right: 20px;
 
 }
 
-.linkHideDesktop{
+.linkHideDesktop {
   display: none;
 }
 
-.navLink{
-  padding-right: 30px;
+.navLink {
+  margin-right: 30px;
   text-decoration: none;
-  
+  padding: 4px 15px;
 }
 
-.navLinkText{
+.navLinkText {
   font-size: 16px;
+  text-align: center;
+}
+
+.navLink:hover {
+  background-color: #dcf5ee;
+  border-radius: 20px;
+}
+
+.activeLink{
+  background-color: #dcf5ee;
+  border-radius: 20px;
+}
+
+.activeLink .navLinkText {
+  color: #00684A;
+  font-weight: 600;
+
 }
 
 
@@ -95,7 +117,8 @@
     border-radius: 8px;
   }
 
-  .instructionsBtn, .logoutIcon{
+  .instructionsBtn,
+  .logoutIcon {
     display: none;
   }
 
@@ -109,12 +132,12 @@
     margin-right: 10px;
   }
 
-  .linkHideDesktop{
+  .linkHideDesktop {
     display: block;
     text-decoration: none;
     font-weight: 500;
   }
-  
+
 
   .right-container {
     flex-direction: row-reverse;

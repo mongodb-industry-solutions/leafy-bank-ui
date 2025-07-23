@@ -6,8 +6,7 @@
 
 /* Adjust the container padding if needed */
 .container {
-  padding: 80px 20px 20px 20px;
-  /* Reduced bottom padding to account for banner */
+  padding: 80px 20px 70px 20px; /* Reduced bottom padding to account for banner */
 }
 
 /* Make the banner responsive */
@@ -27,7 +26,7 @@
   gap: 20px;
   align-items: stretch;
   /* Ensures rows stretch to max height */
-  margin-top: 20px;
+    margin-top: 20px;
 }
 
 .roiCard {
@@ -64,6 +63,17 @@
   padding: 10px 20px;
 }
 
+.totalFigures {
+  display: flex;
+  gap: 12px;
+}
+
+.figureCard {
+  text-align: center;
+  justify-content: space-evenly;
+  flex: 1;
+}
+
 .marketCard {
   flex: 1;
   display: flex;
@@ -91,17 +101,6 @@
   flex: 1;
 }
 
-.totalFigures {
-  display: flex;
-  gap: 12px;
-}
-
-.figureCard {
-  text-align: center;
-  justify-content: space-evenly;
-  flex: 1;
-}
-
 .cardSubtitle {
   text-align: left;
   padding: 5px 10px;
@@ -116,13 +115,11 @@
   font-weight: bold;
   color: #666;
   gap: 10px;
-  text-align: center;
-  /* NEW */
+  text-align: center; /* NEW */
 }
 
 .headerRow span {
-  text-align: center;
-  /* UPDATED */
+  text-align: center; /* UPDATED */
 }
 
 .arrowUp {
@@ -142,7 +139,7 @@
 .eventCard>*:nth-child(1) {
   /* INDICATOR */
   width: 30%;
-
+  
 }
 
 .headerRow span:nth-child(2),
@@ -173,7 +170,7 @@
 .eventCard>*:nth-child(6) {
   /* TREND */
   width: 10%;
-
+  
 }
 
 .eventCard {
@@ -188,12 +185,11 @@
   text-align: center;
 }
 
-.eventCard a,
-.eventCard .eventColumn {
+.eventCard a, .eventCard .eventColumn {
   display: flex;
   justify-content: center;
   text-align: center;
-
+  
 }
 
 /* Pulsing shadow animation */
@@ -201,11 +197,9 @@
   0% {
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
   }
-
   50% {
     box-shadow: 0px 4px 30px #00A35C;
   }
-
   100% {
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.2);
   }
@@ -251,7 +245,6 @@
     opacity: 0;
     transform: translateY(10px);
   }
-
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -263,7 +256,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-
   100% {
     opacity: 0;
     transform: translateY(10px);
@@ -322,7 +314,7 @@
     gap: 16px;
   }
 
-  .roiCard {
+  .roiCard{
     height: 500px;
     margin-bottom: 20px;
   }
@@ -330,7 +322,7 @@
   .pieCharts {
     flex-direction: column;
   }
-
+  
 
   .chatbotButton {
     position: sticky;
@@ -362,17 +354,9 @@
 }
 
 @keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 0.8;
-  }
-
-  100% {
-    opacity: 0.6;
-  }
+  0% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.6; }
 }
 
 .indicatorLink {

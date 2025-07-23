@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./Assets.module.css";
 import AssetCard from "../AssetCard/AssetCard";
-import { H2, Subtitle, Body } from "@leafygreen-ui/typography";
+import { H3 } from "@leafygreen-ui/typography";
 import InfoWizard from "../InfoWizard/InfoWizard";
 import {
     marketFetchAssetsClosePrice,
@@ -16,6 +16,8 @@ import {
     fetchMostRecentMacroIndicators,
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
+
+import reportsMarketSM from "/public/data/reports_market_sm.json";
 
 
 export default function Assets() {
@@ -69,6 +71,15 @@ export default function Assets() {
                 if (shouldShowLoading) {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
                         .map(([symbol, data]) => {
+
+                            const socialSentimentEntry = (reportsMarketSM?.report?.asset_sm_sentiments || []).find(
+                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
+                            );
+
+                            const redditPosts = (reportsMarketSM?.report?.asset_subreddits || []).find(
+                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
+                            )?.posts || [];
+
                             const allocation = allocationResponse.portfolio_allocation[symbol];
                             return {
                                 symbol,
@@ -88,6 +99,11 @@ export default function Assets() {
                                     originalScore: 0.5
                                 },
                                 news: [],
+                                socialSentiment: {
+                                    score: socialSentimentEntry?.final_sentiment_score ?? 0,
+                                    category: socialSentimentEntry?.sentiment_category || "Neutral"
+                                },
+                                reddit: redditPosts,
                                 recentData: [],
                                 vixSensitivity: {
                                     sensitivity: "NEUTRAL",
@@ -111,14 +127,14 @@ export default function Assets() {
                         // First compare by asset_type
                         const typeA = a.allocation?.asset_type || 'Unknown';
                         const typeB = b.allocation?.asset_type || 'Unknown';
-                        
+
                         const typeComparison = typeA.localeCompare(typeB);
-                        
+
                         // If asset types are different, return the type comparison result
                         if (typeComparison !== 0) {
                             return typeComparison;
                         }
-                        
+
                         // If asset types are the same, sort alphabetically by symbol
                         return a.symbol.localeCompare(b.symbol);
                     });
@@ -333,14 +349,14 @@ export default function Assets() {
                     // First compare by asset_type
                     const typeA = a.allocation?.asset_type || 'Unknown';
                     const typeB = b.allocation?.asset_type || 'Unknown';
-                    
+
                     const typeComparison = typeA.localeCompare(typeB);
-                    
+
                     // If asset types are different, return the type comparison result
                     if (typeComparison !== 0) {
                         return typeComparison;
                     }
-                    
+
                     // If asset types are the same, sort alphabetically by symbol
                     return a.symbol.localeCompare(b.symbol);
                 });
@@ -417,7 +433,7 @@ export default function Assets() {
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
-                <H2>Investment Portfolio</H2>
+                <H3>Traditional Assets</H3>
 
                 <InfoWizard
                     open={openHelpModal}
@@ -559,10 +575,10 @@ export default function Assets() {
             <div className={styles.headerRow}>
                 <span>SYMBOL</span>
                 <span>ASSET TYPE</span>
-                <span>DESCRIPTION</span>
                 <span>CLOSE PRICE ($)</span>
                 <span>ALLOCATION</span>
                 <span>NEWS SENTIMENT SCORE</span>
+                <span>SOCIAL SENTIMENT SCORE</span>
                 <span>VIX SENSITIVITY</span>
                 <span>GDP</span>
                 <span>INTEREST RATE</span>
