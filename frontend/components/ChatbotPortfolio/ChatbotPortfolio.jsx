@@ -12,6 +12,8 @@ import { Tabs, Tab } from '@leafygreen-ui/tabs';
 //import InfoWizard from "../InfoWizard/InfoWizard";
 import Typewriter from "./Typewriter.jsx";
 import { sendMessagetoReactAgentMarketAssistantChatbot } from "@/lib/api/capital_markets/chatbots/capitalmarkets_react_stock_api";
+import { sendMessagetoReactAgentCryptoAssistantChatbot } from "@/lib/api/capital_markets/chatbots/capitalmarkets_react_crypto_api";
+import { usePathname } from "next/navigation";
 
 function generateThreadId() {
     const now = new Date();
@@ -35,6 +37,10 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     const [threadId, setThreadId] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
 
+    // Change question suggestions based on page path
+    const pathname = usePathname();
+    const isCrypto = pathname.includes("/crypto-portfolio");
+
     useEffect(() => {
         // Generate a fresh threadId and clear history each time the chatbot is opened
         if (isOpen) {
@@ -53,13 +59,23 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
         setQuery(event.target.value);
     };
 
-    const suggestions = [
-        "Based on market condition today, what overall portfolio asset reallocation would you suggest?",
-        "What is the news sentiment about my asset GLD (Gold ETF)?",
-        "What would be the impact of replacing 50% of Equity assets with Gold?",
-        "I would like to start investing in the database market. Can you search the internet for what’s going on with MDB (MongoDB)? I want to know what the press is saying.",
-        "What questions have I asked you so far, and which tools have you used to respond to me?"
-    ];
+    // Decide suggestions dynamically depending on pathname
+    const suggestions = isCrypto
+        ? [
+            "Based on current crypto market conditions, should I rebalance my portfolio between BTC and ETH?",
+            "What is the news sentiment around Bitcoin (BTC) after the latest halving event?",
+            "Can you search the internet for the latest trends in altcoins like Solana (SOL) and Cardano (ADA)?",
+            "What would be the potential impact of shifting 50% of my Bitcoin holdings into Ethereum?",
+            "Show me a summary of the top news driving price movements for BTC and ETH today."
+        ]
+        : [
+            "Based on market condition today, what overall portfolio asset reallocation would you suggest?",
+            "What is the news sentiment about my asset GLD (Gold ETF)?",
+            "What would be the impact of replacing 50% of Equity assets with Gold?",
+            "I would like to start investing in the database market. Can you search the internet for what’s going on with MDB (MongoDB)? I want to know what the press is saying.",
+            "What questions have I asked you so far, and which tools have you used to respond to me?"
+        ];
+
 
     const [suggestionIndex, setSuggestionIndex] = useState(0);
 
@@ -77,15 +93,16 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     const handleAsk = async () => {
         setIsAsking(true);
         try {
-            const data = await sendMessagetoReactAgentMarketAssistantChatbot(threadId, query);
-            // The response will contain final_answer and possibly tool_calls
+            const apiFunction = isCrypto
+                ? sendMessagetoReactAgentCryptoAssistantChatbot
+                : sendMessagetoReactAgentMarketAssistantChatbot;
+
+            const data = await apiFunction(threadId, query);
             const { final_answer, tool_calls = [] } = data;
             const responseMessage = formatAnswer(final_answer || "No response");
 
             setAnswer(responseMessage);
 
-            // Store the query and agent answer as separate message objects,
-            // along with any tool calls
             setMessages((prevMessages) => [
                 ...prevMessages,
                 { text: query, isUser: true, toolCalls: [] },
