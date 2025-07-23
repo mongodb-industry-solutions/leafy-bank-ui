@@ -398,7 +398,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
 
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>
@@ -459,7 +459,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
 
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>

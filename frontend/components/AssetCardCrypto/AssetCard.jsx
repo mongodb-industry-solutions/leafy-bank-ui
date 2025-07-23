@@ -298,11 +298,10 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                         copyable={true}
                                     >
                                         {JSON.stringify((asset.news || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
                                             headline: item.headline,
                                             description: item.description,
                                             source: item.source,
-                                            posted: item.posted,
-                                            asset: item.asset,
                                             link: item.link || `https://news.google.com/search?q=${asset.symbol}`
                                         })), null, 2)}
                                     </Code>
@@ -315,12 +314,22 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                         copyable={true}
                                     >
                                         {JSON.stringify((asset.reddit || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
+                                            subreddit: item.subreddit,
+                                            url: item.url,
                                             selftext: item.selftext ? item.selftext.substring(0, 80) + "..." : "",
                                             title: item.title,
-                                            source: item.source,
+                                            author: item.author,
+                                            author_fullname: item.author_fullname,
                                             posted: item.posted,
-                                            asset: item.asset,
-                                            sentiment_score: item.sentiment_score
+                                            comments: Array.isArray(item.comments)
+                                                ? item.comments.map(comment => {
+                                                    const { create_at_utc, ...rest } = comment;
+                                                    return rest;
+                                                })
+                                                : item.comments,
+                                            ups: item.ups,
+                                            downs: item.downs
                                         })), null, 2)}
                                     </Code>
                                 </div>
@@ -330,7 +339,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                     <H2>Processed Reports</H2>
 
                                     <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Analysis Report</Subtitle>
-                                    <Body className={styles.dataNote}>* Simplified view of the crypto analysis with RSI and technical indicators.</Body>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto analysis report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
@@ -387,8 +396,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                         }, null, 2)}
                                     </Code>
 
-                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Social Media Report is missing here</Subtitle>
-                                    <Body className={styles.dataNote}>* Leafy Portfolio Assistant</Body>
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Crypto Social Media Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the crypto social media report with truncated embeddings.</Body>
                                     <Code
                                         className={styles.documentContainer}
                                         language="json"
@@ -437,7 +446,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
 
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>
@@ -452,7 +461,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                     <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
-                                        1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
+                                        1. We generate a semantic query embedding for <em>"financial news about {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
                                         <br />
                                         2. MongoDB's vector search finds the most semantically relevant news articles.
                                         <br />
@@ -462,7 +471,40 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                         <Code
                                             language="json"
                                         >
+                                            {`// MongoDB Vector Search Pipeline example
+[
+  {
+    "$vectorSearch": {
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "crypto_social_media_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "post_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"asset_id": "${asset.symbol}"}
+        ]
+      },
+      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
+      "numCandidates": 20,
+      "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$asset_id",
+      "subreddit": 1,
+      "url": 1,
+      "author": 1,
+      "title": 1,
+      "description": "$selftext",
+      ...
+      },
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
+    }
+  }
+]`}
                                         </Code>
+                                        <br></br>
+                                        <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
                                     </div>
                                     <br />
                                     <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
@@ -491,7 +533,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
 
                             <div className={styles.explanationContainer}>
                                 <div className={styles.explanation}>
-                                    <Body>The <strong>Sentiment Score</strong> reflects the overall market sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
+                                    <Body>The <strong>Sentiment Score</strong> reflects the overall sentiment for a given asset, calculated using <a href="https://huggingface.co/ProsusAI/finbert" target="_blank" rel="noopener noreferrer"><strong>FinBERT</strong></a>, is a pre-trained NLP model to analyze sentiment of financial text. This score is derived from analyzing <strong>only the news articles semantically related to {asset.symbol}</strong>, retrieved through vector search.</Body>
 
                                     <Banner className={styles.formulaContainer}>
                                         <Body weight="medium">Sentiment Score Formula</Body>
@@ -501,6 +543,54 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                     <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
                                     <br></br>
 
+                                <Body>The <strong>social media posts are retrieved using a semantic search query</strong> that finds the most relevant posts based on the asset's symbol and description.</Body>
+
+                                    <br />
+                                    <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
+                                    <Body>
+                                        1. We generate a semantic query embedding for <em>"sentiment analysis discussion about {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
+                                        <br />
+                                        2. MongoDB's vector search finds the most semantically relevant news articles.
+                                        <br />
+                                    </Body>
+
+                                    <div className={styles.queryContainer}>
+                                        <Code
+                                            language="json"
+                                        >
+                                            {`// MongoDB Vector Search Pipeline example
+[
+  {
+    "$vectorSearch": {
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "crypto_news_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"ticker": "${asset.symbol}"}
+        ]
+      },
+      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
+      "numCandidates": 15,
+      "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$ticker",
+      "headline": 1,
+      "description": 1,
+      "source": 1,
+      "link": 1,
+      ...
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
+    }
+  }
+]`}
+                                        </Code>
+                                        <br></br>
+                                        <Body><em>Note: The above vector search aggregation pipeline runs on news article data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
+                                    </div>
                                 </div>
                             </div>
                         </div>

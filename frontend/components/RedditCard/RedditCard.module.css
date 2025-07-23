@@ -20,7 +20,14 @@
 }
 .headerTextContainer {
   flex: 1;
-  display: inline;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.subredditRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .newsTime {
   font-size: 0.85rem;
