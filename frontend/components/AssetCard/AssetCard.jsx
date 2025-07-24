@@ -247,12 +247,29 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                         copyable={true}
                                     >
                                         {JSON.stringify((asset.news || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
                                             headline: item.headline,
                                             description: item.description,
                                             source: item.source,
-                                            posted: item.posted,
-                                            asset: item.asset,
                                             link: item.link || `https://news.google.com/search?q=${asset.symbol}`
+                                        })), null, 2)}
+                                    </Code>
+
+                                    <Subtitle className={styles.dataSubtitle}>Market Social Media Data</Subtitle>
+                                    <Body className={styles.dataNote}>* Displaying only 3 of many social media posts processed by the system.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify((asset.reddit || []).slice(0, 3).map(item => ({
+                                            asset: item.asset,
+                                            subreddit: item.subreddit,
+                                            url: item.url,
+                                            selftext: item.selftext ? item.selftext.substring(0, 80) + "..." : "",
+                                            title: item.title,
+                                            author: item.author,
+                                            create_at_utc: item.create_at_utc
                                         })), null, 2)}
                                     </Code>
 
@@ -371,6 +388,30 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                                     ]
                                                 },
                                                 report_embedding: [0.124, 0.394, 0.721, "..."]
+                                            }
+                                        }, null, 2)}
+                                    </Code>
+
+                                    <Subtitle className={styles.dataSubtitle}>AI Agent - Market Social Media Report</Subtitle>
+                                    <Body className={styles.dataNote}>* Simplified view of the market social media report with truncated embeddings.</Body>
+                                    <Code
+                                        className={styles.documentContainer}
+                                        language="json"
+                                        copyable={true}
+                                    >
+                                        {JSON.stringify({
+                                            market_sm_report: {
+                                                report: {
+                                                    asset_subreddits: asset.reddit || [],
+                                                    asset_sm_sentiments: [
+                                                        {
+                                                            asset: asset.symbol,
+                                                            final_sentiment_score: asset.socialSentiment?.score || 0.5,
+                                                            sentiment_category: asset.socialSentiment?.category || "Neutral"
+                                                        }
+                                                    ]
+                                                },
+                                                report_embedding: [0.156, 0.428, 0.693, "..."]
                                             }
                                         }, null, 2)}
                                     </Code>
