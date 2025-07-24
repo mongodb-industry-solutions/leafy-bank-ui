@@ -11,13 +11,12 @@ import {
     fetchPortfolioAllocation,
     fetchMostRecentMarketAnalysisReport,
     fetchMostRecentMarketNewsReport,
+    fetchMostRecentMarketSocialMediaReport,
     fetchAssetSuggestionsMarketVolatilityBased,
     fetchAssetSuggestionsMacroIndicatorsBased,
     fetchMostRecentMacroIndicators,
     fetchChartMappings
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
-
-import reportsMarketSM from "/public/data/reports_market_sm.json";
 
 
 export default function Assets() {
@@ -71,15 +70,6 @@ export default function Assets() {
                 if (shouldShowLoading) {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
                         .map(([symbol, data]) => {
-
-                            const socialSentimentEntry = (reportsMarketSM?.report?.asset_sm_sentiments || []).find(
-                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
-                            );
-
-                            const redditPosts = (reportsMarketSM?.report?.asset_subreddits || []).find(
-                                entry => entry.asset.toUpperCase() === symbol.toUpperCase()
-                            )?.posts || [];
-
                             const allocation = allocationResponse.portfolio_allocation[symbol];
                             return {
                                 symbol,
@@ -100,10 +90,10 @@ export default function Assets() {
                                 },
                                 news: [],
                                 socialSentiment: {
-                                    score: socialSentimentEntry?.final_sentiment_score ?? 0,
-                                    category: socialSentimentEntry?.sentiment_category || "Neutral"
+                                    score: 0.5,
+                                    category: "Neutral"
                                 },
-                                reddit: redditPosts,
+                                reddit: [],
                                 recentData: [],
                                 vixSensitivity: {
                                     sensitivity: "NEUTRAL",
@@ -143,25 +133,31 @@ export default function Assets() {
 
                 // Second batch - fetch remaining data in the background
                 const [newsReportResponse, recentAssetsData, vixSensitivityData,
-                    macroIndicatorsData, marketAnalysisReport] = await Promise.all([
+                    macroIndicatorsData, marketAnalysisReport, socialMediaReport] = await Promise.all([
                         fetchMostRecentMarketNewsReport(),
                         marketFetchRecentAssetsData(),
                         fetchAssetSuggestionsMarketVolatilityBased(),
                         fetchAssetSuggestionsMacroIndicatorsBased(),
                         fetchMostRecentMarketAnalysisReport(),
+                        fetchMostRecentMarketSocialMediaReport()
                     ]);
 
                 // Store news report data
                 setMarketNewsReport(newsReportResponse.market_news_report);
 
-                // Get market analysis report macro indicators
-                const marketMacroIndicators = marketAnalysisReport.market_analysis_report.report.macro_indicators;
+                // Safely get market analysis report data with fallbacks
+                const marketAnalysisData = marketAnalysisReport?.market_analysis_report?.report;
+                const marketMacroIndicators = marketAnalysisData?.macro_indicators || [];
                 const gdpMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "GDP");
                 const interestRateMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Effective Interest Rate");
                 const unemploymentMarketIndicator = marketMacroIndicators.find(item => item.macro_indicator === "Unemployment Rate");
 
                 // Get market volatility index data
-                const marketVolatilityIndex = marketAnalysisReport.market_analysis_report.report.market_volatility_index;
+                const marketVolatilityIndex = marketAnalysisData?.market_volatility_index || {};
+
+                console.log("Market Analysis Report Data:", marketAnalysisReport);
+                console.log("VIX Sensitivity Data:", vixSensitivityData);
+                console.log("Macro Indicators Data:", macroIndicatorsData);
 
                 // Function to normalize sentiment score based on category
                 const normalizeSentimentScore = (category, originalScore) => {
@@ -190,12 +186,16 @@ export default function Assets() {
                         const allocation = allocationResponse.portfolio_allocation[symbol];
 
                         // Get sentiment data for this asset from the news report
-                        const sentimentData = newsReportResponse.market_news_report.report.asset_news_summary
-                            .find(item => item.asset === symbol);
+                        const sentimentData = newsReportResponse?.market_news_report?.report?.asset_news_sentiments?.find(item => item.asset === symbol);
 
                         // Get news headlines for this asset
-                        const assetNews = newsReportResponse.market_news_report.report.asset_news
-                            .filter(news => news.asset === symbol);
+                        const assetNews = newsReportResponse?.market_news_report?.report?.asset_news?.filter(news => news.asset === symbol) || [];
+
+                        // Get social sentiment data for this asset from the social media report
+                        const socialSentimentData = socialMediaReport?.market_sm_report?.report?.asset_sm_sentiments?.find(item => item.asset === symbol);
+
+                        // Get social media posts for this asset
+                        const assetSocialPosts = socialMediaReport?.market_sm_report?.report?.asset_subreddits?.filter(post => post.asset === symbol) || [];
 
                         // Get sentiment category and normalize the score to match the category
                         const sentimentCategory = sentimentData ? sentimentData.overall_sentiment_category : "Neutral";
@@ -206,15 +206,13 @@ export default function Assets() {
                         const recentData = recentAssetsData.assets_data[symbol] || [];
 
                         // Get VIX sensitivity data for this asset
-                        const vixData = vixSensitivityData.asset_suggestions
-                            .find(item => item.asset === symbol);
+                        const vixData = vixSensitivityData?.asset_suggestions?.find(item => item.asset === symbol);
 
                         // Extract VIX sensitivity info if available
                         const vixInfo = vixData?.macro_indicators?.find(indicator => indicator.indicator === "VIX");
 
                         // Get macro indicators data for this asset
-                        const macroData = macroIndicatorsData.asset_suggestions
-                            .find(item => item.asset === symbol);
+                        const macroData = macroIndicatorsData?.asset_suggestions?.find(item => item.asset === symbol);
 
                         // Extract specific macro indicators
                         const gdpInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "GDP");
@@ -222,8 +220,7 @@ export default function Assets() {
                         const unemploymentInfo = macroData?.macro_indicators?.find(indicator => indicator.indicator === "Unemployment Rate");
 
                         // Get asset trend (MA50) data from the market analysis report
-                        const assetTrend = marketAnalysisReport.market_analysis_report.report.asset_trends
-                            .find(item => item.asset === symbol);
+                        const assetTrend = marketAnalysisData?.asset_trends?.find(item => item.asset === symbol);
 
                         return {
                             symbol,
@@ -246,6 +243,13 @@ export default function Assets() {
                             },
                             // Include news data
                             news: assetNews || [],
+                            // Include social sentiment data from API
+                            socialSentiment: {
+                                score: socialSentimentData?.final_sentiment_score ?? 0.5,
+                                category: socialSentimentData?.sentiment_category || "Neutral"
+                            },
+                            // Include social media posts
+                            reddit: assetSocialPosts || [],
                             // Include recent price data
                             recentData: recentData,
                             // Include VIX sensitivity data
@@ -256,8 +260,8 @@ export default function Assets() {
                                 note: vixInfo.note || "",
                                 // Add market volatility index data
                                 marketData: {
-                                    fluctuation: marketVolatilityIndex.fluctuation_answer,
-                                    diagnosis: marketVolatilityIndex.diagnosis
+                                    fluctuation: marketVolatilityIndex?.fluctuation_answer || "No volatility data available",
+                                    diagnosis: marketVolatilityIndex?.diagnosis || "No diagnosis available"
                                 }
                             } : {
                                 sensitivity: "NEUTRAL",
@@ -265,8 +269,8 @@ export default function Assets() {
                                 explanation: "No VIX sensitivity data available.",
                                 note: "",
                                 marketData: {
-                                    fluctuation: marketVolatilityIndex.fluctuation_answer,
-                                    diagnosis: marketVolatilityIndex.diagnosis
+                                    fluctuation: marketVolatilityIndex?.fluctuation_answer || "No volatility data available",
+                                    diagnosis: marketVolatilityIndex?.diagnosis || "No diagnosis available"
                                 }
                             },
                             // Include macro indicators data
@@ -277,16 +281,16 @@ export default function Assets() {
                                     note: gdpInfo.note || "",
                                     // Add market GDP data
                                     marketData: {
-                                        fluctuation: gdpMarketIndicator.fluctuation_answer,
-                                        diagnosis: gdpMarketIndicator.diagnosis
+                                        fluctuation: gdpMarketIndicator?.fluctuation_answer || "No GDP data available",
+                                        diagnosis: gdpMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 } : {
                                     action: "KEEP",
                                     explanation: "No GDP data available.",
                                     note: "",
                                     marketData: {
-                                        fluctuation: gdpMarketIndicator.fluctuation_answer,
-                                        diagnosis: gdpMarketIndicator.diagnosis
+                                        fluctuation: gdpMarketIndicator?.fluctuation_answer || "No GDP data available",
+                                        diagnosis: gdpMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 },
                                 interestRate: interestRateInfo ? {
@@ -295,16 +299,16 @@ export default function Assets() {
                                     note: interestRateInfo.note || "",
                                     // Add market interest rate data
                                     marketData: {
-                                        fluctuation: interestRateMarketIndicator.fluctuation_answer,
-                                        diagnosis: interestRateMarketIndicator.diagnosis
+                                        fluctuation: interestRateMarketIndicator?.fluctuation_answer || "No interest rate data available",
+                                        diagnosis: interestRateMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 } : {
                                     action: "KEEP",
                                     explanation: "No Interest Rate data available.",
                                     note: "",
                                     marketData: {
-                                        fluctuation: interestRateMarketIndicator.fluctuation_answer,
-                                        diagnosis: interestRateMarketIndicator.diagnosis
+                                        fluctuation: interestRateMarketIndicator?.fluctuation_answer || "No interest rate data available",
+                                        diagnosis: interestRateMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 },
                                 unemployment: unemploymentInfo ? {
@@ -313,16 +317,16 @@ export default function Assets() {
                                     note: unemploymentInfo.note || "",
                                     // Add market unemployment data
                                     marketData: {
-                                        fluctuation: unemploymentMarketIndicator.fluctuation_answer,
-                                        diagnosis: unemploymentMarketIndicator.diagnosis
+                                        fluctuation: unemploymentMarketIndicator?.fluctuation_answer || "No unemployment data available",
+                                        diagnosis: unemploymentMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 } : {
                                     action: "KEEP",
                                     explanation: "No Unemployment Rate data available.",
                                     note: "",
                                     marketData: {
-                                        fluctuation: unemploymentMarketIndicator.fluctuation_answer,
-                                        diagnosis: unemploymentMarketIndicator.diagnosis
+                                        fluctuation: unemploymentMarketIndicator?.fluctuation_answer || "No unemployment data available",
+                                        diagnosis: unemploymentMarketIndicator?.diagnosis || "No diagnosis available"
                                     }
                                 }
                             },

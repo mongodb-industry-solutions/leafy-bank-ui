@@ -386,6 +386,7 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
+                                        .slice(0, 5) // Limit to 5 news items
                                         .map((item, index) => (
 
                                             <NewsCard key={index} item={item} />
@@ -409,8 +410,6 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     <br></br>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
-                                    <Body><em>* To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
-                                    <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
                                         1. We generate a semantic query embedding for <em>"Financial news articles related to {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
@@ -421,17 +420,35 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
 
                                     <div className={styles.queryContainer}>
                                         <Code
+                                            className={styles.documentContainer}
                                             language="json"
                                         >
                                             {`// MongoDB Vector Search Pipeline example
 [
   {
     "$vectorSearch": {
-      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "financial_news_VS_IDX"
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "finance_news_VS_IDX"
       "path": "VECTOR_FIELD_NAME", // E.g. "article_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"ticker": "${asset.symbol}"}
+        ]
+      },
       "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
-      "numCandidates": 5,
+      "numCandidates": 15,
       "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$ticker",
+      "headline": 1,
+      "description": 1,
+      "source": 1,
+      "link": 1,
+      ...
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
     }
   }
 ]`}
@@ -467,8 +484,47 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     </Banner>
 
                                     <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
-                                    <br></br>
-
+                                    
+                                    <div className={styles.queryContainer}>
+                                                                            <Code
+                                                                                className={styles.documentContainer}
+                                                                                language="json"
+                                                                            >
+{`// MongoDB Vector Search Pipeline example
+[
+  {
+    "$vectorSearch": {
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "social_media_VS_IDX"
+      "path": "VECTOR_FIELD_NAME", // E.g. "post_embedding"
+      "filter": { // E.g. pre-filtering
+        "$and": [
+          {"asset_id": "${asset.symbol}"}
+        ]
+      },
+      "queryVector": [0.23, 0.11, 0.67, ...], // Generated from "${asset.symbol}" query
+      "numCandidates": 20,
+      "limit": 3
+    }
+  },
+  {
+    "$project": {
+      "_id": 0,
+      "asset": "$asset_id",
+      "subreddit": 1,
+      "url": 1,
+      "author": 1,
+      "title": 1,
+      "description": "$selftext",
+      ...
+      },
+      "vectorSearchScore": { "$meta": "vectorSearchScore" }
+    }
+  }
+]`}
+                                       </Code>
+                                       <br></br>
+                                       <Body><em>Note: The above vector search aggregation pipeline runs on social media posts data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
+                                   </div>
                                 </div>
                             </div>
                         </div>

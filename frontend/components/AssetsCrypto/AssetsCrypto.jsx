@@ -188,6 +188,16 @@ export default function AssetsCrypto() {
                         entry => entry.asset.toUpperCase() === basicAsset.symbol.toUpperCase()
                     );
 
+                    // Get momentum indicators from analysis report
+                    const momentumData = (CryptoAnalysisReport?.report?.crypto_momentum_indicators || []).find(
+                        entry => entry.asset.toUpperCase() === basicAsset.symbol.toUpperCase()
+                    );
+
+                    // Extract individual momentum indicators
+                    const rsiIndicatorFromReport = momentumData?.momentum_indicators?.find(ind => ind.indicator_name === "RSI");
+                    const volumeIndicatorFromReport = momentumData?.momentum_indicators?.find(ind => ind.indicator_name === "Volume");
+                    const vwapIndicatorFromReport = momentumData?.momentum_indicators?.find(ind => ind.indicator_name === "VWAP");
+
                     return {
                         ...basicAsset,
                         sentiment: {
@@ -206,7 +216,25 @@ export default function AssetsCrypto() {
                             fluctuation_answer: analysisData.fluctuation_answer,
                             diagnosis: analysisData.diagnosis,
                             trend: analysisData.diagnosis
-                        } : null
+                        } : null,
+                        // Override with more accurate momentum indicators from analysis report
+                        momentumIndicators: {
+                            rsi: rsiIndicatorFromReport ? {
+                                value: parseFloat(rsiIndicatorFromReport.fluctuation_answer.match(/(\d+\.?\d*)/)?.[1] || "0"),
+                                diagnosis: rsiIndicatorFromReport.diagnosis,
+                                fluctuation_answer: rsiIndicatorFromReport.fluctuation_answer
+                            } : null,
+                            volume: volumeIndicatorFromReport ? {
+                                ratio: parseFloat(volumeIndicatorFromReport.diagnosis.match(/\((\d+\.?\d*)x\s+average\)/)?.[1] || "0"),
+                                diagnosis: volumeIndicatorFromReport.diagnosis,
+                                fluctuation_answer: volumeIndicatorFromReport.fluctuation_answer
+                            } : null,
+                            vwap: vwapIndicatorFromReport ? {
+                                percentage: parseFloat(vwapIndicatorFromReport.diagnosis.match(/\(([+-]?\d+\.?\d*)%\)/)?.[1] || "0"),
+                                diagnosis: vwapIndicatorFromReport.diagnosis,
+                                fluctuation_answer: vwapIndicatorFromReport.fluctuation_answer
+                            } : null
+                        }
                     };
                 });
 
@@ -388,6 +416,8 @@ export default function AssetsCrypto() {
                 <span>NEWS SENTIMENT SCORE</span>
                 <span>SOCIAL SENTIMENT SCORE</span>
                 <span>RSI ANALYSIS</span>
+                <span>VOLUME ANALYSIS</span>
+                <span>VWAP ANALYSIS</span>
                 <span>ACTIONS</span>
             </div>
 
