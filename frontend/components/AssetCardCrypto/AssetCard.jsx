@@ -511,7 +511,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
-                                        .slice(0, 3) // Limit to first 3
+                                        .slice(0, 5) // Limit to 5 news items
                                         .map((item, index) => (
 
                                             <NewsCard key={index} item={item} />
@@ -536,8 +536,6 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                     <br></br>
 
                                     <Body>The <strong>news articles are retrieved using a semantic search query</strong> that finds the most relevant articles based on the asset's symbol and description.</Body>
-                                    <Body><em>* To simulate dynamic behavior in this demo, a randomizer alters the news articles that are displayed.</em></Body>
-                                    <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
                                     <Body>
                                         1. We generate a semantic query embedding for <em>"financial news about {asset.symbol} ({asset.allocation?.description})"</em> using <a href="https://blog.voyageai.com/2024/06/03/domain-specific-embeddings-finance-edition-voyage-finance-2/" target="_blank" rel="noopener noreferrer">voyage-finance-2</a>, a domain-specific financial embedding model.
@@ -639,7 +637,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
 [
   {
     "$vectorSearch": {
-      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "crypto_social_media_VS_IDX"
+      "index": "VECTOR_SEARCH_INDEX_NAME", // E.g. "social_media_VS_IDX"
       "path": "VECTOR_FIELD_NAME", // E.g. "post_embedding"
       "filter": { // E.g. pre-filtering
         "$and": [
