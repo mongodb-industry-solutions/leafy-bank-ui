@@ -511,7 +511,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                 {asset.news && asset.news.length > 0 ? (
                                     [...asset.news]
                                         .sort((a, b) => timeAgoToMinutes(a.posted) - timeAgoToMinutes(b.posted))
-                                        .slice(0, 5) // Limit to 5 news items
+                                        .slice(0, 3) // Limit to 3 news items
                                         .map((item, index) => (
 
                                             <NewsCard key={index} item={item} />
