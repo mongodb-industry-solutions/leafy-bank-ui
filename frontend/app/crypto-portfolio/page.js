@@ -293,7 +293,7 @@ export default function AssetPortfolio() {
                 )}
                 <img src="/images/coachGTM_Headshot.png" alt="Chat Icon" className={styles.chatIcon} />
                 <div className={styles.textWrapper}>
-                    <span><Body className={styles.chatbotText}>Leafy Portfolio Assistant</Body></span>
+                    <span><Body className={styles.chatbotText}>Leafy Portfolio Assistant Agent</Body></span>
                     <div className={styles.statusWrapper}>
                         <div className={styles.indicator}></div>
                         <Body>Available</Body>
