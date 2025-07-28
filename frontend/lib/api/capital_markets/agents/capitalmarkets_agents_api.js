@@ -551,3 +551,29 @@ export async function setActiveRiskProfile(riskId) {
     const data = await response.json();
     return data;
 }
+
+
+/**  
+ * Stablecoin Market Caps Data
+ */
+
+/**  
+ * Fetch all risk profiles.
+ * @returns Array: An array containing risk profile objects.
+ */
+
+export async function fetchMostRecentStablecoinsMarketCap() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/stablecoins/fetch-most-recent-stablecoins-market-cap`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent stablecoins market cap: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}

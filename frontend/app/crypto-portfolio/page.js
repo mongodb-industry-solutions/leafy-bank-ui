@@ -10,20 +10,56 @@ import { useRouter } from 'next/navigation';
 import ChatbotPortfolio from "@/components/ChatbotPortfolio/ChatbotPortfolio";
 import ConfirmationModal from "@leafygreen-ui/confirmation-modal";
 import Banner from "@leafygreen-ui/banner";
+import Icon from "@leafygreen-ui/icon";
+import Tooltip from "@leafygreen-ui/tooltip";
 import {
     SegmentedControl,
     SegmentedControlOption
 } from "@leafygreen-ui/segmented-control";
+import { fetchMostRecentStablecoinsMarketCap } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 
 export default function AssetPortfolio() {
     const [isOpen, setIsOpen] = useState(false);
     const [showDisclaimer, setShowDisclaimer] = useState(false);
     const router = useRouter();
     const [selectedTimeframe, setSelectedTimeframe] = useState("6month");
+    const [stablecoinData, setStablecoinData] = useState([]);
+    const [isLoadingStablecoins, setIsLoadingStablecoins] = useState(false);
 
     // "Can I help you?" Chatbot bubble //
     const [showBubble, setShowBubble] = useState(true);
     const [bubbleFade, setBubbleFade] = useState(false);
+
+    // Fetch stablecoin market cap data
+    const fetchStablecoinData = async () => {
+        setIsLoadingStablecoins(true);
+        try {
+            const response = await fetchMostRecentStablecoinsMarketCap();
+            if (response && response.data) {
+                // Filter and sort the stablecoins we care about: USDT, USDC, ALL_STABLECOINS
+                const filteredData = response.data.filter(coin => 
+                    coin.Symbol === "USDT" || coin.Symbol === "USDC" || coin.Symbol === "ALL_STABLECOINS"
+                );
+                
+                // Sort in the desired order: USDT, USDC, All StableCoins
+                const sortedData = filteredData.sort((a, b) => {
+                    const order = ["USDT", "USDC", "ALL_STABLECOINS"];
+                    return order.indexOf(a.Symbol) - order.indexOf(b.Symbol);
+                });
+                
+                setStablecoinData(sortedData);
+            }
+        } catch (error) {
+            console.error("Error fetching stablecoin data:", error);
+            setStablecoinData([]);
+        } finally {
+            setIsLoadingStablecoins(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchStablecoinData();
+    }, []);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -55,6 +91,21 @@ export default function AssetPortfolio() {
         localStorage.clear();
         router.push("/");
     };
+
+    // Loading skeleton for stablecoin data
+    const StablecoinSkeleton = () => (
+        <>
+            {[1, 2, 3].map((item) => (
+                <div key={item} className={styles.eventCard}>
+                    <div className={styles.skeletonText}></div>
+                    <div className={styles.skeletonText}></div>
+                    <div className={styles.skeletonValue}>
+                        <div className={styles.skeletonText}></div>
+                    </div>
+                </div>
+            ))}
+        </>
+    );
 
     return (
         <div className={styles.container}>
@@ -147,6 +198,73 @@ export default function AssetPortfolio() {
                         </Card>
 
                     </div>
+
+                    <Card className={styles.marketCard}>
+                        <Subtitle className={styles.cardSubtitle}>Stablecoin Market Cap</Subtitle>
+                        <div className={styles.headerRow}>
+                            <span>STABLECOIN</span>
+                            <span>MARKET CAP</span>
+                            <span>TREND (DAILY)</span>
+                        </div>
+
+                        <div className={styles.eventContainer}>
+                            {isLoadingStablecoins ? (
+                                <StablecoinSkeleton />
+                            ) : stablecoinData.length > 0 ? (
+                                stablecoinData.map((coin) => {
+                                    const displayName = coin.Symbol === "ALL_STABLECOINS" 
+                                        ? "All StableCoins" 
+                                        : coin.Symbol;
+
+                                    // Format market cap to billions/trillions
+                                    const formatMarketCap = (value) => {
+                                        if (value >= 1e12) {
+                                            return `$${(value / 1e12).toFixed(2)}T`;
+                                        } else if (value >= 1e9) {
+                                            return `$${(value / 1e9).toFixed(0)}B`;
+                                        } else if (value >= 1e6) {
+                                            return `$${(value / 1e6).toFixed(0)}M`;
+                                        } else {
+                                            return `$${value.toLocaleString()}`;
+                                        }
+                                    };
+
+                                    return (
+                                        <div key={coin.Symbol} className={styles.stablecoinCard}>
+                                            <Body className={styles.stablecoinColumn}>{displayName}</Body>
+                                            <Body>{formatMarketCap(coin["Market Cap"])}</Body>
+                                            <div>
+                                                <Tooltip align="top" justify="middle" trigger={
+                                                    <Icon
+                                                        className={
+                                                            coin["Trend direction"] === "up"
+                                                                ? styles.arrowUp
+                                                                : coin["Trend direction"] === "down"
+                                                                    ? styles.arrowDown
+                                                                    : styles.arrowEqual
+                                                        }
+                                                        glyph={
+                                                            coin["Trend direction"] === "up"
+                                                                ? "ArrowUp"
+                                                                : coin["Trend direction"] === "down"
+                                                                    ? "ArrowDown"
+                                                                    : "Minus"
+                                                        }
+                                                    />
+                                                }>
+                                                    {coin["Trend (%)"] !== 0 ? `${coin["Trend (%)"] > 0 ? '+' : ''}${coin["Trend (%)"]}%` : 'No change'}
+                                                </Tooltip>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <div className={styles.noData}>
+                                    <Body>No stablecoin data available</Body>
+                                </div>
+                            )}
+                        </div>
+                    </Card>
 
                 </div>
             </div>
