@@ -130,7 +130,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                         <div className={styles.chatbotHeader}>
                             <div className={styles.centeredHeader}>
-                                <Badge variant="blue" className={styles.badge}>Leafy Portfolio Assistant</Badge>
+                                <Badge variant="blue" className={styles.badge}>Leafy Portfolio Assistant Agent</Badge>
                             </div>
 
                             <IconButton
@@ -232,9 +232,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                 <Tab name="How to demo">
 
                                     <div className={styles.tab}>
-                                        <Subtitle>Leafy Portfolio Assistant</Subtitle>
+                                        <Subtitle>Leafy Portfolio Assistant Agent</Subtitle>
                                         <Body>
-                                            Leafy Portfolio Assistant provides portfolio managers with a tool that allows them to quickly access and analyze market data, portfolio performance, and news insights. It enhances efficiency by providing tailored responses and reducing the time spent solving the complexities behind data retrieval and analysis, enabling improved decision-making with real-time updates and contextually aware interactions.
+                                            Leafy Portfolio Assistant Agent provides portfolio managers with a tool that allows them to quickly access and analyze market data, portfolio performance, news and Reddit insights. It enhances efficiency by providing tailored responses and reducing the time spent solving the complexities behind data retrieval and analysis, enabling improved decision-making with real-time updates and contextually aware interactions.
                                         </Body>
 
                                         <div style={{ marginTop: '1rem' }}>
@@ -265,9 +265,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                         <Body>
                                             This solution is divided into three core services:
                                             <ul>
-                                                <li>Capital Markets Loaders Service</li>
-                                                <li>Capital Markets Agents Service</li>
-                                                <li>Market Assistant ReAct Agent Chatbot</li>
+                                                <li>Capital Markets/Crypto Loaders Service</li>
+                                                <li>Capital Markets/Crypto Agents Service</li>
+                                                <li>Market/Crypto Assistant ReAct Agent Chatbot</li>
                                             </ul>
 
                                             This section of the demo focuses on the last one:
@@ -275,8 +275,8 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                         <div style={{ marginTop: '1rem' }}>
                                             <Body>
-                                                <strong>Market Assistant ReAct Agent Chatbot</strong><br />
-                                                The Market Assistant Agent is designed to interact with users, process their questions, and provide relevant answers using various technologies and data sources. Here's how it operates:
+                                                <strong>Market & Crypto Assistant ReAct Agent Chatbot</strong><br />
+                                                The Market & Crypto Assistant Agent is designed to interact with users, process their questions, and provide relevant answers using various technologies and data sources. Here's how it operates:
                                                 <ul>
                                                     <li>User interaction: Starts with a user's question and finishes with the agent's answer.</li>
                                                     <li>ReAct Agent: The core of the system is a ReAct (reason-and-act) agent. This agent is responsible for interpreting the question, reasoning through possible actions, and generating a response. It combines reasoning with predefined actions using available tools.</li>
@@ -300,7 +300,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                         <Subtitle>ReAct Pattern</Subtitle>
 
-                                        <Body>The Leafy Portfolio Assistant uses the ReAct (Reason and Act) pattern, which allows the agent to think step-by-step and take actions as needed. This pattern enables the agent to analyze user queries, reason through the appropriate tools to use, and synthesize coherent responses based on retrieved information.
+                                        <Body>The Leafy Portfolio Assistant Agent uses the ReAct (Reason and Act) pattern, which allows the agent to think step-by-step and take actions as needed. This pattern enables the agent to analyze user queries, reason through the appropriate tools to use, and synthesize coherent responses based on retrieved information.
 
                                         </Body>
 
@@ -319,12 +319,27 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 <li>Reasoning Step:  The agent engages in a thought process, weighing which tools would be most appropriate for your query, guided by its profile which defines its role, capabilities, and decision-making rules.</li>
                                                 <li>Tool Selection: Based on its reasoning, the agent selects the most appropriate specialized too:
                                                     <ul>
-                                                        <li>Portfolio analysis → <code>market_analysis_reports_vector_search_tool</code></li>
-                                                        <li>Portfolio news → <code>market_news_reports_vector_search_tool</code></li>
-                                                        <li>Asset allocation → <code>get_portfolio_allocation_tool</code></li>
-                                                        <li>YTD returns → <code>get_portfolio_ytd_return_tool</code></li>
-                                                        <li>Volatility → <code>get_vix_closing_value_tool</code></li>
-                                                        <li>General info → <code>tavily_search_tool</code></li>
+                                                        <li>For stocks:</li>
+                                                        <ul>
+                                                            <li>Portfolio analysis → <code>market_analysis_reports_vector_search_tool</code></li>
+                                                            <li>Portfolio news → <code>market_news_reports_vector_search_tool</code></li>
+                                                            <li>Asset allocation → <code>get_portfolio_allocation_tool</code></li>
+                                                            <li>YTD returns → <code>get_portfolio_ytd_return_tool</code></li>
+                                                            <li>Volatility → <code>get_vix_closing_value_tool</code></li>
+                                                            <li>General info → <code>tavily_search_tool</code></li>
+                                                        </ul>
+                                                    </ul>
+
+                                                    <ul>
+                                                        <li>For crypto:</li>
+                                                        <ul>
+                                                            <li>Crypto portfolio allocation → <code>get_portfolio_allocation_tool</code></li>
+                                                            <li>Crypto technical analysis & trends → <code>crypto_analysis_reports_vector_search_tool</code></li>
+                                                            <li>Crypto news sentiment → <code>crypto_news_reports_vector_search_tool</code></li>
+                                                            <li>Crypto social media sentiment → <code>crypto_social_media_reports_vector_search_tool</code></li>
+                                                            <li>Crypto YTD returns → <code>get_portfolio_ytd_return_tool</code></li>
+                                                            <li>General cryptocurrency info → <code>tavily_search_tool</code></li>
+                                                        </ul>
                                                     </ul>
                                                 </li>
                                                 <li>Tool Execution and Observation: The selected tool retrieves data from MongoDB collections or external APIs. The agent observes the tool's output, integrating it into its understanding.</li>
@@ -338,10 +353,16 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                             <Subtitle>Agent Memory Management</Subtitle>
                                             <Body>
-                                                The Leafy Portfolio Assistant uses MongoDB as a long-term memory store to maintain context across conversation sessions:
+                                                The Leafy Portfolio Assistant Agent uses MongoDB as a long-term memory store to maintain context across conversation sessions:
 
                                                 <ul>
                                                     <li><strong>Storage:</strong> Two key collections <code>checkpoints_aio</code> and <code>checkpoint_writes_aio</code> store the complete state of agent interactions, including reasoning steps, tool calls, and observations</li>
+                                                    <ul>
+                                                        <li>
+                                                            For cryptocurrency-specific conversations, the system uses dedicated collections:
+                                                            <code>crypto_checkpoints_aio</code> and <code>crypto_checkpoint_writes_aio</code>.
+                                                        </li>
+                                                    </ul>
                                                     <li><strong>Structure:</strong> Each conversation is organized by a unique  <code>thread_id</code> that includes a timestamp (format: thread_YYYYMMDD_HHMMSS). This allows for organized memory retrieval and management.</li>
                                                     <li><strong>Automated Memory Cleanup:</strong> To prevent memory buildup, a scheduled job runs daily through the <code>CheckpointerMemoryJobs </code>system to remove older conversation threads, ensuring the system maintains only recent conversation history while preventing database bloat.</li>
                                                 </ul>
@@ -356,8 +377,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                             <Body>
 
-                                                The Leafy Portfolio Assistant leverages specialized tools to access and analyze financial data from various sources:
+                                                The Leafy Portfolio Assistant Agent leverages specialized tools to access and analyze financial data from various sources:
 
+                                                <br></br>
                                                 <strong>Portfolio-Specific:</strong>
                                                 <ul>
                                                     <li><code>market_analysis_reports_vector_search_tool</code>: Retrieves relevant market insights specifically for assets in the current portfolio from the</li>
@@ -366,6 +388,16 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                     <li><code>get_portfolio_ytd_return_tool</code>: Measures portfolio performance since the beginning of the current year from the portfolio_performance collection.</li>
                                                     <li><code>get_vix_closing_value_tool</code>: Provides insight into current market volatility levels, serving as a quick indicator of market sentiment and risk.</li>
                                                 </ul>
+
+                                                <strong>Cryptocurrency Portfolio-Specific Tools:</strong>
+                                                <ul>
+                                                    <li><code>crypto_analysis_reports_vector_search_tool</code>: Retrieves technical analysis and crypto market trends using embeddings from the <code>reports_crypto_analysis</code> collection.</li>
+                                                    <li><code>crypto_news_reports_vector_search_tool</code>: Summarizes crypto-related news and sentiment from the <code>reports_crypto_news</code> collection.</li>
+                                                    <li><code>crypto_social_media_reports_vector_search_tool</code>: Analyzes social media sentiment from platforms like Twitter and Reddit using the <code>reports_crypto_sm</code> collection.</li>
+                                                    <li><code>get_portfolio_allocation_tool</code>: Shows allocation across cryptocurrencies and stablecoins from the <code>crypto_portfolio_allocation</code> collection.</li>
+                                                    <li><code>get_portfolio_ytd_return_tool</code>: Calculates crypto portfolio performance since the beginning of the year.</li>
+                                                </ul>
+
                                                 <strong>General Financial Information::</strong>
                                                 <ul>
                                                     <li><code>tavily_search_tool</code>: Supplements portfolio-specific tools with broader financial data and news via the Tavily API, particularly useful for questions about assets not in the portfolio or general market concepts.</li>
