@@ -371,3 +371,54 @@
 .indicatorLink:hover {
   text-decoration: underline;
 }
+
+/* Stablecoin specific styles */
+.stablecoinCard {
+  display: flex;
+  align-items: center;
+  background: white;
+  padding: 7px 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  gap: 10px;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.stablecoinColumn {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Adjust column widths for stablecoin table */
+.stablecoinCard > *:nth-child(1) {
+  /* STABLECOIN */
+  width: 40%;
+}
+
+.stablecoinCard > *:nth-child(2) {
+  /* MARKET CAP */
+  width: 40%;
+}
+
+.stablecoinCard > *:nth-child(3) {
+  /* TREND */
+  width: 20%;
+}
+
+/* Header row adjustments for stablecoin table */
+.marketCard .headerRow span:nth-child(1) {
+  /* STABLECOIN */
+  width: 40%;
+}
+
+.marketCard .headerRow span:nth-child(2) {
+  /* MARKET CAP */
+  width: 40%;
+}
+
+.marketCard .headerRow span:nth-child(3) {
+  /* TREND */
+  width: 20%;
+}
