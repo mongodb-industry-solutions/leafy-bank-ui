@@ -62,8 +62,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     // Decide suggestions dynamically depending on pathname
     const suggestions = isCrypto
         ? [
-            "Based on current crypto market conditions, should I rebalance my portfolio between BTC and ETH?",
-            "What is the news sentiment around Bitcoin (BTC) after the latest halving event?",
+            "Considering the current crypto market conditions, momentum, and sentiment from social media and news, what would be the optimal crypto asset allocation for my portfolio?",
             "Can you search the internet for the latest trends in altcoins like Solana (SOL) and Cardano (ADA)?",
             "What would be the potential impact of shifting 50% of my Bitcoin holdings into Ethereum?",
             "Show me a summary of the top news driving price movements for BTC and ETH today."
