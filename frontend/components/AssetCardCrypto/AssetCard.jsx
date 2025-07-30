@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AssetCardCrypto.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -13,6 +13,7 @@ import {
 import Banner from "@leafygreen-ui/banner";
 import NewsCard from "../NewsCard/NewsCard";
 import RedditCard from "../RedditCard/RedditCard";
+
 
 export default function AssetCardCrypto({ asset, chartData }) {
     const [expandedSection, setExpandedSection] = useState(null);
@@ -79,7 +80,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
     // Get RSI traffic light color based on RSI value and diagnosis
     const getRSITrafficLightColor = (rsiValue, diagnosis = null) => {
         if (!rsiValue) return "gray";
-        
+
         // If we have diagnosis text, prioritize that
         if (diagnosis) {
             const diagnosisLower = diagnosis.toLowerCase();
@@ -87,7 +88,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
             if (diagnosisLower.includes("bearish momentum") || diagnosisLower.includes("downward pressure")) return "red";
             if (diagnosisLower.includes("overbought")) return "red";
         }
-        
+
         // Fallback to numeric RSI logic
         if (rsiValue >= 70) return "red"; // Overbought
         if (rsiValue <= 30) return "green"; // Oversold - buying opportunity
@@ -99,7 +100,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
     // Get Volume Analysis traffic light color based on volume ratio
     const getVolumeTrafficLightColor = (volumeRatio) => {
         if (!volumeRatio) return "gray";
-        
+
         const ratio = parseFloat(volumeRatio);
         if (ratio >= 2.0) return "green"; // High volume - strong signal
         if (ratio >= 1.2) return "yellow"; // Moderate volume
@@ -109,9 +110,9 @@ export default function AssetCardCrypto({ asset, chartData }) {
     // Get VWAP Analysis traffic light color based on VWAP position
     const getVWAPTrafficLightColor = (vwapPosition) => {
         if (vwapPosition === undefined || vwapPosition === null) return "gray";
-        
+
         let percentage;
-        
+
         // If it's already a number, use it directly
         if (typeof vwapPosition === 'number') {
             percentage = vwapPosition;
@@ -121,7 +122,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
             if (!percentageMatch) return "gray";
             percentage = parseFloat(percentageMatch[1]);
         }
-        
+
         if (percentage >= 1.0) return "green"; // Above VWAP by 1%+ - bullish
         if (percentage >= -1.0) return "yellow"; // Around VWAP (-1% to +1%) - neutral
         return "red"; // Below VWAP by more than 1% - bearish
@@ -130,16 +131,16 @@ export default function AssetCardCrypto({ asset, chartData }) {
     // Get Moving Average traffic light color based on consolidated MA analysis
     const getMovingAverageTrafficLightColor = (asset) => {
         // Get all MA indicators
-        const maIndicators = asset.crypto_indicators?.filter(ind => 
+        const maIndicators = asset.crypto_indicators?.filter(ind =>
             ind.indicator.includes("Moving Average")
         ) || [];
-        
+
         if (maIndicators.length === 0) return "gray";
-        
+
         let bullishCount = 0;
         let bearishCount = 0;
         let neutralCount = 0;
-        
+
         // Analyze each MA indicator
         maIndicators.forEach(ma => {
             const suggestion = (ma.suggestion || "").toLowerCase();
@@ -151,7 +152,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                 neutralCount++;
             }
         });
-        
+
         // Determine overall MA sentiment
         const totalMAs = maIndicators.length;
         if (bullishCount >= totalMAs * 0.67) return "green"; // 67% or more bullish
@@ -198,8 +199,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
     // Set badge variant based on VWAP analysis - use momentum indicators if available
     const vwapPercentage = asset.momentumIndicators?.vwap?.percentage;
     const vwapPosition = asset.vwapAnalysis?.vwap_position;
-    const vwapBadgeVariant = (vwapPercentage !== undefined && vwapPercentage !== null) ? 
-        getVWAPTrafficLightColor(vwapPercentage) : 
+    const vwapBadgeVariant = (vwapPercentage !== undefined && vwapPercentage !== null) ?
+        getVWAPTrafficLightColor(vwapPercentage) :
         vwapPosition ? getVWAPTrafficLightColor(vwapPosition) : "gray";
 
     // Set badge variant based on trend direction
@@ -215,10 +216,28 @@ export default function AssetCardCrypto({ asset, chartData }) {
                 return "gray";
         }
     };
- 
+
     // Get asset trend data
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
+
+    //Memory section
+    const [checkpointsData, setCheckpointsData] = useState(null);
+    const [checkpointWritesData, setCheckpointWritesData] = useState(null);
+
+    useEffect(() => {
+        // Fetch retrieval checkpoints
+        fetch("/data/agentic_capital_markets.crypto_checkpoints_aio.json")
+            .then((res) => res.json())
+            .then((data) => setCheckpointsData(data))
+            .catch((err) => console.error("Error loading checkpoints:", err));
+
+        // Fetch writing checkpoints
+        fetch("/data/agentic_capital_markets.crypto_checkpoint_writes_aio.json")
+            .then((res) => res.json())
+            .then((data) => setCheckpointWritesData(data))
+            .catch((err) => console.error("Error loading checkpoint writes:", err));
+    }, []);
 
 
     return (
@@ -290,6 +309,26 @@ export default function AssetCardCrypto({ asset, chartData }) {
                         Doc Model
                     </Tooltip>
 
+                    <Tooltip
+                        align="top"
+                        justify="middle"
+                        trigger={
+                            <IconButton
+                                aria-label="Agent Memory"
+                                className={styles.actionButton}
+                                onClick={() => handleExpand("memory")}
+                            >
+                                <img
+                                    src="/images/U_brain.svg"
+                                    alt="Agent Memory"
+                                    className={styles.customIcon}
+                                />
+                            </IconButton>
+                        }
+                    >
+                        Agent Memory
+                    </Tooltip>
+
                 </div>
             </div>
 
@@ -300,7 +339,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
                                     : expandedSection === "social" ? "Social Media"
-                                        : "News Headlines"}
+                                        : expandedSection === "memory" ? "Agent Memory"
+                                            : "News Headlines"}
                     </H3>
 
                     {expandedSection === "candleStick" && (
@@ -617,7 +657,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                     <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
                                     <br></br>
 
-                                <Body>The <strong>social media posts are retrieved using a semantic search query</strong> that finds the most relevant posts based on the asset's symbol and description.</Body>
+                                    <Body>The <strong>social media posts are retrieved using a semantic search query</strong> that finds the most relevant posts based on the asset's symbol and description.</Body>
 
                                     <br />
                                     <Body weight="medium" className={styles.sectionTitle}>How it works:</Body>
@@ -686,10 +726,10 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                 ].map((indicatorTitle) => {
                                     // For Moving Average Analysis, we'll consolidate all MA data
                                     if (indicatorTitle === "Moving Average Analysis") {
-                                        const maIndicators = asset.crypto_indicators?.filter(ind => 
+                                        const maIndicators = asset.crypto_indicators?.filter(ind =>
                                             ind.indicator.includes("Moving Average")
                                         ) || [];
-                                        
+
                                         if (maIndicators.length === 0) return null;
 
                                         return (
@@ -697,9 +737,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                                 <div className={styles.insightHeader}>
                                                     <H2 className={styles.insightH2}>{indicatorTitle}</H2>
                                                     <div
-                                                        className={`${styles.cell} ${styles.circleInsight} ${
-                                                            styles[getCryptoIndicatorColor(indicatorTitle, null)]
-                                                        }`}
+                                                        className={`${styles.cell} ${styles.circleInsight} ${styles[getCryptoIndicatorColor(indicatorTitle, null)]
+                                                            }`}
                                                     />
                                                 </div>
 
@@ -709,7 +748,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                                 {maIndicators.map((ma, index) => (
                                                     <div key={index} style={{ marginBottom: '1rem', paddingBottom: '1rem', borderBottom: index < maIndicators.length - 1 ? '1px solid #e0e0e0' : 'none' }}>
                                                         <Body className={styles.insightSubtitles}><strong>{ma.indicator}:</strong></Body>
-                                                        
+
                                                         {/* Show explanation if available */}
                                                         {ma.explanation && (
                                                             <Body>{ma.explanation}</Body>
@@ -771,9 +810,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                             <div className={styles.insightHeader}>
                                                 <H2 className={styles.insightH2}>{indicatorTitle}</H2>
                                                 <div
-                                                    className={`${styles.cell} ${styles.circleInsight} ${
-                                                        styles[getCryptoIndicatorColor(indicatorTitle, data)]
-                                                    }`}
+                                                    className={`${styles.cell} ${styles.circleInsight} ${styles[getCryptoIndicatorColor(indicatorTitle, data)]
+                                                        }`}
                                                 />
                                             </div>
 
@@ -816,8 +854,8 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                                     <>
                                                         <Body className={styles.insightSubtitles}>VWAP Position:</Body>
                                                         <Body>
-                                                            {asset.momentumIndicators?.vwap?.percentage !== undefined ? 
-                                                                `${asset.momentumIndicators.vwap.percentage.toFixed(1)}%` : 
+                                                            {asset.momentumIndicators?.vwap?.percentage !== undefined ?
+                                                                `${asset.momentumIndicators.vwap.percentage.toFixed(1)}%` :
                                                                 data.vwap_position
                                                             }
                                                         </Body>
@@ -833,10 +871,63 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                         </div>
                                     );
                                 })}
-                                
+
                             </div>
                         </div>
                     )}
+
+                    {expandedSection === "memory" && (
+                        <div className={styles.socialSection}>
+
+                            <div className={styles.socialContainer}>
+                                <Subtitle className={styles.dataSubtitle}>Async Checkpoint Retrieval</Subtitle>
+                                <Code
+                                    className={styles.documentContainer}
+                                    language="json"
+                                >
+                                    {checkpointsData ? JSON.stringify(checkpointsData, null, 2) : "Loading..."}
+
+                                </Code>
+
+                                <Subtitle className={styles.dataSubtitle}>Async Checkpoint Writing</Subtitle>
+
+                                <Code
+                                    className={styles.documentContainer}
+                                    language="json"
+                                >
+                                    {checkpointWritesData ? JSON.stringify(checkpointWritesData, null, 2) : "Loading..."}
+
+                                </Code>
+                            </div>
+
+
+                            <div className={styles.explanationContainer}>
+                                <div className={styles.explanation}>
+
+                                    <Body>
+                                        The agents manage memory using a system of checkpoints stored in MongoDB. Every time a user interacts with the agent, the system automatically creates one or more checkpoints that capture the state of the conversation at that moment. These checkpoints allow the agent to “remember” context from earlier interactions and use it to provide more coherent and personalized answers later on.
+                                    </Body>
+
+                                    <br></br>
+                                    <Body>
+                                        This memory is implemented following the  <a
+                                            href="https://langchain-ai.github.io/langgraph/how-tos/memory/add-memory/#__tabbed_2_2"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            LangGraph memory model
+                                        </a>, where checkpoints are linked to a specific thread or session. When a new message is sent, the agent retrieves the latest checkpoints for that thread to reconstruct relevant context.
+                                    </Body>
+
+                                    <Banner className={styles.formulaContainer}>
+                                        To prevent the memory collections from growing too large, we perform a daily cleanup of old checkpoints. As a result, some users might not see previous memories if they return after the cleanup.
+                                    </Banner>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             )
             }

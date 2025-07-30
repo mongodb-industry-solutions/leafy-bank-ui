@@ -170,7 +170,7 @@
   }
 
   .socialContainer {
-    margin-top: 12px;
+    
     flex: 1;
     min-width: 300px;
   }
@@ -369,6 +369,7 @@
     height: 200px;
     overflow: auto;
     margin-bottom: 16px;
+    text-align: left;
   }
 
   .dataNote {
@@ -376,4 +377,9 @@
     font-style: italic;
     color: #6e6e6e;
     margin: 0;
+  }
+
+  .customIcon{
+  color:#001E2A;
+  width: 20px;
   }
