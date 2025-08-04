@@ -11,13 +11,15 @@ import { Body, Subtitle } from "@leafygreen-ui/typography";
 import {
   listRiskProfiles,
   getActiveRiskProfile,
-  setActiveRiskProfile
+  setActiveRiskProfile,
+  fetchConsolidatedReportRiskProfile
 } from "@/lib/api/capital_markets/agents/capitalmarkets_agents_api";
 import styles from "./RiskProfileSelector.module.css";
 
 export default function RiskProfileSelector() {
   const [riskProfiles, setRiskProfiles] = useState([]);
   const [activeProfile, setActiveProfile] = useState("");
+  const [currentReportProfile, setCurrentReportProfile] = useState("");
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -25,10 +27,14 @@ export default function RiskProfileSelector() {
   useEffect(() => {
     async function fetchProfiles() {
       try {
-        const profiles = await listRiskProfiles();
-        const active = await getActiveRiskProfile();
+        const [profiles, active, consolidated] = await Promise.all([
+          listRiskProfiles(),
+          getActiveRiskProfile(),
+          fetchConsolidatedReportRiskProfile()
+        ]);
         setRiskProfiles(profiles);
         setActiveProfile(active.risk_id);
+        setCurrentReportProfile(consolidated.result);
       } catch (error) {
         console.error("Error fetching risk profiles", error);
       } finally {
@@ -48,22 +54,44 @@ export default function RiskProfileSelector() {
   };
 
   if (loading) {
-    return <div className={styles.selectorLabel}> <Body>Loading risk profiles...</Body></div>;
+    return <div className={styles.loadingContainer}><Body className={styles.profileLabel}>Loading risk profiles...</Body></div>;
   }
 
   return (
 
     <div className={styles.comboBoxWrapper}>
-      <Body className={styles.selectorLabel}>Current Risk Profile:</Body>
-      <div className={styles.badgeContainer}>
-        <Badge variant="lightgray">{activeProfile}</Badge>
-        <IconButton
-          className={styles.editButton}
-          aria-label="Edit Risk Profile"
-          onClick={() => setModalOpen(true)}
+      <div className={styles.riskProfileHeader}>
+        <Icon glyph="Settings" size="small" className={styles.headerIcon} />
+        <Body className={styles.headerLabel}>Risk Profile</Body>
+      </div>
+      
+      <div className={styles.profilesContainer}>
+        <div className={styles.profileItem}>
+          <Body className={styles.profileLabel}>Current (in Reports):</Body>
+          <div className={styles.badgeWrapper}>
+            <Badge variant="darkgray" size="small">{currentReportProfile}</Badge>
+          </div>
+        </div>
+        
+        <div className={styles.divider} />
+        
+        <Tooltip
+          align="bottom"
+          justify="middle"
+          trigger={
+            <div className={`${styles.profileItem} ${styles.editableItem}`} onClick={() => setModalOpen(true)}>
+              <Body className={styles.profileLabel}>Next Day:</Body>
+              <div className={styles.editableProfile}>
+                <div className={styles.badgeWrapper}>
+                  <Badge variant="lightgray" size="small">{activeProfile}</Badge>
+                </div>
+                <Icon glyph="Edit" size="small" className={styles.editIcon} />
+              </div>
+            </div>
+          }
         >
-          <Icon glyph="Edit" />
-        </IconButton>
+          Click to change risk profile for next day
+        </Tooltip>
       </div>
 
       <Modal
@@ -72,9 +100,9 @@ export default function RiskProfileSelector() {
         className={styles.riskModal}
       >
         <div className={styles.modalContent}>
-          <Subtitle>Select a New Risk Profile</Subtitle>
+          <Subtitle>Select Risk Profile for Next Day</Subtitle>
           <Body className={styles.tooltipText}>
-            Changes to your risk profile will apply starting the next day, when your portfolio is reanalyzed.
+            Changes to your risk profile will apply starting the next day, when your portfolio is reanalyzed. The current risk profile in reports will remain unchanged until tomorrow.
           </Body>
 
           <Combobox
