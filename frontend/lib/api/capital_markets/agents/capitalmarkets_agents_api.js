@@ -552,6 +552,30 @@ export async function setActiveRiskProfile(riskId) {
     return data;
 }
 
+/**  
+* Consolidated Report Risk Profile  
+ */
+
+/**  
+ * Fetch the consolidated report risk profile.
+ * @returns Object: The consolidated report risk profile.
+ */
+export async function fetchConsolidatedReportRiskProfile() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/consolidated-risk-profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Error fetching consolidated report risk profile: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+}
+
 
 /**  
  * Stablecoin Market Caps Data
