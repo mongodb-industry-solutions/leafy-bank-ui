@@ -319,7 +319,7 @@ export default function AssetCardCrypto({ asset, chartData }) {
                                 onClick={() => handleExpand("memory")}
                             >
                                 <img
-                                    src="/images/U_brain.svg"
+                                    src="/images/u_brain.svg"
                                     alt="Agent Memory"
                                     className={styles.customIcon}
                                 />
