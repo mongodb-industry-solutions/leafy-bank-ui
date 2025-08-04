@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./AssetCard.module.css";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -95,6 +95,24 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
     const assetTrend = asset.assetTrend?.trend || "neutral";
     const trendBadgeVariant = assetTrend === "uptrend" ? "green" : assetTrend === "downtrend" ? "red" : "yellow";
 
+    //Memory section
+    const [checkpointsData, setCheckpointsData] = useState(null);
+    const [checkpointWritesData, setCheckpointWritesData] = useState(null);
+
+    useEffect(() => {
+        // Fetch retrieval checkpoints
+        fetch("/data/agentic_capital_markets.checkpoints_aio.json")
+            .then((res) => res.json())
+            .then((data) => setCheckpointsData(data))
+            .catch((err) => console.error("Error loading checkpoints:", err));
+
+        // Fetch writing checkpoints
+        fetch("/data/agentic_capital_markets.checkpoint_writes_aio.json")
+            .then((res) => res.json())
+            .then((data) => setCheckpointWritesData(data))
+            .catch((err) => console.error("Error loading checkpoint writes:", err));
+    }, []);
+
     return (
         <div className={`${styles.card} ${expandedSection ? styles.expanded : ""}`}>
             <div className={styles.mainContent}>
@@ -160,6 +178,26 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         Doc Model
                     </Tooltip>
 
+                    <Tooltip
+                        align="top"
+                        justify="middle"
+                        trigger={
+                            <IconButton
+                                aria-label="Agent Memory"
+                                className={styles.actionButton}
+                                onClick={() => handleExpand("memory")}
+                            >
+                                <img
+                                    src="/images/U_brain.svg"
+                                    alt="Agent Memory"
+                                    className={styles.customIcon}
+                                />
+                            </IconButton>
+                        }
+                    >
+                        Agent Memory
+                    </Tooltip>
+
                 </div>
             </div>
 
@@ -170,7 +208,8 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                             : expandedSection === "docModel" ? "Document Model"
                                 : expandedSection === "insights" ? ""
                                     : expandedSection === "social" ? "Social Media"
-                                        : "News Headlines"}
+                                        : expandedSection === "memory" ? "Agent Memory"
+                                            : "News Headlines"}
                     </H3>
 
                     {expandedSection === "candleStick" && (
@@ -525,13 +564,13 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                                     </Banner>
 
                                     <Body>Sentiment scores are categorized as <Badge className={styles.inlineBadge} variant="green">Positive </Badge>(0.6 to 1.0), <Badge className={styles.inlineBadge} variant="yellow">Neutral</Badge> (0.4 to 0.6), and<Badge className={styles.inlineBadge} variant="red">Negative</Badge> (0.0 to 0.4).</Body>
-                                    
+
                                     <div className={styles.queryContainer}>
-                                                                            <Code
-                                                                                className={styles.documentContainer}
-                                                                                language="json"
-                                                                            >
-{`// MongoDB Vector Search Pipeline example
+                                        <Code
+                                            className={styles.documentContainer}
+                                            language="json"
+                                        >
+                                            {`// MongoDB Vector Search Pipeline example
 [
   {
     "$vectorSearch": {
@@ -562,10 +601,10 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
     }
   }
 ]`}
-                                       </Code>
-                                       <br></br>
-                                       <Body><em>Note: The above vector search aggregation pipeline runs on social media posts data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
-                                   </div>
+                                        </Code>
+                                        <br></br>
+                                        <Body><em>Note: The above vector search aggregation pipeline runs on social media posts data using <a href="https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-overview/" target="_blank" rel="noopener noreferrer">MongoDB Atlas Vector Search</a></em></Body>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -678,6 +717,59 @@ export default function AssetCard({ asset, chartData, rawMacroIndicators }) {
                         </div>
 
                     )}
+
+                     {expandedSection === "memory" && (
+                        <div className={styles.socialSection}>
+
+                            <div className={styles.socialContainer}>
+                                <Subtitle className={styles.dataSubtitle}>Async Checkpoint Retrieval</Subtitle>
+                                <Code
+                                    className={styles.documentContainer}
+                                    language="json"
+                                >
+                                    {checkpointsData ? JSON.stringify(checkpointsData, null, 2) : "Loading..."}
+
+                                </Code>
+
+                                <Subtitle className={styles.dataSubtitle}>Async Checkpoint Writing</Subtitle>
+
+                                <Code
+                                    className={styles.documentContainer}
+                                    language="json"
+                                >
+                                    {checkpointWritesData ? JSON.stringify(checkpointWritesData, null, 2) : "Loading..."}
+
+                                </Code>
+                            </div>
+
+
+                            <div className={styles.explanationContainer}>
+                                <div className={styles.explanation}>
+
+                                    <Body>
+                                        The agents manage memory using a system of checkpoints stored in MongoDB. Every time a user interacts with the agent, the system automatically creates one or more checkpoints that capture the state of the conversation at that moment. These checkpoints allow the agent to “remember” context from earlier interactions and use it to provide more coherent and personalized answers later on.
+                                    </Body>
+
+                                    <br></br>
+                                    <Body>
+                                        This memory is implemented following the  <a
+                                            href="https://langchain-ai.github.io/langgraph/how-tos/memory/add-memory/#__tabbed_2_2"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            LangGraph memory model
+                                        </a>, where checkpoints are linked to a specific thread or session. When a new message is sent, the agent retrieves the latest checkpoints for that thread to reconstruct relevant context.
+                                    </Body>
+
+                                    <Banner className={styles.formulaContainer}>
+                                        To prevent the memory collections from growing too large, we perform a daily cleanup of old checkpoints. As a result, some users might not see previous memories if they return after the cleanup.
+                                    </Banner>
+
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             )}
         </div>

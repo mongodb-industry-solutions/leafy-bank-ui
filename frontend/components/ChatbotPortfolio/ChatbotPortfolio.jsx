@@ -89,6 +89,17 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
         return text.replace(/(\d+\.\s)/g, '\n$1');
     };
 
+    //Copy answers
+    const handleCopy = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                console.log("Copied to clipboard:", text);
+            })
+            .catch((err) => {
+                console.error("Failed to copy: ", err);
+            });
+    };
+
     const handleAsk = async () => {
         setIsAsking(true);
         try {
@@ -142,6 +153,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                         </div>
 
                         <div className={styles.tabsWrapper}>
+
                             <Tabs selected={activeTab} setSelected={setActiveTab}>
                                 <Tab name="Chatbot">
 
@@ -165,14 +177,23 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                                     <img src="/images/coachGTM_Headshot.png" alt="Agent" className={styles.agentImage} />
                                                                     <Subtitle className={styles.agentPrefix}>Agent's response:</Subtitle>
                                                                 </div>
-                                                                <Body>
-                                                                    <Typewriter
-                                                                        text={message.text}
-                                                                        messageId={index}
-                                                                        completedMessages={completedMessages}
-                                                                        markCompleted={markCompleted}
-                                                                    />
-                                                                </Body>
+                                                                <div className={styles.answerContent}>
+                                                                    <Body>
+                                                                        <Typewriter
+                                                                            text={message.text}
+                                                                            messageId={index}
+                                                                            completedMessages={completedMessages}
+                                                                            markCompleted={markCompleted}
+                                                                        />
+                                                                    </Body>
+                                                                    <IconButton
+                                                                        aria-label="Copy"
+                                                                        className={styles.copyButton}
+                                                                        onClick={() => handleCopy(message.text)}
+                                                                    >
+                                                                        <Icon glyph="Copy" />
+                                                                    </IconButton>
+                                                                </div>
                                                             </>
                                                         )}
                                                     </div>
@@ -463,6 +484,8 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                         </div>
                                     </div>
                                 </Tab>
+
+                                   <Button className={styles.mcpBtn} variant="primaryOutline">Go to MCP Server Chat</Button>
                             </Tabs>
                         </div>
                     </div>
