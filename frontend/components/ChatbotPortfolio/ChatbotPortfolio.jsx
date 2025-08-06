@@ -14,6 +14,7 @@ import Typewriter from "./Typewriter.jsx";
 import { sendMessagetoReactAgentMarketAssistantChatbot } from "@/lib/api/capital_markets/chatbots/capitalmarkets_react_stock_api";
 import { sendMessagetoReactAgentCryptoAssistantChatbot } from "@/lib/api/capital_markets/chatbots/capitalmarkets_react_crypto_api";
 import { usePathname } from "next/navigation";
+import { Combobox, ComboboxOption } from "@leafygreen-ui/combobox";
 
 function generateThreadId() {
     const now = new Date();
@@ -68,20 +69,20 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
             "Show me a summary of the top news driving price movements for BTC and ETH today."
         ]
         : [
-            "Based on market condition today, what overall portfolio asset reallocation would you suggest?",
-            "What is the news sentiment about my asset GLD (Gold ETF)?",
-            "What would be the impact of replacing 50% of Equity assets with Gold?",
-            "I would like to start investing in the database market. Can you search the internet for what’s going on with MDB (MongoDB)? I want to know what the press is saying.",
-            "What questions have I asked you so far, and which tools have you used to respond to me?"
+            "Considering today’s equity and commodity market conditions, momentum, and sentiment from financial news, what would be the optimal asset allocation for my portfolio?",
+            "Can you search the internet for the latest trends and sentiment on gold (GLD) and U.S. equities?",
+            "What would be the potential impact of shifting 50% of my equity holdings into gold?",
+            "Show me a summary of the top news driving price movements for GLD and SPY today.",
+            "What questions have I previously asked you, and which tools have you used to respond to me?"
         ];
 
 
     const [suggestionIndex, setSuggestionIndex] = useState(0);
 
-    const handleSuggestionClick = () => {
-        const selected = suggestions[suggestionIndex];
-        setQuery(selected);
-        setSuggestionIndex((prevIndex) => Math.min(prevIndex + 1, suggestions.length - 1));
+
+
+    const handleQuestionChange = (value) => {
+        setQuery(value); // This will pre-fill the input
     };
 
     const formatAnswer = (text) => {
@@ -131,6 +132,9 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
         setCompletedMessages((prev) => ({ ...prev, [messageId]: true }));
     };
 
+
+
+
     return (
         <>
             {isOpen && (
@@ -139,9 +143,18 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                     <div className={styles.chatbotContent}>
 
                         <div className={styles.chatbotHeader}>
+
                             <div className={styles.centeredHeader}>
                                 <Badge variant="blue" className={styles.badge}>Leafy Portfolio Assistant Agent</Badge>
                             </div>
+
+                            <Button
+                                className={styles.mcpBtn}
+                                variant="primaryOutline"
+                                onClick={() => window.open('https://capitalmarkets-mcp.demo.mongodb-industry-solutions.com/', '_blank')}
+                            >
+                                Go to MCP Interaction
+                            </Button>
 
                             <IconButton
                                 aria-label="X"
@@ -230,10 +243,21 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
                                     <div className={styles.chatbotInputActions}>
                                         <div className={styles.suggestedQuestions}>
-                                            <Body>Suggested Question:</Body>
-                                            <button className={styles.suggestion} onClick={handleSuggestionClick}>
-                                                {suggestions[suggestionIndex]}
-                                            </button>
+
+                                            <Combobox
+                                                label="Select a suggested question"
+                                                placeholder="Select a question"
+                                                value={query}
+                                                onChange={handleQuestionChange}
+                                            >
+                                                {suggestions.map((suggestion, index) => (
+                                                    <ComboboxOption key={index} value={suggestion}>
+                                                        {suggestion}
+                                                    </ComboboxOption>
+                                                ))}
+                                            </Combobox>
+
+
                                         </div>
                                         <div className={styles.chatbotInputArea}>
                                             <input
@@ -485,14 +509,11 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                     </div>
                                 </Tab>
 
-                                   <Button 
-                                       className={styles.mcpBtn} 
-                                       variant="primaryOutline"
-                                       onClick={() => window.open('https://capitalmarkets-mcp.demo.mongodb-industry-solutions.com/', '_blank')}
-                                   >
-                                       Go to MCP Server Chat
-                                   </Button>
+
                             </Tabs>
+
+
+
                         </div>
                     </div>
                 </div >
