@@ -61,13 +61,13 @@ export default function RiskProfileSelector() {
 
     <div className={styles.comboBoxWrapper}>
       <div className={styles.riskProfileHeader}>
-        <Icon glyph="Settings" size="small" className={styles.headerIcon} />
+        {/*<Icon glyph="Settings" size="small" className={styles.headerIcon} />*/}
         <Body className={styles.headerLabel}>Risk Profile</Body>
       </div>
       
       <div className={styles.profilesContainer}>
         <div className={styles.profileItem}>
-          <Body className={styles.profileLabel}>Current (in Reports):</Body>
+          <Body className={styles.profileLabel}>Current:</Body>
           <div className={styles.badgeWrapper}>
             <Badge variant="darkgray" size="small">{currentReportProfile}</Badge>
           </div>

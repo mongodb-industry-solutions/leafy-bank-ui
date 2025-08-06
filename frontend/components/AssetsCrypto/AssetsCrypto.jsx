@@ -270,7 +270,7 @@ export default function AssetsCrypto() {
     return (
         <div className={styles.container}>
             <div className={styles.assetsHeader}>
-                <H3>Crypto Assets</H3>
+                <H3>Crypto Portfolio</H3>
 
                 <InfoWizard
                     open={openHelpModal}
