@@ -60,19 +60,20 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
         setQuery(event.target.value);
     };
 
+    
+
     // Decide suggestions dynamically depending on pathname
     const suggestions = isCrypto
         ? [
-            "Considering the current crypto market conditions, momentum, and sentiment from social media and news, what would be the optimal crypto asset allocation for my portfolio?",
+            "Based on overall crypto market situation, how should I position my portfolio?",
             "Can you search the internet for the latest trends in altcoins like Solana (SOL) and Cardano (ADA)?",
             "What would be the potential impact of shifting 50% of my Bitcoin holdings into Ethereum?",
-            "Show me a summary of the top news driving price movements for BTC and ETH today."
+            "What questions have I previously asked you, and which tools have you used to respond to me?"
         ]
         : [
-            "Considering today’s equity and commodity market conditions, momentum, and sentiment from financial news, what would be the optimal asset allocation for my portfolio?",
+            "Based on overall market situation, how should I position my portfolio?",
             "Can you search the internet for the latest trends and sentiment on gold (GLD) and U.S. equities?",
             "What would be the potential impact of shifting 50% of my equity holdings into gold?",
-            "Show me a summary of the top news driving price movements for GLD and SPY today.",
             "What questions have I previously asked you, and which tools have you used to respond to me?"
         ];
 
