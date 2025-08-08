@@ -2,7 +2,7 @@
 
 **Leafy Bank UI is the graphical user interface (GUI) for our demo banking application**, showcasing the integration of MongoDB's powerful features tailored specifically for [Financial Services](https://www.mongodb.com/solutions/industries/financial-services). This responsive and intuitive UI allows users to interact with a fully functional demo banking environment, highlighting advanced capabilities like real-time data processing, secure financial transactions, and a seamless user experience. It is designed to demonstrate the potential of building modern, customer-focused financial applications with MongoDB as the backbone.
 
-An important feature of Leafy Bank UI is the **Leafy Personal Assistant**, an AI-powered chatbot embedded within the application. This chatbot enhances user interaction by providing quick and accurate answers to questions related to personal banking terms, conditions, and account details, showcasing the incorporation of AI-powered assistance in financial services.
+Leafy Bank UI features multiple AI-powered assistants that showcase the incorporation of artificial intelligence in financial services. The **Leafy Personal Assistant** provides quick and accurate answers to questions related to personal banking terms, conditions, and account details. Additionally, specialized **Market Assistant** and **Crypto Assistant** chatbots offer intelligent investment guidance for traditional financial markets and cryptocurrency portfolios respectively, demonstrating how AI can enhance both banking and investment experiences.
 
 
 ## Components and Features:
@@ -47,6 +47,10 @@ Leafy Bank UI is composed of several interconnected features that demonstrate th
        - Seamlessly switch between pre-selected users.
        - Validate and test how accounts, transactions, and balances behave within the Leafy Bank ecosystem.
 
+11. **Access Investment Portfolios**  
+       - Users can access both traditional assets (stocks and ETFs) and cryptocurrency investment portfolios.
+       - Get personalized investment guidance through AI-powered Market Assistant for traditional markets and Crypto Assistant for digital assets.
+       - Portfolio allocation is predefined for demo purposes, showcasing how intelligent agents can provide insights on diverse investment options.
 
 ## Where Does MongoDB Shine?
 
@@ -88,7 +92,9 @@ This service simulates connecting to external financial institutions to retrieve
 
 ### 5. **Capital Markets - Loaders Service**
 **[Capital Markets - Loaders Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-loaders)**
-This service handles the extraction, transformation, and loading (ETL) of financial data from various sources, including Yahoo Finance and the Federal Reserve Economic Data (FRED) API, as well as financial news processing from Yahoo Search. MongoDB's Time Series collections provide optimized storage and efficient querying for market data from Yahoo Finance, while the flexible document model accommodates financial news articles and their corresponding embeddings.
+This service handles the extraction, transformation, and loading (ETL) of financial data from various sources, including Yahoo Finance and the Federal Reserve Economic Data (FRED) API, as well as financial news processing from Yahoo Search. It also ingests crypto asset data from the Binance API, social media posts from Reddit, and stablecoin market capitalization data from the CoinGecko API.
+
+MongoDB’s Time Series collections provide optimized storage and efficient querying for market data from Yahoo Finance and Binance, while the flexible document model accommodates financial news articles, Reddit posts, and their corresponding embeddings.
 
 ![cm loaders service diagram](diagrams/cm_loaders_diagram.png)
 
@@ -96,7 +102,14 @@ This service handles the extraction, transformation, and loading (ETL) of financ
 
 ### 6. **Capital Markets - Scheduled Agents Service**
 **[Capital Markets - Scheduled Agents Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-agents)**
-This service delivers automated financial intelligence through scheduled AI workflows. MongoDB provides the ideal foundation for its agent-based architecture, with the document model aligning perfectly with complex agent state representation in JSON format. The service includes two scheduled agents: the Market Analysis Agent to analyze asset trends and macroeconomic indicators, and the Market News Agent to provide sentiment analysis on financial news.
+This service delivers automated financial intelligence through scheduled AI-powered workflows that analyze both traditional assets (stocks/ETFs) and digital assets (cryptocurrencies). MongoDB provides the ideal foundation for its agent-based architecture, with the document model aligning perfectly with complex agent state representation in JSON format. 
+
+The service orchestrates six specialized agents organized into three analytical categories:
+- **Market Analysis Agents** (Traditional & Crypto): Process time-series data to generate insights on asset trends and market patterns
+- **News Analysis Agents** (Traditional & Crypto): Analyze financial news to provide sentiment analysis and market impact assessments
+- **Social Media Analysis Agents** (Traditional & Crypto): Extract insights from social media posts to gauge market sentiment and emerging trends
+
+Each agent category runs on a scheduled basis, leveraging MongoDB's vector search capabilities and aggregation framework alongside advanced LLM processing to transform raw market data into actionable intelligence reports.
 
 ![cm scheduled agents service diagram](diagrams/cm_scheduled_agents_diagram.png)
 
@@ -104,9 +117,49 @@ This service delivers automated financial intelligence through scheduled AI work
 
 ### 7. **Capital Markets - Market Assistant ReAct Agent Chatbot Service**
 **[Capital Markets - Market Assistant ReAct Agent Chatbot Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot)**
-This service provides an AI-powered market assistant using the **ReAct (Reason and Act)** pattern implemented through LangGraph. MongoDB excels in this implementation through the **MongoDB Checkpointer**, which enables long-term memory by storing agent state at every interaction step. The agent uses Atlas Vector Search to find semantically relevant market analysis and news reports using the finance-optimized voyage-finance-2 embedding model.
+
+This service delivers intelligent investment guidance for traditional financial markets through an advanced ReAct (Reason and Act) agent framework. Built with LangGraph, it provides personalized insights on stocks, ETFs, and market trends through a conversational interface.
+
+The Market Assistant leverages MongoDB Atlas to:
+- **Maintain conversation memory** through the MongoDB Checkpointer, storing agent state at every interaction step for contextual multi-turn dialogues
+- **Access market intelligence** from dedicated collections (reports_market_analysis, reports_market_news, reports_market_sm) generated by the scheduled agents
+- **Perform semantic search** using Atlas Vector Search with the finance-optimized Voyage AI (voyage-finance-2) embedding model
+
+The service integrates AWS Bedrock with Anthropic Claude for sophisticated natural language understanding and reasoning capabilities. The agent can analyze complex market queries, provide portfolio recommendations, and deliver actionable insights while maintaining full conversation context across user sessions through its extensible tool architecture.
 
 ![cm market assistant react service diagram](diagrams/cm_market_assistant_react_agent_diagram.png)
+
+---
+
+### 8. **Capital Markets - Crypto Assistant ReAct Agent Chatbot Service**
+**[Capital Markets - Crypto Assistant ReAct Agent Chatbot Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-crypto)**
+
+This service mirrors the Market Assistant's architecture but specializes in cryptocurrency and digital asset intelligence. Built on the same ReAct (Reason and Act) agent framework, it provides personalized crypto investment guidance through an intelligent conversational interface.
+
+The Crypto Assistant leverages MongoDB Atlas to:
+- **Maintain conversation memory** through checkpoint collections, enabling contextual multi-turn dialogues about crypto portfolios
+- **Access crypto-specific insights** from dedicated collections (reports_crypto_analysis, reports_crypto_news, reports_crypto_sm) generated by the scheduled agents
+- **Perform advanced analytics** using MongoDB's aggregation framework and vector search for semantic understanding of crypto market queries
+
+Like its traditional market counterpart, the service integrates AWS Bedrock with Anthropic Claude for natural language processing and uses Voyage AI's embedding model for enhanced semantic search capabilities. The agent can reason through complex crypto queries, access real-time blockchain data, and provide actionable insights while maintaining conversation context across user sessions.
+
+![cm crypto assistant react service diagram](diagrams/cm_crypto_assistant_react_agent_diagram.png)
+
+---
+
+### 9. **Capital Markets - MCP Interaction**
+**[Capital Markets - Investment Portfolio Management - MCP Interaction Service Repository](https://github.com/mongodb-industry-solutions/leafy-bank-capitalmarkets-mcp)**
+
+This demonstration application showcases the power of MongoDB's Model Context Protocol (MCP) Server integrated with an AI-powered ReAct agent to process predefined financial data queries through an intuitive selection interface. The service exemplifies how modern AI assistants can seamlessly interact with MongoDB Atlas data using standardized protocols.
+
+The MCP implementation leverages MongoDB Atlas to:
+- **Enable secure read-only access** to financial data collections (yfinanceMarketData, binanceCryptoData) through a standardized JSON-RPC interface
+- **Provide native MongoDB operations** including list, find, and aggregate functions that AI agents can call directly through the MCP protocol
+- **Facilitate natural language queries** by allowing the ReAct agent to translate user requests into appropriate MongoDB operations
+
+Built with Next.js and MongoDB's Leafy Green design system, the service integrates AWS Bedrock with Anthropic Claude to interpret user selections and execute corresponding database queries. The MCP Server acts as a secure bridge between the AI agent and MongoDB Atlas, demonstrating how financial institutions can expose their data to AI assistants while maintaining control and observability through the dedicated console interface.
+
+![capital markets mcp interaction](diagrams/cm_mongodb_mcp_diagram.png)
 
 ---
 
@@ -120,6 +173,8 @@ Explore the respective backend repositories to learn more about specific impleme
 - [Capital Markets - Loaders Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-loaders)
 - [Capital Markets - Scheduled Agents Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-agents)
 - [Capital Markets - Market Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot)
+- [Capital Markets - Crypto Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-crypto)
+- [Capital Markets - MCP Interaction](https://github.com/mongodb-industry-solutions/leafy-bank-capitalmarkets-mcp)
 
 This approach reflects a **modern and practical way to develop software**, supporting the scalability, modularity, and maintainability required for financial services in today’s fast-evolving world.
 
@@ -167,6 +222,8 @@ NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL="http://localhost:8006"
 NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL="http://localhost:8007"
 ```
 
+> **_Note:_** The MCP Interaction service operates as a standalone demonstration and doesn't require configuration in the frontend's `.env` file. It runs independently with its own interface and connection settings.
+
 ### Backend Services
 
 The UI depends on multiple backend services, which must be running to enable full functionality. It is recommended to configure these services to run on their respective ports, although customization is possible:
@@ -185,6 +242,8 @@ The UI depends on multiple backend services, which must be running to enable ful
   - *Optional: Needed only if you wish to explore the Capital Markets Scheduled Agents Service.*
 - [Capital Markets - Market Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-chatbot) (Port **8006**)  
   - *Optional: Needed only if you wish to explore the Capital Markets Market Assistant ReAct Agent Chatbot Service.*
+- [Capital Markets - Crypto Assistant ReAct Agent Chatbot Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-capitalmarkets-react-agent-crypto) (Port **8007**)  
+  - *Optional: Needed only if you wish to explore the Capital Markets Crypto Assistant ReAct Agent Chatbot Service.*
 
 *The MongoDB database configuration details are provided within each backend service repository.*
 
