@@ -1,0 +1,686 @@
+{
+  "_id": {
+    "$oid": "687907cfbb048b1ed4ec6599"
+  },
+  "portfolio_allocation": [
+    {
+      "asset": "ETH",
+      "asset_type": "Cryptocurrency",
+      "description": "Ethereum",
+      "allocation_percentage": "20%"
+    },
+    {
+      "asset": "BTC",
+      "asset_type": "Cryptocurrency",
+      "description": "Bitcoin",
+      "allocation_percentage": "45%"
+    },
+    {
+      "asset": "FDUSD",
+      "asset_type": "Stablecoin",
+      "description": "First Digital USD",
+      "allocation_percentage": "10%"
+    },
+    {
+      "asset": "USDC",
+      "asset_type": "Stablecoin",
+      "description": "USD Coin",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "SOL",
+      "asset_type": "Cryptocurrency",
+      "description": "Solana",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "XRP",
+      "asset_type": "Cryptocurrency",
+      "description": "XRP",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "DOGE",
+      "asset_type": "Cryptocurrency",
+      "description": "Dogecoin",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "ADA",
+      "asset_type": "Cryptocurrency",
+      "description": "Cardano",
+      "allocation_percentage": "5%"
+    }
+  ],
+  "report": {
+    "asset_news": [
+      {
+        "asset": "ETH",
+        "headline": "Ethereum's ETH Surges to $3K as ETF Flows, Tokenization Narrative Fuels Rally",
+        "description": "Ethereum's ether (ETH) surged on Thursday to its strongest price in more than four months as bitcoin...",
+        "source": "CoinDesk ·  via Yahoo Finance",
+        "posted": "3 days ago",
+        "link": "https://finance.yahoo.com/news/ethereums-eth-surges-3k-etf-224204469.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.2612026631832123,
+          "negative": 0.021348681300878525,
+          "positive": 0.7174486517906189
+        }
+      },
+      {
+        "asset": "ETH",
+        "headline": "5 Reasons to Buy Ethereum Before 2030",
+        "description": "Its increased network activity will reduce its supply and stabilize its price. New ETFs and declining interest rates should draw in more institutional...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "32 minutes ago",
+        "link": "https://finance.yahoo.com/news/5-reasons-buy-ethereum-2030-110500648.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.45441606640815735,
+          "negative": 0.15079960227012634,
+          "positive": 0.3947843611240387
+        }
+      },
+      {
+        "asset": "ETH",
+        "headline": "Ethereum Breaks Higher With Conviction: No Signs Of A Breakdown Yet",
+        "description": "Bankr pointed out that Ethereum is maintaining its upward momentum, backed by solid volume and a...",
+        "source": "NewsBTC",
+        "posted": "6 days ago",
+        "link": "https://www.newsbtc.com/news/ethereum/ethereum-breaks-higher/",
+        "sentiment_score": {
+          "neutral": 0.037749696522951126,
+          "negative": 0.01759328506886959,
+          "positive": 0.9446570873260498
+        }
+      },
+      {
+        "asset": "ETH",
+        "headline": "Ethereum ETF Inflows Hit 8-Week Streak—Institutions Still Buying",
+        "description": "Data shows the US Ethereum spot ETFs have seen net inflows for eight consecutive weeks now, a sign...",
+        "source": "NewsBTC",
+        "posted": "14 hours ago",
+        "link": "https://www.newsbtc.com/news/ethereum/ethereum-etf-inflows-8-streak-institutions-buying/",
+        "sentiment_score": {
+          "neutral": 0.402713418006897,
+          "negative": 0.10286634415388107,
+          "positive": 0.49442020058631897
+        }
+      },
+      {
+        "asset": "ETH",
+        "headline": "ETH’s $269M inflows signal DeFi boom, can this crypto match ETH’s rally to $4K |...",
+        "description": "As Ethereum (ETH) enjoys a $269 million capital surge, signaling revived interest in decentralized...",
+        "source": "Invezz",
+        "posted": "1 hour ago",
+        "link": "https://invezz.com/news/2025/07/09/eths-269m-inflows-signal-defi-boom-can-this-crypto-match-eths-rally-to-4k/",
+        "sentiment_score": {
+          "neutral": 0.7834668755531311,
+          "negative": 0.016231851652264595,
+          "positive": 0.20030122995376587
+        }
+      },
+      {
+        "asset": "BTC",
+        "headline": "BTC Miner Announces Cloud Mining Platform Offering Up to 6.63% Daily Returns—A...",
+        "description": "You missed Bitcoin’s explosive growth? Don’t worry—the world of crypto is much bigger than just...",
+        "source": "TechBullion",
+        "posted": "3 hours ago",
+        "link": "https://techbullion.com/btc-miner-announces-cloud-mining-platform-offering-up-to-6-63-daily-returns-a-second-chance-after-bitcoins-surge/",
+        "sentiment_score": {
+          "neutral": 0.778303325176239,
+          "negative": 0.014619989320635796,
+          "positive": 0.20707671344280243
+        }
+      },
+      {
+        "asset": "BTC",
+        "headline": "...Says ETH's Pump 'Just The Start' - Grayscale Bitcoin Mini Trust (BTC) Common...",
+        "description": "Leading cryptocurrencies rose on Sunday, while stock futures slipped as President Donald Trump...",
+        "source": "Benzinga",
+        "posted": "2 hours ago",
+        "link": "https://www.benzinga.com/crypto/25/07/46384719/bitcoin-crosses-119000-as-crypto-investors-shrug-off-trump-tariffs-on-mexico-eu-ethereum-dogecoin-spike-analyst-says-eths-pump-just-the-start",
+        "sentiment_score": {
+          "neutral": 0.03683735057711601,
+          "negative": 0.9292672872543335,
+          "positive": 0.03389544412493706
+        }
+      },
+      {
+        "asset": "BTC",
+        "headline": "BTC Treasury Firms Add $280M to War Chests Amid Rising Global Adoption",
+        "description": "H100 Group, Remixpoint and LQWD Technologies secured new funding to boost BTC reserves, signaling...",
+        "source": "Coindesk",
+        "posted": "3 hours ago",
+        "link": "https://www.coindesk.com/markets/2025/07/09/bitcoin-treasury-firms-expand-war-chests-as-global-adoption-rises",
+        "sentiment_score": {
+          "neutral": 0.11047474294900894,
+          "negative": 0.01105480082333088,
+          "positive": 0.8784704804420471
+        }
+      },
+      {
+        "asset": "BTC",
+        "headline": "3 Reasons to Buy Bitcoin Before 2028",
+        "description": "Bitcoin has been on a tremendous run over the past decade and since President Donald Trump got elected. Many investors liken the world's largest...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "3 hours ago",
+        "link": "https://finance.yahoo.com/news/3-reasons-buy-bitcoin-2028-084100277.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.8160370588302612,
+          "negative": 0.016678815707564354,
+          "positive": 0.16728416085243225
+        }
+      },
+      {
+        "asset": "BTC",
+        "headline": "Bitcoin Price Prediction: Corporate Demand Rises Again – DDC’s BTC Stack Grows...",
+        "description": "Bitcoin holds above $108K as DDC boosts BTC holdings by 48%. Corporate accumulation offsets weak ETF...",
+        "source": "Cryptonews",
+        "posted": "22 hours ago",
+        "link": "https://cryptonews.com/news/bitcoin-price-prediction-corporate-demand-rises-again-ddcs-btc-stack-grows-48/",
+        "sentiment_score": {
+          "neutral": 0.07776286453008652,
+          "negative": 0.03458360955119133,
+          "positive": 0.8876535296440125
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "headline": "Aptos Ranks #2 in Native USDT Activity with $30B+ Stablecoin Volume - Can Yellow...",
+        "description": "Aptos ranks #2 in native USDT activity with $30B+ stablecoin volume and 1.1M monthly active users as...",
+        "source": "Cryptonews",
+        "posted": "5 days ago",
+        "link": "https://cryptonews.com/news/aptos-ranks-2-in-native-usdt-activity-with-30b-stablecoin-volume-can-yellow-card-partnership-boost-apt-to-7/",
+        "sentiment_score": {
+          "neutral": 0.8080398440361023,
+          "negative": 0.017512619495391846,
+          "positive": 0.17444758117198944
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "headline": "World’s 6 largest stablecoins: Top cryptocurrencies that maintain a stable price",
+        "description": "While most stablecoins are backed by assets, a smaller category known as algorithmic stablecoins...",
+        "source": "Bankrate ·  via Yahoo Finance",
+        "posted": "2 days ago",
+        "link": "https://finance.yahoo.com/news/world-6-largest-stablecoins-top-151000657.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.9320715665817261,
+          "negative": 0.023184606805443764,
+          "positive": 0.04474377632141113
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "headline": "Chinese Analyst Sees $1 Trillion Stablecoin Market on the Horizon",
+        "description": "Economist Hong Hao sees stablecoin as a structural shift in payments, with HKD-based products...",
+        "source": "Cryptonews",
+        "posted": "19 hours ago",
+        "link": "https://cryptonews.com/news/chinese-analyst-sees-1-trillion-stablecoin-market-on-the-horizon/",
+        "sentiment_score": {
+          "neutral": 0.8474341034889221,
+          "negative": 0.02475016377866268,
+          "positive": 0.12781570851802826
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "headline": "Is It the Summer of the Stablecoin?",
+        "description": "Stablecoins have emerged as the new hot niche of the crypto market and are currently worth $250 billion. Individuals can invest in a stablecoin itself,...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "20 hours ago",
+        "link": "https://finance.yahoo.com/news/summer-stablecoin-082200874.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.8910081386566162,
+          "negative": 0.010711835697293282,
+          "positive": 0.09828002005815506
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "headline": "Binance Developed Code for Trump-Backed USD1 Stablecoin Before CZ’s Pardon Bid",
+        "description": "Binance played a critical role in developing the USD1 stablecoin launched by the Trump family’s...",
+        "source": "Cryptonews",
+        "posted": "3 days ago",
+        "link": "https://cryptonews.com/news/binance-developed-code-for-trump-backed-usd1-stablecoin-before-czs-pardon-bid/",
+        "sentiment_score": {
+          "neutral": 0.8461124897003174,
+          "negative": 0.010557631030678749,
+          "positive": 0.1433299034833908
+        }
+      },
+      {
+        "asset": "USDC",
+        "headline": "Chinese Analyst Sees $1 Trillion Stablecoin Market on the Horizon",
+        "description": "Economist Hong Hao sees stablecoin as a structural shift in payments, with HKD-based products...",
+        "source": "Cryptonews",
+        "posted": "19 hours ago",
+        "link": "https://cryptonews.com/news/chinese-analyst-sees-1-trillion-stablecoin-market-on-the-horizon/",
+        "sentiment_score": {
+          "neutral": 0.8362558484077454,
+          "negative": 0.02678343839943409,
+          "positive": 0.1369606852531433
+        }
+      },
+      {
+        "asset": "USDC",
+        "headline": "Bitcoin & Stablecoin Reserves Diverge On Binance: Liquidity Explosion Brewing?",
+        "description": "On-chain data shows the Binance Exchange Reserve has diverged between Bitcoin and the stablecoins....",
+        "source": "NewsBTC",
+        "posted": "5 hours ago",
+        "link": "https://www.newsbtc.com/bitcoin-news/bitcoin-stablecoin-diverge-binance-explosion/",
+        "sentiment_score": {
+          "neutral": 0.5274503231048584,
+          "negative": 0.43687504529953003,
+          "positive": 0.03567459434270859
+        }
+      },
+      {
+        "asset": "USDC",
+        "headline": "Falcon USD stablecoin loses dollar peg amid liquidity, collateral concerns",
+        "description": "Falcon USD (USDf), a synthetic overcollateralized stablecoin issued by decentralized finance (DeFi) protocol Falcon Finance, dropped below its intended $1 peg on Tuesday amid rising concerns ...",
+        "source": "The Cointelegraph",
+        "posted": "21 hours ago",
+        "link": "https://cointelegraph.com/news/falcon-usd-stablecoin-depegs-liquidity-collateral-concerns",
+        "sentiment_score": {
+          "neutral": 0.01624109409749508,
+          "negative": 0.9639774560928345,
+          "positive": 0.01978152245283127
+        }
+      },
+      {
+        "asset": "USDC",
+        "headline": "World’s 6 largest stablecoins: Top cryptocurrencies that maintain a stable price",
+        "description": "While most stablecoins are backed by assets, a smaller category known as algorithmic stablecoins...",
+        "source": "Bankrate ·  via Yahoo Finance",
+        "posted": "2 days ago",
+        "link": "https://finance.yahoo.com/news/world-6-largest-stablecoins-top-151000657.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.93282151222229,
+          "negative": 0.023213937878608704,
+          "positive": 0.04396461695432663
+        }
+      },
+      {
+        "asset": "USDC",
+        "headline": "Stablecoins go mainstream after Circle's blockbuster IPO. Here's what they do.",
+        "description": "Read more: Can you buy crypto with a credit card? See the pros and cons. Types of stablecoin There...",
+        "source": "Yahoo Finance",
+        "posted": "4 days ago",
+        "link": "https://finance.yahoo.com/news/stablecoins-go-mainstream-after-circles-blockbuster-ipo-heres-what-they-do-152159324.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.9426556825637817,
+          "negative": 0.022855961695313454,
+          "positive": 0.03448837250471115
+        }
+      },
+      {
+        "asset": "SOL",
+        "headline": "Solana Ready For $160 Reclaim? Analysts Say Breakout Is A Matter Of Time",
+        "description": "After recovering from last month’s downtrend, Solana has been attempting to reclaim the crucial $160...",
+        "source": "NewsBTC",
+        "posted": "3 hours ago",
+        "link": "https://www.newsbtc.com/news/solana-ready-for-160-reclaim-analysts-say-breakout-is-a-matter-of-time/",
+        "sentiment_score": {
+          "neutral": 0.288516640663147,
+          "negative": 0.5046984553337097,
+          "positive": 0.2067849487066269
+        }
+      },
+      {
+        "asset": "SOL",
+        "headline": "Solana (SOL) Set For Price Run To $2,700 — But This Condition Must Hold",
+        "description": "Amidst the present market cool-off, Ali Martinez has tipped Solana to embark on a parabolic rally...",
+        "source": "NewsBTC",
+        "posted": "16 hours ago",
+        "link": "https://www.newsbtc.com/news/solana/solana-sol-set-for-price-run-to-2700-but-this-condition-must-hold/",
+        "sentiment_score": {
+          "neutral": 0.8660445809364319,
+          "negative": 0.0239567831158638,
+          "positive": 0.10999869555234909
+        }
+      },
+      {
+        "asset": "SOL",
+        "headline": "Solana Price Prediction: Fast-Track ETF Timeline Emerges – Catalyst for $500...",
+        "description": "The Solana price has declined by 2% today, but could an updated SOL ETF timeline mean that it's...",
+        "source": "Cryptonews",
+        "posted": "19 hours ago",
+        "link": "https://cryptonews.com/news/solana-price-prediction-fast-track-etf-timeline-emerges-catalyst-for-500-sol/",
+        "sentiment_score": {
+          "neutral": 0.049393218010663986,
+          "negative": 0.9368711113929749,
+          "positive": 0.013735698536038399
+        }
+      },
+      {
+        "asset": "SOL",
+        "headline": "Why The Solana Price Could Crash To $95 Before Reaching $200",
+        "description": "The Solana price has fallen by a considerable amount after hitting an all-time high of almost $300...",
+        "source": "NewsBTC",
+        "posted": "2 days ago",
+        "link": "https://www.newsbtc.com/news/solana/solana-price-crash-to-95-200/",
+        "sentiment_score": {
+          "neutral": 0.027829427272081375,
+          "negative": 0.9620199203491211,
+          "positive": 0.010150558315217495
+        }
+      },
+      {
+        "asset": "SOL",
+        "headline": "Solana price rebounds backed by staking ETF launch, DeFi Dev's $100 million...",
+        "description": "REX-Osprey Solana + Staking ETF becomes the first of its kind product to trade in the US. DeFi...",
+        "source": "The Forex Market",
+        "posted": "7 days ago",
+        "link": "https://www.fxstreet.com/cryptocurrencies/news/solana-price-rebounds-backed-by-staking-etf-launch-defi-devs-100-million-offering-for-sol-purchase-202507021722",
+        "sentiment_score": {
+          "neutral": 0.7928608655929565,
+          "negative": 0.012308136560022831,
+          "positive": 0.1948310136795044
+        }
+      },
+      {
+        "asset": "XRP",
+        "headline": "Pundit Says XRP’s Rise To $1,000 Will Happen A Lot Sooner Than Anticipated",
+        "description": "XRP might be currently trading around $2, but its path to double and four digits may be faster than...",
+        "source": "NewsBTC",
+        "posted": "4 days ago",
+        "link": "https://www.newsbtc.com/analysis/xrp/xrps-to-1000-will-happen-soon/",
+        "sentiment_score": {
+          "neutral": 0.8507216572761536,
+          "negative": 0.02324329875409603,
+          "positive": 0.12603503465652466
+        }
+      },
+      {
+        "asset": "XRP",
+        "headline": "Why XRP Is Surging Today",
+        "description": "XRP's valuation is soaring today amid a big bullish uptick for the cryptocurrency market. Bitcoin has set a new record high today, crossing the...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "2 days ago",
+        "link": "https://finance.yahoo.com/news/why-xrp-surging-today-205922793.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.09304187446832657,
+          "negative": 0.025659659877419472,
+          "positive": 0.8812984228134155
+        }
+      },
+      {
+        "asset": "XRP",
+        "headline": "XRP Price Prediction – Crypto Analyst Says Wall Street’s Full-Scale Entry is...",
+        "description": "The XRP price has jumped by 5% in the past 24 hours, but are analysts correct to say that recent SEC...",
+        "source": "Cryptonews",
+        "posted": "6 days ago",
+        "link": "https://cryptonews.com/news/xrp-price-prediction-crypto-analyst-says-wall-streets-full-scale-entry-is-just-beginning-100-xrp-next-target/",
+        "sentiment_score": {
+          "neutral": 0.7437935471534729,
+          "negative": 0.030534520745277405,
+          "positive": 0.2256719470024109
+        }
+      },
+      {
+        "asset": "XRP",
+        "headline": "XRP Price Surge to $3+ Locked In? On-Chain Signals Flash Green",
+        "description": "The bull market gains may not have been exhausted yet. On-chain metrics position XRP price well for...",
+        "source": "Cryptonews",
+        "posted": "19 hours ago",
+        "link": "https://cryptonews.com/news/xrp-price-prediction-on-chain-signals-flash-green/",
+        "sentiment_score": {
+          "neutral": 0.71352618932724,
+          "negative": 0.02783794328570366,
+          "positive": 0.25863587856292725
+        }
+      },
+      {
+        "asset": "XRP",
+        "headline": "Is Chainlink's Latest Move Bearish For XRP (Ripple)?",
+        "description": "Chainlink just initiated a new and fully automated regulatory compliance engine. One of XRP's big appeals to institutional capital holders is its...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "16 hours ago",
+        "link": "https://finance.yahoo.com/news/chainlinks-latest-move-bearish-xrp-114500849.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.8883582353591919,
+          "negative": 0.01737958751618862,
+          "positive": 0.09426219016313553
+        }
+      },
+      {
+        "asset": "DOGE",
+        "headline": "Dogecoin Flashes Bullish Continuation After Bounce at 16-Cents on Six Times...",
+        "description": "Dogecoin surged 5% in the last 24 hours, climbing from $0.163 to $0.171 amid rising institutional...",
+        "source": "CoinDesk ·  via Yahoo Finance",
+        "posted": "7 hours ago",
+        "link": "https://finance.yahoo.com/news/dogecoin-flashes-bullish-continuation-bounce-043536374.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.03923501446843147,
+          "negative": 0.021226394921541214,
+          "positive": 0.9395386576652527
+        }
+      },
+      {
+        "asset": "DOGE",
+        "headline": "Dogecoin Is Down 46%. Should You Buy the Dip?",
+        "description": "Nearly 5 billion Dogecoins are mined each year, and there's no limit to the total number that can be made. Dogecoin's value rises and falls solely on the...",
+        "source": "Motley Fool ·  via Yahoo Finance",
+        "posted": "6 days ago",
+        "link": "https://finance.yahoo.com/news/dogecoin-down-46-buy-dip-122000429.html?fr=sycsrp_catchall",
+        "sentiment_score": {
+          "neutral": 0.04471359774470329,
+          "negative": 0.9473786950111389,
+          "positive": 0.007907642982900143
+        }
+      },
+      {
+        "asset": "DOGE",
+        "headline": "Why could dog-meme coins DOGE and SHIB rally?",
+        "description": "Dog-themed meme coins Dogecoin (DOGE) and Shiba Inu (SHIB) are showing signs of a potential rally as bullish momentum builds across the market. DOGE has...",
+        "source": "The Forex Market",
+        "posted": "7 days ago",
+        "link": "https://www.fxstreet.com/cryptocurrencies/news/dog-based-meme-coins-doge-and-shib-hint-at-a-rally-as-bullish-bets-and-holders-accumulation-increase-202507070634",
+        "sentiment_score": {
+          "neutral": 0.7721533179283142,
+          "negative": 0.02124057523906231,
+          "positive": 0.20660613477230072
+        }
+      },
+      {
+        "asset": "DOGE",
+        "headline": "Dogecoin (DOGE) Soars As Bitcoin Rally Ignites Memecoin Frenzy",
+        "description": "Dogecoin DOGE/USD, the original memecoin, is surging Friday afternoon, capturing significant gains...",
+        "source": "Benzinga",
+        "posted": "2 days ago",
+        "link": "https://www.benzinga.com/trading-ideas/movers/25/07/46375539/dogecoin-doge-soars-as-bitcoin-rally-ignites-memecoin-frenzy",
+        "sentiment_score": {
+          "neutral": 0.43560269474983215,
+          "negative": 0.0193687304854393,
+          "positive": 0.545028567314148
+        }
+      },
+      {
+        "asset": "DOGE",
+        "headline": "Why Dogecoin Is Soaring Today",
+        "description": "Dogecoin (DOGE 9.25%) is on the rise today, up 7.3% over the past 24 hours as of 3 p.m. ET. The rise comes as the S&P 500 gained 0.3% and Bitcoin gained...",
+        "source": "The Motley Fool",
+        "posted": "3 days ago",
+        "link": "https://www.fool.com/investing/2025/07/10/why-dogecoin-is-soaring-today/",
+        "sentiment_score": {
+          "neutral": 0.06913677603006363,
+          "negative": 0.014971595257520676,
+          "positive": 0.915891706943512
+        }
+      },
+      {
+        "asset": "ADA",
+        "headline": "Cardano Price Explodes 30% In Past Week — Analyst Calls $5 Next Market Top",
+        "description": "Before its recent price surge, the altcoin had been moving mostly sideways within the $0.5 and $0.6...",
+        "source": "NewsBTC",
+        "posted": "1 day ago",
+        "link": "https://www.newsbtc.com/news/cardano/cardano-price-explodes-in-past-week-next-top/",
+        "sentiment_score": {
+          "neutral": 0.6278981566429138,
+          "negative": 0.27410468459129333,
+          "positive": 0.09799717366695404
+        }
+      },
+      {
+        "asset": "ADA",
+        "headline": "The Last Time This Happened Cardano Rose 55%, ADA Analyst Makes Bold Prediction",
+        "description": "Cardano has been one of the best performing assets on low timeframes. The top cryptocurrency is...",
+        "source": "NewsBTC",
+        "posted": "3 days ago",
+        "link": "https://www.newsbtc.com/news/cardano/the-last-time-this-happened-cardano-rose-55-ada-analyst-makes-bold-prediction/",
+        "sentiment_score": {
+          "neutral": 0.6893173456192017,
+          "negative": 0.0163203626871109,
+          "positive": 0.294362336397171
+        }
+      },
+      {
+        "asset": "ADA",
+        "headline": "What's Going On With Cardano (ADA) Friday?",
+        "description": "Cardano ADA/USD is experiencing a sharp rally Friday morning as the altcoin is trending across social media. The impressive jump comes in sympathy with...",
+        "source": "Benzinga",
+        "posted": "3 days ago",
+        "link": "https://www.benzinga.com/trading-ideas/movers/25/07/46368544/whats-going-on-with-cardano-ada-friday",
+        "sentiment_score": {
+          "neutral": 0.05858420953154564,
+          "negative": 0.02366119995713234,
+          "positive": 0.917754590511322
+        }
+      },
+      {
+        "asset": "ADA",
+        "headline": "Cardano bulls aim for $1.00 as interest in ADA spikes: Will momentum hold?",
+        "description": "Cardano's DeFi Total Value Locked sharply rises to $326 million, underscoring steady investor...",
+        "source": "The Forex Market",
+        "posted": "2 days ago",
+        "link": "https://www.fxstreet.com/cryptocurrencies/news/cardano-bulls-aim-for-100-as-interest-in-ada-spikes-will-momentum-hold-202507111638",
+        "sentiment_score": {
+          "neutral": 0.05189230293035507,
+          "negative": 0.05389802157878876,
+          "positive": 0.8942096829414368
+        }
+      },
+      {
+        "asset": "ADA",
+        "headline": "Analyst Predicts 2,000% Cardano Rally: ‘Fractal Is Too Clean To Ignore’",
+        "description": "Speaking to his followers, the analyst opened by noting that ADA’s weekly chart “looks so similar”...",
+        "source": "NewsBTC",
+        "posted": "2 hours ago",
+        "link": "https://www.newsbtc.com/news/cardano/analyst-predicts-2000-cardano-rally/",
+        "sentiment_score": {
+          "neutral": 0.8946224451065063,
+          "negative": 0.03386873006820679,
+          "positive": 0.07150883227586746
+        }
+      }
+    ],
+    "asset_news_sentiments": [
+      {
+        "asset": "ETH",
+        "final_sentiment_score": 0.7752,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.5503,
+        "average_negative": 0.0618,
+        "average_neutral": 0.3879,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Ethereum (ETH) is Positive based on recent news coverage. Key insights: - Ethereum's price has surged above $3,000, driven by increased network activity, new ETF flows, and a favorable tokenization narrative. - Analysts see further upside potential for ETH, citing factors like reduced supply and growing institutional interest. - The cryptocurrency is maintaining its upward momentum, with solid trading volume and no signs of a breakdown. Recommendation: Given the positive sentiment and outlook, investors may consider..."
+      },
+      {
+        "asset": "BTC",
+        "final_sentiment_score": 0.6211,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.4349,
+        "average_negative": 0.2012,
+        "average_neutral": 0.3639,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for BTC (Bitcoin) is Positive based on the recent news coverage. The news highlights increased adoption and investment in Bitcoin, with reports of new cloud mining platforms offering attractive returns, and major firms boosting their BTC reserves. This suggests a bullish outlook for Bitcoin, and investors may consider increasing their exposure to BTC in their crypto portfolios."
+      },
+      {
+        "asset": "FDUSD",
+        "final_sentiment_score": 0.5589,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.1177,
+        "average_negative": 0.0173,
+        "average_neutral": 0.8649,
+        "confidence_level": 1,
+        "sentiment_summary": "The recent news coverage on FDUSD (First Digital USD) has been predominantly positive, with a strong focus on the growth and potential of the stablecoin market. The news highlights the increasing adoption and usage of stablecoins, including FDUSD, as a stable and reliable form of digital currency. Investors can take this as a positive signal and consider FDUSD as a potential addition to their cryptocurrency portfolio, given the overall positive sentiment and the projected growth of the stablecoin market."
+      },
+      {
+        "asset": "USDC",
+        "final_sentiment_score": 0.3815,
+        "sentiment_category": "Negative",
+        "total_news": 5,
+        "average_positive": 0.0542,
+        "average_negative": 0.2947,
+        "average_neutral": 0.6511,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for USDC (USD Coin) is Negative based on recent news coverage. While a Chinese analyst sees a $1 trillion stablecoin market on the horizon, there are concerns about liquidity and collateral issues with other stablecoins like Falcon USD. Investors should closely monitor the stability and regulatory landscape for USDC and other stablecoins, as these factors can significantly impact their crypto portfolios."
+      },
+      {
+        "asset": "SOL",
+        "final_sentiment_score": 0.2901,
+        "sentiment_category": "Negative",
+        "total_news": 5,
+        "average_positive": 0.1071,
+        "average_negative": 0.488,
+        "average_neutral": 0.4049,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Solana (SOL) is Negative based on the recent news coverage. While some articles suggest a potential price surge to $2,700 or $500, the majority of the news highlights the current market cooldown and the challenges Solana faces. Investors should exercise caution and closely monitor the situation as the cryptocurrency market remains volatile. Diversification and risk management are recommended when considering adjustments to a crypto portfolio."
+      },
+      {
+        "asset": "XRP",
+        "final_sentiment_score": 0.6586,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.3172,
+        "average_negative": 0.0249,
+        "average_neutral": 0.6579,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for XRP is Positive based on recent news coverage. Analysts are bullish on XRP's price potential, with predictions of the cryptocurrency reaching $1,000 sooner than anticipated. The recent surge in XRP's valuation is attributed to the broader bullish trend in the crypto market, particularly Bitcoin's new record highs. While some uncertainty remains around the ongoing SEC case, the news suggests that XRP may continue its upward trajectory, presenting potential opportunities for investors."
+      },
+      {
+        "asset": "DOGE",
+        "final_sentiment_score": 0.666,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.523,
+        "average_negative": 0.2048,
+        "average_neutral": 0.2722,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Dogecoin (DOGE) is Positive based on recent news coverage. The news articles highlight a bullish continuation for DOGE, with the cryptocurrency surging 5% in the last 24 hours. However, there are also concerns about DOGE's unlimited supply and its potential impact on the coin's long-term value. Investors should closely monitor the market trends and developments around DOGE before making any portfolio adjustments."
+      },
+      {
+        "asset": "ADA",
+        "final_sentiment_score": 0.6904,
+        "sentiment_category": "Positive",
+        "total_news": 5,
+        "average_positive": 0.4552,
+        "average_negative": 0.0804,
+        "average_neutral": 0.4645,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Cardano (ADA) is Positive based on recent news coverage. Analysts are bullish on ADA, predicting the cryptocurrency could reach $5 as its price has surged over 30% in the past week. The news highlights Cardano's strong performance and potential for further gains, which could be positive for investors looking to add ADA to their crypto portfolios."
+      }
+    ],
+    "overall_news_diagnosis": "Based on the comprehensive news sentiment analysis for the cryptocurrency portfolio, the overall diagnosis is as follows: The portfolio exhibits a mix of positive and negative sentiment across the various crypto assets, which aligns with the investor's \"BALANCED\" risk profile that seeks a balance between growth and stability. The positive sentiment for assets like ETH, BTC, FDUSD, XRP, DOGE, and ADA suggests potential upside opportunities, driven by factors such as increased adoption, institutional investment, and favorable market conditions. However, the negative sentiment for USDC and SOL highlights the need for caution and close monitoring, as these assets face challenges related to liquidity, collateral issues, and market volatility. The portfolio-level implications suggest a relatively balanced risk-return profile, with the potential for growth tempered by pockets of uncertainty. To align with the investor's objectives and risk tolerance, a diversified approach that capitalizes on the positive sentiment while managing the risks associated with the negatively viewed assets is recommended. The recent news coverage provides several key highlights to support this analysis. The surge in ETH's price above $3,000, the bullish outlook for BTC and the stablecoin market, and the potential for XRP and ADA to reach new highs are all positive signals that could contribute to the overall portfolio performance. Conversely, the concerns around USDC's liquidity and the market cooldown for SOL warrant close attention and potential adjustments to the portfolio composition. Overall, the news sentiment analysis suggests that the investor can consider maintaining a balanced exposure to the portfolio, with a focus..."
+  },
+  "updates": [
+    "Starting the market news workflow.",
+    "[Tool] Check crypto portfolio allocation.",
+    "[Tool] Fetching crypto news articles.",
+    "[Tool] Calculating crypto news sentiment analysis.",
+    "[Action] Using risk profile: BALANCED - Mix of growth and stability, moderate risk",
+    "[Action] Using agent profile: CRYPTO_NEWS_AGENT - Cryptocurrency News Portfolio Manager Analyst",
+    "[Tool] Generating news sentiment summaries."
+  ],
+  "timestamp": {
+    "$date": "2025-07-17T14:25:14.336Z"
+  },
+  "date_string": "20250717",
+  "report_embedding": [
+
+  ]
+}

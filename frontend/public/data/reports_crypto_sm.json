@@ -1,0 +1,3196 @@
+{
+  "_id": {
+    "$oid": "687a2df29b2bf8639806710c"
+  },
+  "portfolio_allocation": [
+    {
+      "asset": "BTC",
+      "asset_type": "Cryptocurrency",
+      "description": "Bitcoin",
+      "allocation_percentage": "45%"
+    },
+    {
+      "asset": "ETH",
+      "asset_type": "Cryptocurrency",
+      "description": "Ethereum",
+      "allocation_percentage": "20%"
+    },
+    {
+      "asset": "FDUSD",
+      "asset_type": "Stablecoin",
+      "description": "First Digital USD",
+      "allocation_percentage": "10%"
+    },
+    {
+      "asset": "USDC",
+      "asset_type": "Stablecoin",
+      "description": "USD Coin",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "XRP",
+      "asset_type": "Cryptocurrency",
+      "description": "XRP",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "SOL",
+      "asset_type": "Cryptocurrency",
+      "description": "Solana",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "DOGE",
+      "asset_type": "Cryptocurrency",
+      "description": "Dogecoin",
+      "allocation_percentage": "5%"
+    },
+    {
+      "asset": "ADA",
+      "asset_type": "Cryptocurrency",
+      "description": "Cardano",
+      "allocation_percentage": "5%"
+    }
+  ],
+  "report": {
+    "asset_subreddits": [
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "/r/CoinBase/comments/1ltgtsc/huge_milestone_for_bitcoin/",
+        "author": "Scftrading",
+        "author_fullname": "t2_1ppe0omvvj",
+        "title": "Huge Milestone for Bitcoin!!!:",
+        "description": "",
+        "create_at_utc": "2025-07-07T00:49:34",
+        "score": 3,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n1qdwhl",
+            "author": "Impossible-Bat-7729",
+            "body": "In the long term, BTC get the best performance!!!",
+            "score": 2,
+            "create_at_utc": "2025-07-07T01:14:52"
+          },
+          {
+            "id": "n1qa9jx",
+            "author": "Ir0nman123",
+            "body": "Watch it tank this week just because.",
+            "score": 3,
+            "create_at_utc": "2025-07-07T00:53:04"
+          }
+        ],
+        "ups": 3,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7591002583503723,
+          "negative": 0.011284110136330128,
+          "positive": 0.2296156883239746
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lzsroe/predictions_on_btc_action_in_immediate_future/",
+        "author": "No_Letter7795",
+        "author_fullname": "t2_xr5f7ql35",
+        "title": "Predictions on BTC action in immediate future?",
+        "description": "Okay, so everyone's probably noticed a pretty sharp rise in BTC past 5 days (9%) and freaking 26% UP this YTD.\n\nI haven't paid attention to crypto in awhile so when I checked in yesterday I was scrambling to figure out WTF happened, this is all I could figure out so far:\n\n* July 14 bills passed to help stablecoins and digital assets\n* Senate passed GENIUS Act, might have boosted optimism from Strategic Bitcoin Reserve exec order from March\n* Corporate coin holdings jumped during Q2 2025\n* I'm assuming- general weakening of USD and Fed rate cuts are driving BTC price, + inflation hedge\n* According to some fin site, 112k breakout triggered bots buy signals\n\nSo basically: massive ETF inflow, regulatory optimism, corporate spike in holdings, and bots getting triggered at 112k?\n\nMy prediction is there's a huge bullrun going right now and it'll last at least a few months, especially when it clearly broke the 115k resistance pretty easily. If more corps join the rally and there's no weird downside, it seems pretty likely it could rally up to 130k. Also thinking that a halving event is gonna strengthen that rally, but I haven't seen (yet) any reason it could go past 140k.\n\nThoughts? Mostly agree?",
+        "create_at_utc": "2025-07-14T17:31:33",
+        "score": 1,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n3703xk",
+            "author": "MaleficentPrune652",
+            "body": "I’ve seen similar surges in cross-chain projects lately, and it’s an interesting time. I’m keeping an eye on how the mix of regulatory and market factors plays out in the background.",
+            "score": 1,
+            "create_at_utc": "2025-07-15T02:43:16"
+          },
+          {
+            "id": "n34nuzn",
+            "author": "bobbyv137",
+            "body": "$446,149. Q4.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T19:18:02"
+          },
+          {
+            "id": "n34lcdg",
+            "author": "Gullible-Tie7535",
+            "body": "Need to be cautious at this point, big dump on its way",
+            "score": 2,
+            "create_at_utc": "2025-07-14T19:06:13"
+          }
+        ],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3488180935382843,
+          "negative": 0.024916566908359528,
+          "positive": 0.6262653470039368
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.cointribune.com/en/no-more-straight-climb-analysts-spot-cooling-signals-in-bitcoin-market/",
+        "author": "KIG45",
+        "author_fullname": "t2_gu84jx3n",
+        "title": "Bitcoin Nears Record High on Growing Market Optimism and Institutional Support",
+        "description": "",
+        "create_at_utc": "2025-07-03T18:38:20",
+        "score": 15,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n16ko6e",
+            "author": "MichaelAischmann",
+            "body": "Let's break that ATH.",
+            "score": 1,
+            "create_at_utc": "2025-07-03T19:35:45"
+          },
+          {
+            "id": "n169dvr",
+            "author": "coinfeeds-bot",
+            "body": "tldr; Bitcoin has surged past $110,000, nearing its all-time high of $111,970, driven by growing market optimism and institutional support. The Fear and Greed Index has risen to 73, indicating bullish sentiment. Long-term holders now control a record",
+            "score": 1,
+            "create_at_utc": "2025-07-03T18:40:23"
+          }
+        ],
+        "ups": 15,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.11648418754339218,
+          "negative": 0.01161922886967659,
+          "positive": 0.871896505355835
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "Bitcoin",
+        "url": "https://i.redd.it/n3odwchl4gaf1.jpeg",
+        "author": "yoobermcruber",
+        "author_fullname": "t2_jsce54bw",
+        "title": "They will never admit it",
+        "description": "",
+        "create_at_utc": "2025-07-02T11:28:07",
+        "score": 106,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n0xnjk1",
+            "author": "Eozu98",
+            "body": "I want to shift completely to Bitcoin, but selling at this amount of loss hurts so bad. Will probably hurt more in the future if I dont do it.",
+            "score": 1,
+            "create_at_utc": "2025-07-02T12:51:57"
+          },
+          {
+            "id": "n0xgym3",
+            "author": "Cryptomuscom",
+            "body": "25 cards deep in denial",
+            "score": 1,
+            "create_at_utc": "2025-07-02T12:11:27"
+          }
+        ],
+        "ups": 106,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8095129728317261,
+          "negative": 0.1439627707004547,
+          "positive": 0.04652423784136772
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lzuj4p/bitcoin_bull_run_analysis_key_levels_setups_to/",
+        "author": "Ill-Medicine-7496",
+        "author_fullname": "t2_ffiycx0y",
+        "title": "Bitcoin Bull Run Analysis: Key Levels & Setups to Watch",
+        "description": "Bitcoin’s heating up and 4H chart is packed with action to analyze!  BTC/USDT sits at $120,181.14, up 1.07% with a 24h range of $118,232.47 to $123,214.52. The price is riding the 20 EMA, recently breaking above the 5 EMA and 10 EMA, signaling strong bullish momentum. Volume climbed and recent candle piercing $120K suggests more upside. I’m eyeing $115,411 as support and $123,214 as the next resistance— a break could push us to $125K. This setup’s got me excited to trade, and it ties perfectly into the Bitget's KCGI 2025 trading competition with $6M rewardpool, where we can leverage these moves for more than just profits! What’s your take on this analysis? Drop your TA below! \n With BTC looking this strong, I’m tempted to team up with some trading pals to hit the leaderboards, focusing on futures. Lets build a Reddit squad to crush it together! Got a team yet? Share your plans!",
+        "create_at_utc": "2025-07-14T18:35:46",
+        "score": 1,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n34snqz",
+            "author": "Ill-Medicine-7496",
+            "body": "Not a spam bro just shared EMA based analysis there could be many other technicalities based too. And looking for other traders pov to get an idea or join team with..",
+            "score": 0,
+            "create_at_utc": "2025-07-14T19:41:23"
+          },
+          {
+            "id": "n34golp",
+            "author": "justletmesignupalre",
+            "body": "Nice spam bro",
+            "score": 2,
+            "create_at_utc": "2025-07-14T18:43:36"
+          }
+        ],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.08500204235315323,
+          "negative": 0.014546863734722137,
+          "positive": 0.9004510045051575
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.coindesk.com/markets/2025/07/14/bitcoin-market-top-is-nowhere-near-say-analysts-as-price-pauses-at-120k",
+        "author": "Every_Hunt_160",
+        "author_fullname": "t2_7a50dm3i",
+        "title": "Bitcoin (BTC) Price News: Pause at $120K, But Top Is Nowhere Near, Analysts Say",
+        "description": "",
+        "create_at_utc": "2025-07-15T03:11:33",
+        "score": 2,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n37clna",
+            "author": "BlazedAndConfused",
+            "body": "What the fuck is Solana doing? Having a fucking sip of tea? That lazy ass better keep up with ETH and BTC. I got bills to ignore!",
+            "score": 1,
+            "create_at_utc": "2025-07-15T04:06:09"
+          },
+          {
+            "id": "n376pn3",
+            "author": "pcm2a",
+            "body": "The \"Analyst\" can't retire at the current price.",
+            "score": 1,
+            "create_at_utc": "2025-07-15T03:25:29"
+          },
+          {
+            "id": "n374nsf",
+            "author": "Every_Hunt_160",
+            "body": "As an \"Analyst\", this is what my hopium tells me too!!",
+            "score": 2,
+            "create_at_utc": "2025-07-15T03:11:52"
+          }
+        ],
+        "ups": 2,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8353978991508484,
+          "negative": 0.1392364352941513,
+          "positive": 0.02536563016474247
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lvjjpv/btcusds_strong_wednesday_surge_my_takeposition/",
+        "author": "Bitter-Entrance1126",
+        "author_fullname": "t2_1he1ezw9cv",
+        "title": "BTCUSD's Strong Wednesday Surge – My Take/Position",
+        "description": "Hey r/cryptomarkets,\n\nHope you're all having a solid trading day! Just wanted to share what I'm seeing with BTCUSD right now and get some of your seasoned takes.\n\nLooking at my chart (It's a 15-minute timeframe for clear price action), Bitcoin had a bit of a reset overnight, testing what looks like a pretty robust support level around the 108,400 mark. From that point, the buyers stepped in aggressively.\n\nWe've seen a really strong push upwards, decisively breaking out of what was a prior consolidation range/resistance zone (roughly 108,700-108,800). The current momentum is undeniable, and the candle formations are looking pretty healthy for the bulls.\n\nMy bias here is bullish, given the clean break and follow-through. I entered a couple of long positions earlier today, one at 108,634.84 and another at 108,642.04. Both are sitting in decent profit right now, which is always nice! My eyes are set on a target around 110,478.61, riding this current upward wave.\n\nWhat are your technical observations on this move? Are you seeing strong volume confirming the breakout? Any key resistance levels you're watching further up? Always great to hear diverse perspectives on the market structure.\n\nCheers!",
+        "create_at_utc": "2025-07-09T14:00:54",
+        "score": 0,
+        "num_comments": 1,
+        "comments": [],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.057955410331487656,
+          "negative": 0.017832327634096146,
+          "positive": 0.9242122769355774
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://btc-news.today/bitcoin-bull-run-has-room-to-run-with-multiple-hints-from-mayer/",
+        "author": "Comprehensive_Ad2714",
+        "author_fullname": "t2_6cqc8ags",
+        "title": "Bitcoin Bull Run has room to run",
+        "description": "",
+        "create_at_utc": "2025-07-08T09:31:05",
+        "score": 38,
+        "num_comments": 37,
+        "comments": [
+          {
+            "id": "n205lly",
+            "author": "DragonfruitNo8894",
+            "body": "institutions are keeping their eyes closed to BTC. Already KYC and other regulated stuff has been brought up and I see many posts like this by u\\/joni1621 so how it will be later once they're in too?",
+            "score": 6,
+            "create_at_utc": "2025-07-08T15:46:54"
+          },
+          {
+            "id": "n1zsdtd",
+            "author": "ThatChrisGuy7",
+            "body": "Oh idk it was 50k a year ago. I’d say 100% gain in a year is a bull run",
+            "score": 2,
+            "create_at_utc": "2025-07-08T14:43:56"
+          },
+          {
+            "id": "n1ytluk",
+            "author": "nugymmer",
+            "body": "Poor dude stuck to alts. Let's face it, alts are a mug's game. I know. I made too many mistakes and don't deserve money.\n\nIf I invest it will be into BTC only. I'm not wasting my time on these \"projects\" because I know that, for whatever reason, some",
+            "score": 2,
+            "create_at_utc": "2025-07-08T11:20:17"
+          }
+        ],
+        "ups": 38,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7934374809265137,
+          "negative": 0.15959542989730835,
+          "positive": 0.04696717485785484
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lzb8zq/possible_btc_short_squeeze/",
+        "author": "AnteaterOk8476",
+        "author_fullname": "t2_9wt8p796",
+        "title": "Possible BTC short squeeze?",
+        "description": "Hey all,\n\nBitcoin’s hitting new highs with strong buying volume but the 24-hour long and short data shows retail traders are mostly short while whales stay heavily long. Since retail is mostly short here my guess is we’re probably getting shafted as usual. If BTC holds support and funding rates turn favorable there could be a short squeeze that pushes prices higher but history tells me retail often gets caught on the wrong side.\n\nRetail shorts get squeezed hard when prices move against them but retail longs can also get hit if whales start unloading or the market turns. Either way retail traders will most likely end up on the losing side because they don’t have the same information or patience as the big players.\n\nWhat are your thoughts?",
+        "create_at_utc": "2025-07-14T02:48:03",
+        "score": 0,
+        "num_comments": 5,
+        "comments": [
+          {
+            "id": "n30mzg7",
+            "author": "AnteaterOk8476",
+            "body": "On a separate note, BTC is up 3 grand from when I posted this comment.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:47:05"
+          },
+          {
+            "id": "n30loun",
+            "author": "AnteaterOk8476",
+            "body": "Good catch, I’ll look into it",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:37:59"
+          },
+          {
+            "id": "n30lieh",
+            "author": "AnteaterOk8476",
+            "body": "I can’t post a screenshot here, but you can Google long v short data for btcusdt",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:36:42"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3589746057987213,
+          "negative": 0.05191719904541969,
+          "positive": 0.5891081690788269
+        }
+      },
+      {
+        "asset": "BTC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lznf9z/im_confused/",
+        "author": "Express-Let391",
+        "author_fullname": "t2_uhokht7hr",
+        "title": "I’m confused",
+        "description": "I’m confused in the best type of way everybody was waiting for ALT season where bitcoin losses steam and ALTs take off. Now everything has kicked into high gear again, is this different than past cycles. I’m happy I’m making money either way just confused as to why.",
+        "create_at_utc": "2025-07-14T14:10:48",
+        "score": 0,
+        "num_comments": 5,
+        "comments": [
+          {
+            "id": "n36v96c",
+            "author": "TheBot666",
+            "body": "Try 10 million",
+            "score": 1,
+            "create_at_utc": "2025-07-15T02:14:05"
+          },
+          {
+            "id": "n338yyj",
+            "author": "CuriousGeorge22_02",
+            "body": "Institutional money is pushing BTC up. So far they didn't show any interest in alts (apart from ETH). We need BTC bulls to start rotating profits into alts and that isn't happening right now",
+            "score": 5,
+            "create_at_utc": "2025-07-14T15:20:36"
+          },
+          {
+            "id": "n3354e0",
+            "author": "Muted-Main890",
+            "body": "alts have not taken off at all, look at the bitcoin dominance, though if it happens only the good/popular ones will be worthy of buying",
+            "score": 2,
+            "create_at_utc": "2025-07-14T15:02:04"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.49754685163497925,
+          "negative": 0.032155562192201614,
+          "positive": 0.47029751539230347
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoMarkets",
+        "url": "https://youtu.be/5ij7f2aeZEA?si=ZjpKwrF6qhVPditG&utm_source=ZTQxO",
+        "author": "Yhatcha",
+        "author_fullname": "t2_731yxw2e",
+        "title": "Do you think still eth is valid source of invest?",
+        "description": "",
+        "create_at_utc": "2025-07-09T19:36:42",
+        "score": 0,
+        "num_comments": 3,
+        "comments": [
+          {
+            "id": "n29urw4",
+            "author": "SFXMAC",
+            "body": "except you can tell its AI straight away.",
+            "score": 1,
+            "create_at_utc": "2025-07-09T23:53:40"
+          },
+          {
+            "id": "n2908s8",
+            "author": "Yhatcha",
+            "body": "script is very good actually. spend 1k dollars of token to write 5M characters of content from verified sources like WHO, Forbes etc...",
+            "score": 1,
+            "create_at_utc": "2025-07-09T21:14:14"
+          },
+          {
+            "id": "n28x7fh",
+            "author": "SFXMAC",
+            "body": "oh yay AI voice, script and visual. It must be good",
+            "score": 1,
+            "create_at_utc": "2025-07-09T21:00:12"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8474612832069397,
+          "negative": 0.010139396414160728,
+          "positive": 0.14239932596683502
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lu26gd/what_do_you_guys_think_ethereum_will_do_over_the/",
+        "author": "Life_Oil_7718",
+        "author_fullname": "t2_jujfi604h",
+        "title": "What do you guys think Ethereum will do over the next few months to a year?",
+        "description": "I have some ethereum and thinking about selling some of it off to have extra cash in my pocket. I’m down 16%, entered too early when I wasn’t familiar enough in the market. ",
+        "create_at_utc": "2025-07-07T18:37:44",
+        "score": 0,
+        "num_comments": 8,
+        "comments": [
+          {
+            "id": "n1x8s6w",
+            "author": "The-Blue-Vest",
+            "body": "People are being very bullish rn. Lots of institutional money going to it. Large ETH etf buying",
+            "score": 1,
+            "create_at_utc": "2025-07-08T03:13:18"
+          },
+          {
+            "id": "n1x7d8s",
+            "author": "Best_Day_3041",
+            "body": "Crush all our hopes and dreams as it always does",
+            "score": 1,
+            "create_at_utc": "2025-07-08T03:04:13"
+          },
+          {
+            "id": "n1wwqci",
+            "author": "PineCorp",
+            "body": "It will go up at the benefit of all the other altcoins but it's days are numbered. If bitcoin is gold then eth is silver. Utility is the next wave to push crypto forward.",
+            "score": 1,
+            "create_at_utc": "2025-07-08T02:00:34"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3254399597644806,
+          "negative": 0.641312837600708,
+          "positive": 0.033247120678424835
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://blockchainreporter.net/ethereum-approaches-3k-as-on-chain-data-shows-mixed-holder-positions-near-key-resistance/?utm_source=coingecko&utm_content=coingecko&utm_campaign=coingecko&utm_medium=coingecko&utm_term=coingecko",
+        "author": "KIG45",
+        "author_fullname": "t2_gu84jx3n",
+        "title": "Ethereum Approaches $3K As On-Chain Data Shows Mixed Holder Positions Near Key Resistance",
+        "description": "",
+        "create_at_utc": "2025-07-11T19:30:24",
+        "score": 26,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n2m4jhx",
+            "author": "partymsl",
+            "body": "Goes for all alts.",
+            "score": 0,
+            "create_at_utc": "2025-07-11T20:32:00"
+          },
+          {
+            "id": "n2m4f8c",
+            "author": "partymsl",
+            "body": "Always fucking ETH Foundation man...",
+            "score": 0,
+            "create_at_utc": "2025-07-11T20:31:24"
+          },
+          {
+            "id": "n2lzuj2",
+            "author": "Hqjjciy6sJr",
+            "body": "New ATH from Bitcoin and ETH struggles to hold 3k LOL truly pathetic.",
+            "score": -1,
+            "create_at_utc": "2025-07-11T20:09:04"
+          }
+        ],
+        "ups": 26,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.281486839056015,
+          "negative": 0.09808843582868576,
+          "positive": 0.620424747467041
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://a2zcryptocurrencies.com/rekt-capital-bitcoin-rally-5-weeks-before-making-2025-high/",
+        "author": "emperordas",
+        "author_fullname": "t2_1jal4grjrr",
+        "title": "Ethereum Market Dominance Surges Above 10%, First Uptrend Since March 2020 - a2z Cryptocurrencies",
+        "description": "",
+        "create_at_utc": "2025-07-17T06:26:24",
+        "score": 181,
+        "num_comments": 27,
+        "comments": [
+          {
+            "id": "n3px4jm",
+            "author": "Evening_Mess_2721",
+            "body": "To the moon.",
+            "score": 1,
+            "create_at_utc": "2025-07-17T22:59:51"
+          },
+          {
+            "id": "n3nkqp0",
+            "author": "emperordas",
+            "body": "See the gains in the last 6 months",
+            "score": 1,
+            "create_at_utc": "2025-07-17T16:13:44"
+          },
+          {
+            "id": "n3ng934",
+            "author": "gardenofeden123",
+            "body": "Yes the groundbreaking gains in Fartcoin reflect this entirely",
+            "score": 3,
+            "create_at_utc": "2025-07-17T15:52:51"
+          }
+        ],
+        "ups": 181,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3112402856349945,
+          "negative": 0.019192013889551163,
+          "positive": 0.6695677042007446
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://cointelegraph.com/news/eth-trading-pattern-points-to-100percent-rally-to-dollar5000-what-are-the-odds",
+        "author": "Every_Hunt_160",
+        "author_fullname": "t2_7a50dm3i",
+        "title": "ETH trading pattern points to 100% rally to $5,000: What are the odds?",
+        "description": "",
+        "create_at_utc": "2025-07-01T02:30:15",
+        "score": 73,
+        "num_comments": 44,
+        "comments": [
+          {
+            "id": "n0q5yg3",
+            "author": "friendlyghost_casper",
+            "body": "Zero",
+            "score": 1,
+            "create_at_utc": "2025-07-01T08:43:36"
+          },
+          {
+            "id": "n0py39y",
+            "author": "CarpetAgreeable3773",
+            "body": "50/50",
+            "score": 1,
+            "create_at_utc": "2025-07-01T07:23:45"
+          },
+          {
+            "id": "n0px9es",
+            "author": "sdraje",
+            "body": "Pattern: ETH to 5k\n\nReality: ETH at 2.5k for another 5 years",
+            "score": 1,
+            "create_at_utc": "2025-07-01T07:15:31"
+          }
+        ],
+        "ups": 73,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8471625447273254,
+          "negative": 0.021832143887877464,
+          "positive": 0.13100531697273254
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lyul4l/ath_in_alts_its_possible_yet/",
+        "author": "mg_name01",
+        "author_fullname": "t2_1a39x5j4uk",
+        "title": "ATH in ALTS, its possible YET?",
+        "description": "We always see the alts ATH with BTC ATH, walking together.\n\nThis cycle is being really strange.\n\nMy question is if we can expect a new ATH in ETH soon. Because i’m losing my confidence in this.\n\nI’m a big fan of ethereum in fact, but im scared about the value.\n\nAND IF BTC HAS JUST HIT THE MAXIMUM VALUE IN THIS CYCLE AND WE ARE WAITING FOR MORE?? ",
+        "create_at_utc": "2025-07-13T14:47:09",
+        "score": 14,
+        "num_comments": 11,
+        "comments": [
+          {
+            "id": "n2zvcst",
+            "author": "wowplayer28",
+            "body": "The amount of unlocks happening on alts and the high sell pressure from early investors make it nearly impossible for alts to hit thie previous ATH let alone make new ones,  btc keep going to because of the slow mining and limited supply",
+            "score": 1,
+            "create_at_utc": "2025-07-14T00:53:37"
+          },
+          {
+            "id": "n2z751p",
+            "author": "Full-Sound-6269",
+            "body": "More like 5 minutes before it even becomes known that rates are coming.",
+            "score": 1,
+            "create_at_utc": "2025-07-13T22:34:05"
+          },
+          {
+            "id": "n2z2ygk",
+            "author": "brandonholm",
+            "body": "Too many people in the retail market don’t want to wait. And the vast majority of them will get burned gambling on shitcoins.\n\nBitcoin absolutely will be over $300k in the near future, probably not 3 months,  but within 3-5 years quite likely.",
+            "score": 1,
+            "create_at_utc": "2025-07-13T22:10:38"
+          }
+        ],
+        "ups": 14,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.5495802760124207,
+          "negative": 0.4212406277656555,
+          "positive": 0.029179099947214127
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.cnbc.com/2025/07/04/the-ethcc-crypto-scene-at-cannes-shows-how-far-ethereum-has-come.html",
+        "author": "CriticalCobraz",
+        "author_fullname": "t2_yco3riomk",
+        "title": "Institutional giants such as BlackRock, Deutsche Bank, Coinbase, and Kraken are building directly on Ethereum's rails, accelerating institutional adoption",
+        "description": "At the Ethereum Community Conference (EthCC) in Cannes, France, the crypto scene showcased the growing institutional adoption of Ethereum. Key points include:\n\n* Ethereum’s institutional adoption is accelerating, with BlackRock, Deutsche Bank, Coinbase, and Kraken all building directly on its rails.\n\n* Ethereum's core values, such as neutrality, security, and censorship resistance, are emerging as competitive advantages in the institutional market.\n* Institutional investors are warming up to Ethereum, with Ether ETF inflows rising for two straight months.\n* Ether has seen a nearly 6% increase in value, with several public equities tied to the blockchain rallying alongside it.\n* Robinhood became the first public U.S. company to launch tokenized stocks on-chain, using Ethereum's Arbitrum network.\n\nThe conference highlighted Ethereum's infrastructure layer for tokenized finance, with speakers emphasizing the network's stability and dependability. As institutional adoption accelerates, Ethereum's future looks promising, with a focus on utility and scalability without compromising its core values.",
+        "create_at_utc": "2025-07-05T15:36:39",
+        "score": 61,
+        "num_comments": 8,
+        "comments": [
+          {
+            "id": "n1k0e0m",
+            "author": "xsoundhd",
+            "body": "One would think, this could set eth to ath in near future. But we wait forever",
+            "score": 1,
+            "create_at_utc": "2025-07-06T00:07:59"
+          },
+          {
+            "id": "n1jfa5b",
+            "author": "alterise",
+            "body": "You know how it is. Gotta do a long ass write up in this sub about how you’re selling because you don’t think it’s going anywhere and actually commit to it… then for no reason at all ETH *will* pump.",
+            "score": 2,
+            "create_at_utc": "2025-07-05T21:59:50"
+          },
+          {
+            "id": "n1jd6nm",
+            "author": "Ambitious-Maybe-3386",
+            "body": "Crypto prices are based on revenue and transactions these days. You can build the rails but it won’t be used until regulations are cleared.",
+            "score": 1,
+            "create_at_utc": "2025-07-05T21:47:50"
+          }
+        ],
+        "ups": 61,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.687006950378418,
+          "negative": 0.011409723199903965,
+          "positive": 0.30158326029777527
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.theblock.co/post/361348/bit-digital-swaps-entire-treasury-into-ethereum-says-its-now-a-top-public-eth-holder-after-a-173-million-splurge",
+        "author": "Abdeliq",
+        "author_fullname": "t2_ie5fbavca",
+        "title": "Bit Digital swaps entire treasury into Ethereum, says it's now a top public ETH holder after a $173 million splurge",
+        "description": "",
+        "create_at_utc": "2025-07-08T05:28:05",
+        "score": 93,
+        "num_comments": 15,
+        "comments": [
+          {
+            "id": "n230hw5",
+            "author": "ironmoosen",
+            "body": "4-5x in the next 12 months but the move I think will start later this summer.",
+            "score": 1,
+            "create_at_utc": "2025-07-08T23:56:01"
+          },
+          {
+            "id": "n22upsw",
+            "author": "cahphoenix",
+            "body": "Lol.   A 4-5x in a few months. \n\nNah.   Maybe a 50%-100% spike.",
+            "score": 1,
+            "create_at_utc": "2025-07-08T23:24:59"
+          },
+          {
+            "id": "n22hwin",
+            "author": "ironmoosen",
+            "body": "“The next momentum play.” This is what I’ve been saying all year and people think I’m crazy (maybe I am). But I really believe we will reach a point in the next few months where the momentum will shift into ETH _because_ it’s been suppressed for so l",
+            "score": 1,
+            "create_at_utc": "2025-07-08T22:17:16"
+          }
+        ],
+        "ups": 93,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7653783559799194,
+          "negative": 0.014695845544338226,
+          "positive": 0.21992576122283936
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.newsbtc.com/news/ethereum/ethereum-back-at-range-highs-breakout-above-2800-could-ignite-altseason/",
+        "author": "KIG45",
+        "author_fullname": "t2_gu84jx3n",
+        "title": "Ethereum Back At Range Highs: Breakout Above $2,800 Could Ignite Altseason",
+        "description": "",
+        "create_at_utc": "2025-07-10T19:41:43",
+        "score": 113,
+        "num_comments": 42,
+        "comments": [
+          {
+            "id": "n2hezj3",
+            "author": "AccountOfMyAncestors",
+            "body": "Great indicator here that we're not even close to the next bull market high even though BTC is at ATHs",
+            "score": 1,
+            "create_at_utc": "2025-07-11T02:58:07"
+          },
+          {
+            "id": "n2hepjf",
+            "author": "AccountOfMyAncestors",
+            "body": "lol",
+            "score": 1,
+            "create_at_utc": "2025-07-11T02:56:22"
+          },
+          {
+            "id": "n2haasw",
+            "author": "painfulbunny__",
+            "body": "Legit. That 1 ETH I got could go a long way rn",
+            "score": 2,
+            "create_at_utc": "2025-07-11T02:28:48"
+          }
+        ],
+        "ups": 113,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7358413338661194,
+          "negative": 0.027081411331892014,
+          "positive": 0.2370772808790207
+        }
+      },
+      {
+        "asset": "ETH",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m1xj1d/is_4000_too_lowhigh_of_a_price_target_for_ethereum/",
+        "author": "SpectacularLifeNoise",
+        "author_fullname": "t2_8shtww3",
+        "title": "Is $4000 too low/high of a price target for ethereum?",
+        "description": "I always mess up when it comes to predicting alts: I should’ve sold when it last hit $4500 (I wanted $6000).\n\nDo you think $4000 is too low of a price target? Too high? From what I’ve read on Reddit, people are pretty optimistic, and it seems I would be making a mistake if I didn’t hold on for at least five more years to sell at $10000.\n\nThat being said, I share the same sentiment as many others on Reddit that are disappointed with ethereum. It has slogged and done nothing for so long, while bitcoin has enjoyed a massive bull run.",
+        "create_at_utc": "2025-07-17T03:52:59",
+        "score": 2,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n3kmxqo",
+            "author": "Tiny_Kangaroo",
+            "body": "If you're hanging on for five more years then who cares what it does this cycle?",
+            "score": 1,
+            "create_at_utc": "2025-07-17T04:14:03"
+          },
+          {
+            "id": "n3kmj5i",
+            "author": "Annual_Juggernaut_47",
+            "body": "‘From what I’ve read on Reddit’. That’s your first sign of trouble. \n\nIf you are planning to hold on for five more years you are guaranteeing yourself that you will go through at least one more massive drawdown.",
+            "score": 1,
+            "create_at_utc": "2025-07-17T04:11:04"
+          }
+        ],
+        "ups": 2,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.5664352178573608,
+          "negative": 0.38704347610473633,
+          "positive": 0.04652131348848343
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m29bsf/hi_guys/",
+        "author": "Lost-Bag-7531",
+        "author_fullname": "t2_j20bumlgx",
+        "title": "Hi guys",
+        "description": "Whats the greatest percentage a coin has increased in its first week? 100 0000000000000000000000000000000000000",
+        "create_at_utc": "2025-07-17T14:40:40",
+        "score": 0,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8605741858482361,
+          "negative": 0.024769047275185585,
+          "positive": 0.11465675383806229
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lw2qem/slt_crypto_coin_surges_in_popularity_emerging_as/",
+        "author": "Avalonsex",
+        "author_fullname": "t2_9ikg8yde",
+        "title": "SLT Crypto Coin Surges in Popularity, Emerging as Top Choice for Global Transfers",
+        "description": "July 10, 2025 – Financial Tribune\n\n\n\nBy Sarah Milton – Senior Crypto Analyst\n\n\n\nIn a rapidly evolving digital economy, SLT Crypto Coin is making headlines as it climbs to the top ranks of global digital currencies. Analysts across the financial sector are now eyeing SLT as a potential leader in international transactions and cross-border remittances, with some experts suggesting it could soon rival even stalwarts like Bitcoin and Ripple in the money transfer space.\n\n\n\nOver the past quarter, SLT Coin has seen a staggering 300% increase in daily trading volume, according to data from CoinMarketPulse. Its growing popularity is being driven by a combination of fast transaction speeds, near-zero fees, and robust blockchain security features.\n\n\n\n“SLT is not just another altcoin,” said Amanda Reyes, Director of Digital Finance at Zurich Capital. “It’s becoming the go-to solution for people sending money abroad—especially in regions where traditional banking systems are inefficient or prohibitively expensive.”\n\n\n\nAdoption on the Rise\n\n\n\nEmerging markets in Africa, Southeast Asia, and South America are seeing a notable uptick in SLT wallet downloads. Many users cite its simplicity and speed compared to banks and other cryptocurrency options. The SLT development team also recently announced partnerships with two major remittance platforms in the Philippines and Nigeria, enabling direct crypto-to-cash withdrawals at thousands of physical locations.\n\n\n\nInstitutional Support Grows\n\n\n\nInstitutional backing is also building momentum for SLT Coin. Earlier this week, fintech giant NovaPay integrated SLT into its mobile banking app, allowing over 30 million users to trade and send SLT globally. Meanwhile, a consortium of Swiss banks is reportedly in talks to include SLT in their new digital asset investment portfolios.\n\n\n\n“The infrastructure around SLT is developing fast,” noted Max Caldwell, senior strategist at BlockFund Analytics. “What we’re seeing is a textbook case of utility driving adoption.”\n\n\n\nLooking Ahead\n\n\n\nIf the current trajectory holds, SLT Crypto Coin could soon position itself as the preferred digital currency for global financial interaction—especially among migrant workers, freelancers, and small businesses that depend on fast, affordable international payments.\n\n\n\nWhile volatility remains a concern for some investors, the sentiment around SLT is largely bullish, with projections suggesting continued upward momentum throughout Q3 2025.\n\n\n\nDisclaimer: This article is a fictional creation for entertainment and illustrative purposes only. SLT Coin is not a real cryptocurrency, and the events described herein did not actually occur.\n\n\n\nLet me know if you'd like it styled for a specific outlet (e.g., Bloomberg, CNBC, etc.) or turned into a visual news post.",
+        "create_at_utc": "2025-07-10T03:35:28",
+        "score": 1,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.13523352146148682,
+          "negative": 0.008554176427423954,
+          "positive": 0.8562122583389282
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lsz4t2/pepe_going_to_drop_1_or_2_zeros_soon_watch_now/",
+        "author": "MisterrFunnyGuy",
+        "author_fullname": "t2_sa3a43c4g",
+        "title": "Pepe Going To DROP 1 or 2 zero's soon. Watch Now",
+        "description": "Pepe is going to drop 1 Or 2 zero's, sooner than most, are predicting.  \n\nHere’s the latest on Pepe Coin (PEPE) and what analysts are forecasting for the next 30 to 90 days:\n\nClick on the link below to watch.\n\n\n https://youtube.com/shorts/Kk4o2WhcpPU?si=aT4RZyqtWhHnSFgC",
+        "create_at_utc": "2025-07-06T11:37:16",
+        "score": 0,
+        "num_comments": 8,
+        "comments": [
+          {
+            "id": "n1ob3t5",
+            "author": "MisterrFunnyGuy",
+            "body": "Memecoin Supercycle.  F.O.M.O is very real .",
+            "score": 1,
+            "create_at_utc": "2025-07-06T18:20:55"
+          },
+          {
+            "id": "n1o7sex",
+            "author": "MaleficentPrune652",
+            "body": "I've seen similar hype cycles before - nothing too surprising in meme coin chatter, but it’s always interesting to see what unfolds.",
+            "score": 1,
+            "create_at_utc": "2025-07-06T18:04:10"
+          },
+          {
+            "id": "n1o0a46",
+            "author": "MisterrFunnyGuy",
+            "body": "Some of you reddit members are hateful people.",
+            "score": -2,
+            "create_at_utc": "2025-07-06T17:26:51"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8677242398262024,
+          "negative": 0.11159171909093857,
+          "positive": 0.020683983340859413
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lw0vd2/how_to_make_50100_a_day_crypto/",
+        "author": "Realworld777",
+        "author_fullname": "t2_1r0oub9684",
+        "title": "How to make 50-100 a day crypto",
+        "description": "How can I make 33 minimum and 100 max dollars per day crypto trading???? What cheap coins can allow this ??",
+        "create_at_utc": "2025-07-10T01:59:58",
+        "score": 0,
+        "num_comments": 18,
+        "comments": [
+          {
+            "id": "n2ao268",
+            "author": "Realworld777",
+            "body": "Bet",
+            "score": 1,
+            "create_at_utc": "2025-07-10T02:44:10"
+          },
+          {
+            "id": "n2ann1b",
+            "author": "Realworld777",
+            "body": "I been paper trading bitcoin and if I had 120k i would easily make 300 per day .",
+            "score": 2,
+            "create_at_utc": "2025-07-10T02:41:36"
+          },
+          {
+            "id": "n2an9wd",
+            "author": "Perfect_Radio",
+            "body": "Bonk Wif pepe brett floki have been moving strong lately. Were also at high resistance so be careful.",
+            "score": 3,
+            "create_at_utc": "2025-07-10T02:39:22"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8359847068786621,
+          "negative": 0.01884753629565239,
+          "positive": 0.14516784250736237
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "investing",
+        "url": "https://www.reddit.com/r/investing/comments/1m19rzv/jp_morgan_and_bank_of_america_are_in_talks_with/",
+        "author": "Proper-Plantain9387",
+        "author_fullname": "t2_172rw1w9c1",
+        "title": "J.P. Morgan and Bank of America are in talks with Other Major Banks about a jointly operated Stablecoin Project run on Ethereum",
+        "description": "J.P. Morgan Chase and Bank of America are both exploring cryptocurrency and stablecoin initiatives, signaling a potential shift in how traditional banks approach digital assets. J.P. Morgan has launched a digital deposit token called JPM Coin, and is piloting a new USD denominated deposit token called JPM D for institutional clients. Bank of America is also reportedly advancing its own stablecoin plans. \n\nJ.P. Morgan already uses JPM Coin built on the Ethereum Platform for its wholesale payments business, and recently reported it now handles over $1 billion in transactions daily.\n\nThey are also reportedly planning to allow clients to use cryptocurrency-linked assets, including Bitcoin ETFs, as collateral for loans. (This is huge)\n\nBank of America is reportedly exploring the development of a stablecoin and has accelerated its blockchain strategy recently. \n\nThey are also reportedly becoming more crypto-friendly, with CEO Brian Moynihan stating the bank has to enter the stablecoin market as soon as possible.\n\nBut the most important part of this news is... both J.P. Morgan and Bank of America are reportedly in talks with OTHER MAJOR BANKS about a JOINTLY operated stablecoin project which will soon take place after the \"crypto-vote\" passes by the House Of Rep's this week.\n\nAre these SOME the reasons why ETH and XRP have been running much higher?",
+        "create_at_utc": "2025-07-16T11:10:46",
+        "score": 83,
+        "num_comments": 60,
+        "comments": [
+          {
+            "id": "n3jm68g",
+            "author": "Aggravating-Salad441",
+            "body": "How do you mean \"stablecoins also can be accessible to an audience that doesn't have access to US banking services\"?\n\nLike people who live outside the US?",
+            "score": 1,
+            "create_at_utc": "2025-07-17T00:21:14"
+          },
+          {
+            "id": "n3jku6o",
+            "author": "slowlybecomingsane",
+            "body": "Been saying this for the past 5 years. I have no idea what XRP claims to actually offer, and of the hundreds of Blockchain developers I've met at various conferences not one works on or with XRP. Of course banks were always going to want to operate o",
+            "score": 1,
+            "create_at_utc": "2025-07-17T00:13:22"
+          },
+          {
+            "id": "n3itsbr",
+            "author": "Wanna_Know_More",
+            "body": "Yeah, Hedera doesn't have to worry about fee spiking, because its onchain traffic is nothing compared to the Ethereum network.\n\nIf it actually had volume, the dev team would need to make changes.",
+            "score": 3,
+            "create_at_utc": "2025-07-16T21:51:19"
+          }
+        ],
+        "ups": 83,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8299569487571716,
+          "negative": 0.00974018033593893,
+          "positive": 0.16030286252498627
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lw2scs/xeggex_is_shutting_down/",
+        "author": "razzeri",
+        "author_fullname": "t2_3bn10uw5",
+        "title": "Xeggex is shutting down",
+        "description": "Hi   \nXeggex Exhnage is shutting down. Anyone know a replacement for these kind of coins  and where to store them?",
+        "create_at_utc": "2025-07-10T03:38:20",
+        "score": 1,
+        "num_comments": 1,
+        "comments": [],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8581278920173645,
+          "negative": 0.12450189143419266,
+          "positive": 0.017370231449604034
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoCurrency",
+        "url": "https://beincrypto.com/eu-challenges-usd-stablecoin-dominance-with-euro/",
+        "author": "kirtash93",
+        "author_fullname": "t2_ax5ierpr",
+        "title": "'We Need a Euro Coin': Regulators Race to Counter US Stablecoin Grip on European Market",
+        "description": "**European authorities are sounding stronger warnings that the growing reliance on USD-backed stablecoins could undermine the euro’s sovereignty and disrupt the financial system. As the popularity of stablecoins surges across the region, officials are under rising pressure to promote euro-denominated digital assets.**",
+        "create_at_utc": "2025-07-05T11:15:05",
+        "score": 43,
+        "num_comments": 10,
+        "comments": [
+          {
+            "id": "n1jqrhh",
+            "author": "Soft-Stress-4827",
+            "body": "Lol europe financial leaders are a joke. Yall are toast   ",
+            "score": 1,
+            "create_at_utc": "2025-07-05T23:09:00"
+          },
+          {
+            "id": "n1ivilv",
+            "author": "Enschede2",
+            "body": "They already did I believe, all that's left now is to force, ahem sorry I mean convince, people into using it",
+            "score": 1,
+            "create_at_utc": "2025-07-05T20:09:48"
+          },
+          {
+            "id": "n1inlyc",
+            "author": "forzan",
+            "body": "We have a Euro coin, Circle mints it and it's called EURC.",
+            "score": 1,
+            "create_at_utc": "2025-07-05T19:25:29"
+          }
+        ],
+        "ups": 43,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.784773588180542,
+          "negative": 0.17931784689426422,
+          "positive": 0.035908568650484085
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lzku7c/eth_is_moving_and_i_still_feel_broke/",
+        "author": "TheElitesCM",
+        "author_fullname": "t2_16pzf6hyr3",
+        "title": "ETH is moving and I still feel broke.",
+        "description": "Ethereum finally got some legs again, and somehow I still feel like I’m missing out. Anyone else holding blue chips but feeling like you’re stuck in quicksand while meme coins fly?\n",
+        "create_at_utc": "2025-07-14T12:17:10",
+        "score": 2,
+        "num_comments": 1,
+        "comments": [
+          {
+            "id": "n32pefy",
+            "author": "dylankl1990",
+            "body": "Just as fast as meme coins fly, meme coins die.",
+            "score": 8,
+            "create_at_utc": "2025-07-14T13:43:43"
+          }
+        ],
+        "ups": 2,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8301123976707458,
+          "negative": 0.1460529863834381,
+          "positive": 0.02383464016020298
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoCurrency",
+        "url": "https://i.redd.it/ft0dzi8wnwbf1.png",
+        "author": "002_timmy",
+        "author_fullname": "t2_u5uj18gq",
+        "title": "How it feels to be a meme coin investor",
+        "description": "",
+        "create_at_utc": "2025-07-09T20:07:10",
+        "score": 507,
+        "num_comments": 14,
+        "comments": [
+          {
+            "id": "n2awgub",
+            "author": "free_speech-bot",
+            "body": "I'm gonna call them and ask them if I should put it all on red or black.",
+            "score": 1,
+            "create_at_utc": "2025-07-10T03:39:16"
+          },
+          {
+            "id": "n29yh0h",
+            "author": "Professional-Bad-342",
+            "body": "That was not a real podcast. The guy with the glasses? He just makes skits like he's on an actual podcast. Edits a clip of Rogan in and voila a podcast that never happened.",
+            "score": 2,
+            "create_at_utc": "2025-07-10T00:14:44"
+          },
+          {
+            "id": "n29jjof",
+            "author": "still_salty_22",
+            "body": "Yea.. just cuz i like to go home after a long hard day at work and smoke crack everyday, Im a *crackhead*.",
+            "score": 2,
+            "create_at_utc": "2025-07-09T22:52:47"
+          }
+        ],
+        "ups": 507,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8774991035461426,
+          "negative": 0.0995950773358345,
+          "positive": 0.022905806079506874
+        }
+      },
+      {
+        "asset": "FDUSD",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/r/CryptoCurrency/comments/1lyoijz/the_role_of_memecoins_in_todays_cryptocurrency/",
+        "author": "zesushv",
+        "author_fullname": "t2_76fou",
+        "title": "The Role of Memecoins in Today’s Cryptocurrency Ecosystem",
+        "description": "Memecoins—cryptocurrencies inspired by internet memes and viral culture—have evolved from niche novelties to significant players in the cryptocurrency landscape. Tokens like Dogecoin (DOGE), Shiba Inu (SHIB), Bonk (BONK), and platforms like *Pump<>fun* exemplify their multifaceted impact. As of July 2025, memecoins continue to drive innovation, adoption, and market dynamics across various dimensions, despite their speculative nature. As you may know based on some of my comments and posts, I believe memecoins are a key driving force and they will continue to propel blockchain/CryptoCurrency innovations to audience that desire a soft landing platform to crypto. I have put together this post to portray key examples and recent developments.\n\n## Driving User Adoption and Onboarding\nMemecoins serve as an accessible entry point for new crypto users. Their low price points and viral appeal attract retail investors who might otherwise shy away from complex DeFi or NFT projects. Dogecoin, launched in 2013, gained mainstream traction through endorsements from figures like Elon Musk, peaking at a $90 billion market cap in 2021. Its simplicity—built on a Bitcoin fork—made it a gateway for millions to explore crypto wallets and exchanges. Similarly, Shiba Inu, an Ethereum-based token, onboarded users via its “Doge Killer” branding, reaching a $40 billion market cap in 2021. By 2025, Bonk on Solana has drawn thousands to its ecosystem, with its playful dog-themed narrative boosting Solana wallet creation by ~15% during its 2023 peak, ~ **source** Solana Foundation data.\n\nRecent events, like Pump-fun’s $500 million PUMP token sale recently, highlight memecoins’ onboarding power. Pump-fun gamified launchpad, which enabled over 5 million meme token creations on Solana *[according to on-chain stats], attracted both creators and speculators, driving platform revenue to $715 million by mid-2025. This accessibility fosters broader crypto adoption, particularly among younger demographics.\n\n## Boosting Blockchain Activity and Liquidity\nMemecoins significantly increase transaction volumes and liquidity on their host blockchains. Dogecoin’s 2021 surge drove transaction spikes on its network, with daily volumes reaching 1.5 million transactions - [*Bitinfocharts*] . Shiba Inu’s trading on Ethereum contributed ~10-15% to the chain’s transaction volume during its 2021 peak, according to Dune Analytics. Bonk’s 2023 rise on Solana similarly boosted network activity [a period when many including holders like me were very skeptical about Solana future after many network halts and restarts], with daily transactions hitting 5million+ during its hype cycle. These surges elevate gas fees and validator revenue, strengthening blockchain economics.\n\nPumpdotfun success underscores this trend. Its Solana-based platform, with more than $20 million in monthly revenue as of July 2025, has increased SOL demand and liquidity. The PUMP token sale, selling 125 billion tokens in 12 minutes across major exchanges like Bybit and Kraken, amplified Solana’s market visibility, contributing to a ~20% market cap increase in Q2 2025, per CoinGecko.\n\n## Fostering Innovation and Ecosystem Growth\n- Memecoins spur innovation by encouraging developers to build supporting infrastructure. Shiba Inu’s ecosystem expanded to include ShibaSwap, a DEX, and NFT integrations, enhancing Ethereum’s DeFi landscape. Bonk’s success on Solana led to tools like PumpSwap, a DEX launched by Pump-fun in 2025, which shares 50% of trading revenue with token creators. This creator-friendly model has driven developer interest, with Solana’s dApp ecosystem growing more than 17% since Pump-d-fun’s January 2024 launch, - DappRadar.\n\n- Memecoins also inspire novel mechanics. Pumps bonding curve model, where token prices rise as buys increase, and its liquidity-locking feature have set new standards for token launches, reducing rug pull risks. These innovations strengthen blockchain ecosystems, attracting more projects and users. A feature that many standalone blockchains lack even with today's crypto market awareness. \n\n## Cultural and Social Impact\nMemecoins leverage internet culture to create and engaged communities, fostering loyalty and advocacy. Dogecoin’s “tipping” culture on platforms like Reddit built a grassroots following, while SHIB’s “SHIBArmy” drove social media hype, with over 1 million X[Twitter] followers by 2025. Bonk’s community-centric airdrops in 2023 revitalized Solana’s ecosystem post-FTX collapse, boosting morale and adoption.\n\n## Challenges and Risks\nDespite their benefits, memecoins pose risks too and it will be very silly to not acknowledge these risks. Their speculative nature fuels volatility—Pump*d*fun’s trading volume dropped 75-80% since January 2025 - *[DeFiLlama]*, reflecting market fickleness. Scams, like BSC’s Squid Game token rug pull in 2021, highlight vulnerabilities. Overreliance on memecoin hype can also skew blockchain development toward short-term gains, potentially deterring serious projects. Regulatory scrutiny remains a concern, as memecoins’ speculative appeal could invite crackdowns, impacting broader markets.\n\n## My take on memecoins\nMemecoins like Dogecoin, Shiba Inu, Bonk, and platforms like Pump-fun, etc are more than fleeting trends—they drive adoption, liquidity, innovation, and cultural engagement in the crypto ecosystem. While their volatility and risks warrant caution, their ability to onboard users, boost blockchain activity, and inspire new tools is undeniable. As of July 2025, memecoins remain a dynamic force, shaping cryptocurrency’s growth and mainstream appeal, with Pump-fun’s $500 million token sale vocalising their enduring impact. However, sustainable growth requires balancing their speculative allure with robust ecosystem development.",
+        "create_at_utc": "2025-07-13T09:17:23",
+        "score": 0,
+        "num_comments": 17,
+        "comments": [
+          {
+            "id": "n2wvk60",
+            "author": "DaskMusic",
+            "body": "Don't you mean their only strength !",
+            "score": 1,
+            "create_at_utc": "2025-07-13T15:33:53"
+          },
+          {
+            "id": "n2vvj2x",
+            "author": "LowQualitySpiderman",
+            "body": "death to meme coins...",
+            "score": 1,
+            "create_at_utc": "2025-07-13T12:05:01"
+          },
+          {
+            "id": "n2vpqa2",
+            "author": "x_lincoln_x",
+            "body": "AI slop.  Not reading.  Fuck your ai slop, fuck you janky meme coins.",
+            "score": 2,
+            "create_at_utc": "2025-07-13T11:18:55"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.885966956615448,
+          "negative": 0.012069844640791416,
+          "positive": 0.10196319967508316
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m29bsf/hi_guys/",
+        "author": "Lost-Bag-7531",
+        "author_fullname": "t2_j20bumlgx",
+        "title": "Hi guys",
+        "description": "Whats the greatest percentage a coin has increased in its first week? 100 0000000000000000000000000000000000000",
+        "create_at_utc": "2025-07-17T14:40:40",
+        "score": 0,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8516803979873657,
+          "negative": 0.022668585181236267,
+          "positive": 0.1256510317325592
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/r/CryptoCurrency/comments/1lwttto/altcoin_rally_and_altseason_signals/",
+        "author": "Silent_Elk7515",
+        "author_fullname": "t2_1m1pfzra0i",
+        "title": "Altcoin Rally and Altseason Signals",
+        "description": "[Chart showing BTC\\/USDT](https://preview.redd.it/dt68cslma5cf1.png?width=1600&format=png&auto=webp&s=fd87a01908addf934ee0739d749c95a788ab8ea5)\n\nAs Bitcoin breaks its all-time high again and Ethereum begins to show meaningful rebound trends, the market's focus naturally shifts to the anticipation of whether the altcoin market will now catch fire. However, one must remember that the market's structure operates in contexts beyond mere price rises. The phenomenon known as altseason is not defined by a few specific coins rising; the key lies in how funds flow and how market participants interpret that flow. The current phase seems closer to a period of checking the potential for a shift in capital rotation rather than a short-term rally.\n\n  \n\n# Understanding Bitcoin Dominance as an Altcoin Rally Signal\n\n \n\n[Chart showing Bitcoin Dominace](https://preview.redd.it/aazyf58qa5cf1.png?width=1600&format=png&auto=webp&s=0eb779ebd45319266c2e76f8bc3231b05e3e06b7)\n\n \n\nThe first criterion for judging market structure is Bitcoin dominance. This indicator distinguishes whether liquidity entering the market is staying solely in Bitcoin or gradually moving to Ethereum and altcoins. A true altseason occurs when funds progressively flow from Bitcoin to Ethereum and then to mid- and small-cap altcoins.\n\nIf Bitcoin's dominance forms a peak and turns downward, it can be interpreted as a signal that funds seeking higher returns are starting to move to other sectors. Recently, despite Bitcoin's new highs, dominance has been stagnating or slightly declining, which appears to be a turning point worth watching closely. If this trend persists, it's hard to ignore the possibility that the market's balance is tilting toward altcoins.\n\n \n\n# The Role of ETH/BTC Ratio in Altseason Signals\n\n \n\n[Chart showing ETH\\/BTC](https://preview.redd.it/y854kmzva5cf1.png?width=1600&format=png&auto=webp&s=338d35e096bce3d26ee605999cef06bf53db2ade)\n\n \n\nIn the same vein, the ETH/BTC ratio plays a crucial role. The real starting point of altseason has always coincided with the rise of this ratio. When Ethereum begins to show strength against Bitcoin, the market accepts it as a signal of structural recovery. This is not just because of its position as the second-largest by market cap, but because Ethereum serves as a central hub connecting DeFi, L2, NFT, and infrastructure ecosystems. Ethereum's strength implies more than just price; it suggests the recovery of demand across the entire alt market.\n\nIf the ETH/BTC ratio consolidates at the bottom and continues its rebound, it could be seen as a clear 'first confirmation signal,' providing investors with reason to reassess their altcoin portfolios.\n\n \n\n# Broader Market Factors Influencing Altcoin Rallies\n\nThat said, it's still too early to draw firm conclusions. While funds concentrating in some thematic altcoins are detectable, it's hard to view this as spreading to the entire market. For instance, the recent rises in tokens related to AI, RWA, and DePIN are closer to localized rallies driven by specific narratives rather than a broad alt market uptrend. For an environment worthy of being called altseason to form, widespread concurrent rises must appear across Ethereum-based projects, neglected mid- and small-cap chains, various L1 and L2 ecosystems, and thematic DeFi and NFT projects. Particularly, without accompanying recovery in trading volume and on-chain metrics, the market is unlikely to sustain on short-term expectations alone—a critical perspective is needed here. These indicators serve as keys to gauging market health, steering away from fixation on mere price fluctuations.\n\nMoreover, altseason has always emerged in market cycles after Bitcoin's stable rally. In phases where Bitcoin repeats sharp ups and downs, funds seek stability, which acts as poison to the alt market. Conversely, when BTC stabilizes at a certain high or enters a sideways phase, market participants then turn to risk assets for greater returns, and that's when the altcoin market starts to stir. **The current situation being merely the 'initial stage of fund movement' suggests that excessive optimism should be guarded against.**\n\n \n\n# External Economic Triggers Like US Rate Cuts\n\n \n\n[Fed Rate Cut Probabilities from CME FedWatch Tool: Essential Signals for Anticipating Altcoin Rally in H2 2025](https://preview.redd.it/vzyaq610b5cf1.png?width=1382&format=png&auto=webp&s=2ddfe4135c1da0757d53483a0dd29cf7f5e82521)\n\n \n\nIf expectations of U.S. interest rate cuts, signs of liquidity re-expansion, and tech stock-led stock market rises align, a full-fledged risk-on flow could form in the cryptocurrency market as well. In such a case, funds are likely to flow sequentially beyond Bitcoin to ETH and the entire altcoin market. **Especially, with institutional funds accessing the market through various channels like stablecoins and BlackRock ETFs, the current flow creates an environment where altseason can be designed on a foundation entirely different from the past**. While these external factors can promote structural changes in the market, considering that their effects may not be immediate calls for flexibility in investment strategies.\n\nBitcoin's current movements are not significant on the surface. Amid fluctuations of around 2%, it even shows patterns of digesting selling volume in a box range retest phase. Observing whether small buys are gradually entering in this range or if selling resumes at resistance levels is more important. Real bull markets often create vertical rises without giving time to buy. If the market is giving time for many to ponder support and resistance and worry about corrections, it also means it's still early. In other words, it's not too late. Rather, if meaningful corrections emerge in this process, that point could become a buying opportunity. Strategies focusing on accumulating spot positions in major coins like Bitcoin, Ethereum, Solana, and Ripple remain valid. Full-fledged rallies usually start not after people's convictions form, but while doubts linger.\n\nWhile Bitcoin shows volatility of 1-3% per day, opportunities are more frequently observed on the altcoin side. Especially since the overall market hasn't entered an overheated phase on a spot basis, strategies to accumulate positions in such phases may be reasonable. More important than short-term fluctuations is where funds are residing and in which direction they are moving. This could be the starting point of that transition.\n\n \n\n[Chart of the Altcoin Season Index](https://preview.redd.it/76b8u665b5cf1.png?width=1600&format=png&auto=webp&s=75411e89903e8db99b9a9453cd790560bf48084b)\n\n \n\nOf course, the futures market now offers environments for significant profits. But looking back at past flows, in phases where bull markets fully materialize, investors maintaining consistent spot portfolios often recorded higher returns. Short-term trading is a means to maximize momentary profits, but when the market starts riding a structural uptrend, long-term holding strategies can work more advantageously. This is even more so in phases where market vitality is reviving like now.\n\nParticularly, fixating on daily charts, immersing in daily market updates on cafes or communities, or relying on overly amplified macroeconomic analyses to time buys often leads to getting caught in FOMO psychology. But the market doesn't wait for such interpretations or predictions. Directions don't change immediately just because rates rise slightly or inflation stabilizes somewhat, and in fact, Bitcoin has broken new highs amid such debates. This approach may seem analytical on the surface, but in reality, it tends to lead to fixation on instant profits, pushing oneself into increasingly unstable states. Above all, even when the market starts to grasp a full direction at crucial points, most are not prepared to ride that flow.\n\nA single trading mistake can damage an account, or conversely, missing one opportunity can leave one watching the entire bull market from the sidelines. Given that the current market environment favors structural and long-term strategies more, taking such risks seems unwarranted. Reflecting back, investors who consistently held spot or some futures from April onward would now be in sufficient profit zones. The likelihood is high that this yielded far better results than repeated frantic trading daily. Ultimately, attempts to time the market often lead to frequent failures, **whereas those riding structural uptrends gain the effects of compounding through time and direction. Approaches that are not sustainable or recoverable can become causes for pushing oneself out of the market even in bull phases.**\n\n \n\n[Psychology of a Market Cycle: Key Emotional Signals for Predicting Altcoin Rallies and Altseason in H2 2025](https://preview.redd.it/2cfqo558b5cf1.png?width=1600&format=png&auto=webp&s=36e518911688f2ffcd77d2bde609617fb11a8f60)\n\n \n\nFor some, this phase may be a time to prepare for new opportunities, while for others, it could be interpreted as a section to trim positions or reduce risks. But what's important is clearly establishing one's strategy and building a portfolio accordingly. While it's not yet possible to assert what flow's starting point this is, it seems sufficient timing as preparation to close out the fourth quarter of this year with meaningful profits. Approach it with a strategic perspective, without being too hasty but without missing the flow.\n\n",
+        "create_at_utc": "2025-07-11T01:12:26",
+        "score": 9,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n2hgnu1",
+            "author": "diwalost",
+            "body": "I don't see it anywhere. Bitcoin at 116K and no altcoin is at their recent highs b fore Trump presidency, forget about ATH!",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:08:57"
+          }
+        ],
+        "ups": 9,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8210610747337341,
+          "negative": 0.040430888533592224,
+          "positive": 0.13850802183151245
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "investing",
+        "url": "https://www.reddit.com/r/investing/comments/1m19rzv/jp_morgan_and_bank_of_america_are_in_talks_with/",
+        "author": "Proper-Plantain9387",
+        "author_fullname": "t2_172rw1w9c1",
+        "title": "J.P. Morgan and Bank of America are in talks with Other Major Banks about a jointly operated Stablecoin Project run on Ethereum",
+        "description": "J.P. Morgan Chase and Bank of America are both exploring cryptocurrency and stablecoin initiatives, signaling a potential shift in how traditional banks approach digital assets. J.P. Morgan has launched a digital deposit token called JPM Coin, and is piloting a new USD denominated deposit token called JPM D for institutional clients. Bank of America is also reportedly advancing its own stablecoin plans. \n\nJ.P. Morgan already uses JPM Coin built on the Ethereum Platform for its wholesale payments business, and recently reported it now handles over $1 billion in transactions daily.\n\nThey are also reportedly planning to allow clients to use cryptocurrency-linked assets, including Bitcoin ETFs, as collateral for loans. (This is huge)\n\nBank of America is reportedly exploring the development of a stablecoin and has accelerated its blockchain strategy recently. \n\nThey are also reportedly becoming more crypto-friendly, with CEO Brian Moynihan stating the bank has to enter the stablecoin market as soon as possible.\n\nBut the most important part of this news is... both J.P. Morgan and Bank of America are reportedly in talks with OTHER MAJOR BANKS about a JOINTLY operated stablecoin project which will soon take place after the \"crypto-vote\" passes by the House Of Rep's this week.\n\nAre these SOME the reasons why ETH and XRP have been running much higher?",
+        "create_at_utc": "2025-07-16T11:10:46",
+        "score": 81,
+        "num_comments": 60,
+        "comments": [
+          {
+            "id": "n3jm68g",
+            "author": "Aggravating-Salad441",
+            "body": "How do you mean \"stablecoins also can be accessible to an audience that doesn't have access to US banking services\"?\n\nLike people who live outside the US?",
+            "score": 1,
+            "create_at_utc": "2025-07-17T00:21:14"
+          },
+          {
+            "id": "n3jku6o",
+            "author": "slowlybecomingsane",
+            "body": "Been saying this for the past 5 years. I have no idea what XRP claims to actually offer, and of the hundreds of Blockchain developers I've met at various conferences not one works on or with XRP. Of course banks were always going to want to operate o",
+            "score": 1,
+            "create_at_utc": "2025-07-17T00:13:22"
+          },
+          {
+            "id": "n3itsbr",
+            "author": "Wanna_Know_More",
+            "body": "Yeah, Hedera doesn't have to worry about fee spiking, because its onchain traffic is nothing compared to the Ethereum network.\n\nIf it actually had volume, the dev team would need to make changes.",
+            "score": 2,
+            "create_at_utc": "2025-07-16T21:51:19"
+          }
+        ],
+        "ups": 81,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8312878608703613,
+          "negative": 0.009683116339147091,
+          "positive": 0.1590290516614914
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoCurrency",
+        "url": "https://beincrypto.com/eu-challenges-usd-stablecoin-dominance-with-euro/",
+        "author": "kirtash93",
+        "author_fullname": "t2_ax5ierpr",
+        "title": "'We Need a Euro Coin': Regulators Race to Counter US Stablecoin Grip on European Market",
+        "description": "**European authorities are sounding stronger warnings that the growing reliance on USD-backed stablecoins could undermine the euro’s sovereignty and disrupt the financial system. As the popularity of stablecoins surges across the region, officials are under rising pressure to promote euro-denominated digital assets.**",
+        "create_at_utc": "2025-07-05T11:15:05",
+        "score": 43,
+        "num_comments": 10,
+        "comments": [
+          {
+            "id": "n1jqrhh",
+            "author": "Soft-Stress-4827",
+            "body": "Lol europe financial leaders are a joke. Yall are toast   ",
+            "score": 1,
+            "create_at_utc": "2025-07-05T23:09:00"
+          },
+          {
+            "id": "n1ivilv",
+            "author": "Enschede2",
+            "body": "They already did I believe, all that's left now is to force, ahem sorry I mean convince, people into using it",
+            "score": 1,
+            "create_at_utc": "2025-07-05T20:09:48"
+          },
+          {
+            "id": "n1inlyc",
+            "author": "forzan",
+            "body": "We have a Euro coin, Circle mints it and it's called EURC.",
+            "score": 1,
+            "create_at_utc": "2025-07-05T19:25:29"
+          }
+        ],
+        "ups": 43,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7843015789985657,
+          "negative": 0.1791503131389618,
+          "positive": 0.036548130214214325
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lw2scs/xeggex_is_shutting_down/",
+        "author": "razzeri",
+        "author_fullname": "t2_3bn10uw5",
+        "title": "Xeggex is shutting down",
+        "description": "Hi   \nXeggex Exhnage is shutting down. Anyone know a replacement for these kind of coins  and where to store them?",
+        "create_at_utc": "2025-07-10T03:38:20",
+        "score": 1,
+        "num_comments": 1,
+        "comments": [],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8558637499809265,
+          "negative": 0.12658783793449402,
+          "positive": 0.017548400908708572
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m0i2po/spx6900/",
+        "author": "Automatic-Thought327",
+        "author_fullname": "t2_7lv0ycv4",
+        "title": "SPX6900",
+        "description": "Any thoughts on this coin? Seems to have a solid community and one of the stronger meme coins. Anyone else holding this coin? ",
+        "create_at_utc": "2025-07-15T13:40:45",
+        "score": 0,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8975462317466736,
+          "negative": 0.010489201173186302,
+          "positive": 0.09196459501981735
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "altcoin",
+        "url": "https://www.reddit.com/r/altcoin/comments/1lznihs/bitrue_adds_usd1_stablecoin_from_trumplinked/",
+        "author": "Mattie_Kadlec",
+        "author_fullname": "t2_sg4fh569",
+        "title": "Bitrue adds USD1 stablecoin from Trump-linked World Liberty Financial as base trading pair",
+        "description": "Bitrue has officially added USD1, the stablecoin launched by World Liberty Financial, as a base trading pair on its spot exchange. An initial batch of 10 major trading pairs is already live (BTC, ETH, XRP, SOL, TRX, XDC, ADA, BNB, DOGE, and SUI), and more pairs are reportedly on the way. USD1 is also tradable against USDT.\n\n\nWorld Liberty Financial, the group behind USD1, has direct ties to the Trump family — both Donald Jr. and Eric Trump are reportedly in management roles. Alongside USD1 (a USD-pegged stablecoin), WLFI is set to launch as the platform’s governance token.\n\n\nAccording to Bitrue’s CMO, the exchange is betting on USD1 to play a major role in upcoming regulatory shifts\n\n\n>Now that the Trump family increasingly has skin in the game, we’re fully expecting to see developments in this area sooner rather than later.\n\n\nSource - https://www.investing.com/news/cryptocurrency-news/bitrue-adds-usd1-from-world-liberty-financial-as-base-trading-pair-4129355\n\n\nCoingecko Listing - https://www.coingecko.com/en/coins/usd1-wlfi",
+        "create_at_utc": "2025-07-14T14:14:25",
+        "score": 30,
+        "num_comments": 5,
+        "comments": [
+          {
+            "id": "n33zo29",
+            "author": "Mattie_Kadlec",
+            "body": "I would say that the chances of that happening are low, at least for now. There is enough liquidity and demand for all of them to coexist peacefully.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T17:25:27"
+          },
+          {
+            "id": "n33v3jo",
+            "author": "DonkeyAsleep7884",
+            "body": "I just hope this doesn’t turn into another ideological coin war. The space needs stability, not more tribalism.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T17:04:29"
+          },
+          {
+            "id": "n33mx9q",
+            "author": "n111gab00tytw3rrk",
+            "body": "Yeah. I never expected it to have more trading volume than USDC but here we are…",
+            "score": 1,
+            "create_at_utc": "2025-07-14T16:26:36"
+          }
+        ],
+        "ups": 30,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8167095184326172,
+          "negative": 0.012566089630126953,
+          "positive": 0.17072440683841705
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lw2qem/slt_crypto_coin_surges_in_popularity_emerging_as/",
+        "author": "Avalonsex",
+        "author_fullname": "t2_9ikg8yde",
+        "title": "SLT Crypto Coin Surges in Popularity, Emerging as Top Choice for Global Transfers",
+        "description": "July 10, 2025 – Financial Tribune\n\n\n\nBy Sarah Milton – Senior Crypto Analyst\n\n\n\nIn a rapidly evolving digital economy, SLT Crypto Coin is making headlines as it climbs to the top ranks of global digital currencies. Analysts across the financial sector are now eyeing SLT as a potential leader in international transactions and cross-border remittances, with some experts suggesting it could soon rival even stalwarts like Bitcoin and Ripple in the money transfer space.\n\n\n\nOver the past quarter, SLT Coin has seen a staggering 300% increase in daily trading volume, according to data from CoinMarketPulse. Its growing popularity is being driven by a combination of fast transaction speeds, near-zero fees, and robust blockchain security features.\n\n\n\n“SLT is not just another altcoin,” said Amanda Reyes, Director of Digital Finance at Zurich Capital. “It’s becoming the go-to solution for people sending money abroad—especially in regions where traditional banking systems are inefficient or prohibitively expensive.”\n\n\n\nAdoption on the Rise\n\n\n\nEmerging markets in Africa, Southeast Asia, and South America are seeing a notable uptick in SLT wallet downloads. Many users cite its simplicity and speed compared to banks and other cryptocurrency options. The SLT development team also recently announced partnerships with two major remittance platforms in the Philippines and Nigeria, enabling direct crypto-to-cash withdrawals at thousands of physical locations.\n\n\n\nInstitutional Support Grows\n\n\n\nInstitutional backing is also building momentum for SLT Coin. Earlier this week, fintech giant NovaPay integrated SLT into its mobile banking app, allowing over 30 million users to trade and send SLT globally. Meanwhile, a consortium of Swiss banks is reportedly in talks to include SLT in their new digital asset investment portfolios.\n\n\n\n“The infrastructure around SLT is developing fast,” noted Max Caldwell, senior strategist at BlockFund Analytics. “What we’re seeing is a textbook case of utility driving adoption.”\n\n\n\nLooking Ahead\n\n\n\nIf the current trajectory holds, SLT Crypto Coin could soon position itself as the preferred digital currency for global financial interaction—especially among migrant workers, freelancers, and small businesses that depend on fast, affordable international payments.\n\n\n\nWhile volatility remains a concern for some investors, the sentiment around SLT is largely bullish, with projections suggesting continued upward momentum throughout Q3 2025.\n\n\n\nDisclaimer: This article is a fictional creation for entertainment and illustrative purposes only. SLT Coin is not a real cryptocurrency, and the events described herein did not actually occur.\n\n\n\nLet me know if you'd like it styled for a specific outlet (e.g., Bloomberg, CNBC, etc.) or turned into a visual news post.",
+        "create_at_utc": "2025-07-10T03:35:28",
+        "score": 1,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.12570342421531677,
+          "negative": 0.008979147300124168,
+          "positive": 0.8653174638748169
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lt6n8b/consolidation_ou_bear_market_imminent_les/",
+        "author": "MondialSwap",
+        "author_fullname": "t2_1r7212w4ih",
+        "title": "\"Consolidation ou bear market imminent ? Les régulations pourraient-elles tout changer ?\"",
+        "description": "Avec la volatilité actuelle du marché crypto, je me demande si nous sommes vraiment dans une phase de consolidation ou si le bear market n'est pas juste à un coin de rue. Qui d'autre pense que des évolution significatives dans les régulations pourraient changer la donne ?",
+        "create_at_utc": "2025-07-06T17:19:59",
+        "score": 0,
+        "num_comments": 3,
+        "comments": [
+          {
+            "id": "n1q62v1",
+            "author": "MaleficentPrune652",
+            "body": "I see a mix of consolidation vibes and bearish hints, and evolving regs could really tip the scale. I've noticed similar shifts when testing out some L2 bridges. Just my two cents.",
+            "score": 1,
+            "create_at_utc": "2025-07-07T00:27:14"
+          },
+          {
+            "id": "n1oq8yr",
+            "author": "Kindly_Anteater7499",
+            "body": "I honestly don't see anything other then markets de-risking when they open tomorrow. Nothing but inflationary news last week. See you in October.",
+            "score": 1,
+            "create_at_utc": "2025-07-06T19:39:12"
+          },
+          {
+            "id": "n1o7sue",
+            "author": "GrImPiL_Sama",
+            "body": "If you check fibonacci levels on the weekly timeframe, we have a big level on 88k for bitcoin. So there's a higher chance for a correction if you zoom out. Since every alt follow btc trend, I think we are about to see another sharp decline in the nex",
+            "score": 1,
+            "create_at_utc": "2025-07-06T18:04:14"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8473600745201111,
+          "negative": 0.043578919023275375,
+          "positive": 0.10906100273132324
+        }
+      },
+      {
+        "asset": "USDC",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lqi5sy/this_could_be_the_last_real_crypto_cycle_retail/",
+        "author": "boringpretty",
+        "author_fullname": "t2_1i7nfp9x3r",
+        "title": "This Could Be the Last Real Crypto Cycle Retail Can Win",
+        "description": "Look, this might be the last time retail actually has a real edge in crypto. Trump just pushed through this massive tax-and-spend bill, the One Big Beautiful Bill, and it’s going to flood the market with even more dollars. The dollar has already dropped about 11 percent this year, and economists are warning it could fall another 30 or 35 percent. When the money supply goes up like this, the dollar gets weaker, and everything priced in USD feels the pressure.\n\nAt the same time, the dominance charts are telling a story. Bitcoin dominance is expected to drop big, and stablecoins like USDT and USDC are losing ground too. That means money is moving out of stablecoins and back into BTC and ETH. This isn’t just retail hype but theinstitutions are gearing up too.\n\nAnd then there’s Solana. They just rolled out a huge update where you can now swap SOL for tokenized stocks right in Phantom and use those stocks inside DeFi. This is not just a cool feature; it’s a real sign that traditional finance is moving straight into crypto.\n\nWhat does all this mean? \nThe dollar printing continues which pushes inflation higher and drives demand for crypto as a hedge. Rising money supply and the shift in dominance show fresh money flowing into Bitcoin and Ethereum. With TradFi moving in through Solana, institutions are entering fast. Your retail edge is getting smaller by the day.\n\nIf you’re watching from the sidelines, just know this edge won’t last forever. With Wall Street getting full access, and prices like ETH under 3k or SOL under 150, those huge 100x meme coin moves will likely be a thing of the past.",
+        "create_at_utc": "2025-07-03T06:04:28",
+        "score": 50,
+        "num_comments": 56,
+        "comments": [
+          {
+            "id": "n18hl31",
+            "author": "Onauto",
+            "body": "Once regulations and laws are finalized, I expect we’ll see the movement everyone has been impatiently waiting for.",
+            "score": 1,
+            "create_at_utc": "2025-07-04T02:00:00"
+          },
+          {
+            "id": "n18gg2w",
+            "author": "Due-Candy-8929",
+            "body": "Retail has left the chat and is just waiting to fomo back in at the top",
+            "score": 1,
+            "create_at_utc": "2025-07-04T01:52:53"
+          },
+          {
+            "id": "n18eqyc",
+            "author": "mustsurvive_",
+            "body": "Big bags dont need crazy returns. 20% on a 5 million is a million. Small money looks for astronomical plays and gets burned. Make good trades and investment. Im all bitcoin and use margin when bitcoin dips. A few % gain on margin equal to 25-50% of y",
+            "score": 1,
+            "create_at_utc": "2025-07-04T01:42:14"
+          }
+        ],
+        "ups": 50,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.036921098828315735,
+          "negative": 0.9521192908287048,
+          "positive": 0.010959536768496037
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.mitrade.com/au/insights/news/live-news/article-3-943965-20250709",
+        "author": "Practical-Solutions1",
+        "author_fullname": "t2_1oqx2ikp73",
+        "title": "XRP Price Closes Highest Quarterly Candle In History",
+        "description": "I saw XRP’s quarterly candle wrapped up at its highest level ever...\n\nBut does it really matter?",
+        "create_at_utc": "2025-07-09T02:39:37",
+        "score": 7,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n2458sk",
+            "author": "MichaelAischmann",
+            "body": "Despite a very negative sentiment towards the coin.",
+            "score": 1,
+            "create_at_utc": "2025-07-09T03:54:53"
+          },
+          {
+            "id": "n23tk6h",
+            "author": "coinfeeds-bot",
+            "body": "tldr; The XRP cryptocurrency has achieved its highest-ever quarterly candle close, marking a significant milestone in its price history. The Q2 2025 close at $2.38 represents a 14% increase from the previous quarter and a decisive breakout above the ",
+            "score": 1,
+            "create_at_utc": "2025-07-09T02:40:27"
+          }
+        ],
+        "ups": 7,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.2469211220741272,
+          "negative": 0.016941621899604797,
+          "positive": 0.7361372709274292
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m1xred/xrp_is_strong/",
+        "author": "Affectionate-Ear-967",
+        "author_fullname": "t2_9a12ehhh",
+        "title": "Xrp is strong !",
+        "description": "As we are now just 40-80 cent depending on where you get your price info but either way we’re close from making new all time highs without the lawsuit fully dropped, no regs yet, and not etfs yet! We are going way higher!",
+        "create_at_utc": "2025-07-17T04:05:07",
+        "score": 1,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.582845151424408,
+          "negative": 0.016868891194462776,
+          "positive": 0.4002859890460968
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "XRP",
+        "url": "https://www.reddit.com/r/XRP/comments/1lxmes3/resistance_broke_and_trending_up/",
+        "author": "Current_Attention_92",
+        "author_fullname": "t2_e56cmtnn",
+        "title": "Resistance broke and trending up.",
+        "description": "XRP is trending up as it has broke out of resistance and will continue to rise. Bank approval and eft on deck. Brad Garlinghouse (RIPPLE) is at the forefront of the crypto industry.\n\nBuying everyday.",
+        "create_at_utc": "2025-07-12T00:01:47",
+        "score": 47,
+        "num_comments": 19,
+        "comments": [
+          {
+            "id": "n2o081f",
+            "author": "Strict_Cantaloupe984",
+            "body": "You’re partially right, Fedwire and FedNow are closed, domestic systems that already offer instant or near-instant settlement, and their adoption of ISO 20022 doesn’t suddenly mean they need to use XRP. \n\nBut framing that as a reason XRP is “ridiculo",
+            "score": 5,
+            "create_at_utc": "2025-07-12T03:00:34"
+          },
+          {
+            "id": "n2nwkaq",
+            "author": "igoringa1",
+            "body": "Fedwire already provides immediately instant settlement to its 4.3 trillion in transactions a day.  it is a closed system with its own technology - changing the messaging format to 20022 won't change that.  \n\nin a similar vein Fednow switched to 2002",
+            "score": 1,
+            "create_at_utc": "2025-07-12T02:36:49"
+          },
+          {
+            "id": "n2npup6",
+            "author": "zefferss",
+            "body": "THANK YOU FOR YOUR ATTENTION TO THIS MATTER, CURRENT\\_ATTENTION\\_92!",
+            "score": 6,
+            "create_at_utc": "2025-07-12T01:55:10"
+          }
+        ],
+        "ups": 47,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8720237612724304,
+          "negative": 0.015963897109031677,
+          "positive": 0.11201232671737671
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoCurrency",
+        "url": "https://zycrypto.com/ripples-xrp-breakout-2742-xrp-whales-control-155-billion-as-all-time-high-looms/",
+        "author": "partymsl",
+        "author_fullname": "t2_3sfg6ijd",
+        "title": "Ripple's XRP Breakout: 2,742 XRP Whales Control $155 Billion as All-Time High Looms",
+        "description": "",
+        "create_at_utc": "2025-07-11T20:41:25",
+        "score": 16,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n2nog7d",
+            "author": "Zyzz2179",
+            "body": "I think the centralised argument is a bit outdated nowadays. Even BTC has become “pseudo-centralised” with large institutions owning the majority of BTC.",
+            "score": 3,
+            "create_at_utc": "2025-07-12T01:46:37"
+          },
+          {
+            "id": "n2md0jk",
+            "author": "mrestiaux",
+            "body": "Typical trait of a shit coin.",
+            "score": -22,
+            "create_at_utc": "2025-07-11T21:14:07"
+          },
+          {
+            "id": "n2m8a1d",
+            "author": "coinfeeds-bot",
+            "body": "tldr; XRP has seen significant growth, nearing its all-time high of $3.84, with its market value reaching levels last seen in May. Data from Santiment highlights the role of XRP whales, with 2,742 wallets holding at least 1 million XRP, collectively ",
+            "score": 3,
+            "create_at_utc": "2025-07-11T20:50:23"
+          }
+        ],
+        "ups": 16,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.22606255114078522,
+          "negative": 0.01370198279619217,
+          "positive": 0.7602354288101196
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/r/CryptoCurrency/comments/1m24h50/xrp_up_40_in_a_month_will_the_leveraged_etf_be/",
+        "author": "Past_Hotel_5987",
+        "author_fullname": "t2_aogip87k",
+        "title": "XRP up 40% in a month: Will the leveraged ETF be the final trigger?",
+        "description": "In recent weeks, XRP has made an impressive comeback. The token is now trading around **$3.38**, just **7.5% below its all-time high from 2018**, driven by several key factors:\n\n• **Regulatory optimism**: The SEC held a closed-door meeting on July 17, reportedly focused on litigation settlements. Nothing is confirmed, but the timing has sparked renewed speculation that the nearly 5-year Ripple vs SEC case may be coming to an end.\n\n• **Institutional adoption**: Ripple has partnered with Ctrl Alt (UAE) to tokenize **$16B worth of real estate** in Dubai on the XRP Ledger, using Ripple Custody and operating under a DFSA license.\n\n• **ETF narrative**: ProShares is launching the first **2x leveraged XRP ETF (UXRP)** on **July 18**, a move seen by some as a sign of growing institutional interest — and a new gateway for retail traders.\n\nAt the same time, **wallets holding between 1M and 10M XRP** have increased by **23% in a single week** (Santiment data), suggesting quiet accumulation by whales.\n\nHere’s a concerning twist:\n\nSome high-level retail traders participating in **Bitget’s KCGI 2025** (a global futures trading competition with a $6M prize pool) are reportedly **waiting for leveraged XRP ETFs** before entering with more aggressive positions.  \nWhile there’s no public data to verify this behavior, it raises an important question:\n\n>\n\nEven if the short-term momentum looks bullish, what kind of impact could this have on XRP over the coming months?",
+        "create_at_utc": "2025-07-17T10:57:09",
+        "score": 0,
+        "num_comments": 43,
+        "comments": [
+          {
+            "id": "n3nwaqy",
+            "author": "Past_Hotel_5987",
+            "body": "It really looks like it. How come bots start commenting on RCC? Hahaha",
+            "score": 1,
+            "create_at_utc": "2025-07-17T17:06:41"
+          },
+          {
+            "id": "n3nvr2o",
+            "author": "Past_Hotel_5987",
+            "body": "Lol interesting. I think I need to look into IOTA and learn more about it. 😂",
+            "score": 1,
+            "create_at_utc": "2025-07-17T17:04:12"
+          },
+          {
+            "id": "n3nv7ec",
+            "author": "Past_Hotel_5987",
+            "body": "I'm not an XRP holder, but I've been following it more closely since Ripple Labs started actively working with central banks on CBDC projects. XRP is, after all, very engaged with institutions, and I enjoy keeping up with how things are evolving.",
+            "score": 1,
+            "create_at_utc": "2025-07-17T17:01:41"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3045981228351593,
+          "negative": 0.2772555649280548,
+          "positive": 0.4181462824344635
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoMarkets",
+        "url": "https://inleo.io/@pichat/xrp-rockets-27-this-week-to-overtake-tether-thirdlargest-crypto-reclaim-hpp",
+        "author": "rose98734",
+        "author_fullname": "t2_1144ts",
+        "title": "XRP Rockets 27% This Week to Overtake Tether — Third-Largest Crypto Reclaim!",
+        "description": "",
+        "create_at_utc": "2025-07-13T16:37:05",
+        "score": 0,
+        "num_comments": 0,
+        "comments": [],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.3649137616157532,
+          "negative": 0.020001092925667763,
+          "positive": 0.6150851845741272
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "XRP",
+        "url": "https://www.reddit.com/r/XRP/comments/1m0zsoz/the_year_of_the_xrp/",
+        "author": "Massive-Employment80",
+        "author_fullname": "t2_9abiwpgz",
+        "title": "The year of the Xrp",
+        "description": "All I have to say is if your still not super bullish on Xrp and are having doubts just sell. You were not meant to have money! To the guys in the back that have been accumulating for years through the fud and didn't cry, we goin eat!",
+        "create_at_utc": "2025-07-16T01:28:23",
+        "score": 77,
+        "num_comments": 33,
+        "comments": [
+          {
+            "id": "n3e13nn",
+            "author": "xYETTIxAZ91",
+            "body": "Really like quant. Seen crazy swing with it",
+            "score": 1,
+            "create_at_utc": "2025-07-16T04:05:29"
+          },
+          {
+            "id": "n3dxo90",
+            "author": "RevolutionaryToe4941",
+            "body": "The growth has been slow because it was under attack. These next few years won't be like the previous ones",
+            "score": 4,
+            "create_at_utc": "2025-07-16T03:42:16"
+          },
+          {
+            "id": "n3dxng5",
+            "author": "Ketchup_ChocoFlan",
+            "body": "Holding since 2018 up and down a few times",
+            "score": 2,
+            "create_at_utc": "2025-07-16T03:42:07"
+          }
+        ],
+        "ups": 77,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7413161993026733,
+          "negative": 0.22214923799037933,
+          "positive": 0.03653452545404434
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m1kqvr/is_xrp_truly_worth_holding/",
+        "author": "OnlyFloyd",
+        "author_fullname": "t2_gdlicwr5",
+        "title": "Is XRP truly worth holding?",
+        "description": "I dont have much in XRP (roughly $500) so its not a big deal but I am debating on getting rid of it because I feel like it could be put to better use. Just wanting to know if there is an actual future behind this.",
+        "create_at_utc": "2025-07-16T18:39:36",
+        "score": 0,
+        "num_comments": 44,
+        "comments": [
+          {
+            "id": "n3itnz0",
+            "author": "Due-Candy-8929",
+            "body": "That being said though -  if someone only bought 1 BTC at each of the cycle tops, their folio would still be way up",
+            "score": 1,
+            "create_at_utc": "2025-07-16T21:50:45"
+          },
+          {
+            "id": "n3itd3l",
+            "author": "Due-Candy-8929",
+            "body": "Even the previous ATH is controversial tbh - some exchanges have hit higher prices in 2025 than in 2017 - the ath was also an extreme spike that lasted days so any DCA would quickly fall back to a low entry point \n\nDCA benefits from going sideways th",
+            "score": 1,
+            "create_at_utc": "2025-07-16T21:49:18"
+          },
+          {
+            "id": "n3ip1eh",
+            "author": "According_Tax7036",
+            "body": " I'm one of the lucky ones that bought in about 16 months ago around the 40 to 50 cent range. Back then the fud was a lot higher but even now as xrp has proven itself in a legal victory with the government people are still trying to find a reason to ",
+            "score": 1,
+            "create_at_utc": "2025-07-16T21:28:21"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8214719891548157,
+          "negative": 0.022922484204173088,
+          "positive": 0.15560555458068848
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "CryptoCurrency",
+        "url": "https://finbold.com/over-35-billion-flows-into-xrp-in-a-week/",
+        "author": "Realistic_Poetry5800",
+        "author_fullname": "t2_o3owbkjsc",
+        "title": "Over $35 billion flows into XRP in a week",
+        "description": "",
+        "create_at_utc": "2025-07-16T10:37:11",
+        "score": 0,
+        "num_comments": 16,
+        "comments": [
+          {
+            "id": "n3kch3i",
+            "author": "BDSMastercontrol",
+            "body": "I do believe it that why I am a xrp maxis, I believe hope it will take over swift and run all transactions",
+            "score": 1,
+            "create_at_utc": "2025-07-17T03:01:15"
+          },
+          {
+            "id": "n3gfc0f",
+            "author": "scoobysi",
+            "body": "That’s not how marketcap works though and I’ll be the first to heckle marketcap as a guide for how much money has gone into a coin, given it just reflects last price paid x supply",
+            "score": 1,
+            "create_at_utc": "2025-07-16T14:50:21"
+          },
+          {
+            "id": "n3gch78",
+            "author": "chivakenevil",
+            "body": "I actually believe that you believe that.",
+            "score": 1,
+            "create_at_utc": "2025-07-16T14:36:55"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8875151872634888,
+          "negative": 0.015413598157465458,
+          "positive": 0.09707121551036835
+        }
+      },
+      {
+        "asset": "XRP",
+        "subreddit": "XRP",
+        "url": "https://www.wsj.com/finance/regulation/ripple-seeks-a-u-s-banking-license-adding-to-list-of-crypto-companies-e007afa4?st=6FfQGi&reflink=desktopwebshare_permalink&utm_source=tldrfintech",
+        "author": "Life_Instruction8139",
+        "author_fullname": "t2_b8ewcgnq9",
+        "title": "What happens to your $XRP now that Ripple is launching RLUSD?",
+        "description": "If you hold XRP, here’s what to know:\n\nXRP still powers key parts of Ripple’s network.\n\nInstitutional access to RLUSD could increase XRP’s utility as a bridge.\n\nMore adoption = more XRP volume.",
+        "create_at_utc": "2025-07-08T01:10:08",
+        "score": 46,
+        "num_comments": 13,
+        "comments": [
+          {
+            "id": "n1xei58",
+            "author": "Life_Instruction8139",
+            "body": "They’re only now able to pursue a US banking license, which likely involved legal and regulatory timing we don’t fully understand. The SEC case just wrapped up. These things take time.\n\nWhat I dislike is how quickly some XRP holders turn on their own",
+            "score": 1,
+            "create_at_utc": "2025-07-08T03:51:35"
+          },
+          {
+            "id": "n1xchnu",
+            "author": "Nadelinemae",
+            "body": "RLUSD launched last dec of 2024. Since then nothing has happened to xrp. This token is bullcrap",
+            "score": 4,
+            "create_at_utc": "2025-07-08T03:37:56"
+          },
+          {
+            "id": "n1xc5wo",
+            "author": "TumbleweedSalt2504",
+            "body": "All that matters is we want XRPL to be a major platform for future uses of payments, trading, tokenization of real assets, etc. \nAs long as XRPL is successful, the native token will be valuable asset to invest in",
+            "score": 0,
+            "create_at_utc": "2025-07-08T03:35:43"
+          }
+        ],
+        "ups": 46,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8853582143783569,
+          "negative": 0.011620545759797096,
+          "positive": 0.10302120447158813
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m2rm2m/where_my_sol_sistas_at/",
+        "author": "Champagne-MKultra",
+        "author_fullname": "t2_1f3kaq1m9o",
+        "title": "Where my SOL sistas at?",
+        "description": "I’ve noticed Solana seems to be delayed and usually spikes after the other big boys.\n\nI think we should see some nice SOL prices in the next 12-24 hours!\n\nWhat do you think?",
+        "create_at_utc": "2025-07-18T03:19:42",
+        "score": 7,
+        "num_comments": 5,
+        "comments": [
+          {
+            "id": "n3r8yt8",
+            "author": "Level-Collection8901",
+            "body": "Would be great 👍",
+            "score": 1,
+            "create_at_utc": "2025-07-18T03:49:45"
+          },
+          {
+            "id": "n3r76pn",
+            "author": "Champagne-MKultra",
+            "body": "I think you’re right!",
+            "score": 1,
+            "create_at_utc": "2025-07-18T03:37:30"
+          },
+          {
+            "id": "n3r746f",
+            "author": "The_Meme_Economy",
+            "body": "I think it’s gonna pop.",
+            "score": 1,
+            "create_at_utc": "2025-07-18T03:37:01"
+          }
+        ],
+        "ups": 7,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8725350499153137,
+          "negative": 0.023207366466522217,
+          "positive": 0.10425751656293869
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.coindesk.com/markets/2025/07/07/solana-matches-all-other-chains-combined-in-monthly-active-users-artemis-data-shows",
+        "author": "Every_Hunt_160",
+        "author_fullname": "t2_7a50dm3i",
+        "title": "Solana Tops All Chains in Network Revenue for Third Straight Quarter: Blockworks Data",
+        "description": "",
+        "create_at_utc": "2025-07-08T02:21:46",
+        "score": 4,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n1xg38i",
+            "author": "6M66",
+            "body": "By far, it's doing more work than rest of crypto combined. Someday people get it.\n\nPeople r Still arguing over Eth, Xrp and Ada, despite the fact nobody uses Xrp and Ada and Eth is number 11 in terms of number of on chain  transactions .\n\nWhat I lear",
+            "score": 1,
+            "create_at_utc": "2025-07-08T04:02:31"
+          },
+          {
+            "id": "n1xe1r7",
+            "author": "cconnorss",
+            "body": "Sol has crazy network revenue because of the Phantom Wallet King Makers. Everyone keeps losing, but the few winning get vaulted to the top of the leaderboards to sell the fast money a dream. \n\nClassic pimpology.",
+            "score": 1,
+            "create_at_utc": "2025-07-08T03:48:29"
+          },
+          {
+            "id": "n1x1dla",
+            "author": "MaximumStudent1839",
+            "body": "Do you bozos ever get tired with these BS inverse r/cc BS? \n\nThis chain is fucking cooked if you think a 80+-100+ multiple is a bullish reason to buy an asset. Crypto is full of pathological trash trying to shove garbage narratives to dupe those who ",
+            "score": 1,
+            "create_at_utc": "2025-07-08T02:27:39"
+          }
+        ],
+        "ups": 4,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8493036031723022,
+          "negative": 0.049767088145017624,
+          "positive": 0.10092935711145401
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "solana",
+        "url": "https://www.reddit.com/r/solana/comments/1lzle5n/solana_could_trigger_a_1500_rally_after_today/",
+        "author": "Weary-Hair-316",
+        "author_fullname": "t2_t28ieg9w",
+        "title": "Solana could trigger a 1500% rally after today",
+        "description": "Martinez have found a legit cup and handle pattern that's been forming since 2021. SOL dropped from $250 down to under $10 in December 2022, then slowly climbed back to similar highs by November 2024. The pattern looks solid when you zoom out..... and the key level everyone's watching is $170. If SOL breaks above that with strong volume, the first target around $295 is totally reasonable based on how these patterns usually play out.\n\nBut here's where I need to pump the brakes on the $2,700 target. At that price, we're talking about a market cap of roughly $1.4 trillion. To put that in perspective..... Apple sits around $3.5 trillion, so we'd be talking about Solana becoming 40% the size of the world's most valuable company. Is it impossible?? No, but it would require adoption levels that are way beyond what we see today like crazy \n\nWhat I find more interesting than the price targets are the current market dynamics. Open interest in SOL futures is near all time highs, which means big money is positioning heavily. The weighted funding rate has been positive for five days straight..... which tells us that traders are literally paying premiums to hold long positions because they're so bullish.\n\nThe stablecoin supply on Solana jumped from $10.5 billion to $11.4 billion just this month, which is an 8.5% increase. When I see liquidity flowing into an ecosystem like this.  Plus that Pump fun event last week processed $448 million in token sales in 12 minutes without breaking the network..... that's genuinely impressive ( they pulled silicon valley rt) \n\nThe technical setup is solid and if SOL breaks $170 decisively, I could see $295 happening relatively quickly. Beyond that, each level becomes exponentially harder because of the market cap math. But if it fails to break $170, we could see a pullback to $136 or even $100 .\n\nThe next few weeks around that $170 level are gonna be crucial for determining if this breakout is the real potential or just another failed pattern. Even if it get to half of it , it’s huge amounts of wealth. ",
+        "create_at_utc": "2025-07-14T12:43:30",
+        "score": 57,
+        "num_comments": 92,
+        "comments": [
+          {
+            "id": "n36tikh",
+            "author": "alizafeer",
+            "body": "Hopium",
+            "score": 2,
+            "create_at_utc": "2025-07-15T02:03:56"
+          },
+          {
+            "id": "n36thus",
+            "author": "No_Mine5742",
+            "body": "It doesn’t even have to correlate. OP isn’t drawing correlation. OP is just putting in perspective of how large a $1.4 trillon Market Cap is and using how a big company like Apple’s Market Cap is in order to convey how massive Solana’s Market Cap wou",
+            "score": 1,
+            "create_at_utc": "2025-07-15T02:03:49"
+          },
+          {
+            "id": "n36t02g",
+            "author": "Ahcaiahcai",
+            "body": "The more realistic assumption is that the market cap of Solana is going to reach >50% of Ethereum within 2025",
+            "score": 1,
+            "create_at_utc": "2025-07-15T02:00:56"
+          }
+        ],
+        "ups": 57,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8735349774360657,
+          "negative": 0.030058225616812706,
+          "positive": 0.09640682488679886
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.coindesk.com/markets/2025/07/02/first-u-s-crypto-staking-etf-begins-trading-with-anchorage-as-staking-partner",
+        "author": "DryMyBottom",
+        "author_fullname": "t2_1mc1hm6squ",
+        "title": "Solana (SOL) News: SSK Opens for Trade",
+        "description": "",
+        "create_at_utc": "2025-07-02T15:29:17",
+        "score": 14,
+        "num_comments": 3,
+        "comments": [
+          {
+            "id": "n0z2ko1",
+            "author": "delastunicorn",
+            "body": "Great news",
+            "score": 2,
+            "create_at_utc": "2025-07-02T17:03:19"
+          },
+          {
+            "id": "n0yrnzj",
+            "author": "DryMyBottom",
+            "body": "apparently!",
+            "score": 1,
+            "create_at_utc": "2025-07-02T16:11:33"
+          },
+          {
+            "id": "n0yq4sq",
+            "author": "kirtash93",
+            "body": "Good news I guess",
+            "score": 2,
+            "create_at_utc": "2025-07-02T16:04:17"
+          }
+        ],
+        "ups": 14,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8605529069900513,
+          "negative": 0.021758990362286568,
+          "positive": 0.1176881268620491
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://finbold.com/solana-activity-hits-new-record-high/",
+        "author": "sadiq_238",
+        "author_fullname": "t2_ha2az87f",
+        "title": "Solana activity hits new record high",
+        "description": "",
+        "create_at_utc": "2025-07-08T18:54:10",
+        "score": 0,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n23bqcp",
+            "author": "mrestiaux",
+            "body": "Pretty much lol",
+            "score": 1,
+            "create_at_utc": "2025-07-09T00:59:13"
+          },
+          {
+            "id": "n22q60d",
+            "author": "potatoMan8111",
+            "body": "Shit coin does what?\n\nI guess a lot of teenagers are out of school for the summer so they are trading their shit meme coins around.",
+            "score": -1,
+            "create_at_utc": "2025-07-08T23:00:48"
+          },
+          {
+            "id": "n21br1h",
+            "author": "coinfeeds-bot",
+            "body": "tldr; Solana (SOL) reached a record high in activity with over 14.63 million active addresses in 24 hours, despite a recent price dip. Increased user engagement aligns with excitement over a potential Solana ETF, as the SEC reviews applications. Sola",
+            "score": 2,
+            "create_at_utc": "2025-07-08T19:00:07"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.10198178887367249,
+          "negative": 0.026304421946406364,
+          "positive": 0.8717137575149536
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/gallery/1lwp338",
+        "author": "Next_Statement6145",
+        "author_fullname": "t2_wbx0s7yvg",
+        "title": "$833m in shorts has been liquidated in the past 24 hours",
+        "description": "",
+        "create_at_utc": "2025-07-10T21:40:28",
+        "score": 367,
+        "num_comments": 49,
+        "comments": [
+          {
+            "id": "n2hp1xb",
+            "author": "slugur",
+            "body": "Good.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T04:05:48"
+          },
+          {
+            "id": "n2hn3ut",
+            "author": "cassydd",
+            "body": "They might have assumed based on past experience that there wasn't enough momentum to push through resistance lines in order books. It's a reasonable bet for a day trader.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:52:16"
+          },
+          {
+            "id": "n2hiyes",
+            "author": "AffectionatePeak9085",
+            "body": "Next week: 1B in longs liquidated",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:24:03"
+          }
+        ],
+        "ups": 367,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8032129406929016,
+          "negative": 0.047569189220666885,
+          "positive": 0.14921782910823822
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://inleo.io/@pichat/first-us-solana-staking-etf-launches-now-you-can-earn-yield-on-sol-via-ssk-5qv",
+        "author": "rose98734",
+        "author_fullname": "t2_1144ts",
+        "title": "First US Solana Staking ETF Launches",
+        "description": "",
+        "create_at_utc": "2025-07-01T06:45:02",
+        "score": 10,
+        "num_comments": 5,
+        "comments": [
+          {
+            "id": "n0puxcv",
+            "author": "semanticweb",
+            "body": "More ETFs should come live. Gives people a chance to buy and hold crypto. Especially with non tech savvy people. Good for whole web3",
+            "score": 2,
+            "create_at_utc": "2025-07-01T06:52:54"
+          },
+          {
+            "id": "n0pumq5",
+            "author": "coinfeeds-bot",
+            "body": "tldr; The U.S. is set to launch its first Solana staking ETF, named 'SSK,' by REX Shares and Osprey Funds. This ETF offers both price exposure and staking rewards for Solana (SOL) through regulated brokerage accounts. The SEC clarified staking doesn'",
+            "score": 2,
+            "create_at_utc": "2025-07-01T06:50:06"
+          },
+          {
+            "id": "n0pulsa",
+            "author": "ChemicalAnybody6229",
+            "body": "Hope it helps the price",
+            "score": 2,
+            "create_at_utc": "2025-07-01T06:49:51"
+          }
+        ],
+        "ups": 10,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.6098771095275879,
+          "negative": 0.008292053826153278,
+          "positive": 0.3818308115005493
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lvtwm4/which_of_these/",
+        "author": "Defiant_Carob_5846",
+        "author_fullname": "t2_121wjbzhup",
+        "title": "Which of these?",
+        "description": "Beside Bitcoin, which of these do you think has potential? \nI have researched a bit and came down to these coins. \n\nRipple\nEthereum\nSolana\nStellar\nCardano\nTron\nDoge\nAave\nHedera\n",
+        "create_at_utc": "2025-07-09T20:48:34",
+        "score": 0,
+        "num_comments": 10,
+        "comments": [
+          {
+            "id": "n2apuie",
+            "author": "Top_Bluejay_9483",
+            "body": "Liar. You didnt do any research. Lol",
+            "score": 1,
+            "create_at_utc": "2025-07-10T02:55:19"
+          },
+          {
+            "id": "n2aaiex",
+            "author": "pickleBoy2021",
+            "body": "Battled tested.  Had $25b. Actually had revenue.",
+            "score": 1,
+            "create_at_utc": "2025-07-10T01:24:15"
+          },
+          {
+            "id": "n29xq3a",
+            "author": "AmphoePai",
+            "body": "Aave definitely most upside.",
+            "score": 1,
+            "create_at_utc": "2025-07-10T00:10:26"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8618032336235046,
+          "negative": 0.018138490617275238,
+          "positive": 0.1200583428144455
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1m1hb66/could_the_alt_season_be_coming/",
+        "author": "Signal_Ad_2693",
+        "author_fullname": "t2_6edxlh4e",
+        "title": "Could the alt season be coming👀",
+        "description": "Solana and Ethereum are both soaring right now, Bitcoin isn't really going higher ATM, could this be a sign?",
+        "create_at_utc": "2025-07-16T16:31:36",
+        "score": 66,
+        "num_comments": 37,
+        "comments": [
+          {
+            "id": "n3k3rgz",
+            "author": "aeroxan",
+            "body": "Alternating season",
+            "score": 1,
+            "create_at_utc": "2025-07-17T02:06:22"
+          },
+          {
+            "id": "n3jmshr",
+            "author": "NoOpposite2233",
+            "body": "Honestly yeah ,fingers crossed, alt coins are looking good now",
+            "score": 2,
+            "create_at_utc": "2025-07-17T00:24:57"
+          },
+          {
+            "id": "n3irl3z",
+            "author": "vohemiq",
+            "body": "Altseason is cooking up for sure, I’ve been gauging the altseason oscillators and we’re starting to see an increase and since $BTCDOM topped out, we’re beginning to see the initial altseason sparks…\nI think the last time to seed your bags was right a",
+            "score": 2,
+            "create_at_utc": "2025-07-16T21:40:30"
+          }
+        ],
+        "ups": 66,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.21970731019973755,
+          "negative": 0.019039250910282135,
+          "positive": 0.7612534761428833
+        }
+      },
+      {
+        "asset": "SOL",
+        "subreddit": "CryptoCurrency",
+        "url": "https://trojanonsolana.com/",
+        "author": "EdHochuli",
+        "author_fullname": "t2_94ypo",
+        "title": "I'm still using Trojan to trade on solana, anything better?",
+        "description": "Trying to get back into trading meme coins. Trojan is still super reliable and has really good rewards but wondering if there is any new bots worth checking out?",
+        "create_at_utc": "2025-07-11T22:52:39",
+        "score": 2,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n2oaqg5",
+            "author": "tranceypants",
+            "body": "Trojan is the best on mobile and most reliable to use. Cashback on volume rewards are nice too.",
+            "score": 1,
+            "create_at_utc": "2025-07-12T04:13:00"
+          },
+          {
+            "id": "n2mwjnz",
+            "author": "coinfeeds-bot",
+            "body": "tldr; Trojan on Solana is a trading bot designed for the Solana blockchain, offering features like limit and DCA orders, auto-sniping for new token launches, and copy trading with high customizability. It boasts the fastest price feed on Solana, refr",
+            "score": 2,
+            "create_at_utc": "2025-07-11T23:00:23"
+          }
+        ],
+        "ups": 2,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8602809309959412,
+          "negative": 0.011030618101358414,
+          "positive": 0.12868840992450714
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/bb3mufdzzvaf1.png",
+        "author": "nickert0n",
+        "author_fullname": "t2_4kqcu",
+        "title": "Doge Double Bottom Pattern.",
+        "description": "[https://cointelegraph.com/news/doge-double-bottom-pattern-hints-at-price-rebound-to-dollar0-25?utm\\_source=rss\\_feed&utm\\_medium=rss&utm\\_campaign=rss\\_partner\\_inbound](https://cointelegraph.com/news/doge-double-bottom-pattern-hints-at-price-rebound-to-dollar0-25?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound)\n\n**Key takeaways:**\n\n* DOGE formed a double bottom and broke through the lower time frame trendline, signaling a possible move to $0.25.\n* Memecoins have been the best-performing narrative sector over the past 90 days.\n\nDogecoin \n\n[DOGE$0.1626](https://cointelegraph.com/doge-price-index) is trading near $0.17, staging a modest rebound after fluctuating between $0.13 and $0.25 since February. Despite its sideways movement, DOGE remains the 7th most traded crypto by 24-hour trading volume. Investors continue to monitor whether the memecoin can reclaim the key psychological level of $0.25.\n\n\n\n*DOGE 1-day chart. Source: Cointelegraph/TradingView*\n\nThe daily chart reveals DOGE tracing a double bottom pattern, a classic reversal signal, with a support base at $0.15 established over recent weeks. This long-term setup hints at a potential climb to $0.25, a target that could materialize sooner than expected.\n\nOver the past two months, DOGE has been confined within a descending channel, a pattern indicating signs of a potential uptrend breakout. Crypto analyst Trader Tardigrade posted an [analysis on X](https://x.com/TATrader_Alan/status/1940735051928646037), highlighting a decisive move above the 50-day trendline, followed by a successful retest and an uptrend continuation. \n\n[](https://servedbyadbutler.com/redirect.spark?MID=169476&plid=2847669&setID=592928&channelID=0&CID=1077848&banID=522869189&PID=0&textadID=0&tc=1&type=tclick&mt=1&hc=0844f5258fd69a721a5512b7c080bfe0989a7fe0&location=)\n\nThis shift in the lower time frame, marked by new higher lows and higher highs, signals a potential trend reversal from its prior downtrend. Supporting this, onchain UTXO realized price distribution data indicates the largest holder cluster at $0.177, holding 8.94% of the supply. A strong close above this level could clear the path to the next resistance at $0.206 (7.54%) and potentially $0.36 (3.83%), fueling optimism among analysts. \n\n*DOGE UTXO Realized Price Distribution. Source: Glassnode*\n\n# Memecoins continue to outperform other sectors\n\nRecent onchain metrics painted a mixed picture. Glassnode’s post on X revealed DOGE holders enduring their highest loss levels in months, a stark indicator of profit-taking or distress selling at current prices. This suggests short-term pressure, yet the memecoin narrative remains relevant.\n\nAccording to [DYOR’s data](https://dune.com/dyorcrypto/relative-strength-crypto-narrative), memecoins have dominated the past 90 days with an impressive 56.67% return, outpacing broader crypto markets.\n\n*90-day Relative Strength of Crypto Narrative. Source: DYOR/Dune Analytics*\n\nThis implies a latent upside potential for DOGE, even if $0.25 isn’t immediate. Historical patterns suggest memecoins can see 300-500% gains during peak hype cycles, as seen in late 2024.\n\nThus, DOGE stands at a crossroads, with technicals pointing to a near-term $0.25 push via its double bottom and trendline break. At the same time, memecoin dynamics suggest a longer-term climb fueled by retail enthusiasm. A decisive move above $0.177 could be the next technical confirmation.\n\nA break above $0.25 could materialize by late 2025, especially if Bitcoin’s next leg up amplifies altcoin rallies. The current loss phase may thus be a consolidation before a hype-fueled breakout.\n\n",
+        "create_at_utc": "2025-07-04T16:50:44",
+        "score": 23,
+        "num_comments": 16,
+        "comments": [
+          {
+            "id": "n1dekwz",
+            "author": "Unlucky_Bell_7354",
+            "body": "People still own doge?",
+            "score": 1,
+            "create_at_utc": "2025-07-04T21:14:24"
+          },
+          {
+            "id": "n1d3ef0",
+            "author": "FauxReal",
+            "body": "Everything in this sub hints at a 25 cent price rebound and everything also hints at $1 this year. That's what this sub is all about. Except it's not tongue in cheek humor and mockery of crypto bros anymore. People are ironically serious now.",
+            "score": 1,
+            "create_at_utc": "2025-07-04T20:13:32"
+          },
+          {
+            "id": "n1cttrg",
+            "author": "nickert0n",
+            "body": "The bottom must be in, sentiment is beyond toxic jesus lol",
+            "score": 1,
+            "create_at_utc": "2025-07-04T19:21:13"
+          }
+        ],
+        "ups": 23,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8505196571350098,
+          "negative": 0.05262632295489311,
+          "positive": 0.09685405343770981
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/ytjy9a44yqcf1.jpeg",
+        "author": "TheMaharishiEffect",
+        "author_fullname": "t2_8pr0lchv",
+        "title": "Dogecoin is coming",
+        "description": "",
+        "create_at_utc": "2025-07-14T01:57:29",
+        "score": 71,
+        "num_comments": 12,
+        "comments": [
+          {
+            "id": "n30o0rw",
+            "author": "XxCroisssantsxX",
+            "body": "\n.20 .50 .70 it’s not done IMO",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:54:27"
+          },
+          {
+            "id": "n30fszu",
+            "author": "Ok_Rich_7418",
+            "body": "Bro it was supposed to come in 2024, check your  calendar pls",
+            "score": 1,
+            "create_at_utc": "2025-07-14T02:57:49"
+          },
+          {
+            "id": "n30d8ip",
+            "author": "mildwishfulthinker",
+            "body": "i agree with you, however, you can’t talk common sense in this thread - people don’t like it here. Considering BTC’s high keeps getting higher and Doge’s high keeps getting lower",
+            "score": 1,
+            "create_at_utc": "2025-07-14T02:41:19"
+          }
+        ],
+        "ups": 71,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7582033276557922,
+          "negative": 0.17311573028564453,
+          "positive": 0.06868091225624084
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR5XfDijdF5Wqzts8EaCAQV-56oyu8hCScsoWUMXU6Pgw&s=10",
+        "author": "DesconocidoTres",
+        "author_fullname": "t2_lzc5vcimi",
+        "title": "It Was a Good Day",
+        "description": "",
+        "create_at_utc": "2025-07-06T22:40:30",
+        "score": 18,
+        "num_comments": 8,
+        "comments": [
+          {
+            "id": "n1qs8va",
+            "author": "Gloomy_Setting5936",
+            "body": "Altcoin season is starting soon, LOAD UP PAPI!!!",
+            "score": 1,
+            "create_at_utc": "2025-07-07T02:44:52"
+          },
+          {
+            "id": "n1q8i87",
+            "author": "Gloomy_Setting5936",
+            "body": "Nobody I know got killed in South Central LA, today was a good day….",
+            "score": 2,
+            "create_at_utc": "2025-07-07T00:42:22"
+          },
+          {
+            "id": "n1q3c2z",
+            "author": "Vegetable_Holiday835",
+            "body": "Lol just 5% up? Wait for another 10% down after",
+            "score": 0,
+            "create_at_utc": "2025-07-07T00:10:17"
+          }
+        ],
+        "ups": 18,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8263898491859436,
+          "negative": 0.10164324939250946,
+          "positive": 0.07196695357561111
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/9ni78qg2xjcf1.jpeg",
+        "author": "MakeItMine2024",
+        "author_fullname": "t2_nw25r9j59",
+        "title": "Pretty self explanatory",
+        "description": "",
+        "create_at_utc": "2025-07-13T02:19:09",
+        "score": 26,
+        "num_comments": 12,
+        "comments": [
+          {
+            "id": "n2uc1ro",
+            "author": "trippnwo",
+            "body": "Get annoyed by all the “here we go” posts…🤣",
+            "score": 1,
+            "create_at_utc": "2025-07-13T03:52:47"
+          },
+          {
+            "id": "n2ubddd",
+            "author": "benabducted",
+            "body": "Lambo",
+            "score": 1,
+            "create_at_utc": "2025-07-13T03:47:55"
+          },
+          {
+            "id": "n2ua1sw",
+            "author": "sexcitebike",
+            "body": "Shhh be careful with saying that, you’ll upset the idiots",
+            "score": 1,
+            "create_at_utc": "2025-07-13T03:38:26"
+          }
+        ],
+        "ups": 26,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.5185183882713318,
+          "negative": 0.4540782570838928,
+          "positive": 0.02740338258445263
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/h1yu2qpspccf1.jpeg",
+        "author": "Boring-Address-8007",
+        "author_fullname": "t2_15xhqcfaru",
+        "title": "Is Doge starting resistance?",
+        "description": "I’m not a crypto expert, however what I’m getting from this is that DOGE is currently in a resistance zone ($0.2066–$0.2136).\nIt got rejected on first test and pulled back.\nThe rebound from $0.1995 is promising, but it must break and hold above $0.2136 with volume to confirm further uptrend\n\nI think with the coming events these months, it will go crazy. Any thoughts are welcome.",
+        "create_at_utc": "2025-07-12T02:05:55",
+        "score": 0,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n2nxdmr",
+            "author": "Boring-Address-8007",
+            "body": "![gif](giphy|l2QE7xunn0xRYhNL2)",
+            "score": 1,
+            "create_at_utc": "2025-07-12T02:42:03"
+          },
+          {
+            "id": "n2nud08",
+            "author": "Nailfoot1975",
+            "body": "Hey. Anything that makes me richer I'm all for.",
+            "score": 2,
+            "create_at_utc": "2025-07-12T02:22:52"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8284136652946472,
+          "negative": 0.03784570097923279,
+          "positive": 0.13374066352844238
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/k3bsrjsnwbaf1.jpeg",
+        "author": "Stony_1987",
+        "author_fullname": "t2_1bt7hqtuzw",
+        "title": "Either way, best just to HODL on",
+        "description": "Stay humble friends. Do Only Good Everyday. #doge🦾",
+        "create_at_utc": "2025-07-01T21:14:21",
+        "score": 68,
+        "num_comments": 3,
+        "comments": [
+          {
+            "id": "n0u8bn7",
+            "author": "AnalogueBoy1992",
+            "body": "I'm kept saying one thing...10 cents",
+            "score": 0,
+            "create_at_utc": "2025-07-01T22:10:21"
+          },
+          {
+            "id": "n0u3rr1",
+            "author": "Stony_1987",
+            "body": "HODL 😁. If you want.",
+            "score": 3,
+            "create_at_utc": "2025-07-01T21:46:53"
+          },
+          {
+            "id": "n0u0zur",
+            "author": "OgjayR",
+            "body": "What If bought low and it dipped lower",
+            "score": 7,
+            "create_at_utc": "2025-07-01T21:32:54"
+          }
+        ],
+        "ups": 68,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8445981740951538,
+          "negative": 0.09344115853309631,
+          "positive": 0.06196063756942749
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/fovjona5e5cf1.jpeg",
+        "author": "Low-Hold-8563",
+        "author_fullname": "t2_1d4wxuf2m3",
+        "title": "Enjoy it while youre enjoying it.",
+        "description": "",
+        "create_at_utc": "2025-07-11T01:28:11",
+        "score": 9,
+        "num_comments": 4,
+        "comments": [
+          {
+            "id": "n2hng5n",
+            "author": "silent_tubeslide",
+            "body": "Still gonna hodl.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:54:37"
+          },
+          {
+            "id": "n2hfhf5",
+            "author": "Low-Hold-8563",
+            "body": "More likely than not.",
+            "score": 0,
+            "create_at_utc": "2025-07-11T03:01:18"
+          },
+          {
+            "id": "n2hbz9t",
+            "author": "goo_maker_69",
+            "body": "Spike to $4.20",
+            "score": 3,
+            "create_at_utc": "2025-07-11T02:39:14"
+          }
+        ],
+        "ups": 9,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.6763088703155518,
+          "negative": 0.023677166551351547,
+          "positive": 0.3000139594078064
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "dogecoin",
+        "url": "https://i.redd.it/h7m9xe27eqcf1.jpeg",
+        "author": "Dutchrudduh",
+        "author_fullname": "t2_q336n",
+        "title": "All of us.",
+        "description": "",
+        "create_at_utc": "2025-07-14T00:05:50",
+        "score": 197,
+        "num_comments": 15,
+        "comments": [
+          {
+            "id": "n30nnk1",
+            "author": "Godlymitch",
+            "body": "My dad had me buy when doge was at .00000- you get the point…\nI had well over 20 million doge at some point\nNever thought it would mean anything, and or go anywhere…\nLong story short I sold way too early and still think about how I could have retired",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:51:49"
+          },
+          {
+            "id": "n30dmls",
+            "author": "Ok-Ranger2900",
+            "body": "Most new buyers came in when Department of government efficiency was created (DOGE), thinking this would boost the price somehow, which had a price of around 40 cent back then. Therefore that would put newbs at a net loss of about 50 percent.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T02:43:47"
+          },
+          {
+            "id": "n309g19",
+            "author": "minimal",
+            "body": "Miner here, but yeah, you're not wrong. You can tell by all the $4.20! $6.90! posts. The bag holders now are really getting desperate.",
+            "score": 1,
+            "create_at_utc": "2025-07-14T02:17:59"
+          }
+        ],
+        "ups": 197,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8377418518066406,
+          "negative": 0.02446966990828514,
+          "positive": 0.13778847455978394
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/gallery/1lwp338",
+        "author": "Next_Statement6145",
+        "author_fullname": "t2_wbx0s7yvg",
+        "title": "$833m in shorts has been liquidated in the past 24 hours",
+        "description": "",
+        "create_at_utc": "2025-07-10T21:40:28",
+        "score": 363,
+        "num_comments": 49,
+        "comments": [
+          {
+            "id": "n2hp1xb",
+            "author": "slugur",
+            "body": "Good.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T04:05:48"
+          },
+          {
+            "id": "n2hn3ut",
+            "author": "cassydd",
+            "body": "They might have assumed based on past experience that there wasn't enough momentum to push through resistance lines in order books. It's a reasonable bet for a day trader.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:52:16"
+          },
+          {
+            "id": "n2hiyes",
+            "author": "AffectionatePeak9085",
+            "body": "Next week: 1B in longs liquidated",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:24:03"
+          }
+        ],
+        "ups": 363,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8222532868385315,
+          "negative": 0.050199881196022034,
+          "positive": 0.12754687666893005
+        }
+      },
+      {
+        "asset": "DOGE",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/r/CryptoCurrency/comments/1lyoijz/the_role_of_memecoins_in_todays_cryptocurrency/",
+        "author": "zesushv",
+        "author_fullname": "t2_76fou",
+        "title": "The Role of Memecoins in Today’s Cryptocurrency Ecosystem",
+        "description": "Memecoins—cryptocurrencies inspired by internet memes and viral culture—have evolved from niche novelties to significant players in the cryptocurrency landscape. Tokens like Dogecoin (DOGE), Shiba Inu (SHIB), Bonk (BONK), and platforms like *Pump<>fun* exemplify their multifaceted impact. As of July 2025, memecoins continue to drive innovation, adoption, and market dynamics across various dimensions, despite their speculative nature. As you may know based on some of my comments and posts, I believe memecoins are a key driving force and they will continue to propel blockchain/CryptoCurrency innovations to audience that desire a soft landing platform to crypto. I have put together this post to portray key examples and recent developments.\n\n## Driving User Adoption and Onboarding\nMemecoins serve as an accessible entry point for new crypto users. Their low price points and viral appeal attract retail investors who might otherwise shy away from complex DeFi or NFT projects. Dogecoin, launched in 2013, gained mainstream traction through endorsements from figures like Elon Musk, peaking at a $90 billion market cap in 2021. Its simplicity—built on a Bitcoin fork—made it a gateway for millions to explore crypto wallets and exchanges. Similarly, Shiba Inu, an Ethereum-based token, onboarded users via its “Doge Killer” branding, reaching a $40 billion market cap in 2021. By 2025, Bonk on Solana has drawn thousands to its ecosystem, with its playful dog-themed narrative boosting Solana wallet creation by ~15% during its 2023 peak, ~ **source** Solana Foundation data.\n\nRecent events, like Pump-fun’s $500 million PUMP token sale recently, highlight memecoins’ onboarding power. Pump-fun gamified launchpad, which enabled over 5 million meme token creations on Solana *[according to on-chain stats], attracted both creators and speculators, driving platform revenue to $715 million by mid-2025. This accessibility fosters broader crypto adoption, particularly among younger demographics.\n\n## Boosting Blockchain Activity and Liquidity\nMemecoins significantly increase transaction volumes and liquidity on their host blockchains. Dogecoin’s 2021 surge drove transaction spikes on its network, with daily volumes reaching 1.5 million transactions - [*Bitinfocharts*] . Shiba Inu’s trading on Ethereum contributed ~10-15% to the chain’s transaction volume during its 2021 peak, according to Dune Analytics. Bonk’s 2023 rise on Solana similarly boosted network activity [a period when many including holders like me were very skeptical about Solana future after many network halts and restarts], with daily transactions hitting 5million+ during its hype cycle. These surges elevate gas fees and validator revenue, strengthening blockchain economics.\n\nPumpdotfun success underscores this trend. Its Solana-based platform, with more than $20 million in monthly revenue as of July 2025, has increased SOL demand and liquidity. The PUMP token sale, selling 125 billion tokens in 12 minutes across major exchanges like Bybit and Kraken, amplified Solana’s market visibility, contributing to a ~20% market cap increase in Q2 2025, per CoinGecko.\n\n## Fostering Innovation and Ecosystem Growth\n- Memecoins spur innovation by encouraging developers to build supporting infrastructure. Shiba Inu’s ecosystem expanded to include ShibaSwap, a DEX, and NFT integrations, enhancing Ethereum’s DeFi landscape. Bonk’s success on Solana led to tools like PumpSwap, a DEX launched by Pump-fun in 2025, which shares 50% of trading revenue with token creators. This creator-friendly model has driven developer interest, with Solana’s dApp ecosystem growing more than 17% since Pump-d-fun’s January 2024 launch, - DappRadar.\n\n- Memecoins also inspire novel mechanics. Pumps bonding curve model, where token prices rise as buys increase, and its liquidity-locking feature have set new standards for token launches, reducing rug pull risks. These innovations strengthen blockchain ecosystems, attracting more projects and users. A feature that many standalone blockchains lack even with today's crypto market awareness. \n\n## Cultural and Social Impact\nMemecoins leverage internet culture to create and engaged communities, fostering loyalty and advocacy. Dogecoin’s “tipping” culture on platforms like Reddit built a grassroots following, while SHIB’s “SHIBArmy” drove social media hype, with over 1 million X[Twitter] followers by 2025. Bonk’s community-centric airdrops in 2023 revitalized Solana’s ecosystem post-FTX collapse, boosting morale and adoption.\n\n## Challenges and Risks\nDespite their benefits, memecoins pose risks too and it will be very silly to not acknowledge these risks. Their speculative nature fuels volatility—Pump*d*fun’s trading volume dropped 75-80% since January 2025 - *[DeFiLlama]*, reflecting market fickleness. Scams, like BSC’s Squid Game token rug pull in 2021, highlight vulnerabilities. Overreliance on memecoin hype can also skew blockchain development toward short-term gains, potentially deterring serious projects. Regulatory scrutiny remains a concern, as memecoins’ speculative appeal could invite crackdowns, impacting broader markets.\n\n## My take on memecoins\nMemecoins like Dogecoin, Shiba Inu, Bonk, and platforms like Pump-fun, etc are more than fleeting trends—they drive adoption, liquidity, innovation, and cultural engagement in the crypto ecosystem. While their volatility and risks warrant caution, their ability to onboard users, boost blockchain activity, and inspire new tools is undeniable. As of July 2025, memecoins remain a dynamic force, shaping cryptocurrency’s growth and mainstream appeal, with Pump-fun’s $500 million token sale vocalising their enduring impact. However, sustainable growth requires balancing their speculative allure with robust ecosystem development.",
+        "create_at_utc": "2025-07-13T09:17:23",
+        "score": 0,
+        "num_comments": 17,
+        "comments": [
+          {
+            "id": "n2wvk60",
+            "author": "DaskMusic",
+            "body": "Don't you mean their only strength !",
+            "score": 1,
+            "create_at_utc": "2025-07-13T15:33:53"
+          },
+          {
+            "id": "n2vvj2x",
+            "author": "LowQualitySpiderman",
+            "body": "death to meme coins...",
+            "score": 1,
+            "create_at_utc": "2025-07-13T12:05:01"
+          },
+          {
+            "id": "n2vpqa2",
+            "author": "x_lincoln_x",
+            "body": "AI slop.  Not reading.  Fuck your ai slop, fuck you janky meme coins.",
+            "score": 2,
+            "create_at_utc": "2025-07-13T11:18:55"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8851642608642578,
+          "negative": 0.012034467421472073,
+          "positive": 0.10280131548643112
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://www.reddit.com/r/cardano/comments/1lo5g4h/a_deep_dive_into_social_metrics_and_challenges/",
+        "author": "Cardanians",
+        "author_fullname": "t2_5dnus5ii",
+        "title": "A Deep Dive into Social Metrics and Challenges for Cardano (article)",
+        "description": "Despite persistent criticism regarding low on-chain activity and a perceived decline in its prominence, a closer examination of Cardano’s social metrics—drawn from recent data analysis—reveals a more complex narrative. This article explores Cardano’s current position, the challenges it faces, and the opportunities that could shape its future in an ever-evolving blockchain ecosystem.\n\n[Cardano grows when it comes to the number of creators, mentions and engagement.](https://preview.redd.it/00klmy7iy1af1.jpg?width=1593&format=pjpg&auto=webp&s=867fc2392c9b21f643fda5544776a6ebe5acbac5)\n\n[But it declines whet it comes to social dominance and sentiment.](https://preview.redd.it/pfjdfohoy1af1.jpg?width=1601&format=pjpg&auto=webp&s=096a0347599ae389e283f533f0096e23464e8ffc)\n\n**Read the article:**\n\n[https://cexplorer.io/article/a-deep-dive-into-social-metrics-and-challenges-for-cardano](https://cexplorer.io/article/a-deep-dive-into-social-metrics-and-challenges-for-cardano)",
+        "create_at_utc": "2025-06-30T11:48:26",
+        "score": 10,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n0kjpze",
+            "author": "EarningsPal",
+            "body": "Cardano holders are betting it’s the better blockchain and will win based on merit. \n\nThat the tech and security properties will win against chains which have hacked smart contracts that can’t seem to avoid losses. \n\nLeios sounds like ultra fast and ",
+            "score": 4,
+            "create_at_utc": "2025-06-30T13:01:45"
+          },
+          {
+            "id": "n0k8la2",
+            "author": "AutoModerator",
+            "body": "*  &#x1F393; **[r/Cardano Wiki Guide](https://www.reddit.com/r/cardano/wiki/index/)** - *Your essential resource! Covers [getting started](https://www.reddit.com/r/cardano/wiki/index/quick-start-guide/), [wallet security](https://www.reddit.com/r/car",
+            "score": 1,
+            "create_at_utc": "2025-06-30T11:48:27"
+          }
+        ],
+        "ups": 10,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8123108148574829,
+          "negative": 0.02745460718870163,
+          "positive": 0.16023460030555725
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "CryptoCurrency",
+        "url": "https://www.reddit.com/gallery/1lwp338",
+        "author": "Next_Statement6145",
+        "author_fullname": "t2_wbx0s7yvg",
+        "title": "$833m in shorts has been liquidated in the past 24 hours",
+        "description": "",
+        "create_at_utc": "2025-07-10T21:40:28",
+        "score": 364,
+        "num_comments": 49,
+        "comments": [
+          {
+            "id": "n2hp1xb",
+            "author": "slugur",
+            "body": "Good.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T04:05:48"
+          },
+          {
+            "id": "n2hn3ut",
+            "author": "cassydd",
+            "body": "They might have assumed based on past experience that there wasn't enough momentum to push through resistance lines in order books. It's a reasonable bet for a day trader.",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:52:16"
+          },
+          {
+            "id": "n2hiyes",
+            "author": "AffectionatePeak9085",
+            "body": "Next week: 1B in longs liquidated",
+            "score": 1,
+            "create_at_utc": "2025-07-11T03:24:03"
+          }
+        ],
+        "ups": 364,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8090865612030029,
+          "negative": 0.05080537125468254,
+          "positive": 0.14010800421237946
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://youtu.be/z_aZoUMXf2A",
+        "author": "ConvincingCrypto",
+        "author_fullname": "t2_78fmx4j0",
+        "title": "Cardano is now the #1 most bullish crypto in the world! Join Gianna as she discusses why, as well as what is happening with crypto regulation in the United States.",
+        "description": "",
+        "create_at_utc": "2025-07-16T21:26:33",
+        "score": 45,
+        "num_comments": 3,
+        "comments": [
+          {
+            "id": "n3jwfua",
+            "author": "Sundered_Ages",
+            "body": "Its height was like $2.50, it is now worth like $.75 and I feel like we see these videos every month or two get posted here about how a big turn around, project, etc is right around the corner and then nothing actually occurs.\n\nI would love Cardano t",
+            "score": 1,
+            "create_at_utc": "2025-07-17T01:22:29"
+          },
+          {
+            "id": "n3jw15b",
+            "author": "DivineJudgemnt4",
+            "body": "I hope so. I'd love to just see it keep up with its peers at this point",
+            "score": 2,
+            "create_at_utc": "2025-07-17T01:20:03"
+          },
+          {
+            "id": "n3ionl3",
+            "author": "AutoModerator",
+            "body": "*  &#x1F393; **[r/Cardano Wiki Guide](https://www.reddit.com/r/cardano/wiki/index/)** - *Your essential resource! Covers [getting started](https://www.reddit.com/r/cardano/wiki/index/quick-start-guide/), [wallet security](https://www.reddit.com/r/car",
+            "score": 1,
+            "create_at_utc": "2025-07-16T21:26:34"
+          }
+        ],
+        "ups": 45,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8637701272964478,
+          "negative": 0.012572263367474079,
+          "positive": 0.12365766614675522
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://youtube.com/watch?v=mhxBOnw4_cQ",
+        "author": "yt-app",
+        "author_fullname": "t2_15xmd9e2c1",
+        "title": "Cardano News: CARDANO IS PUMPING 🚀 $ADA $BTC | Wins of the Week #32 - cattle daddy media",
+        "description": "",
+        "create_at_utc": "2025-07-14T03:06:54",
+        "score": 1,
+        "num_comments": 1,
+        "comments": [
+          {
+            "id": "n30h6ve",
+            "author": "AutoModerator",
+            "body": "*  &#x1F393; **[r/Cardano Wiki Guide](https://www.reddit.com/r/cardano/wiki/index/)** - *Your essential resource! Covers [getting started](https://www.reddit.com/r/cardano/wiki/index/quick-start-guide/), [wallet security](https://www.reddit.com/r/car",
+            "score": 1,
+            "create_at_utc": "2025-07-14T03:06:54"
+          }
+        ],
+        "ups": 1,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8480696678161621,
+          "negative": 0.016622716560959816,
+          "positive": 0.1353076845407486
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://youtube.com/watch?v=8qU5apu-WZw",
+        "author": "yt-app",
+        "author_fullname": "t2_15xmd9e2c1",
+        "title": "2.88M ADA in Rewards?! Huge Update for Cardano DeFi & Governance - Learn Cardano",
+        "description": "",
+        "create_at_utc": "2025-07-14T10:56:51",
+        "score": 29,
+        "num_comments": 1,
+        "comments": [
+          {
+            "id": "n31zgnz",
+            "author": "AutoModerator",
+            "body": "*  &#x1F393; **[r/Cardano Wiki Guide](https://www.reddit.com/r/cardano/wiki/index/)** - *Your essential resource! Covers [getting started](https://www.reddit.com/r/cardano/wiki/index/quick-start-guide/), [wallet security](https://www.reddit.com/r/car",
+            "score": 1,
+            "create_at_utc": "2025-07-14T10:56:52"
+          }
+        ],
+        "ups": 29,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8696140050888062,
+          "negative": 0.013756765983998775,
+          "positive": 0.11662928760051727
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://www.theregister.com/2025/07/10/ai_agents_automatically_steal_cryptocurrency/",
+        "author": "flammable_donut",
+        "author_fullname": "t2_tbn6k",
+        "title": "At last, a promising use for AI agents: crypto theft",
+        "description": "Hoping Cardano will be more resistant than most.",
+        "create_at_utc": "2025-07-10T19:02:07",
+        "score": 5,
+        "num_comments": 1,
+        "comments": [
+          {
+            "id": "n2ey6qw",
+            "author": "AutoModerator",
+            "body": "*  &#x1F393; **[r/Cardano Wiki Guide](https://www.reddit.com/r/cardano/wiki/index/)** - *Your essential resource! Covers [getting started](https://www.reddit.com/r/cardano/wiki/index/quick-start-guide/), [wallet security](https://www.reddit.com/r/car",
+            "score": 1,
+            "create_at_utc": "2025-07-10T19:02:08"
+          }
+        ],
+        "ups": 5,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.7383624911308289,
+          "negative": 0.011611956171691418,
+          "positive": 0.25002557039260864
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lqzt8w/do_yourself_a_favor_and_stop_thinking_about/",
+        "author": "Sea_Helicopter_2556",
+        "author_fullname": "t2_1i0n4lc4f3",
+        "title": "Do yourself a favor and stop thinking about dinosaur coins reaching new ATHs",
+        "description": "DOT or ADA, for example are donezo.\n\nThe new narrative is btc=gold, stablecoins (on eth and trx), stocks and memes (Solana, but hopefully pumpfun dies), and DeFi (aave).\n\nThere's also investing in microcaps, but that's risky.\n\nDon't marry your coins. Protect your money.",
+        "create_at_utc": "2025-07-03T20:20:49",
+        "score": 0,
+        "num_comments": 32,
+        "comments": [
+          {
+            "id": "n1903ks",
+            "author": "revzjohnson",
+            "body": "They took their time. That’s what it is about Cardano.",
+            "score": 1,
+            "create_at_utc": "2025-07-04T04:02:27"
+          },
+          {
+            "id": "n18u6za",
+            "author": "Hobaganibagaknacker",
+            "body": "Haha. TRX is total shit coin",
+            "score": 1,
+            "create_at_utc": "2025-07-04T03:21:11"
+          },
+          {
+            "id": "n18jeo3",
+            "author": "Illustrious_Bunch443",
+            "body": "Its price movement is actually pretty good. I was surprised",
+            "score": 1,
+            "create_at_utc": "2025-07-04T02:11:11"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8875039219856262,
+          "negative": 0.01358882151544094,
+          "positive": 0.0989072248339653
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.zeitgeistpool.com/cardano_news/wtf-is-the-clarity-act-and-why-cardano-already-wins-already/",
+        "author": "asus78",
+        "author_fullname": "t2_3oejx",
+        "title": "Wtf is the clarity act & why cardano is already winning?!",
+        "description": "",
+        "create_at_utc": "2025-07-15T17:52:14",
+        "score": 0,
+        "num_comments": 2,
+        "comments": [
+          {
+            "id": "n3b5h76",
+            "author": "asus78",
+            "body": "Totally and I ain't even Maxi. Just let the most secure one win together we can thrive",
+            "score": 0,
+            "create_at_utc": "2025-07-15T18:42:20"
+          },
+          {
+            "id": "n3b53l2",
+            "author": "RefrigeratorLow1259",
+            "body": "Yes, leads other platforms in eligibility by a street mile:\n\nHere's the comparison:\n\n🧾 Cardano vs Ethereum vs Solana vs Sui – Clarity Act Regulatory Comparison\n\n| Network    | Clarity Classification     | Passes 20% Rule | Token Sale Risk          | ",
+            "score": 0,
+            "create_at_utc": "2025-07-15T18:40:33"
+          }
+        ],
+        "ups": 0,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8584790825843811,
+          "negative": 0.012051030062139034,
+          "positive": 0.1294698417186737
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "CryptoMarkets",
+        "url": "https://www.reddit.com/r/CryptoMarkets/comments/1lvtwm4/which_of_these/",
+        "author": "Defiant_Carob_5846",
+        "author_fullname": "t2_121wjbzhup",
+        "title": "Which of these?",
+        "description": "Beside Bitcoin, which of these do you think has potential? \nI have researched a bit and came down to these coins. \n\nRipple\nEthereum\nSolana\nStellar\nCardano\nTron\nDoge\nAave\nHedera\n",
+        "create_at_utc": "2025-07-09T20:48:34",
+        "score": 2,
+        "num_comments": 10,
+        "comments": [
+          {
+            "id": "n2apuie",
+            "author": "Top_Bluejay_9483",
+            "body": "Liar. You didnt do any research. Lol",
+            "score": 1,
+            "create_at_utc": "2025-07-10T02:55:19"
+          },
+          {
+            "id": "n2aaiex",
+            "author": "pickleBoy2021",
+            "body": "Battled tested.  Had $25b. Actually had revenue.",
+            "score": 1,
+            "create_at_utc": "2025-07-10T01:24:15"
+          },
+          {
+            "id": "n29xq3a",
+            "author": "AmphoePai",
+            "body": "Aave definitely most upside.",
+            "score": 1,
+            "create_at_utc": "2025-07-10T00:10:26"
+          }
+        ],
+        "ups": 2,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8667452335357666,
+          "negative": 0.018430441617965698,
+          "positive": 0.1148243099451065
+        }
+      },
+      {
+        "asset": "ADA",
+        "subreddit": "cardano",
+        "url": "https://v.redd.it/37y37vfl3obf1",
+        "author": "Thoracic_gull7",
+        "author_fullname": "t2_eda070thd",
+        "title": "Interoperability on Cardano is Alive and Well",
+        "description": "Interoperability is easily one of the most important points for blockchain adoption. Wanchain quietly built bridges connecting Cardano to major blockchains making it the most interoperable blockchain to date. We're talking real routes, not just promises. Bitcoin, Ethereum, BNB Chain and even Solana amongst many others are connected to Cardano via Wanchains bridges.\n\nAssets like BTC, ETH, USDC and USDT move to and from Cardano. We have seen millions in volume especially on Cardano protocols like Minswap, Liqwid, and Indigo, which Wanchain works with closely. This means more liquidity, more DeFi action and more use cases for ADA and Cardano blockchain as a whole. It means Cardano can play in the same arena as other chains and wont need to sit in its own isolated ecosystem.\n\nWanchain didn’t cut corners on security either. With 7 years of solid foundation and laser-focus on interoperability since day one, its clear Wanchains security is amongst the best. Bridge with Wanchain at bridge.wanchain.org",
+        "create_at_utc": "2025-07-08T15:19:01",
+        "score": 318,
+        "num_comments": 27,
+        "comments": [
+          {
+            "id": "n23zzlp",
+            "author": "makeADAgreatagain",
+            "body": "What’s the latest price target boys",
+            "score": 1,
+            "create_at_utc": "2025-07-09T03:20:01"
+          },
+          {
+            "id": "n23uxaf",
+            "author": "DangKilla",
+            "body": "Charles talked governance,  but didn't ever consult the banks. Instead he spent money trying to get students in Africa to code in Haskell. How does that make sense besides for PR? Nobody codes in Haskell; there have been Stack Overflow polls showing ",
+            "score": 1,
+            "create_at_utc": "2025-07-09T02:48:41"
+          },
+          {
+            "id": "n23b83e",
+            "author": "Important-World-6053",
+            "body": "isnt wanchain a bridge?",
+            "score": 1,
+            "create_at_utc": "2025-07-09T00:56:24"
+          }
+        ],
+        "ups": 318,
+        "downs": 0,
+        "sentiment_score": {
+          "neutral": 0.8911860585212708,
+          "negative": 0.010904689319431782,
+          "positive": 0.09790919721126556
+        }
+      }
+    ],
+    "asset_sm_sentiments": [
+      {
+        "asset": "BTC",
+        "final_sentiment_score": 0.7343,
+        "sentiment_category": "Positive",
+        "total_submissions": 10,
+        "recent_submissions": 6,
+        "average_positive": 0.4731,
+        "average_negative": 0.0607,
+        "average_neutral": 0.4662,
+        "total_engagement_score": 166,
+        "total_comments": 64,
+        "total_ups": 166,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment towards Bitcoin (BTC) on social media is Positive, with a high confidence level and significant engagement. Recent submissions highlight a bullish outlook, citing factors like regulatory optimism, corporate investment, and technical breakouts driving the current price rally. Investors may consider increasing their BTC exposure based on the community's positive sentiment and expectations of further price appreciation in the near term."
+      },
+      {
+        "asset": "ETH",
+        "final_sentiment_score": 0.589,
+        "sentiment_category": "Neutral",
+        "total_submissions": 10,
+        "recent_submissions": 6,
+        "average_positive": 0.2431,
+        "average_negative": 0.1652,
+        "average_neutral": 0.5917,
+        "total_engagement_score": 563,
+        "total_comments": 164,
+        "total_ups": 563,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment towards Ethereum (ETH) on social media is Neutral. While some users express Positive sentiment about ETH's potential, there are also concerns about the current market conditions and whether it's the right time to invest. The community seems divided on the short-term outlook for ETH, with some considering selling their holdings to have extra cash. Investors should closely monitor the market and community sentiment before making any portfolio adjustments."
+      },
+      {
+        "asset": "FDUSD",
+        "final_sentiment_score": 0.5768,
+        "sentiment_category": "Neutral",
+        "total_submissions": 10,
+        "recent_submissions": 8,
+        "average_positive": 0.1499,
+        "average_negative": 0.0735,
+        "average_neutral": 0.7766,
+        "total_engagement_score": 637,
+        "total_comments": 129,
+        "total_ups": 637,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for FDUSD (First Digital USD) is neutral based on the available social media data. The total number of submissions is 10, with a confidence level of 1.0 and total engagement of 637. The sentiment analysis shows a mix of positive, negative, and neutral sentiments, indicating a lack of strong consensus among the community. Investors should closely monitor the evolving sentiment and look for more definitive trends before making portfolio adjustments."
+      },
+      {
+        "asset": "USDC",
+        "final_sentiment_score": 0.5561,
+        "sentiment_category": "Neutral",
+        "total_submissions": 10,
+        "recent_submissions": 7,
+        "average_positive": 0.1725,
+        "average_negative": 0.1406,
+        "average_neutral": 0.6868,
+        "total_engagement_score": 215,
+        "total_comments": 137,
+        "total_ups": 215,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for USDC (USD Coin) on social media is Neutral. The total number of submissions analyzed is 10, with a confidence level of 1.0 and total engagement of 215. The social media discussions around USDC do not indicate any strong positive or negative sentiment. The conversations are mostly neutral, focusing on general cryptocurrency topics rather than specific insights about USDC. For investors, the neutral sentiment suggests USDC is viewed as a stable, reliable stablecoin, but there is no..."
+      },
+      {
+        "asset": "XRP",
+        "final_sentiment_score": 0.6912,
+        "sentiment_category": "Positive",
+        "total_submissions": 10,
+        "recent_submissions": 9,
+        "average_positive": 0.3434,
+        "average_negative": 0.0633,
+        "average_neutral": 0.5933,
+        "total_engagement_score": 194,
+        "total_comments": 174,
+        "total_ups": 194,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for XRP on social media is Positive. The community is optimistic about XRP's recent price performance, with several users highlighting the cryptocurrency's potential to reach new all-time highs. Investors seem confident in XRP's future, citing factors like the pending regulatory approval and the upcoming ETF launch. Based on the positive sentiment, investors may consider adding XRP to their crypto portfolios or increasing their existing positions."
+      },
+      {
+        "asset": "SOL",
+        "final_sentiment_score": 0.6839,
+        "sentiment_category": "Positive",
+        "total_submissions": 10,
+        "recent_submissions": 7,
+        "average_positive": 0.2832,
+        "average_negative": 0.0255,
+        "average_neutral": 0.6913,
+        "total_engagement_score": 527,
+        "total_comments": 211,
+        "total_ups": 527,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Solana (SOL) on social media is Positive. The community is optimistic about Solana's recent performance, with discussions around its network revenue, potential price rallies, and increased liquidity flowing into the ecosystem. Investors may consider maintaining or increasing their SOL holdings based on the positive community sentiment and indications of strong market dynamics, such as high open interest in SOL futures and positive funding rates."
+      },
+      {
+        "asset": "DOGE",
+        "final_sentiment_score": 0.5463,
+        "sentiment_category": "Neutral",
+        "total_submissions": 10,
+        "recent_submissions": 7,
+        "average_positive": 0.1129,
+        "average_negative": 0.1023,
+        "average_neutral": 0.7848,
+        "total_engagement_score": 775,
+        "total_comments": 138,
+        "total_ups": 775,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall sentiment for Dogecoin (DOGE) is Neutral based on the analysis of recent social media submissions. While some positive signals, such as a potential double bottom pattern and the memecoin sector's strong performance, have been observed, the cryptocurrency remains in a sideways trading range. Investors should continue monitoring DOGE's ability to reclaim the $0.25 psychological level, which could signal a more bullish trend. However, the neutral sentiment suggests caution is warranted when considering adjustments to crypto portfolios at this..."
+      },
+      {
+        "asset": "ADA",
+        "final_sentiment_score": 0.6142,
+        "sentiment_category": "Positive",
+        "total_submissions": 10,
+        "recent_submissions": 8,
+        "average_positive": 0.1367,
+        "average_negative": 0.0188,
+        "average_neutral": 0.8445,
+        "total_engagement_score": 774,
+        "total_comments": 128,
+        "total_ups": 774,
+        "confidence_level": 1,
+        "sentiment_summary": "The overall social media sentiment for ADA (Cardano) is Positive. The community is optimistic about Cardano's growth in terms of creators, mentions, and engagement, despite some challenges around social dominance and sentiment. Investors may consider this positive sentiment as a potential indicator of Cardano's long-term prospects, but should also closely monitor ongoing developments and challenges faced by the project."
+      }
+    ],
+    "overall_news_diagnosis": "Based on the comprehensive social media sentiment analysis for the cryptocurrency portfolio, the overall diagnosis is as follows: The portfolio exhibits a mix of positive and neutral sentiment across the various assets, which aligns with the investor's \"BALANCED\" risk profile that seeks a balance between growth and stability. The positive sentiment for BTC, XRP, SOL, and ADA suggests that these assets are viewed favorably by the community and may present opportunities for capital appreciation. However, the neutral sentiment for ETH, FDUSD, USDC, and DOGE indicates a more cautious outlook, with investors potentially seeking to maintain a stable position or wait for clearer market signals before adjusting their holdings. The portfolio-level implications suggest a relatively diversified approach, with a mix of high-growth and more stable assets. The positive sentiment for BTC, XRP, SOL, and ADA could provide upside potential, while the neutral sentiment for ETH, FDUSD, USDC, and DOGE may offer a degree of downside protection. Investors should closely monitor the evolving sentiment and market conditions to identify opportunities for strategic portfolio rebalancing. The recent social media discussions highlight factors such as regulatory optimism, corporate investment, and technical breakouts driving the positive sentiment for BTC, as well as concerns about the current market conditions and the right time to invest in ETH. These insights can help the investor make informed decisions aligned with their risk profile and investment objectives. Overall, the sentiment analysis suggests that the investor can maintain a balanced approach, potentially increasing exposure to the positively viewed assets while..."
+  },
+  "updates": [
+    "Starting the crypto social media workflow.",
+    "[Tool] Check crypto portfolio allocation.",
+    "[Action] Using risk profile: BALANCED - Mix of growth and stability, moderate risk",
+    "[Action] Using agent profile: CRYPTO_SOCIAL_MEDIA_AGENT - Cryptocurrency Social Media Sentiment Analyst",
+    "[Tool] Generating social media sentiment summaries."
+  ],
+  "timestamp": {
+    "$date": "2025-07-18T11:20:15.885Z"
+  },
+  "date_string": "20250718",
+  "report_embedding": [
+   
+  ]
+}

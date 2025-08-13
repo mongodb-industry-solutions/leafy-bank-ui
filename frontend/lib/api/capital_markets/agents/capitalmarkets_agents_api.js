@@ -18,7 +18,7 @@ const CAPITALMARKETS_AGENTS_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_AGE
 export async function marketFetchAssetsClosePrice() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/market/fetch-assets-close-price`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -44,7 +44,58 @@ export async function marketFetchRecentAssetsData() {
     const limit = "?limit="+limit_number
 
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/market/fetch-recent-assets-data${limit}`, {
-        method: "POST",
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching recent assets data: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Crypto Data
+ */
+
+/**  
+ * Fetch the latest close price for all assets.
+ * @returns MessageResponse: An object containing the assets close prices.
+ */
+export async function cryptoFetchAssetsClosePrice() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/crypto/fetch-assets-close-price`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching crypto assets close price: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch the most N recent data points for all assets.
+ * Args: limit: Default is 3
+ * @returns RecentDataResponse: An object containing the recent data points for each asset.
+ */
+export async function cryptoFetchRecentAssetsData() {
+
+    // Set the limit number per asset to 3
+    const limit_number = 3
+    const limit = "?limit="+limit_number
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/crypto/fetch-recent-assets-data${limit}`, {
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -69,7 +120,7 @@ export async function marketFetchRecentAssetsData() {
 export async function fetchPortfolioAllocation() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/portfolio/fetch-portfolio-allocation`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -77,6 +128,27 @@ export async function fetchPortfolioAllocation() {
 
     if (!response.ok) {
         throw new Error(`Error fetching portfolio allocation: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch crypto portfolio allocation data.
+ * @returns CryptoMessageResponse: An object containing the crypto portfolio allocation data.
+ */
+export async function fetchCryptoPortfolioAllocation() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/portfolio/fetch-crypto-portfolio-allocation`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching crypto portfolio allocation: ${response.status}`);
     }
 
     const data = await response.json();
@@ -94,7 +166,7 @@ export async function fetchPortfolioAllocation() {
 export async function fetchMostRecentMacroIndicators() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/macro-indicators/fetch-most-recent-macro-indicators`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -115,7 +187,7 @@ export async function fetchMostRecentMacroIndicators() {
 export async function fetchMacroIndicatorsTrend() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/macro-indicators/fetch-macro-indicators-trend`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -133,14 +205,16 @@ export async function fetchMacroIndicatorsTrend() {
  * Report Data
  */
 
+/*  Market (Stocks) */
+
 /**  
  * Fetch the most recent market analysis report.
  * @returns MarketAnalysisResponse: An object containing the most recent market analysis report.
  */
 export async function fetchMostRecentMarketAnalysisReport() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/report/fetch-most-recent-market-analysis-report`, {
-        method: "POST",
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-analysis-report`, {
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -160,8 +234,8 @@ export async function fetchMostRecentMarketAnalysisReport() {
  */
 export async function fetchMostRecentMarketNewsReport() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/report/fetch-most-recent-market-news-report`, {
-        method: "POST",
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-news-report`, {
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -176,8 +250,96 @@ export async function fetchMostRecentMarketNewsReport() {
 }
 
 /**  
+ * Fetch the most recent market social media report.
+ * @returns MarketSocialMediaResponse: An object containing the most recent market social media report.
+ */
+export async function fetchMostRecentMarketSocialMediaReport() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-social-media-report`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent market news report: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/*  Crypto (Digital Assets) */
+
+/**  
+ * Fetch the most recent crypto analysis report.
+ * @returns CryptoAnalysisResponse: An object containing the most recent crypto analysis report.
+ */
+export async function fetchMostRecentCryptoAnalysisReport() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-analysis-report`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent crypto analysis report: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch the most recent crypto news report.
+ * @returns CryptoNewsResponse: An object containing the most recent crypto news report.
+ */
+export async function fetchMostRecentCryptoNewsReport() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-news-report`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent crypto news report: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch the most recent crypto social media report.
+ * @returns CryptoSocialMediaResponse: An object containing the most recent crypto social media report.
+ */
+export async function fetchMostRecentCryptoSocialMediaReport() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-social-media-report`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent crypto social media report: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
  * Suggestions Data
  */
+
+/*  Market (Stocks) */
 
 /**  
  * Fetch asset suggestions based on the current portfolio and market conditions.
@@ -186,7 +348,7 @@ export async function fetchMostRecentMarketNewsReport() {
 export async function fetchAssetSuggestionsMacroIndicatorsBased() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-asset-suggestions-macro-indicators-based`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -208,7 +370,7 @@ export async function fetchAssetSuggestionsMacroIndicatorsBased() {
 export async function fetchAssetSuggestionsMarketVolatilityBased() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-asset-suggestions-market-volatility-based`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -216,6 +378,83 @@ export async function fetchAssetSuggestionsMarketVolatilityBased() {
 
     if (!response.ok) {
         throw new Error(`Error fetching asset suggestions market volatility based: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/*  Crypto (Digital Assets) */
+
+/**  
+ * Fetch crypto asset suggestions based on detailed moving average trend analysis.
+ * Returns detailed MA analysis including:
+ * MA9, MA21, MA50 analysis with exact values
+ * Percentage differences and trend directions
+ * Overall trend assessment
+ * @returns crypto_suggestions: A dictionary containing crypto asset suggestions with detailed moving average trend analysis.
+ */
+export async function fetchCryptoSuggestionsTrendBased() {
+    
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-trend-based`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching crypto suggestions trend based: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch crypto asset suggestions based on detailed momentum indicators analysis.
+ * Returns detailed momentum analysis including:
+ *    RSI values with interpretations
+ *    Volume ratios vs averages
+ *    VWAP positioning with percentages
+ * @returns crypto_suggestions: A dictionary containing crypto asset suggestions with detailed momentum indicators analysis.
+ */
+export async function fetchCryptoSuggestionsMomentumBased() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-momentum-based`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching crypto suggestions momentum based: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+}
+
+/**  
+ * Fetch comprehensive crypto asset suggestions with all indicator details combined.
+ * Returns complete analysis with all indicators:
+ *    Moving averages (MA9, MA21, MA50)
+ *    Momentum indicators (RSI, Volume, VWAP)
+ *    Detailed values and interpretations
+ * @returns crypto_suggestions: A dictionary containing comprehensive crypto asset suggestions with all indicators.
+ */
+export async function fetchCryptoSuggestionsComprehensive() {
+
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-comprehensive`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching crypto suggestions comprehensive: ${response.status}`);
     }
 
     const data = await response.json();
@@ -233,7 +472,7 @@ export async function fetchAssetSuggestionsMarketVolatilityBased() {
 export async function fetchChartMappings() {
     
     const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/charts/fetch-chart-mappings`, {
-        method: "POST",
+        method: "GET",
         headers: {
             "Content-Type": "application/json"
         }
@@ -309,6 +548,56 @@ export async function setActiveRiskProfile(riskId) {
         throw new Error(`Error setting active risk profile: ${response.status}`);
     }
     
+    const data = await response.json();
+    return data;
+}
+
+/**  
+* Consolidated Report Risk Profile  
+ */
+
+/**  
+ * Fetch the consolidated report risk profile.
+ * @returns Object: The consolidated report risk profile.
+ */
+export async function fetchConsolidatedReportRiskProfile() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/consolidated-risk-profile`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error(`Error fetching consolidated report risk profile: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+}
+
+
+/**  
+ * Stablecoin Market Caps Data
+ */
+
+/**  
+ * Fetch all risk profiles.
+ * @returns Array: An array containing risk profile objects.
+ */
+
+export async function fetchMostRecentStablecoinsMarketCap() {
+    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/stablecoins/fetch-most-recent-stablecoins-market-cap`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
+
+    if (!response.ok) {
+        throw new Error(`Error fetching most recent stablecoins market cap: ${response.status}`);
+    }
+
     const data = await response.json();
     return data;
 }

@@ -12,14 +12,14 @@
 
 .headerRow {
   display: grid;
-  grid-template-columns: 0.5fr 1fr 0.7fr 0.9fr 1fr 1fr 1fr 0.8fr 0.8fr 0.8fr 1fr;
+  grid-template-columns: 0.5fr 1fr 1fr 0.8fr 1.5fr 1.5fr 1fr 1fr 1fr 1.5fr;
+  /* Updated to 10 columns: Symbol, Asset Name, Close Price, Allocation, News Sentiment, Social Sentiment, RSI Analysis, Volume Analysis, VWAP Analysis, Actions */
   font-size: 12px;
   text-transform: uppercase;
   padding: 10px;
   font-weight: bold;
   color: #666;
   text-align: center;
-  /* NEW */
 }
 
 .assetCard {
@@ -31,8 +31,8 @@
 
 .skeletonCard {
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  /* Updated from 9 to 11 columns */
+  grid-template-columns: repeat(10, 1fr);
+  /* Updated to 10 columns to match the new grid structure */
   gap: 10px;
   padding: 15px;
   margin-bottom: 10px;
