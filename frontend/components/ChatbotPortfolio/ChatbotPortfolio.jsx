@@ -87,9 +87,15 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
 
     const handleQuestionChange = (value) => {
-        setQuery(value); // This will pre-fill the input
-        setIsSuggestionSelected(true); // disable typing
-
+        if (!value) {
+            // If user clicks X on Combobox
+            setQuery("");                // clear input
+            setIsSuggestionSelected(false);
+        } else {
+            // If user selects a suggestion
+            setQuery(value);
+            setIsSuggestionSelected(true);
+        }
     };
 
     const formatAnswer = (text) => {
