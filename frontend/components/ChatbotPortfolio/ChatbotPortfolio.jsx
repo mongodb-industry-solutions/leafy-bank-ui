@@ -37,10 +37,12 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
     const [showOverlay, setShowOverlay] = useState(false);
     const [threadId, setThreadId] = useState(null);
     const [activeTab, setActiveTab] = useState(0);
+    const [isSuggestionSelected, setIsSuggestionSelected] = useState(false);
 
     // Change question suggestions based on page path
     const pathname = usePathname();
     const isCrypto = pathname.includes("/crypto-portfolio");
+
 
     useEffect(() => {
         // Generate a fresh threadId and clear history each time the chatbot is opened
@@ -58,9 +60,11 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
     const handleChange = (event) => {
         setQuery(event.target.value);
+        setIsSuggestionSelected(false); // typing means not suggestion anymore
+
     };
 
-    
+
 
     // Decide suggestions dynamically depending on pathname
     const suggestions = isCrypto
@@ -84,6 +88,8 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
 
     const handleQuestionChange = (value) => {
         setQuery(value); // This will pre-fill the input
+        setIsSuggestionSelected(true); // disable typing
+
     };
 
     const formatAnswer = (text) => {
@@ -122,6 +128,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
             ]);
 
             setQuery("");
+            setIsSuggestionSelected(false);
         } catch (error) {
             console.error("Error:", error);
         } finally {
@@ -266,6 +273,8 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                                                 value={query}
                                                 onChange={handleChange}
                                                 placeholder="Type your question..."
+                                                disabled={isSuggestionSelected}
+
                                             />
                                             <Button onClick={handleAsk} variant="baseGreen" disabled={!query || isAsking}>
                                                 {isAsking ? "Asking..." : "Ask"}
