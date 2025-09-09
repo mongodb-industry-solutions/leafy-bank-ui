@@ -182,7 +182,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                         <div className={styles.tabsWrapper}>
 
                             <Tabs selected={activeTab} setSelected={setActiveTab}>
-                                <Tab name="Chatbot">
+                                <Tab name="AI Assistant">
 
                                     <div className={styles.chatbotBody}>
                                         <Body className={styles.introBubble}>
