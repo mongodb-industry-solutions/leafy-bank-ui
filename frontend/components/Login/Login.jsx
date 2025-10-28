@@ -44,13 +44,13 @@ const Login = ({ onUserSelected }) => {
         localStorage.removeItem('external_products');
         localStorage.removeItem('connected_external_accounts');
         localStorage.removeItem('connected_external_products');
-        
+
         // Set the selected user with BearerToken included
         setSelectedUser(user);
         localStorage.setItem('selectedUser', JSON.stringify(user));
-        
-        // Only fetch account and transaction data for non-Portfolio Manager users
-        if (user.role !== 'Portfolio Manager') {
+
+        // Only fetch account/transaction data for non-Portfolio Manager roles
+        if (user.role !== 'Portfolio Manager' && user.role !== 'Bank Analyst') {
             try {
                 const data = await fetchUserData(user.id);
                 localStorage.setItem('accounts', JSON.stringify(data.accounts));
@@ -59,13 +59,15 @@ const Login = ({ onUserSelected }) => {
                 console.error('Failed to fetch user data', error);
             }
         }
-        
+
         // Notify parent component about the selected user
         onUserSelected(user);
-        
-        // Redirect if role is Portfolio Manager
+
+        // Redirect logic
         if (user.role === 'Portfolio Manager') {
             router.push('/asset-portfolio');
+        } else if (user.role === 'Bank Analyst') {
+            window.location.href = 'https://document-intelligence-ui.demo.mongodb-industry-solutions.com/';
         }
     };
 
@@ -87,7 +89,7 @@ const Login = ({ onUserSelected }) => {
             className={styles.leafyFeel}
             backdrop="static"
         >
-            <Container className="p-3 h-100">
+            <Container className={styles.modalContainer}>
                 {!usersLoading && (
                     <div
                         className={`d-flex flex-row-reverse p-1 cursorPointer ${!selectedUser ? styles.disabledCloseButton : ''}`}
