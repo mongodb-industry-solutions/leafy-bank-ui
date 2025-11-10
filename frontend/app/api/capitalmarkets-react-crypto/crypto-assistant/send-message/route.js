@@ -1,4 +1,5 @@
 // Proxy route for Capital Markets React Crypto API - Send Message to Crypto Assistant Chatbot
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const body = await request.json();

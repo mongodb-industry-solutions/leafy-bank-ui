@@ -1,4 +1,5 @@
 // Proxy route for Accounts API - Find Active Account By Number
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const body = await request.json();

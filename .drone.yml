@@ -19,14 +19,14 @@ steps:
         - latest
       dockerfile: Dockerfile.frontend
       build_args:
-        - NEXT_PUBLIC_ACCOUNTS_API_URL=/api/accounts
-        - NEXT_PUBLIC_TRANSACTIONS_API_URL=/api/transactions
-        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=/api/cross-backend-pdf-rag
-        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=/api
-        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=/api/capitalmarkets-loaders
-        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=/api/capitalmarkets-agents
-        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=/api/capitalmarkets-react-stock
-        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=/api/capitalmarkets-react-crypto
+        - NEXT_PUBLIC_ACCOUNTS_API_URL=https://leafy-bank-backend-accounts.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_TRANSACTIONS_API_URL=https://leafy-bank-backend-transactions.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=https://cross-be-pdf-rag.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=https://leafy-bank-backend-openfinance.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=https://capitalmarkets-loaders.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=https://capitalmarkets-sched-agents.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=https://capitalmarkets-react-agent-stocks.industrysolutions.staging.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=https://capitalmarkets-react-agent-crypto.industrysolutions.staging.corp.mongodb.com
         - NODE_ENV=staging
       access_key:
         from_secret: ecr_access_key
@@ -83,15 +83,15 @@ steps:
         - prod-latest
       dockerfile: Dockerfile.frontend
       build_args:
-        - NEXT_PUBLIC_ACCOUNTS_API_URL=/api/accounts
-        - NEXT_PUBLIC_TRANSACTIONS_API_URL=/api/transactions
-        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=/api/cross-backend-pdf-rag
-        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=/api
-        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=/api/capitalmarkets-loaders
-        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=/api/capitalmarkets-agents
-        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=/api/capitalmarkets-react-stock
-        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=/api/capitalmarkets-react-crypto
-        - NODE_ENV=production
+        - NEXT_PUBLIC_ACCOUNTS_API_URL=https://leafy-bank-backend-accounts.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_TRANSACTIONS_API_URL=https://leafy-bank-backend-transactions.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=https://cross-be-pdf-rag.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=https://leafy-bank-backend-openfinance.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=https://capitalmarkets-loaders.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=https://capitalmarkets-sched-agents.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=https://capitalmarkets-react-agent-stocks.industrysolutions.prod.corp.mongodb.com
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=https://capitalmarkets-react-agent-crypto.industrysolutions.prod.corp.mongodb.com
+        - NODE_ENV=prod
       access_key:
         from_secret: ecr_access_key
       secret_key:

@@ -1,4 +1,5 @@
 // Proxy route for Accounts API - Create Account
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const body = await request.json();

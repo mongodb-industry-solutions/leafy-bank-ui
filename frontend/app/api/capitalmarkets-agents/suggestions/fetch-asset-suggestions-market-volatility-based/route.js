@@ -1,4 +1,5 @@
 // Proxy route for Capital Markets Agents API - Fetch Asset Suggestions Market Volatility Based
+export const dynamic = 'force-dynamic';
 export async function GET(request) {
   try {
     const backendUrl = process.env.INTERNAL_CAPITALMARKETS_AGENTS_API_URL || 

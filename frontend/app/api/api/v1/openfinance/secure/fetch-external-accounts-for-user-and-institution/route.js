@@ -1,4 +1,5 @@
 // Proxy route for Open Finance API - Fetch External Accounts For User And Institution
+export const dynamic = 'force-dynamic';
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
