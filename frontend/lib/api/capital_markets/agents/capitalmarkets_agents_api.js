@@ -5,7 +5,9 @@
  * @module capitalmarkets_agents_api  
  */
 
-const CAPITALMARKETS_AGENTS_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL;
+// Use /api prefix for proxy pattern (Next.js API routes)
+// This points to Next.js API routes, NOT the backend directly
+const API_BASE_URL = '/api/capitalmarkets-agents';
 
 /**  
  * Market Data
@@ -17,7 +19,7 @@ const CAPITALMARKETS_AGENTS_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_AGE
  */
 export async function marketFetchAssetsClosePrice() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/market/fetch-assets-close-price`, {
+    const response = await fetch(`${API_BASE_URL}/market/fetch-assets-close-price`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -43,7 +45,7 @@ export async function marketFetchRecentAssetsData() {
     const limit_number = 3
     const limit = "?limit="+limit_number
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/market/fetch-recent-assets-data${limit}`, {
+    const response = await fetch(`${API_BASE_URL}/market/fetch-recent-assets-data${limit}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -68,7 +70,7 @@ export async function marketFetchRecentAssetsData() {
  */
 export async function cryptoFetchAssetsClosePrice() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/crypto/fetch-assets-close-price`, {
+    const response = await fetch(`${API_BASE_URL}/crypto/fetch-assets-close-price`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -94,7 +96,7 @@ export async function cryptoFetchRecentAssetsData() {
     const limit_number = 3
     const limit = "?limit="+limit_number
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/crypto/fetch-recent-assets-data${limit}`, {
+    const response = await fetch(`${API_BASE_URL}/crypto/fetch-recent-assets-data${limit}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -119,7 +121,7 @@ export async function cryptoFetchRecentAssetsData() {
  */
 export async function fetchPortfolioAllocation() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/portfolio/fetch-portfolio-allocation`, {
+    const response = await fetch(`${API_BASE_URL}/portfolio/fetch-portfolio-allocation`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -140,7 +142,7 @@ export async function fetchPortfolioAllocation() {
  */
 export async function fetchCryptoPortfolioAllocation() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/portfolio/fetch-crypto-portfolio-allocation`, {
+    const response = await fetch(`${API_BASE_URL}/portfolio/fetch-crypto-portfolio-allocation`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -165,7 +167,7 @@ export async function fetchCryptoPortfolioAllocation() {
  */
 export async function fetchMostRecentMacroIndicators() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/macro-indicators/fetch-most-recent-macro-indicators`, {
+    const response = await fetch(`${API_BASE_URL}/macro-indicators/fetch-most-recent-macro-indicators`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -186,7 +188,7 @@ export async function fetchMostRecentMacroIndicators() {
  */
 export async function fetchMacroIndicatorsTrend() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/macro-indicators/fetch-macro-indicators-trend`, {
+    const response = await fetch(`${API_BASE_URL}/macro-indicators/fetch-macro-indicators-trend`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -213,7 +215,7 @@ export async function fetchMacroIndicatorsTrend() {
  */
 export async function fetchMostRecentMarketAnalysisReport() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-analysis-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-market-analysis-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -234,7 +236,7 @@ export async function fetchMostRecentMarketAnalysisReport() {
  */
 export async function fetchMostRecentMarketNewsReport() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-news-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-market-news-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -255,7 +257,7 @@ export async function fetchMostRecentMarketNewsReport() {
  */
 export async function fetchMostRecentMarketSocialMediaReport() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-market-social-media-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-market-social-media-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -278,7 +280,7 @@ export async function fetchMostRecentMarketSocialMediaReport() {
  */
 export async function fetchMostRecentCryptoAnalysisReport() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-analysis-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-crypto-analysis-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -299,7 +301,7 @@ export async function fetchMostRecentCryptoAnalysisReport() {
  */
 export async function fetchMostRecentCryptoNewsReport() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-news-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-crypto-news-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -320,7 +322,7 @@ export async function fetchMostRecentCryptoNewsReport() {
  */
 export async function fetchMostRecentCryptoSocialMediaReport() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/fetch-most-recent-crypto-social-media-report`, {
+    const response = await fetch(`${API_BASE_URL}/reports/fetch-most-recent-crypto-social-media-report`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -347,7 +349,7 @@ export async function fetchMostRecentCryptoSocialMediaReport() {
  */
 export async function fetchAssetSuggestionsMacroIndicatorsBased() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-asset-suggestions-macro-indicators-based`, {
+    const response = await fetch(`${API_BASE_URL}/suggestions/fetch-asset-suggestions-macro-indicators-based`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -369,7 +371,7 @@ export async function fetchAssetSuggestionsMacroIndicatorsBased() {
  */
 export async function fetchAssetSuggestionsMarketVolatilityBased() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-asset-suggestions-market-volatility-based`, {
+    const response = await fetch(`${API_BASE_URL}/suggestions/fetch-asset-suggestions-market-volatility-based`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -396,7 +398,7 @@ export async function fetchAssetSuggestionsMarketVolatilityBased() {
  */
 export async function fetchCryptoSuggestionsTrendBased() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-trend-based`, {
+    const response = await fetch(`${API_BASE_URL}/suggestions/fetch-crypto-suggestions-trend-based`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -421,7 +423,7 @@ export async function fetchCryptoSuggestionsTrendBased() {
  */
 export async function fetchCryptoSuggestionsMomentumBased() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-momentum-based`, {
+    const response = await fetch(`${API_BASE_URL}/suggestions/fetch-crypto-suggestions-momentum-based`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -446,7 +448,7 @@ export async function fetchCryptoSuggestionsMomentumBased() {
  */
 export async function fetchCryptoSuggestionsComprehensive() {
 
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/suggestions/fetch-crypto-suggestions-comprehensive`, {
+    const response = await fetch(`${API_BASE_URL}/suggestions/fetch-crypto-suggestions-comprehensive`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -471,7 +473,7 @@ export async function fetchCryptoSuggestionsComprehensive() {
  */
 export async function fetchChartMappings() {
     
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/charts/fetch-chart-mappings`, {
+    const response = await fetch(`${API_BASE_URL}/charts/fetch-chart-mappings`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -495,7 +497,7 @@ export async function fetchChartMappings() {
  * @returns Array: An array containing risk profile objects.
  */
 export async function listRiskProfiles() {
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/`, {
+    const response = await fetch(`${API_BASE_URL}/risk-profiles/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -515,7 +517,7 @@ export async function listRiskProfiles() {
  * @returns Object: The active risk profile.
  */
 export async function getActiveRiskProfile() {
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/active`, {
+    const response = await fetch(`${API_BASE_URL}/risk-profiles/active`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -536,7 +538,7 @@ export async function getActiveRiskProfile() {
  * @returns Object: The updated active risk profile.
  */
 export async function setActiveRiskProfile(riskId) {
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/risk-profiles/active`, {
+    const response = await fetch(`${API_BASE_URL}/risk-profiles/active`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -561,7 +563,7 @@ export async function setActiveRiskProfile(riskId) {
  * @returns Object: The consolidated report risk profile.
  */
 export async function fetchConsolidatedReportRiskProfile() {
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/reports/consolidated-risk-profile`, {
+    const response = await fetch(`${API_BASE_URL}/reports/consolidated-risk-profile`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
@@ -587,7 +589,7 @@ export async function fetchConsolidatedReportRiskProfile() {
  */
 
 export async function fetchMostRecentStablecoinsMarketCap() {
-    const response = await fetch(`${CAPITALMARKETS_AGENTS_API_URL}/stablecoins/fetch-most-recent-stablecoins-market-cap`, {
+    const response = await fetch(`${API_BASE_URL}/stablecoins/fetch-most-recent-stablecoins-market-cap`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"
