@@ -1,4 +1,5 @@
 // Proxy route for Cross Backend PDF RAG API - Query The PDF
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const body = await request.json();

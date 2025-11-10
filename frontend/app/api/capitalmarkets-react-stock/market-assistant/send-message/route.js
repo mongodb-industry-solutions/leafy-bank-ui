@@ -1,4 +1,5 @@
 // Proxy route for Capital Markets React Stock API - Send Message to Market Assistant Chatbot
+export const dynamic = 'force-dynamic';
 export async function POST(request) {
   try {
     const body = await request.json();
