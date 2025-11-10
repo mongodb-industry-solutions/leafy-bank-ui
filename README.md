@@ -212,7 +212,7 @@ To run the Leafy Bank UI locally, ensure the following prerequisites are met.
 > **_Note:_** Create a `.env.local` file within the `/frontend` directory.
 
 ```bash
-NEXT_PUBLIC_ACCOUNTS_API_URL="http://localhost:8000"
+NEXT_PUBLIC_ACCOUNTS_API_URL="http://localhost:8080"
 NEXT_PUBLIC_TRANSACTIONS_API_URL="http://localhost:8001"
 NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL="http://localhost:8002"
 NEXT_PUBLIC_OPEN_FINANCE_API_URL="http://localhost:8003"
@@ -228,7 +228,7 @@ NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL="http://localhost:8007"
 
 The UI depends on multiple backend services, which must be running to enable full functionality. It is recommended to configure these services to run on their respective ports, although customization is possible:
 
-- [Accounts Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-accounts) (Port **8000**)  
+- [Accounts Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-accounts) (Port **8080**)  
   - *Handles account operations and is crucial for displaying account-related functionalities.*  
 - [Transactions Service](https://github.com/mongodb-industry-solutions/leafy-bank-backend-transactions) (Port **8001**)  
   - *Manages digital payments and transfers, essential for showcasing transaction-related features.*  
@@ -265,7 +265,7 @@ npm install --legacy-peer-deps
 ````bash
 npm run dev
 ````
-4. The frontend will now be accessible at http://localhost:3000 by default, providing a user interface.
+4. The frontend will now be accessible at http://localhost:8080 by default, providing a user interface.
 
 ## Run with Docker
 
@@ -284,8 +284,6 @@ make clean
 
 - Check that you've created an `.env.local` file that contains the required environment variables.
 
-## Future tasks
+## 📄 License
 
-- [ ] Add tests
-- [ ] Code quality checks
-- [ ] Automate the deployment process using GitHub Actions or CodePipeline
+See [LICENSE](LICENSE) file for details.

@@ -7,8 +7,8 @@ import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
-import axios from "axios";
 import InfoWizard from "../InfoWizard/InfoWizard";
+import { queryPdf } from "@/lib/api/cross_backend_pdf_rag/pdf_rag_api";
 
 import Typewriter from "./Typewriter.jsx";
 
@@ -44,22 +44,16 @@ const Chatbot = ({ isOpen, toggleChatbot }) => {
         setIsAsking(true);
 
         try {
-            const NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL = process.env.NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL;
-            const apiUrl = `${NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL}/querythepdf`;
+            const response = await queryPdf({
+                industry,
+                demoName: demo_name,
+                query,
+                guidelines,
+            });
 
-            const response = await axios.post(
-                apiUrl,
-                { industry, demo_name, query, guidelines },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    }
-                }
-            );
-
-            const formattedAnswer = formatAnswer(response.data.answer);
+            const formattedAnswer = formatAnswer(response.answer);
             setAnswer(formattedAnswer);
-            setDocs(response.data.supporting_docs);
+            setDocs(response.supporting_docs);
             setMessages((prevMessages) => [...prevMessages, query, formattedAnswer]);
             setQuery("");
         } catch (error) {

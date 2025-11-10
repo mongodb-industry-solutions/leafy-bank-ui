@@ -13,7 +13,9 @@
  * @exports fetchActiveAccountsForUser
  */
 
-const ACCOUNTS_API_URL = process.env.NEXT_PUBLIC_ACCOUNTS_API_URL;
+// Use /api prefix for proxy pattern (Next.js API routes)
+// This points to Next.js API routes, NOT the backend directly
+const API_BASE_URL = '/api/accounts';
 
 /**
  * Create a new account.
@@ -26,7 +28,7 @@ const ACCOUNTS_API_URL = process.env.NEXT_PUBLIC_ACCOUNTS_API_URL;
  * @throws Will throw an error if the request fails.
  */
 export async function createAccount({ userName, userId, accountNumber, accountBalance, accountType }) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/create-account`, {
+    const response = await fetch(`${API_BASE_URL}/create-account`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -55,7 +57,7 @@ export async function createAccount({ userName, userId, accountNumber, accountBa
  * @throws Will throw an error if the request fails.
  */
 export async function deleteAccount(accountId) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/delete-account`, {
+    const response = await fetch(`${API_BASE_URL}/delete-account`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -78,7 +80,7 @@ export async function deleteAccount(accountId) {
  * @throws Will throw an error if the request fails.
  */
 export async function closeAccount(accountId) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/close-account`, {
+    const response = await fetch(`${API_BASE_URL}/close-account`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -101,7 +103,7 @@ export async function closeAccount(accountId) {
  * @throws Will throw an error if the request fails.
  */
 export async function fetchAccountsForUser(userIdentifier) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-accounts-for-user`, {
+    const response = await fetch(`${API_BASE_URL}/fetch-accounts-for-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -124,7 +126,7 @@ export async function fetchAccountsForUser(userIdentifier) {
  * @throws Will throw an error if the request fails.
  */
 export async function fetchActiveAccountsForUser(userIdentifier) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-active-accounts-for-user`, {
+    const response = await fetch(`${API_BASE_URL}/fetch-active-accounts-for-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -150,7 +152,7 @@ export async function fetchActiveAccounts() {
     const bodyData = {};
 
     // Execute the fetch request
-    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-active-accounts`, {
+    const response = await fetch(`${API_BASE_URL}/fetch-active-accounts`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -181,7 +183,7 @@ export async function fetchAccounts(excludeAccountId = null) {
     }
 
     // Execute the fetch request
-    const response = await fetch(`${ACCOUNTS_API_URL}/fetch-accounts`, {
+    const response = await fetch(`${API_BASE_URL}/fetch-accounts`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -204,7 +206,7 @@ export async function fetchAccounts(excludeAccountId = null) {
  * @throws Will throw an error if the request fails.
  */
 export async function findAccountByNumber(accountNumber) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/find-account-by-number`, {
+    const response = await fetch(`${API_BASE_URL}/find-account-by-number`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -227,7 +229,7 @@ export async function findAccountByNumber(accountNumber) {
  * @throws Will throw an error if the request fails.
  */
 export async function findActiveAccountByNumber(accountNumber) {
-    const response = await fetch(`${ACCOUNTS_API_URL}/find-active-account-by-number`, {
+    const response = await fetch(`${API_BASE_URL}/find-active-account-by-number`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
