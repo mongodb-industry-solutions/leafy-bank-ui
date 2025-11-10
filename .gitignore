@@ -1,3 +1,11 @@
+# Kanopy
+knowledge_base_kanopy/
+knowledge_base/
+
+# Security checks
+security_check.sh
+SECURITY_CHECK_README.md
+
 # task-def.json
 **/task-def.json
 

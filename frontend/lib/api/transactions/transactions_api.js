@@ -11,7 +11,9 @@
  * @exports fetchRecentTransactionsForUser
  */
 
-const TRANSACTIONS_API_URL = process.env.NEXT_PUBLIC_TRANSACTIONS_API_URL;
+// Use /api prefix for proxy pattern (Next.js API routes)
+// This points to Next.js API routes, NOT the backend directly
+const API_BASE_URL = '/api/transactions';
 
 /**
  * Perform an account transfer transaction.
@@ -20,7 +22,7 @@ const TRANSACTIONS_API_URL = process.env.NEXT_PUBLIC_TRANSACTIONS_API_URL;
  * @throws Will throw an error if the request fails.
  */
 export async function performAccountTransfer(transactionData) {
-    const response = await fetch(`${TRANSACTIONS_API_URL}/perform-account-transfer`, {
+    const response = await fetch(`${API_BASE_URL}/perform-account-transfer`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -43,7 +45,7 @@ export async function performAccountTransfer(transactionData) {
  * @throws Will throw an error if the request fails.
  */
 export async function performDigitalPayment(transactionData) {
-    const response = await fetch(`${TRANSACTIONS_API_URL}/perform-digital-payment`, {
+    const response = await fetch(`${API_BASE_URL}/perform-digital-payment`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -66,7 +68,7 @@ export async function performDigitalPayment(transactionData) {
  * @throws Will throw an error if the request fails.
  */
 export async function fetchRecentTransactionsForUser(userIdentifier) {
-    const response = await fetch(`${TRANSACTIONS_API_URL}/fetch-recent-transactions-for-user`, {
+    const response = await fetch(`${API_BASE_URL}/fetch-recent-transactions-for-user`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

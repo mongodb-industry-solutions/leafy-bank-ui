@@ -1,0 +1,127 @@
+---
+kind: pipeline
+type: kubernetes
+name: staging
+
+trigger:
+  branch:
+    - staging
+
+steps:
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-bank-ui
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - latest
+      dockerfile: Dockerfile.frontend
+      build_args:
+        - NEXT_PUBLIC_ACCOUNTS_API_URL=/api/accounts
+        - NEXT_PUBLIC_TRANSACTIONS_API_URL=/api/transactions
+        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=/api/cross-backend-pdf-rag
+        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=/api
+        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=/api/capitalmarkets-loaders
+        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=/api/capitalmarkets-agents
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=/api/capitalmarkets-react-stock
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=/api/capitalmarkets-react-crypto
+        - NODE_ENV=staging
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-frontend-staging
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-bank-ui
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-bank-ui"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-bank-ui.industrysolutions.staging.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.cpu=1000m"
+        - "resources.limits.memory=1024Mi"
+        - "resources.requests.cpu=250m"
+        - "resources.requests.memory=256Mi"
+      api_server: https://api.staging.corp.mongodb.com
+      kubernetes_token:
+        from_secret: staging_kubernetes_token
+      values_files: [ "environments/staging.yaml" ]
+    when:
+      event:
+        - push
+
+---
+kind: pipeline
+type: kubernetes
+name: prod
+
+trigger:
+  branch:
+    - main
+
+steps:
+  - name: publish-frontend
+    image: plugins/kaniko-ecr
+    settings:
+      create_repository: true
+      registry: 795250896452.dkr.ecr.us-east-1.amazonaws.com
+      repo: industrysolutions/leafy-bank-ui
+      tags:
+        - git-${DRONE_COMMIT_SHA:0:7}
+        - prod-latest
+      dockerfile: Dockerfile.frontend
+      build_args:
+        - NEXT_PUBLIC_ACCOUNTS_API_URL=/api/accounts
+        - NEXT_PUBLIC_TRANSACTIONS_API_URL=/api/transactions
+        - NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL=/api/cross-backend-pdf-rag
+        - NEXT_PUBLIC_OPEN_FINANCE_API_URL=/api
+        - NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL=/api/capitalmarkets-loaders
+        - NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL=/api/capitalmarkets-agents
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL=/api/capitalmarkets-react-stock
+        - NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL=/api/capitalmarkets-react-crypto
+        - NODE_ENV=production
+      access_key:
+        from_secret: ecr_access_key
+      secret_key:
+        from_secret: ecr_secret_key
+    when:
+      event:
+        - push
+
+  - name: deploy-frontend-prod
+    image: public.ecr.aws/kanopy/drone-helm:v3
+    settings:
+      chart: mongodb/web-app
+      chart_version: 4.25.0
+      add_repos: [mongodb=https://10gen.github.io/helm-charts]
+      namespace: industrysolutions
+      release: leafy-bank-ui
+      values:
+        - "image.tag=git-${DRONE_COMMIT_SHA:0:7}"
+        - "image.repository=795250896452.dkr.ecr.us-east-1.amazonaws.com/industrysolutions/leafy-bank-ui"
+        - "ingress.enabled=true"
+        - "ingress.hosts[0]=leafy-bank-ui.industrysolutions.prod.corp.mongodb.com"
+        - "mesh.enabled=true"
+        - "resources.limits.cpu=2000m"
+        - "resources.limits.memory=2048Mi"
+        - "resources.requests.cpu=500m"
+        - "resources.requests.memory=512Mi"
+      api_server: https://api.prod.corp.mongodb.com
+      kubernetes_token:
+        from_secret: prod_kubernetes_token
+      values_files: [ "environments/prod.yaml" ]
+    when:
+      event:
+        - push

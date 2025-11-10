@@ -5,7 +5,10 @@
  * @module open_finance_api  
  */
 
-const OPEN_FINANCE_API_URL = process.env.NEXT_PUBLIC_OPEN_FINANCE_API_URL;
+// Use /api prefix for proxy pattern (Next.js API routes)
+// This points to Next.js API routes, NOT the backend directly
+// Note: Open Finance backend has /api/v1/openfinance/secure/ prefix
+const API_BASE_URL = '/api';
 
 /**  
  * Fetch external accounts for a specific user and institution.
@@ -20,7 +23,7 @@ export async function fetchExternalAccountsForUserAndInstitution(userIdentifier,
         institution_name: institutionName // Changed from bank_name to institution_name
     }).toString();
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user-and-institution/?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user-and-institution/?${queryParams}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${bearerToken}`
@@ -47,7 +50,7 @@ export async function fetchExternalProductsForUserAndInstitution(userIdentifier,
         institution_name: institutionName // Changed from bank_name to institution_name
     }).toString();
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user-and-institution/?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/fetch-external-products-for-user-and-institution/?${queryParams}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${bearerToken}`
@@ -72,7 +75,7 @@ export async function fetchAllExternalAccountsForUser(userIdentifier, bearerToke
         user_identifier: userIdentifier
     }).toString();
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user/?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/fetch-external-accounts-for-user/?${queryParams}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${bearerToken}`
@@ -97,7 +100,7 @@ export async function fetchAllExternalProductsForUser(userIdentifier, bearerToke
         user_identifier: userIdentifier
     }).toString();
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/fetch-external-products-for-user/?${queryParams}`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/fetch-external-products-for-user/?${queryParams}`, {
         method: "GET",
         headers: {
             "Authorization": `Bearer ${bearerToken}`
@@ -126,7 +129,7 @@ export async function calculateTotalBalancesForUser(userId, bearerToken, connect
 
     console.log("Request Payload:", payload);
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/calculate-total-balance-for-user/`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/calculate-total-balance-for-user/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -158,7 +161,7 @@ export async function calculateTotalDebtForUser(userId, bearerToken, connectedEx
 
     console.log("Request Payload for Total Debt:", payload);
 
-    const response = await fetch(`${OPEN_FINANCE_API_URL}/api/v1/openfinance/secure/calculate-total-debt-for-user/`, {
+    const response = await fetch(`${API_BASE_URL}/api/v1/openfinance/secure/calculate-total-debt-for-user/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

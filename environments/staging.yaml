@@ -1,0 +1,27 @@
+env:
+  NODE_ENV: staging
+  INTERNAL_ACCOUNTS_API_URL: http://leafy-bank-backend-accounts-web-app:80
+  INTERNAL_TRANSACTIONS_API_URL: http://leafy-bank-backend-transactions-web-app:80
+  INTERNAL_CROSS_BE_PDF_RAG_URL: http://cross-be-pdf-rag-web-app:80
+  INTERNAL_OPEN_FINANCE_API_URL: http://leafy-bank-backend-openfinance-web-app:80
+  INTERNAL_CAPITALMARKETS_LOADERS_API_URL: http://capitalmarkets-loaders-web-app:80
+  INTERNAL_CAPITALMARKETS_AGENTS_API_URL: http://capitalmarkets-sched-agents-web-app:80
+  INTERNAL_CAPITALMARKETS_REACT_STOCK_API_URL: http://capitalmarkets-react-agent-stocks-web-app:80
+  INTERNAL_CAPITALMARKETS_REACT_CRYPTO_API_URL: http://capitalmarkets-react-agent-crypto-web-app:80
+  
+envSecrets:
+  NEXT_PUBLIC_ACCOUNTS_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_TRANSACTIONS_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_CROSS_BACKEND_PDF_RAG_URL: leafy-bank-ui
+  NEXT_PUBLIC_OPEN_FINANCE_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_CAPITALMARKETS_LOADERS_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL: leafy-bank-ui
+  NEXT_PUBLIC_CAPITALMARKETS_REACT_CRYPTO_API_URL: leafy-bank-ui
+  NODE_ENV: leafy-bank-ui
+
+serviceAccount:
+  enabled: true
+  irsa:
+    accountId: "275662791714"
+    roleName: "kanopy-staging-cicd-irsa"

@@ -65,7 +65,7 @@ export default function AssetPortfolio() {
         const timer = setTimeout(() => {
             setBubbleFade(true); // trigger fade out
             setTimeout(() => setShowBubble(false), 500); // remove element after animation
-        }, 8000);
+        }, 8080);
         return () => clearTimeout(timer);
     }, []);
 

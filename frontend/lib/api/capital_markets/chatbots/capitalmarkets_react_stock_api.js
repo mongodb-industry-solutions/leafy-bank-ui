@@ -4,7 +4,9 @@
  * @module capitalmarkets_react_stock_api  
  */
 
-const CAPITALMARKETS_REACT_STOCK_API_URL = process.env.NEXT_PUBLIC_CAPITALMARKETS_REACT_STOCK_API_URL;
+// Use /api prefix for proxy pattern (Next.js API routes)
+// This points to Next.js API routes, NOT the backend directly
+const API_BASE_URL = '/api/capitalmarkets-react-stock';
 
 /**  
  * Chatbot Interaction
@@ -23,7 +25,7 @@ export async function sendMessagetoReactAgentMarketAssistantChatbot(thread_id, m
         message: message
     };
     
-    const response = await fetch(`${CAPITALMARKETS_REACT_STOCK_API_URL}/market-assistant/send-message`, {
+    const response = await fetch(`${API_BASE_URL}/market-assistant/send-message`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
