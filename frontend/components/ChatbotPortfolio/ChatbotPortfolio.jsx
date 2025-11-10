@@ -165,7 +165,7 @@ const ChatbotPortfolio = ({ isOpen, toggleChatbot }) => {
                             <Button
                                 className={styles.mcpBtn}
                                 variant="primaryOutline"
-                                onClick={() => window.open('https://capitalmarkets-mcp.demo.mongodb-industry-solutions.com/', '_blank')}
+                                onClick={() => window.open('https://capitalmarkets-mcp.industrysolutions.prod.corp.mongodb.com/', '_blank')}
                             >
                                 Go to MCP Interaction
                             </Button>
