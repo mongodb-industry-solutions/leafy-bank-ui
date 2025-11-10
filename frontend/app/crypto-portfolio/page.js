@@ -41,7 +41,7 @@ export default function AssetPortfolio() {
                     coin.Symbol === "USDT" || coin.Symbol === "USDC" || coin.Symbol === "ALL_STABLECOINS"
                 );
                 
-                // Sort in the desired order: USDT, USDC, All StableCoins
+                // Sort in the desired order: 1. USDT, 2. USDC, 3. All StableCoins
                 const sortedData = filteredData.sort((a, b) => {
                     const order = ["USDT", "USDC", "ALL_STABLECOINS"];
                     return order.indexOf(a.Symbol) - order.indexOf(b.Symbol);
