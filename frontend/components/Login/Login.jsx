@@ -67,7 +67,7 @@ const Login = ({ onUserSelected }) => {
         if (user.role === 'Portfolio Manager') {
             router.push('/asset-portfolio');
         } else if (user.role === 'Bank Analyst') {
-            window.location.href = 'https://document-intelligence-ui.demo.mongodb-industry-solutions.com/';
+            window.location.href = 'https://document-intelligence-ui.industrysolutions.prod.corp.mongodb.com/';
         }
     };
 
