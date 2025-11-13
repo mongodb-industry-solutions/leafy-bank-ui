@@ -4,6 +4,10 @@
     justify-content: center;
 }
 
+.modalContainer{
+    padding: 20px;
+}
+
 .leafyFeel :global(.modal-content) {
     border-radius: 24px;
 }
@@ -16,14 +20,26 @@
     font-weight: normal;
 }
 
+
 .usersContainer {
-    display: grid;
-    column-gap: 10px;
-    row-gap: 15px;
-    justify-items: center;
-    grid-template-columns: repeat(auto-fit, minmax(105px, 130px));
-    justify-content: space-evenly;
-    margin: 30px 0px 20px 0px;
+  display: flex;
+  flex-wrap: nowrap;          /* ✅ keep everything in one line */
+  overflow-x: auto;           /* ✅ enable horizontal scrolling if needed */
+  overflow-y: hidden;
+  gap: 16px;                  /* spacing between cards */
+  justify-content: center;    /* center the cards horizontally */
+  padding: 16px 0;
+  scroll-behavior: smooth;
+  margin: 30px 0px 20px 0px;
+}
+
+.usersContainer::-webkit-scrollbar {
+  height: 8px;
+}
+
+.usersContainer::-webkit-scrollbar-thumb {
+  background-color: #d3d3d3;
+  border-radius: 4px;
 }
 
 .descriptionModal {
