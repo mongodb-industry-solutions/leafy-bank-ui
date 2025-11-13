@@ -29,5 +29,12 @@ export const USER_MAP = {
         UserName: "markscout",
         BearerToken: "a1b2c3d4e5f697887766554433221100fedcba9876543210abcdef1234567890",
         Role: "Portfolio Manager"
+    },
+
+    "671ff3451ec726b417352705": {
+        UserName: "hellyr",
+        BearerToken: "a1b2c3d4e5f697887766554433221100fedcba9876543210abcdef1234567890",
+        Role: "Bank Analyst"
     }
+
 };
