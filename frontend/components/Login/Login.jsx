@@ -66,6 +66,8 @@ const Login = ({ onUserSelected }) => {
         // Redirect logic
         if (user.role === 'Portfolio Manager') {
             router.push('/asset-portfolio');
+        } else if (user.role === 'Payment Analyst') {
+            window.location.href = 'https://fsi-payments-processing.industrysolutions.prod.corp.mongodb.com/';
         } else if (user.role === 'Bank Analyst') {
             window.location.href = 'https://document-intelligence-ui.industrysolutions.prod.corp.mongodb.com/';
         }
