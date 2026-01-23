@@ -114,10 +114,10 @@ steps:
         - "ingress.enabled=true"
         - "ingress.hosts[0]=leafy-bank-ui.industrysolutions.prod.corp.mongodb.com"
         - "mesh.enabled=true"
-        - "resources.limits.cpu=2000m"
-        - "resources.limits.memory=2048Mi"
-        - "resources.requests.cpu=500m"
-        - "resources.requests.memory=512Mi"
+        - "resources.limits.cpu=500m"
+        - "resources.limits.memory=512Mi"
+        - "resources.requests.cpu=50m"
+        - "resources.requests.memory=64Mi"
       api_server: https://api.prod.corp.mongodb.com
       kubernetes_token:
         from_secret: prod_kubernetes_token
