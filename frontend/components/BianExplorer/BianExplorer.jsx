@@ -124,6 +124,9 @@ const BianExplorer = ({ open, setOpen }) => {
             <Tab name="BIAN API">
               <div className={styles.tabPanel}>
                 <BianApiTab
+                  // Reset internal state (service filter, expanded op) if the
+                  // catalog is replaced with a different version payload.
+                  key={catalog?.version ?? "none"}
                   catalog={catalog}
                   loading={catalogLoading}
                   error={catalogError}

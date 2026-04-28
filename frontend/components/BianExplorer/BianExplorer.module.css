@@ -308,6 +308,11 @@
   border-color: #C3E7D8;
 }
 
+.apiOpRow:focus-visible {
+  outline: 2px solid #00684A;
+  outline-offset: 2px;
+}
+
 .apiOpRow[aria-expanded="true"] {
   background: #dcf5ee;
   border-color: #C3E7D8;
@@ -338,13 +343,6 @@
   word-break: break-word;
 }
 
-.apiOpName {
-  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
-  font-size: 13px;
-  color: #00684A;
-  font-weight: 700;
-}
-
 .apiOpChevron {
   display: inline-flex;
   transition: transform 150ms ease;
@@ -371,25 +369,344 @@
   color: #1C2D38;
 }
 
-.apiOpJsonRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 12px;
-}
-
-.apiOpJsonBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-
 .apiOpJsonLabel {
   font-size: 12px;
   font-weight: 600;
   color: #5D6C74;
   text-transform: uppercase;
   letter-spacing: 0.4px;
+}
+
+/* --- Conventions header strip --- */
+
+.conventionsBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+}
+
+.conventionsPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  flex: 1;
+}
+
+.conventionsActions {
+  display: inline-flex;
+}
+
+.factPill {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1C2D38;
+  background: #ffffff;
+  border: 1px solid #E8EDEB;
+  border-radius: 4px;
+  padding: 3px 8px;
+  letter-spacing: 0.2px;
+}
+
+.statusCodesPanel {
+  flex-basis: 100%;
+  margin-top: 6px;
+  background: #ffffff;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  overflow-x: auto;
+}
+
+.statusCodesTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.statusCodesTable th,
+.statusCodesTable td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.statusCodesTable th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5D6C74;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.statusCodesTable tr:last-child td {
+  border-bottom: none;
+}
+
+.statusCodeBadge {
+  display: inline-block;
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  min-width: 40px;
+  text-align: center;
+}
+
+.successCode2xx { background: #C3E7D8; color: #00684A; }
+.successCodeOther { background: #E1F2FF; color: #1254B7; }
+.errorCode4xx { background: #FFEC9E; color: #75520A; }
+.errorCode5xx { background: #FFCDC7; color: #970606; }
+.errorCodeOther { background: #F1F4F4; color: #5D6C74; }
+
+/* --- Service filter --- */
+
+.serviceFilter {
+  display: flex;
+  align-items: center;
+  padding: 0 4px;
+}
+
+/* --- Service section --- */
+
+.serviceSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.serviceHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.serviceIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #C3E7D8;
+  border-radius: 6px;
+  color: #00684A;
+  background: #ffffff;
+}
+
+.serviceName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1C2D38;
+}
+
+.serviceHostPortBadge {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+}
+
+.serviceDomainBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* --- Operation row chips --- */
+
+.apiOpMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.actionPill {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #ffffff;
+  background: #00684A;
+  border-radius: 12px;
+  padding: 3px 10px;
+}
+
+.behaviorChip {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #00684A;
+  background: #ffffff;
+  border: 1px solid #C3E7D8;
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.idempotentChip {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #75520A;
+  background: #FFEC9E;
+  border-radius: 8px;
+  padding: 1px 6px;
+}
+
+/* --- Expanded-panel sections --- */
+
+.opSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldName {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1C2D38;
+}
+
+.headersTable,
+.errorsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #ffffff;
+  border: 1px solid #E8EDEB;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.headersTable th,
+.headersTable td,
+.errorsTable th,
+.errorsTable td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid #E8EDEB;
+  vertical-align: top;
+}
+
+.headersTable th,
+.errorsTable th {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5D6C74;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  background: #F9FBFA;
+}
+
+.headersTable tr:last-child td,
+.errorsTable tr:last-child td {
+  border-bottom: none;
+}
+
+.enumsBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #E8EDEB;
+  border-radius: 6px;
+  padding: 8px;
+}
+
+.enumRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.enumChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.enumChip {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  color: #1C2D38;
+  background: #F1F4F4;
+  border: 1px solid #E8EDEB;
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.requestNotes {
+  font-style: italic;
+  color: #5D6C74;
+}
+
+.exampleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.exampleLabel {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: #5D6C74;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.successCodesRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.successOr {
+  font-size: 12px;
+  color: #5D6C74;
+  font-style: italic;
+}
+
+.envelopeKeysCaption {
+  font-size: 12px;
+  color: #5D6C74;
+}
+
+.envelopeKey {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  color: #00684A;
+  font-weight: 600;
+}
+
+.notesFooter {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  background: #FFEC9E;
+  border: 1px solid #E5C04D;
+  border-radius: 6px;
+  padding: 8px 10px;
+  color: #75520A;
+}
+
+.notesFooter svg {
+  flex-shrink: 0;
+  margin-top: 2px;
 }
 
 /* ===================== Responsive ===================== */
@@ -406,9 +723,6 @@
     gap: 6px;
     flex-wrap: wrap;
     margin-bottom: 8px;
-  }
-  .apiOpJsonRow {
-    grid-template-columns: 1fr;
   }
 }
 

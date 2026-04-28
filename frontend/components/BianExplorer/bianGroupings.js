@@ -79,12 +79,17 @@ export function resolveGroupLabel(domain, prefix) {
 // Compute the group key for a Mongo field path.
 // Rules:
 //   - "status"                    → "_top"
+//   - "consents[]"                → "consents[]"      (top-level array root, has its own GROUP_LABELS entry)
+//   - "fees[]"                    → "fees[]"          (same)
 //   - "identification.taxId"      → "identification"
 //   - "contact.addresses[].line1" → "contact.addresses[]"
 //   - "kyc.documents[].type"      → "kyc.documents[]"
 //   - "kyc.documents[]"           → "kyc.documents[]"  (path is itself an array root)
 export function groupKeyForPath(path) {
   if (!path) return "_top";
+  // Top-level array roots (e.g. "consents[]", "fees[]") get their own group
+  // so domain-specific GROUP_LABELS entries can match them.
+  if (path.endsWith("[]") && path.indexOf(".") === -1) return path;
   const dotIdx = path.indexOf(".");
   if (dotIdx === -1) return "_top";
 

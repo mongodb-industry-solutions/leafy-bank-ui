@@ -94,15 +94,16 @@ function Header({ onLogout = () => { } }) {
         </Link>
 
         {/* Mobile entry for the BIAN explorer */}
-        <div
-          className={styles.linkHideDesktop}
+        <button
+          type="button"
+          className={`${styles.linkHideDesktop} ${styles.menuButton}`}
           onClick={() => {
             setMenuOpen(false);
             setBianOpen(true);
           }}
         >
           <Body>BIAN v14 Explorer</Body>
-        </div>
+        </button>
 
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>

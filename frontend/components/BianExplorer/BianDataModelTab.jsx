@@ -135,8 +135,9 @@ function buildGroupedDomain(domainKey, domainObj, query) {
       rootCanonical: (() => {
         const rootKey = gk === "_top" ? null : gk;
         if (!rootKey) return null;
-        const match = entries.find(([p]) => p === rootKey);
-        return match ? match[1] : null;
+        // domainObj is a path→name map, so look up the root key directly
+        // instead of scanning entries.
+        return domainObj?.[rootKey] ?? null;
       })(),
       rows,
     };
