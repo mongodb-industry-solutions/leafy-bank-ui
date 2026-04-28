@@ -20,11 +20,7 @@ const API_BASE_URL = '/api/bian';
  */
 export async function fetchBianMapping() {
     const response = await fetch(`${API_BASE_URL}/fetch-mapping`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
+        method: "GET",
     });
 
     if (!response.ok) {
@@ -42,11 +38,7 @@ export async function fetchBianMapping() {
  */
 export async function fetchBianApiCatalog() {
     const response = await fetch(`${API_BASE_URL}/fetch-api-catalog`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
+        method: "GET",
     });
 
     if (!response.ok) {

@@ -1,24 +1,16 @@
-// Proxy route for Accounts API - Fetch BIAN API Catalog
+// Proxy route for Accounts API - Fetch BIAN API Catalog (no-body GET).
 export const dynamic = 'force-dynamic';
-export async function POST(request) {
+export async function GET() {
   try {
-    const body = await request.json().catch(() => ({}));
-
     const backendUrl = process.env.INTERNAL_ACCOUNTS_API_URL ||
                        process.env.NEXT_PUBLIC_ACCOUNTS_API_URL ||
                        "http://localhost:8000";
 
     const url = `${backendUrl}/fetch-bian-api-catalog`;
 
-    console.log(`🔗 Proxying POST request to: ${url}`);
+    console.log(`🔗 Proxying GET request to: ${url}`);
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body || {}),
-    });
+    const response = await fetch(url, { method: 'GET' });
 
     if (!response.ok) {
       const error = await response.json().catch(() => ({ detail: 'Request failed' }));
