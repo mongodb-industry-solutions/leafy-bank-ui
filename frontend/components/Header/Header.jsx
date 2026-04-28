@@ -8,14 +8,17 @@ import Link from 'next/link';
 import Image from 'next/image';
 import IconButton from '@leafygreen-ui/icon-button';
 import Icon from '@leafygreen-ui/icon';
+import Tooltip from '@leafygreen-ui/tooltip';
 import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
 import RiskProfileSelector from '@/components/RiskProfileSelector/RiskProfileSelector';
+import BianExplorer from '@/components/BianExplorer/BianExplorer';
 import styles from "./Header.module.css";
 
 function Header({ onLogout = () => { } }) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [bianOpen, setBianOpen] = useState(false);
   const pathname = usePathname();
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -90,6 +93,18 @@ function Header({ onLogout = () => { } }) {
           <Body className={styles.navLinkText}>Crypto Investment</Body>
         </Link>
 
+        {/* Mobile entry for the BIAN explorer */}
+        <button
+          type="button"
+          className={`${styles.linkHideDesktop} ${styles.menuButton}`}
+          onClick={() => {
+            setMenuOpen(false);
+            setBianOpen(true);
+          }}
+        >
+          <Body>BIAN v14 Explorer</Body>
+        </button>
+
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
           <Body>Log Out</Body>
@@ -104,6 +119,22 @@ function Header({ onLogout = () => { } }) {
             <RiskProfileSelector />
           </>
         )}
+
+        {/* BIAN v14 Explorer trigger — sits immediately left of UserProfile */}
+        <Tooltip
+          trigger={
+            <IconButton
+              aria-label="Open BIAN data model and API explorer"
+              onClick={() => setBianOpen(true)}
+              className={styles.bianIcon}
+            >
+              <Icon glyph="University" />
+            </IconButton>
+          }
+        >
+          BIAN v14 Data Model &amp; API
+        </Tooltip>
+        <BianExplorer open={bianOpen} setOpen={setBianOpen} />
 
         <UserProfile></UserProfile>
 
