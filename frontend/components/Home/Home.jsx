@@ -115,7 +115,11 @@ const Home = () => {
       return;
     }
     try {
-      setLoading(true);
+      // NOTE: do NOT setLoading(true) here. The top-level `loading` flag gates the
+      // entire page render (line ~187), so flipping it during a post-transaction
+      // refresh blanks the UI to "Loading…" and looks like a full page refresh.
+      // Leave the cards/transactions visible; state updates flow through when fetch
+      // resolves.
 
       // Skip data fetching for Portfolio Manager users
       if (user.role === 'Portfolio Manager') {
@@ -141,8 +145,6 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error refreshing data:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -263,6 +265,7 @@ const Home = () => {
                   handleCloseForm={handleCloseForm}
                   handleRefresh={handleRefresh}
                   updateGlobalPosition={updateGlobalPosition}
+                  activeAccounts={activeAccounts}
                 />
 
                 <Chatbot isOpen={isOpen} toggleChatbot={toggleChatbot} />

@@ -18,12 +18,40 @@ import BankConnection from "../BankConnection/BankConnection";
 import Badge from "@leafygreen-ui/badge";
 import Modal from "@leafygreen-ui/modal";
 
+// Phase 5.1: post-adapter, internal accounts ship BIAN field names
+// (CurrentAccountNumber / CurrentAccountType / CurrentAccountBalanceRecord / …).
+// External Open Finance accounts still ship the legacy shape (AccountNumber /
+// AccountType / AccountBalance / AccountBank / …) — the helpers below read whichever
+// is present so the same card renders both.
+const ACCOUNT_TYPE_DISPLAY = {
+    CURRENT: "Checking",
+    SAVINGS: "Savings",
+    FIXED_DEPOSIT: "Fixed Deposit",
+};
+
+const acctNumber = (item) => item?.CurrentAccountNumber ?? item?.AccountNumber;
+const acctType = (item) => {
+    const bian = item?.CurrentAccountType;
+    if (bian) return ACCOUNT_TYPE_DISPLAY[bian] || bian;
+    return item?.AccountType;
+};
+const acctBalance = (item) =>
+    item?.CurrentAccountBalanceRecord?.CurrentAccountBalanceAmount ?? item?.AccountBalance;
+const acctCurrency = (item) => item?.CurrentAccountCurrencyCode || item?.AccountCurrency;
+const acctOpenDate = (item) =>
+    item?.CurrentAccountOpenDate ||
+    item?.AccountDate?.OpeningDate ||
+    item?.ProductDate?.OpeningDate;
+const acctBank = (item) => item?._bankName || item?.AccountBank || item?.ProductBank;
+const acctRef = (item) => item?.CurrentAccountReference || item?._id;
+
 const AccountsCards = ({
     isFormOpen,
     handleOpenForm,
     handleCloseForm,
     handleRefresh,
-    updateGlobalPosition
+    updateGlobalPosition,
+    activeAccounts,
 }) => {
     // State to hold accounts and products
     const [accountsAndProducts, setAccountsAndProducts] = useState([]);
@@ -75,7 +103,7 @@ const AccountsCards = ({
 
         // Filter out existing accounts/products from the same external bank
         const filteredAccountsAndProducts = accountsAndProducts.filter(
-            (item) => (item.AccountBank || item.ProductBank) !== bank
+            (item) => acctBank(item) !== bank
         );
 
         // Add newly connected accounts/products to existing array
@@ -113,7 +141,7 @@ const AccountsCards = ({
         if (selectedAccountOrProduct) {
             // Remove the selected account/product from the state
             const updatedAccountsAndProducts = accountsAndProducts.filter(
-                (item) => item._id !== selectedAccountOrProduct._id
+                (item) => acctRef(item) !== acctRef(selectedAccountOrProduct)
             );
             setAccountsAndProducts(updatedAccountsAndProducts);
 
@@ -137,51 +165,56 @@ const AccountsCards = ({
         }
     };
 
+    // Re-derive accountsAndProducts whenever Home's `activeAccounts` prop changes
+    // (e.g. after a transfer triggers `handleRefresh` -> `setActiveAccounts(...)`).
+    // External (Open Finance) accounts/products live in localStorage — managed by
+    // BankConnection inside this component — so we still pull those from storage.
     useEffect(() => {
-        const initializeData = () => {
-            try {
-                const userString = localStorage.getItem("selectedUser");
-                if (!userString) throw new Error("No user selected");
-                
-                const user = JSON.parse(userString);
-                
-                // Check if the user is a Portfolio Manager
-                if (user.role === 'Portfolio Manager') {
-                    // For Portfolio Manager, use empty arrays for all data
-                    setAccountsAndProducts([]);
-                    return; // Exit early
-                }
-                
-                // For regular users, proceed with normal data loading
-                const internalAccounts = JSON.parse(localStorage.getItem("accounts") || '{"accounts":[]}');
-                
-                // Safely access internal accounts with fallback to empty array
-                const internalAccountsList = internalAccounts && internalAccounts.accounts ? internalAccounts.accounts : [];
-                
-                // Retrieve external accounts and products
-                const connectedExternalAccounts = JSON.parse(localStorage.getItem('connected_external_accounts') || '[]');
-                const connectedExternalProducts = JSON.parse(localStorage.getItem('connected_external_products') || '[]');
-                
-                // Combine all the accounts and products
-                setAccountsAndProducts([
-                    ...internalAccountsList,
-                    ...connectedExternalAccounts,
-                    ...connectedExternalProducts,
-                ]);
-    
-            } catch (error) {
-                console.error("Error initializing account data:", error);
-                pushToast({
-                    title: "Failed to load accounts. Please try again.",
-                    variant: "warning",
-                    className: styles.customToast,
-                });
-            } finally {
-                setLoading(false);
+        try {
+            const userString = localStorage.getItem("selectedUser");
+            if (!userString) throw new Error("No user selected");
+
+            const user = JSON.parse(userString);
+
+            // Portfolio Manager has no banking data
+            if (user.role === 'Portfolio Manager') {
+                setAccountsAndProducts([]);
+                return;
             }
-        };
-        initializeData();
-    }, []);
+
+            // Prefer the prop (live data); fall back to localStorage on first mount
+            // before Home has finished its initial fetch.
+            let internalAccountsList = activeAccounts?.accounts;
+            if (!Array.isArray(internalAccountsList)) {
+                const cached = JSON.parse(
+                    localStorage.getItem("accounts") || '{"accounts":[]}'
+                );
+                internalAccountsList = cached?.accounts || [];
+            }
+
+            const connectedExternalAccounts = JSON.parse(
+                localStorage.getItem('connected_external_accounts') || '[]'
+            );
+            const connectedExternalProducts = JSON.parse(
+                localStorage.getItem('connected_external_products') || '[]'
+            );
+
+            setAccountsAndProducts([
+                ...internalAccountsList,
+                ...connectedExternalAccounts,
+                ...connectedExternalProducts,
+            ]);
+        } catch (error) {
+            console.error("Error initializing account data:", error);
+            pushToast({
+                title: "Failed to load accounts. Please try again.",
+                variant: "warning",
+                className: styles.customToast,
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, [activeAccounts]);
 
     const handleSubmit = async () => {
         if (!validateInputs()) return;
@@ -231,7 +264,7 @@ const AccountsCards = ({
                             className={`${styles.card} ${item.isExternalAccount || item.isExternalProduct
                                 ? styles.externalCard
                                 : ""
-                                } ${selectedAccountOrProduct?._id === item._id
+                                } ${acctRef(selectedAccountOrProduct) === acctRef(item)
                                     ? styles.selectedCard
                                     : ""
                                 }`}
@@ -239,11 +272,11 @@ const AccountsCards = ({
                             <div className={styles.cardContent}>
                                 <div className={styles.cardHeader}>
                                     <Subtitle>
-                                        {item?.AccountType || item?.ProductType || "N/A"}
+                                        {acctType(item) || item?.ProductType || "N/A"}
                                     </Subtitle>
                                     {(item.isExternalAccount || item.isExternalProduct) && (
                                         <Badge variant="blue" className={styles.bankBadge}>
-                                            {item.AccountBank || item.ProductBank || "External Bank"}
+                                            {acctBank(item) || "External Bank"}
                                         </Badge>
                                     )}
                                     <IconButton
@@ -274,27 +307,26 @@ const AccountsCards = ({
                                         className={styles.popover}
                                     >
                                         <div className={styles.popoverContent}>
-                                            {item.AccountCurrency && (
+                                            {acctCurrency(item) && (
                                                 <Body>
-                                                    <strong>Currency:</strong> {item.AccountCurrency}
+                                                    <strong>Currency:</strong> {acctCurrency(item)}
                                                 </Body>
                                             )}
                                             <Body>
                                                 <strong>Bank:</strong>{" "}
-                                                {item.AccountBank || item.ProductBank || "N/A"}
+                                                {acctBank(item) || "N/A"}
                                             </Body>
                                             <Body>
                                                 <strong>Opening Date:</strong>{" "}
-                                                {new Date(
-                                                    item.AccountDate?.OpeningDate ||
-                                                    item.ProductDate?.OpeningDate
-                                                ).toLocaleDateString() || "N/A"}
+                                                {acctOpenDate(item)
+                                                    ? new Date(acctOpenDate(item)).toLocaleDateString()
+                                                    : "N/A"}
                                             </Body>
-                                            {item.AccountBalance && (
+                                            {acctBalance(item) != null && (
                                                 <Body>
                                                     <strong>Available Balance:</strong>{" "}
-                                                    {item.AccountCurrency}{" "}
-                                                    {item.AccountBalance?.toLocaleString()}
+                                                    {acctCurrency(item)}{" "}
+                                                    {acctBalance(item)?.toLocaleString()}
                                                 </Body>
                                             )}
                                             {item.ProductAmount && (
@@ -326,17 +358,17 @@ const AccountsCards = ({
                                 </div>
                                 <div>
                                     <Body className={styles.accNumber}>
-                                        {item.AccountNumber
-                                            ? `Account Number: ${item.AccountNumber}`
+                                        {acctNumber(item)
+                                            ? `Account Number: ${acctNumber(item)}`
                                             : `Product ID: ${item.ProductId}`}
                                     </Body>
                                 </div>
                                 <div className={styles.accBalance}>
-                                    {item.AccountBalance ? (
+                                    {acctBalance(item) != null ? (
                                         <>
                                             <H3 className={styles.balance}>
-                                                {item.AccountCurrency}{" "}
-                                                {item.AccountBalance?.toLocaleString() || "N/A"}
+                                                {acctCurrency(item)}{" "}
+                                                {acctBalance(item)?.toLocaleString() || "N/A"}
                                             </H3>
                                             <Body>Available Balance</Body>
                                         </>
@@ -446,14 +478,12 @@ const AccountsCards = ({
                             />
                             <H3>Are you sure you want to disconnect this item?</H3>
                             <Body>
-                                {selectedAccountOrProduct.AccountNumber
-                                    ? `Account Number: ${selectedAccountOrProduct.AccountNumber}`
+                                {acctNumber(selectedAccountOrProduct)
+                                    ? `Account Number: ${acctNumber(selectedAccountOrProduct)}`
                                     : `Product ID: ${selectedAccountOrProduct.ProductId}`}
                             </Body>
                             <Body>
-                                Bank:{" "}
-                                {selectedAccountOrProduct.AccountBank ||
-                                    selectedAccountOrProduct.ProductBank}
+                                Bank: {acctBank(selectedAccountOrProduct)}
                             </Body>
                             <div className={styles.modalButtons}>
                                 <Button variant="primary" onClick={confirmDisconnect}>

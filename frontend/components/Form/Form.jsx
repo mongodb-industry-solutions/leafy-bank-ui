@@ -66,8 +66,27 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
     }
   };
 
+  // Lookup helper. Internal accounts use BIAN field `CurrentAccountNumber` (post Phase 5.1
+  // adapter reshape); external Open Finance accounts still ship the legacy `AccountNumber`.
   const findAccountByNumber = (accounts, accountNumber) =>
-    accounts.find((account) => account.AccountNumber === accountNumber);
+    accounts.find(
+      (account) =>
+        account.CurrentAccountNumber === accountNumber ||
+        account.AccountNumber === accountNumber
+    );
+
+  // Display label for the dropdown. Maps BIAN enum back to the legacy UI labels
+  // ("Checking"/"Savings") per Phase 5 decision #1; falls back to whatever's there.
+  const ACCOUNT_TYPE_DISPLAY = {
+    CURRENT: "Checking",
+    SAVINGS: "Savings",
+    FIXED_DEPOSIT: "Fixed Deposit",
+  };
+  const formatAccountType = (account) =>
+    ACCOUNT_TYPE_DISPLAY[account.CurrentAccountType] ||
+    account.CurrentAccountType ||
+    account.AccountType ||
+    "";
 
   const validateInputs = () => {
     if (!amount || amount <= 0) {
@@ -108,18 +127,21 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
       return;
     }
   
+    // Snake-case payload preserved as the internal contract with `transactions_api.js`
+    // (which maps it to `uiTransferToBian` -> BIAN body). Field values now sourced from
+    // the BIAN account shape produced by the adapter.
     const transactionDetails = {
-      account_id_sender: originatorAccount._id,
-      account_id_receiver: beneficiaryAccount._id,
+      account_id_sender: originatorAccount.CurrentAccountReference,
+      account_id_receiver: beneficiaryAccount.CurrentAccountReference,
       transaction_amount: amount,
-      sender_user_id: originatorAccount.AccountUser?.UserId || "N/A",
-      sender_user_name: originatorAccount.AccountUser?.UserName || "N/A",
-      sender_account_number: originatorAccount.AccountNumber,
-      sender_account_type: originatorAccount.AccountType,
-      receiver_user_id: beneficiaryAccount.AccountUser?.UserId || "N/A",
-      receiver_user_name: beneficiaryAccount.AccountUser?.UserName || "N/A",
-      receiver_account_number: beneficiaryAccount.AccountNumber,
-      receiver_account_type: beneficiaryAccount.AccountType,
+      sender_user_id: originatorAccount._customerUserId || "N/A",
+      sender_user_name: originatorAccount._customerUserName || "N/A",
+      sender_account_number: originatorAccount.CurrentAccountNumber,
+      sender_account_type: originatorAccount.CurrentAccountType,
+      receiver_user_id: beneficiaryAccount._customerUserId || "N/A",
+      receiver_user_name: beneficiaryAccount._customerUserName || "N/A",
+      receiver_account_number: beneficiaryAccount.CurrentAccountNumber,
+      receiver_account_type: beneficiaryAccount.CurrentAccountType,
     };
   
     try {
@@ -240,11 +262,11 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
         {originatorAccounts.map((account) => (
           <SearchResult
             className={styles.comboboxDropdown}
-            key={account.AccountNumber}
-            description={`${account.AccountUser?.UserName || "Unknown User"} ${account.AccountType}`}
-            onClick={() => handleOriginatorSelect(account.AccountNumber)}
+            key={account.CurrentAccountNumber}
+            description={`${account._customerUserName || "Unknown User"} ${formatAccountType(account)}`}
+            onClick={() => handleOriginatorSelect(account.CurrentAccountNumber)}
           >
-            {account.AccountNumber}
+            {account.CurrentAccountNumber}
           </SearchResult>
         ))}
       </SearchInput>
@@ -257,11 +279,11 @@ const Form = ({ setPopupOpen, popupTitle, handleCloseForm, handleRefresh }) => {
         {beneficiaryAccounts.map((account) => (
           <SearchResult
             className={styles.comboboxDropdown}
-            key={account.AccountNumber}
-            description={`${account.AccountUser?.UserName || "Unknown User"} ${account.AccountType}`}
-            onClick={() => handleBeneficiarySelect(account.AccountNumber)}
+            key={account.CurrentAccountNumber}
+            description={`${account._customerUserName || "Unknown User"} ${formatAccountType(account)}`}
+            onClick={() => handleBeneficiarySelect(account.CurrentAccountNumber)}
           >
-            {account.AccountNumber}
+            {account.CurrentAccountNumber}
           </SearchResult>
         ))}
       </SearchInput>
