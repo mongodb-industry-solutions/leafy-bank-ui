@@ -60,6 +60,12 @@
   margin-top: 5px;
 }
 
+.bianIcon {
+  margin-right: 8px;
+  margin-top: 5px;
+  color: #00684A;
+}
+
 .hamburgerIcon {
   display: none;
   cursor: pointer;
@@ -118,7 +124,8 @@
   }
 
   .instructionsBtn,
-  .logoutIcon {
+  .logoutIcon,
+  .bianIcon {
     display: none;
   }
 

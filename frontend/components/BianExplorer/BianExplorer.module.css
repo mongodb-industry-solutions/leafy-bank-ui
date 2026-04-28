@@ -1,0 +1,426 @@
+/* BianExplorer.module.css */
+
+.modal {
+  z-index: 1000;
+  transform: translateZ(0);
+  max-width: 1100px;
+  width: 95vw;
+  margin: 0 auto;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-height: 85vh;
+  overflow: hidden;
+}
+
+.headerStrip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.subtitle {
+  color: #5D6C74;
+}
+
+.metaBadges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tabsContainer {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabPanel {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.loading,
+.errorBanner {
+  margin: 12px 0;
+}
+
+.errorActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.muted {
+  color: #889397;
+  font-style: italic;
+}
+
+/* ===================== Data Model Tab ===================== */
+
+.dataModelLayout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+
+.domainNav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-right: 1px solid #E8EDEB;
+  padding-right: 12px;
+}
+
+.domainPill {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  padding: 8px 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1C2D38;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.domainPill:hover {
+  background-color: #dcf5ee;
+}
+
+.domainPillActive {
+  background-color: #dcf5ee;
+  color: #00684A;
+  font-weight: 600;
+}
+
+.domainPillCount {
+  font-size: 12px;
+  color: #5D6C74;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.domainPillActive .domainPillCount {
+  color: #00684A;
+  border-color: #C3E7D8;
+  background: #FFFFFF;
+}
+
+.domainSegmented {
+  display: none;
+}
+
+.dataModelMain {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.searchBar {
+  position: sticky;
+  top: 0;
+  background: #ffffff;
+  z-index: 1;
+  padding: 4px 4px 8px 4px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.groupsScroll {
+  overflow-y: auto;
+  padding: 12px 4px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.groupCard {
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+}
+
+.groupHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.groupTitle {
+  margin: 0;
+}
+
+.groupCanonical {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  color: #00684A;
+}
+
+.fieldTable {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 6px 16px;
+  align-items: baseline;
+}
+
+.fieldPath {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  word-break: break-word;
+  color: #1C2D38;
+}
+
+.fieldPathPrefix {
+  color: #889397;
+}
+
+.fieldPathLeaf {
+  color: #1C2D38;
+  font-weight: 600;
+}
+
+.arrayChip {
+  display: inline-block;
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  padding: 0 4px;
+  margin: 0 2px;
+  color: #5D6C74;
+  background: #F1F4F4;
+  border: 1px solid #E8EDEB;
+  border-radius: 4px;
+}
+
+.bianName {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  color: #00684A;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.fieldRow {
+  display: contents;
+}
+
+.emptyState {
+  padding: 24px;
+  text-align: center;
+  color: #889397;
+}
+
+.fieldPath mark,
+.bianName mark {
+  background-color: #FFEC9E;
+  color: inherit;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+
+/* ===================== API Tab ===================== */
+
+.apiScroll {
+  overflow-y: auto;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.apiDomain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.apiDomainHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.apiDomainSubtitle {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 12px;
+  color: #5D6C74;
+}
+
+.apiOpList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.apiOpRow {
+  appearance: none;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.apiOpRow:hover {
+  background: #dcf5ee;
+  border-color: #C3E7D8;
+}
+
+.apiOpRow[aria-expanded="true"] {
+  background: #dcf5ee;
+  border-color: #C3E7D8;
+}
+
+.methodBadge {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  min-width: 56px;
+  text-align: center;
+}
+
+.methodGet { background: #E1F2FF; color: #1254B7; }
+.methodPost { background: #C3E7D8; color: #00684A; }
+.methodPut { background: #FFEC9E; color: #75520A; }
+.methodPatch { background: #FFE0BF; color: #93450B; }
+.methodDelete { background: #FFCDC7; color: #970606; }
+
+.apiOpPath {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  color: #1C2D38;
+  flex: 1;
+  word-break: break-word;
+}
+
+.apiOpName {
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  color: #00684A;
+  font-weight: 700;
+}
+
+.apiOpChevron {
+  display: inline-flex;
+  transition: transform 150ms ease;
+}
+
+.apiOpChevronOpen {
+  transform: rotate(180deg);
+}
+
+.apiOpExpanded {
+  margin-top: -2px;
+  margin-bottom: 4px;
+  padding: 12px 14px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.apiOpSummary {
+  color: #1C2D38;
+}
+
+.apiOpJsonRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.apiOpJsonBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.apiOpJsonLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: #5D6C74;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+/* ===================== Responsive ===================== */
+
+@media (max-width: 900px) {
+  .dataModelLayout {
+    grid-template-columns: 1fr;
+  }
+  .domainNav {
+    display: none;
+  }
+  .domainSegmented {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+  .apiOpJsonRow {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .modal {
+    width: 100%;
+    padding: 10px;
+  }
+  .fieldTable {
+    grid-template-columns: 1fr;
+  }
+  .apiOpRow {
+    flex-wrap: wrap;
+  }
+}
