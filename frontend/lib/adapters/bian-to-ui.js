@@ -202,44 +202,50 @@ export function bianPaymentInitiateToUi(envelope) {
 // ---------- Transaction (ledger leg) adapter ----------
 
 /**
- * Parse "via Paypal" / "via Zelle" remittance text (if present) back to a method label.
+ * Parse "via Paypal" / "via Zelle" narrative text (if present) back to a method label.
  * Phase 1 doesn't carry remittance on legs — the field is reserved for Phase 2+
  * external rails. Returns undefined when not present.
  */
 function extractPaymentMethod(leg) {
-    const text = leg?.TransactionRemittanceRecord?.RemittanceUnstructuredInformationText;
+    const text = leg?.narrative || leg?.description;
     if (!text) return undefined;
-    const m = /^via\s+(.+)$/i.exec(text.trim());
+    const m = /via\s+(\w+)/i.exec(text);
     return m ? m[1] : undefined;
 }
 
 /**
- * Compute the display label for the transactions list based on rail + internal flag.
+ * Compute the display label for the transactions list based on txnCode + internal flag.
  */
 function deriveDisplayLabel(leg, isInternal) {
     if (isInternal) return "InternalTransfer";
-    const code = leg.TransactionCategoryCode || "";
+    const code = leg.txnCode || "";
     if (code.startsWith("PMNT-ICDT")) return "AccountTransfer";
     return "DigitalPayment";
 }
 
 /**
- * Wrap a single ledger leg with adapter-derived display helpers. The BIAN fields
- * pass through unchanged.
+ * Wrap a single ledger leg (raw Mongo doc, camelCase) with adapter-derived
+ * display helpers. The original camelCase fields pass through unchanged so the
+ * expand-JSON panel renders the actual storage shape.
  *
- * @param {object} leg - one item of `CurrentAccountPaymentTransactionRecord[]`
- * @param {object} ctx - { isInternal, isOwnedLeg, selfUserId, selfUserName }
- * @returns {object} BIAN leg + `_*` helpers
+ * Mongo leg shape (per `leafy_bank_bian.transactions`):
+ *   { _id, txnId, accountId, paymentId, type, txnCode, amount, currency,
+ *     valueDate, bookingDate, description, balanceAfter, channel,
+ *     counterparty: { name, accountNo, bic, country }, gl: {...}, ... }
+ *
+ * @param {object} leg - raw Mongo doc
+ * @param {object} ctx - { isInternal, selfUserId, selfUserName }
+ * @returns {object} Mongo doc + `_*` helpers
  */
 function decorateLeg(leg, ctx) {
-    const txnType = leg.TransactionType; // "DEBIT" | "CREDIT"
+    const txnType = leg.type; // "DEBIT" | "CREDIT"
     const isOutgoing = txnType === "DEBIT";
     const isIncoming = !ctx.isInternal && txnType === "CREDIT";
 
-    const counterparty = leg.TransactionCounterpartyRecord || {};
+    const counterparty = leg.counterparty || {};
     const otherSideName = ctx.isInternal
         ? ctx.selfUserName
-        : counterparty.CounterpartyName || "Unknown";
+        : counterparty.name || "Unknown";
 
     return {
         ...leg,
@@ -255,21 +261,22 @@ function decorateLeg(leg, ctx) {
 }
 
 /**
- * Translate the activity-route response to a list of decorated BIAN legs, applying
- * the per-user one-leg-per-payment filter (Phase 5 decision #3).
+ * Translate the activity-route response (raw Mongo legs) into a list of decorated
+ * legs, applying the per-user one-leg-per-payment filter (Phase 5 decision #3).
  *
- * Filter rules:
+ * The backend's activity route now returns raw Mongo docs (camelCase) under
+ * `transactions` so the UI panel can show the actual storage shape. Filter rules:
  *   - Internal between two of the user's own accounts -> emit DEBIT leg only.
  *   - Outgoing only (user is debtor)               -> emit DEBIT leg.
  *   - Incoming only (user is creditor)             -> emit CREDIT leg.
  *
- * @param {object} envelope - backend Activity response with CurrentAccountPaymentTransactionRecord[]
+ * @param {object} envelope - backend response: { transactions: [...] }
  * @param {object[]} ownedAccountUiRecords - the user's own account objects (post-adapter)
  * @param {object} [selfUser] - { userId, userName } for self-side display
  * @returns {{transactions: object[]}}
  */
 export function bianActivityResponseToUi(envelope, ownedAccountUiRecords = [], selfUser = {}) {
-    const legs = envelope?.CurrentAccountPaymentTransactionRecord || [];
+    const legs = envelope?.transactions || [];
     const ownedRefs = new Set(
         (ownedAccountUiRecords || [])
             .map((a) => a?.CurrentAccountReference || a?._id)
@@ -279,19 +286,19 @@ export function bianActivityResponseToUi(envelope, ownedAccountUiRecords = [], s
     // Group legs by paymentId so we can detect "internal-between-own-accounts" cases.
     const byPaymentId = new Map();
     for (const leg of legs) {
-        const paymentId = leg.PaymentOrderReference || leg.TransactionReference;
+        const paymentId = leg.paymentId || leg.txnId;
         if (!byPaymentId.has(paymentId)) byPaymentId.set(paymentId, []);
         byPaymentId.get(paymentId).push(leg);
     }
 
     const out = [];
     for (const [, group] of byPaymentId) {
-        const ownedLegs = group.filter((l) => ownedRefs.has(l.CurrentAccountReference));
+        const ownedLegs = group.filter((l) => ownedRefs.has(l.accountId));
         const isInternal = ownedLegs.length > 1;
 
         let chosen;
         if (isInternal) {
-            chosen = ownedLegs.find((l) => l.TransactionType === "DEBIT") || ownedLegs[0];
+            chosen = ownedLegs.find((l) => l.type === "DEBIT") || ownedLegs[0];
         } else if (ownedLegs.length === 1) {
             chosen = ownedLegs[0];
         } else {
@@ -309,10 +316,10 @@ export function bianActivityResponseToUi(envelope, ownedAccountUiRecords = [], s
         );
     }
 
-    // BookingDate-desc sort.
+    // bookingDate-desc sort.
     out.sort((a, b) => {
-        const da = new Date(a.TransactionBookingDate || 0).getTime();
-        const db = new Date(b.TransactionBookingDate || 0).getTime();
+        const da = new Date(a.bookingDate || 0).getTime();
+        const db = new Date(b.bookingDate || 0).getTime();
         return db - da;
     });
 

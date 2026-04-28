@@ -23,8 +23,7 @@ const Transactions = ({ transactions = [] }) => {
   const [expandedTransactionIndex, setExpandedTransactionIndex] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
-  // Group BIAN legs by `TransactionBookingDate`. The date is a single ISO-string
-  // field on the leg (not the legacy `TransactionDates[]` array).
+  // Group raw Mongo legs by `bookingDate` (camelCase field on the stored doc).
   const groupTransactionsByDate = (transactionsArray) => {
     if (!Array.isArray(transactionsArray)) {
       console.warn("Invalid transactions array:", transactionsArray);
@@ -34,9 +33,9 @@ const Transactions = ({ transactions = [] }) => {
     const today = new Date().toLocaleDateString();
 
     return transactionsArray.reduce((acc, transaction) => {
-      const bookingDate = transaction.TransactionBookingDate;
+      const bookingDate = transaction.bookingDate;
       if (!bookingDate) {
-        console.warn("Missing TransactionBookingDate for transaction:", transaction);
+        console.warn("Missing bookingDate for transaction:", transaction);
         return acc;
       }
       const local = new Date(bookingDate).toLocaleDateString();
@@ -98,7 +97,7 @@ const Transactions = ({ transactions = [] }) => {
 
               return (
                 <div
-                  key={transaction.TransactionReference || currentIndex}
+                  key={transaction.txnId || currentIndex}
                   className={styles.transactionSection}
                 >
                   <div className={styles.transactionRow}>
@@ -129,10 +128,10 @@ const Transactions = ({ transactions = [] }) => {
                     >
                       <Body className={styles.transactionAmount}>
                         {isInternal
-                          ? `${transaction.TransactionAmount || 0}$`
+                          ? `${transaction.amount || 0}$`
                           : isIncoming
-                          ? `+${transaction.TransactionAmount || 0}$`
-                          : `-${transaction.TransactionAmount || 0}$`}
+                          ? `+${transaction.amount || 0}$`
+                          : `-${transaction.amount || 0}$`}
                       </Body>
                     </div>
 
