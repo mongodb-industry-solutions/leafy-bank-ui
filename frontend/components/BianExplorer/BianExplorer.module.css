@@ -15,7 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-height: 85vh;
+  height: 85vh;
   overflow: hidden;
 }
 
@@ -49,6 +49,24 @@
   min-height: 0;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+/* Repair the LeafyGreen Tabs flex chain — LG renders its own wrapper divs
+   and [role="tabpanel"] that don't stretch by default. */
+.tabsContainer > div {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabsContainer :global([role="tabpanel"]) {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .tabPanel {
@@ -144,7 +162,9 @@
 .dataModelMain {
   display: flex;
   flex-direction: column;
+  flex: 1;
   min-height: 0;
+  overflow: hidden;
 }
 
 .searchBar {
@@ -157,6 +177,8 @@
 }
 
 .groupsScroll {
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 12px 4px 4px 4px;
   display: flex;

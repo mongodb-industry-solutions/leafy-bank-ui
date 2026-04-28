@@ -151,7 +151,6 @@ function ServiceFilter({ services, value, onChange }) {
         {services.map((s) => (
           <SegmentedControlOption key={s.key} value={s.key}>
             {capitalize(s.key)}
-            {s.port != null ? ` (:${s.port})` : ""}
           </SegmentedControlOption>
         ))}
       </SegmentedControl>
@@ -419,11 +418,6 @@ function ExpandedPanel({ op, opKey }) {
 // ─────────────────────────────────────────────────────────────
 
 function ServiceSection({ service, expandedOpId, setExpandedOpId }) {
-  const hostPort =
-    service.host && service.port != null
-      ? `${service.host}:${service.port}`
-      : service.host || "";
-
   return (
     <section className={styles.serviceSection}>
       <header className={styles.serviceHeader}>
@@ -431,11 +425,6 @@ function ServiceSection({ service, expandedOpId, setExpandedOpId }) {
           <Icon glyph="CurlyBraces" />
         </span>
         <span className={styles.serviceName}>{service.name || service.key}</span>
-        {hostPort && (
-          <Badge variant="lightgray" className={styles.serviceHostPortBadge}>
-            {hostPort}
-          </Badge>
-        )}
       </header>
 
       {(service.serviceDomains || []).map((sd) => (
