@@ -85,6 +85,7 @@ const BianExplorer = ({ open, setOpen }) => {
       open={open}
       setOpen={setOpen}
       className={styles.modal}
+      contentClassName={styles.modalDialog}
       aria-labelledby={TITLE_ID}
     >
       <div className={styles.modalContent}>
