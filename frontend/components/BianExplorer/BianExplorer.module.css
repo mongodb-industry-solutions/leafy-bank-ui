@@ -148,22 +148,30 @@
 }
 
 /* 3. Each Tab outer wrapper — absolute so all tabs stack in the same
-      space; inactive ones are empty and therefore invisible */
+      space; inactive ones are empty and therefore invisible.
+      pointer-events:none is REQUIRED: without it the inactive wrapper
+      (which is empty but covers inset:0) sits above the active content
+      in stacking order and silently swallows every click inside the tab. */
 .tabsContainer :global([data-lgid="lg-tabs-tab_panels"]) > div {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  pointer-events: none;
 }
 
-/* 4. [role="tabpanel"] — fills its absolute wrapper */
+/* 4. [role="tabpanel"] — fills its absolute wrapper and re-enables
+      pointer events for all content inside the active tab.
+      (pointer-events is inherited, so the none from the wrapper above
+      would propagate down without this explicit reset.) */
 .tabsContainer :global([role="tabpanel"]) {
   flex: 1;
   min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  pointer-events: auto;
 }
 
 .tabPanel {
