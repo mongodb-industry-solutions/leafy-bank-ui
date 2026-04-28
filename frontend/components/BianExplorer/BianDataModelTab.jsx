@@ -236,6 +236,15 @@ const BianDataModelTab = ({ mapping, loading, error, onRetry }) => {
     return buildGroupedDomain(activeDomain, mapping[activeDomain], query);
   }, [mapping, activeDomain, query]);
 
+  // Must be above all early returns — hooks cannot be called after a conditional return.
+  const threeCol = useMemo(
+    () =>
+      devMode
+        ? { gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr) max-content" }
+        : undefined,
+    [devMode]
+  );
+
   if (loading) {
     return <Body className={styles.loading}>Loading BIAN field mappings…</Body>;
   }
@@ -256,14 +265,6 @@ const BianDataModelTab = ({ mapping, loading, error, onRetry }) => {
   if (!mapping) {
     return <Body className={styles.muted}>No mapping data available.</Body>;
   }
-
-  const threeCol = useMemo(
-    () =>
-      devMode
-        ? { gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr) max-content" }
-        : undefined,
-    [devMode]
-  );
 
   return (
     <div className={styles.dataModelLayout}>
