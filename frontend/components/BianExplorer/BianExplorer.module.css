@@ -388,9 +388,12 @@
   background: #ffffff;
 }
 
-/* <summary> inside <details className={styles.groupCard}> */
+/* Toggle button inside .groupCard */
 .groupCardSummary {
-  list-style: none;
+  appearance: none;
+  width: 100%;
+  background: transparent;
+  border: none;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -398,11 +401,15 @@
   cursor: pointer;
   gap: 8px;
   border-radius: 8px;
+  text-align: left;
+  font-family: inherit;
   user-select: none;
   transition: background-color 100ms ease;
 }
 
-.groupCardSummary::-webkit-details-marker { display: none; }
+.groupCardSummary:hover {
+  background-color: #F9FBFA;
+}
 
 .groupCardSummary:focus-visible {
   outline: 2px solid #00684A;
@@ -410,13 +417,18 @@
   border-radius: 8px;
 }
 
-.groupCard[open] > .groupCardSummary {
+/* When the group is expanded, give the header a bottom border */
+.groupCardSummary[aria-expanded="true"] {
   border-bottom: 1px solid #E8EDEB;
   border-radius: 8px 8px 0 0;
 }
 
 .groupCardBody {
   padding: 12px 16px 16px;
+}
+
+.groupCardBody[hidden] {
+  display: none;
 }
 
 .groupHeaderContent {
@@ -453,7 +465,7 @@
   transition: transform 150ms ease;
 }
 
-.groupCard[open] .groupChevron {
+.groupChevronOpen {
   transform: rotate(180deg);
 }
 
@@ -1066,6 +1078,10 @@
   }
   .fieldTable {
     grid-template-columns: 1fr;
+  }
+  /* Headers become orphaned grid rows in single-column mode — hide them */
+  .fieldColHeader {
+    display: none;
   }
   .apiOpRow {
     flex-wrap: wrap;
