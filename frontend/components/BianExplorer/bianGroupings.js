@@ -65,7 +65,7 @@ export function fallbackGroupLabel(prefix) {
       const titled =
         base.charAt(0).toUpperCase() +
         base.slice(1).replace(/([A-Z])/g, " $1").replace(/_/g, " ");
-      return isArray ? `${titled} []` : titled;
+      return isArray ? `${titled}[]` : titled;
     })
     .join(" / ");
 }

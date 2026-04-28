@@ -13,9 +13,7 @@ import {
 } from "@leafygreen-ui/segmented-control";
 import styles from "./BianExplorer.module.css";
 
-// Method → background-color class. Catalog pins method to "POST" today,
-// but we keep the mapping flexible so the row visually self-documents
-// if a future op uses a different verb.
+// Method → background-color class.
 const METHOD_CLASS = {
   GET: styles.methodGet,
   POST: styles.methodPost,
@@ -23,6 +21,28 @@ const METHOD_CLASS = {
   PATCH: styles.methodPatch,
   DELETE: styles.methodDelete,
 };
+
+// BIAN action term → semantic { background, color }.
+const ACTION_STYLES = {
+  initiate:  { background: "#C3E7D8", color: "#00684A" },
+  retrieve:  { background: "#E1F2FF", color: "#1254B7" },
+  update:    { background: "#FFEC9E", color: "#75520A" },
+  execute:   { background: "#00684A", color: "#ffffff" },
+  notify:    { background: "#F1F4F4", color: "#5D6C74" },
+  register:  { background: "#FFE0BF", color: "#93450B" },
+  create:    { background: "#C3E7D8", color: "#00684A" },
+  terminate: { background: "#FFCDC7", color: "#970606" },
+  capture:   { background: "#F3EEFF", color: "#7B4FD8" },
+  report:    { background: "#F1F4F4", color: "#5D6C74" },
+  evaluate:  { background: "#E1F2FF", color: "#1254B7" },
+};
+
+const ACTION_DEFAULT_STYLE = { background: "#F1F4F4", color: "#5D6C74" };
+
+function getActionStyle(action) {
+  if (!action) return ACTION_DEFAULT_STYLE;
+  return ACTION_STYLES[action.toLowerCase()] || ACTION_DEFAULT_STYLE;
+}
 
 const ERROR_CODE_CLASS = (code) => {
   if (code >= 500) return styles.errorCode5xx;
@@ -70,6 +90,8 @@ function ConventionsBar({ conventions, statusCodes }) {
 
   const hasStatusCodes = Array.isArray(statusCodes) && statusCodes.length > 0;
 
+  if (pills.length === 0 && !hasStatusCodes) return null;
+
   return (
     <div className={styles.conventionsBar}>
       <div className={styles.conventionsPills}>
@@ -92,12 +114,13 @@ function ConventionsBar({ conventions, statusCodes }) {
           </Button>
         </div>
       )}
-      {showStatusCodes && hasStatusCodes && (
+      {hasStatusCodes && (
         <div
           id="bian-status-codes-panel"
           role="region"
           aria-label="API status codes"
           className={styles.statusCodesPanel}
+          hidden={!showStatusCodes}
         >
           <table className={styles.statusCodesTable}>
             <thead>
@@ -136,6 +159,41 @@ function ConventionsBar({ conventions, statusCodes }) {
 // ─────────────────────────────────────────────────────────────
 // Service filter (segmented control)
 // ─────────────────────────────────────────────────────────────
+
+// Legend showing all BIAN action terms present in this catalog.
+function ActionTermLegend({ catalog }) {
+  const terms = useMemo(() => {
+    if (!catalog?.services) return [];
+    const seen = new Set();
+    catalog.services.forEach((s) =>
+      (s.serviceDomains || []).forEach((sd) =>
+        (sd.operations || []).forEach((op) => {
+          if (op.bianAction) seen.add(op.bianAction);
+        })
+      )
+    );
+    return Array.from(seen).sort();
+  }, [catalog]);
+
+  if (terms.length === 0) return null;
+
+  return (
+    <div className={styles.actionLegend} aria-label="BIAN action terms in this catalog">
+      {terms.map((term) => {
+        const s = getActionStyle(term);
+        return (
+          <span
+            key={term}
+            className={styles.actionLegendItem}
+            style={s}
+          >
+            {term}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
 
 function ServiceFilter({ services, value, onChange }) {
   if (!services || services.length < 2) return null;
@@ -203,7 +261,12 @@ function OperationRow({ op, opKey, isOpen, onToggle }) {
           </span>
         )}
         {op.bianAction && (
-          <span className={styles.actionPill}>{op.bianAction}</span>
+          <span
+            className={styles.actionPill}
+            style={getActionStyle(op.bianAction)}
+          >
+            {op.bianAction}
+          </span>
         )}
         <span
           className={`${styles.apiOpChevron} ${
@@ -468,6 +531,13 @@ const BianApiTab = ({ catalog, loading, error, onRetry }) => {
   const [expandedOpId, setExpandedOpId] = useState(null);
   const [serviceFilter, setServiceFilter] = useState("all");
 
+  // Belt-and-suspenders reset alongside the `key` prop on the parent —
+  // guards against a new catalog arriving with the same version string.
+  React.useEffect(() => {
+    setServiceFilter("all");
+    setExpandedOpId(null);
+  }, [catalog]);
+
   const visibleServices = useMemo(() => {
     if (!catalog || !Array.isArray(catalog.services)) return [];
     if (serviceFilter === "all") return catalog.services;
@@ -501,6 +571,7 @@ const BianApiTab = ({ catalog, loading, error, onRetry }) => {
         conventions={catalog.conventions}
         statusCodes={catalog.statusCodes}
       />
+      <ActionTermLegend catalog={catalog} />
       <ServiceFilter
         services={catalog.services}
         value={serviceFilter}

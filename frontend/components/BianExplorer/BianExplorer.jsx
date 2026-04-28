@@ -11,6 +11,37 @@ import BianApiTab from "./BianApiTab";
 import { fetchBianMapping, fetchBianApiCatalog } from "@/lib/api/bian/bian_api";
 
 const TITLE_ID = "bian-explorer-title";
+const COMPLIANCE_DOMAINS = ["customers", "accounts", "payments", "transactions"];
+
+function ComplianceStrip({ mapping }) {
+  if (!mapping) return null;
+  const totalFields = COMPLIANCE_DOMAINS.reduce(
+    (acc, d) => acc + (mapping[d] ? Object.keys(mapping[d]).length : 0),
+    0
+  );
+  const domainCount = COMPLIANCE_DOMAINS.filter((d) => !!mapping[d]).length;
+  return (
+    <div className={styles.complianceStrip} aria-label="BIAN compliance summary">
+      <div className={styles.complianceStat}>
+        <span className={styles.complianceValue}>{totalFields}</span>
+        <span className={styles.complianceLabel}>Fields Mapped</span>
+      </div>
+      <div className={styles.complianceDivider} aria-hidden="true" />
+      <div className={styles.complianceStat}>
+        <span className={styles.complianceValue}>
+          {domainCount}
+          <span className={styles.complianceDenom}>/4</span>
+        </span>
+        <span className={styles.complianceLabel}>Service Domains</span>
+      </div>
+      <div className={styles.complianceDivider} aria-hidden="true" />
+      <div className={`${styles.complianceStat} ${styles.complianceAccent}`}>
+        <span className={styles.complianceValue}>BIAN v14</span>
+        <span className={styles.complianceLabel}>Standard</span>
+      </div>
+    </div>
+  );
+}
 
 const BianExplorer = ({ open, setOpen }) => {
   const [selected, setSelected] = useState(0);
@@ -23,6 +54,17 @@ const BianExplorer = ({ open, setOpen }) => {
   const [catalog, setCatalog] = useState(null);
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [catalogError, setCatalogError] = useState(null);
+
+  // Lock body scroll while the explorer is open so wheel events don't
+  // reach the background page.
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   // Mounted-flag ref so async resolutions after unmount don't write state.
   const mountedRef = useRef(true);
@@ -96,15 +138,14 @@ const BianExplorer = ({ open, setOpen }) => {
               {meta.bianVersion && (
                 <Badge variant="green">BIAN {meta.bianVersion}</Badge>
               )}
-              {meta.mongoDatabase && (
-                <Badge variant="blue">DB: {meta.mongoDatabase}</Badge>
-              )}
             </div>
           </div>
           <Body className={styles.subtitle}>
             Mongo-canonical field paths mapped to BIAN v14 names
           </Body>
         </header>
+
+        <ComplianceStrip mapping={mapping} />
 
         <div className={styles.tabsContainer}>
           <Tabs
