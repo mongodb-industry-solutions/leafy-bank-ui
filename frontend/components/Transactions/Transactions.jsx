@@ -1,8 +1,16 @@
 "use client";
 
 // Transactions.jsx
+//
+// Phase 5.1 (BIAN-shape adapter):
+//   - Each `transaction` object is the raw BIAN ledger leg returned by
+//     `/CurrentAccountFulfillmentArrangement/CurrentAccountTransaction/Request`,
+//     plus a small set of underscore-prefixed display helpers (`_isInternal`,
+//     `_isIncoming`, `_isOutgoing`, `_otherSideName`, `_selfUserName`,
+//     `_displayLabel`, `_paymentMethod`) injected by `lib/adapters/bian-to-ui.js`.
+//   - The expand-JSON panel now shows the actual BIAN model.
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Icon from "@leafygreen-ui/icon";
 import { Subtitle, Body } from "@leafygreen-ui/typography";
 import IconButton from "@leafygreen-ui/icon-button";
@@ -14,21 +22,9 @@ import styles from "./Transactions.module.css";
 const Transactions = ({ transactions = [] }) => {
   const [expandedTransactionIndex, setExpandedTransactionIndex] = useState(null);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
 
-  // Fetch selectedUser from localStorage
-  useEffect(() => {
-    const userString = localStorage.getItem("selectedUser"); // Ensure the key matches how you store it
-    const user = userString ? JSON.parse(userString) : null;
-
-    if (user && user.id) {
-      setSelectedUser(user);
-    } else {
-      console.warn("selectedUser not found or invalid in localStorage");
-    }
-  }, []);
-
-  // Utility: Group transactions by date
+  // Group BIAN legs by `TransactionBookingDate`. The date is a single ISO-string
+  // field on the leg (not the legacy `TransactionDates[]` array).
   const groupTransactionsByDate = (transactionsArray) => {
     if (!Array.isArray(transactionsArray)) {
       console.warn("Invalid transactions array:", transactionsArray);
@@ -38,44 +34,19 @@ const Transactions = ({ transactions = [] }) => {
     const today = new Date().toLocaleDateString();
 
     return transactionsArray.reduce((acc, transaction) => {
-      const notifiedDateObj = transaction.TransactionDates?.find(
-        (dateObj) => dateObj.TransactionDateType === "TransactionNotifiedDate"
-      );
-
-      if (!notifiedDateObj) {
-        console.warn("Missing TransactionNotifiedDate for transaction:", transaction);
+      const bookingDate = transaction.TransactionBookingDate;
+      if (!bookingDate) {
+        console.warn("Missing TransactionBookingDate for transaction:", transaction);
         return acc;
       }
-      const notifiedDate = new Date(notifiedDateObj.TransactionDate).toLocaleDateString();
-      const displayDate = notifiedDate === today ? "Today" : notifiedDate;
+      const local = new Date(bookingDate).toLocaleDateString();
+      const displayDate = local === today ? "Today" : local;
 
       if (!acc[displayDate]) acc[displayDate] = [];
       acc[displayDate].push(transaction);
 
       return acc;
     }, {});
-  };
-
-  // Utility: Determine if a transaction is incoming
-  const isTransactionIncoming = (transaction, selectedUserId) => {
-    if (!transaction || !selectedUserId) {
-      console.warn("Transaction or SelectedUserId is missing:", transaction, selectedUserId);
-      return false;
-    }
-
-    const receiverId = transaction.TransactionReferenceData?.TransactionReceiver?.UserId;
-    const senderId = transaction.TransactionReferenceData?.TransactionSender?.UserId;
-
-    // A transaction is incoming if the receiver matches the selected user
-    return receiverId === selectedUserId && senderId !== selectedUserId;
-  };
-
-  // Utility: Determine if a transaction is internal
-  const isTransactionInternal = (transaction) => {
-    const senderId = transaction.TransactionReferenceData?.TransactionSender?.UserId;
-    const receiverId = transaction.TransactionReferenceData?.TransactionReceiver?.UserId;
-
-    return senderId === receiverId; // Internal if sender and receiver are the same
   };
 
   // Group transactions by date
@@ -93,12 +64,10 @@ const Transactions = ({ transactions = [] }) => {
             <Subtitle className={styles.transactionDateTitle}>{date}</Subtitle> {/* Date Title */}
 
             {transactions.map((transaction) => {
-              const transactionType = transaction.TransactionDetails?.TransactionType;
-              const transactionPaymentMethod = transaction.TransactionDetails?.TransactionPaymentMethod;
-              const isInternal = isTransactionInternal(transaction);
-              const isIncoming = !isInternal && selectedUser
-                ? isTransactionIncoming(transaction, selectedUser.id)
-                : false;
+              const isInternal = !!transaction._isInternal;
+              const isIncoming = !!transaction._isIncoming;
+              const displayLabel = transaction._displayLabel || "Transaction";
+              const paymentMethod = transaction._paymentMethod;
 
               const currentIndex = globalIndex++; // Globally unique index
 
@@ -114,8 +83,24 @@ const Transactions = ({ transactions = [] }) => {
                 ? "ArrowDown"
                 : "ArrowUp";
 
+              // For non-internal: row title is the OTHER side (counterparty for outgoing,
+              // sender for incoming). For internal: show self user (sender == receiver).
+              const rowTitle = isInternal
+                ? transaction._selfUserName || "Unknown User"
+                : transaction._otherSideName || "Unknown";
+
+              // Type-line shows the payment method for digital payments, otherwise the
+              // adapter-derived label (`InternalTransfer`/`AccountTransfer`/`DigitalPayment`).
+              const typeLine =
+                displayLabel === "DigitalPayment"
+                  ? paymentMethod || "Unknown Payment Method"
+                  : displayLabel;
+
               return (
-                <div key={transaction._id || currentIndex} className={styles.transactionSection}>
+                <div
+                  key={transaction.TransactionReference || currentIndex}
+                  className={styles.transactionSection}
+                >
                   <div className={styles.transactionRow}>
                     {/* Icon for Transaction Direction */}
                     <div className={`${styles.transactionIcon} ${transactionIconClass}`}>
@@ -125,22 +110,10 @@ const Transactions = ({ transactions = [] }) => {
                     {/* Transaction Details */}
                     <div className={styles.transactionDetails}>
                       <div className={styles.transactionName}>
-                        <Body className={styles.transactionName}>
-                          {isInternal
-                            ? transaction.TransactionReferenceData?.TransactionSender?.UserName || "Unknown User"
-                            : isIncoming
-                            ? transaction.TransactionReferenceData?.TransactionSender?.UserName || "Unknown Sender"
-                            : transaction.TransactionReferenceData?.TransactionReceiver?.UserName || "Unknown Receiver"}
-                        </Body>
+                        <Body className={styles.transactionName}>{rowTitle}</Body>
                       </div>
                       <div className={styles.transactionType}>
-                        <Body className={styles.transactionType}>
-                          {isInternal
-                            ? "InternalTransfer"
-                            : transactionType === "DigitalPayment"
-                            ? transactionPaymentMethod || "Unknown Payment Method"
-                            : transactionType || "Unknown Type"}
-                        </Body>
+                        <Body className={styles.transactionType}>{typeLine}</Body>
                       </div>
                     </div>
 
@@ -156,7 +129,7 @@ const Transactions = ({ transactions = [] }) => {
                     >
                       <Body className={styles.transactionAmount}>
                         {isInternal
-                          ? `${transaction.TransactionAmount || 0}$` // No sign for internal
+                          ? `${transaction.TransactionAmount || 0}$`
                           : isIncoming
                           ? `+${transaction.TransactionAmount || 0}$`
                           : `-${transaction.TransactionAmount || 0}$`}
@@ -193,7 +166,7 @@ const Transactions = ({ transactions = [] }) => {
                     </div>
                   </div>
 
-                  {/* Expanded Transaction Details */}
+                  {/* Expanded Transaction Details — raw BIAN leg shape */}
                   {expandedTransactionIndex === currentIndex && (
                     <div className={styles.expandableSection}>
                       <Code language={"json"} style={{ width: "100%" }}>

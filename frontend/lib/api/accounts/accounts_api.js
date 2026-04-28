@@ -1,246 +1,179 @@
 // accounts_api.js
 /**
- * This file contains functions to interact with the Accounts API.
- * The backend services are decoupled and coded in Python.
- * For more details, please refer to the Accounts API repository:
- * https://github.com/mongodb-industry-solutions/leafy-bank-backend-accounts/
+ * Client helpers for the accounts service. Phase 5 (BIAN flip):
+ *   - All calls now go through Next.js proxies that mirror BIAN URLs literally
+ *     (`/api/CurrentAccountFulfillmentArrangement/<Verb>`).
+ *   - Helper signatures are unchanged where possible — internal body construction
+ *     and response shaping flow through `lib/adapters/bian-to-ui.js`.
+ *   - `deleteAccount` was removed — the BIAN model has no hard delete; use
+ *     `closeAccount` (Control / Close) for soft-close.
+ *
  * @module accounts_api
- * @requires None
  * @exports createAccount
- * @exports deleteAccount
  * @exports closeAccount
  * @exports fetchAccountsForUser
  * @exports fetchActiveAccountsForUser
+ * @exports fetchAccounts
+ * @exports fetchActiveAccounts
+ * @exports findAccountByNumber
+ * @exports findActiveAccountByNumber
+ * @exports fetchRecentActivityForCustomer
  */
 
-// Use /api prefix for proxy pattern (Next.js API routes)
-// This points to Next.js API routes, NOT the backend directly
-const API_BASE_URL = '/api/accounts';
+import {
+    bianAccountsResponseToUi,
+    bianAccountRetrieveToUi,
+    bianAccountInitiateToUi,
+    bianActivityResponseToUi,
+    uiCreateAccountToBian,
+} from "@/lib/adapters/bian-to-ui";
+import { deriveCustomerRef } from "@/lib/api/refs";
+
+const ACCT_BASE = "/api/CurrentAccountFulfillmentArrangement";
+
+async function postJson(url, body) {
+    const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+        throw new Error(`Request to ${url} failed: ${response.status}`);
+    }
+    return response.json();
+}
 
 /**
  * Create a new account.
- * @param {string} userName - The name of the user.
- * @param {string} userId - The ID of the user.
- * @param {string} accountNumber - The account number.
- * @param {number} accountBalance - The initial balance of the account.
- * @param {string} accountType - The type of the account (e.g., Checking, Savings).
- * @returns {Promise<Object>} The response data from the server.
- * @throws Will throw an error if the request fails.
+ * @param {object} input
+ * @param {string} input.userName - kept for back-compat; ignored (server resolves via customers)
+ * @param {string} input.userId - 24-hex ObjectId from USER_MAP
+ * @param {string|number} input.accountNumber
+ * @param {number} input.accountBalance
+ * @param {string} input.accountType - "Checking" | "Savings" (UI-shape; mapped to BIAN enum)
+ * @returns {Promise<object>} legacy shape with `_id` and `account_id`.
  */
-export async function createAccount({ userName, userId, accountNumber, accountBalance, accountType }) {
-    const response = await fetch(`${API_BASE_URL}/create-account`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            UserName: userName,
-            UserId: userId,
-            AccountNumber: accountNumber,
-            AccountBalance: accountBalance,
-            AccountType: accountType,
-        }),
+export async function createAccount({ userId, accountNumber, accountBalance, accountType }) {
+    const body = uiCreateAccountToBian({
+        userId,
+        accountNumber,
+        accountBalance,
+        accountType,
     });
-
-    if (!response.ok) {
-        throw new Error(`Error creating account: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    const envelope = await postJson(`${ACCT_BASE}/Initiate`, body);
+    return bianAccountInitiateToUi(envelope);
 }
 
 /**
- * Delete an account by its ID.
- * @param {string} accountId - The ID of the account to delete.
- * @returns {Promise<Object>} The response data from the server.
- * @throws Will throw an error if the request fails.
+ * Close an account (BIAN Control / Close — soft-close, not hard-delete).
+ * @param {string} accountRef - the BIAN ref (`ACC-…`).
+ * @returns {Promise<object>}
  */
-export async function deleteAccount(accountId) {
-    const response = await fetch(`${API_BASE_URL}/delete-account`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ account_id: accountId }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error deleting account: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+export async function closeAccount(accountRef) {
+    const body = {
+        CurrentAccountReference: accountRef,
+        ControlActionType: "Close",
+    };
+    const envelope = await postJson(`${ACCT_BASE}/Control`, body);
+    return {
+        account_id: envelope?.CurrentAccountReference,
+        ControlActionType: envelope?.ControlActionType,
+        raw: envelope,
+    };
 }
 
 /**
- * Close an account by its ID.
- * @param {string} accountId - The ID of the account to close.
- * @returns {Promise<Object>} The response data from the server.
- * @throws Will throw an error if the request fails.
+ * All accounts for a user (any status).
+ * @param {string} userId - 24-hex ObjectId from USER_MAP
  */
-export async function closeAccount(accountId) {
-    const response = await fetch(`${API_BASE_URL}/close-account`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ account_id: accountId }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error closing account: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+export async function fetchAccountsForUser(userId) {
+    const body = { CustomerReference: deriveCustomerRef(userId) };
+    const envelope = await postJson(`${ACCT_BASE}/Request`, body);
+    return bianAccountsResponseToUi(envelope);
 }
 
 /**
- * Fetch all accounts for a specific user.
- * @param {string} userIdentifier - The identifier of the user (username or ID).
- * @returns {Promise<Array>} A list of accounts associated with the user.
- * @throws Will throw an error if the request fails.
+ * Active accounts for a user.
+ * @param {string} userId - 24-hex ObjectId from USER_MAP
  */
-export async function fetchAccountsForUser(userIdentifier) {
-    const response = await fetch(`${API_BASE_URL}/fetch-accounts-for-user`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_identifier: userIdentifier }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error fetching accounts: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+export async function fetchActiveAccountsForUser(userId) {
+    const body = {
+        CustomerReference: deriveCustomerRef(userId),
+        CurrentAccountApexStatus: "ACTIVE",
+    };
+    const envelope = await postJson(`${ACCT_BASE}/Request`, body);
+    return bianAccountsResponseToUi(envelope);
 }
 
 /**
- * Fetch active accounts for a specific user.
- * @param {string} userIdentifier - The identifier of the user (username or ID).
- * @returns {Promise<Array>} A list of active accounts associated with the user.
- * @throws Will throw an error if the request fails.
- */
-export async function fetchActiveAccountsForUser(userIdentifier) {
-    const response = await fetch(`${API_BASE_URL}/fetch-active-accounts-for-user`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user_identifier: userIdentifier }),
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error fetching active accounts: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
-}
-
-/**
- * Fetch all active accounts, ignoring the excludeAccountId parameter.
- * @returns {Promise<Array>} A list of all active accounts.
- * @throws Will throw an error if the request fails.
+ * All active accounts (no user scope). Used by Form for the beneficiary picker.
  */
 export async function fetchActiveAccounts() {
-    // Always send an empty object in the request body
-    const bodyData = {};
-
-    // Execute the fetch request
-    const response = await fetch(`${API_BASE_URL}/fetch-active-accounts`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData), // Send only an empty object
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error fetching active accounts: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    const body = { CurrentAccountApexStatus: "ACTIVE" };
+    const envelope = await postJson(`${ACCT_BASE}/Request`, body);
+    return bianAccountsResponseToUi(envelope);
 }
 
 /**
- * Fetch all accounts, optionally excluding a specific account.
- * @param {string} [excludeAccountId] - The ID of the account to exclude from the results.
- * @returns {Promise<Array>} A list of all accounts, excluding the specified account if provided.
- * @throws Will throw an error if the request fails.
+ * All accounts, optionally excluding one. Filtering is done client-side post-adapter.
+ * @param {string} [excludeAccountId]
  */
 export async function fetchAccounts(excludeAccountId = null) {
-    // Prepare the request body conditionally
-    const bodyData = {};
-
+    const envelope = await postJson(`${ACCT_BASE}/Request`, {});
+    const ui = bianAccountsResponseToUi(envelope);
     if (excludeAccountId && excludeAccountId.trim() !== "") {
-        bodyData.exclude_account_id = excludeAccountId;
+        ui.accounts = ui.accounts.filter((a) => a._id !== excludeAccountId);
     }
-
-    // Execute the fetch request
-    const response = await fetch(`${API_BASE_URL}/fetch-accounts`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(bodyData),  // Send JSON only with meaningful keys
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error fetching accounts: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data;
+    return ui;
 }
 
-/**  
- * Find an account by its number.
- * @param {string|number} accountNumber - The account number to search for.
- * @returns {Promise<Object>} The account data if found.
- * @throws Will throw an error if the request fails.
+/**
+ * Look up an account by number (any status).
+ * @param {string|number} accountNumber
  */
 export async function findAccountByNumber(accountNumber) {
-    const response = await fetch(`${API_BASE_URL}/find-account-by-number`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ account_number: String(accountNumber) }), // Ensure the number is treated as a string
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error finding account: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data; // API responds with {"account": {...}}
+    const body = { CurrentAccountNumber: String(accountNumber) };
+    const envelope = await postJson(`${ACCT_BASE}/Retrieve`, body);
+    return bianAccountRetrieveToUi(envelope);
 }
 
-/**  
- * Find an active account by its number.
- * @param {string|number} accountNumber - The account number to search for.
- * @returns {Promise<Object>} The active account data if found.
- * @throws Will throw an error if the request fails.
+/**
+ * Look up an active account by number — adapter filters by status post-fetch.
+ * @param {string|number} accountNumber
  */
 export async function findActiveAccountByNumber(accountNumber) {
-    const response = await fetch(`${API_BASE_URL}/find-active-account-by-number`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ account_number: String(accountNumber) }), // Ensure the number is treated as a string
-    });
-
-    if (!response.ok) {
-        throw new Error(`Error finding active account: ${response.status}`);
+    const result = await findAccountByNumber(accountNumber);
+    if (result.account && result.account.CurrentAccountApexStatus !== "ACTIVE") {
+        return { account: null };
     }
+    return result;
+}
 
-    const data = await response.json();
-    return data; // API responds with {"account": {...}}
+/**
+ * Recent ledger activity across all of a customer's accounts (Phase 5: relocated
+ * from the transactions service to the accounts service per umbrella plan-v2 § 5,
+ * fan-out shipped in PR-accounts-4).
+ *
+ * @param {string} userId - 24-hex ObjectId from USER_MAP
+ * @param {object[]} ownedAccountUiRecords - user's own accounts (post-adapter); used by
+ *   the activity adapter to filter to ONE leg per payment per Phase 5 decision #3.
+ * @param {object} [selfUser] - { userId, userName } for self-side display
+ * @param {number} [limit=50]
+ * @returns {Promise<{transactions: object[]}>}
+ */
+export async function fetchRecentActivityForCustomer(
+    userId,
+    ownedAccountUiRecords = [],
+    selfUser = {},
+    limit = 50
+) {
+    const body = {
+        CustomerReference: deriveCustomerRef(userId),
+        Limit: limit,
+    };
+    const envelope = await postJson(
+        `${ACCT_BASE}/CurrentAccountTransaction/Request`,
+        body
+    );
+    return bianActivityResponseToUi(envelope, ownedAccountUiRecords, selfUser);
 }
