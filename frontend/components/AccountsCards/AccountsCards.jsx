@@ -18,32 +18,30 @@ import BankConnection from "../BankConnection/BankConnection";
 import Badge from "@leafygreen-ui/badge";
 import Modal from "@leafygreen-ui/modal";
 
-// Phase 5.1: post-adapter, internal accounts ship BIAN field names
-// (CurrentAccountNumber / CurrentAccountType / CurrentAccountBalanceRecord / …).
-// External Open Finance accounts still ship the legacy shape (AccountNumber /
-// AccountType / AccountBalance / AccountBank / …) — the helpers below read whichever
-// is present so the same card renders both.
+// Internal accounts use camelCase field names; external Open Finance accounts still
+// ship the legacy shape (AccountNumber / AccountType / AccountBalance / AccountBank / …).
+// The helpers below read whichever is present so the same card renders both.
 const ACCOUNT_TYPE_DISPLAY = {
     CURRENT: "Checking",
     SAVINGS: "Savings",
     FIXED_DEPOSIT: "Fixed Deposit",
 };
 
-const acctNumber = (item) => item?.CurrentAccountNumber ?? item?.AccountNumber;
+const acctNumber = (item) => item?.accountNumber ?? item?.AccountNumber;
 const acctType = (item) => {
-    const bian = item?.CurrentAccountType;
-    if (bian) return ACCOUNT_TYPE_DISPLAY[bian] || bian;
+    const t = item?.type;
+    if (t) return ACCOUNT_TYPE_DISPLAY[t] || t;
     return item?.AccountType;
 };
 const acctBalance = (item) =>
-    item?.CurrentAccountBalanceRecord?.CurrentAccountBalanceAmount ?? item?.AccountBalance;
-const acctCurrency = (item) => item?.CurrentAccountCurrencyCode || item?.AccountCurrency;
+    item?.balance?.current ?? item?.AccountBalance;
+const acctCurrency = (item) => item?.currency || item?.AccountCurrency;
 const acctOpenDate = (item) =>
-    item?.CurrentAccountOpenDate ||
+    item?.openedAt ||
     item?.AccountDate?.OpeningDate ||
     item?.ProductDate?.OpeningDate;
 const acctBank = (item) => item?._bankName || item?.AccountBank || item?.ProductBank;
-const acctRef = (item) => item?.CurrentAccountReference || item?._id;
+const acctRef = (item) => item?.accountId || item?._id;
 
 const AccountsCards = ({
     isFormOpen,

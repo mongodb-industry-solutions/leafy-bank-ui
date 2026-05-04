@@ -81,16 +81,13 @@ const CUSTOMER_REF_TO_USERID = (() => {
  */
 export function bianAccountToUi(record) {
     if (!record) return null;
-    const customerRef = record.CustomerReference;
+    const customerRef = record.customerId;
     return {
         ...record,
-        // helpers
         _customerUserName: CUSTOMER_REF_TO_USERNAME[customerRef] || "Unknown User",
         _customerUserId: CUSTOMER_REF_TO_USERID[customerRef] || customerRef,
         _bankName: "LeafyBank",
-        // back-compat alias for code that still keys/compares on `_id` (e.g. the
-        // disconnect modal that mixes internal + external Open Finance items).
-        _id: record.CurrentAccountReference,
+        _id: record.accountId,
     };
 }
 
@@ -98,7 +95,7 @@ export function bianAccountToUi(record) {
  * `Request` envelope -> `{ accounts: [...] }`.
  */
 export function bianAccountsResponseToUi(envelope) {
-    const records = envelope?.CurrentAccountFulfillmentArrangementRecord || [];
+    const records = envelope?.accounts || [];
     return { accounts: records.map(bianAccountToUi) };
 }
 
@@ -106,19 +103,19 @@ export function bianAccountsResponseToUi(envelope) {
  * `Retrieve` envelope -> `{ account: ... }`.
  */
 export function bianAccountRetrieveToUi(envelope) {
-    const record = envelope?.CurrentAccountFulfillmentArrangementRecord;
+    const record = envelope?.account;
     return { account: bianAccountToUi(record) };
 }
 
 /**
  * `Initiate` (create) response. Components read `account_id` after submit; expose
- * it alongside the full BIAN record.
+ * it alongside the full record.
  */
 export function bianAccountInitiateToUi(envelope) {
-    const ui = bianAccountToUi(envelope?.CurrentAccountFulfillmentArrangementRecord);
+    const ui = bianAccountToUi(envelope?.account);
     return {
         ...ui,
-        account_id: envelope?.CurrentAccountReference,
+        account_id: envelope?.accountId,
     };
 }
 
@@ -144,11 +141,11 @@ export function uiCreateAccountToBian({
 }) {
     const bianType = ACCOUNT_TYPE_UI_TO_BIAN[accountType] || accountType;
     return {
-        CustomerReference: deriveCustomerRef(userId),
-        CurrentAccountNumber: String(accountNumber),
-        CurrentAccountType: bianType,
-        CurrentAccountCurrencyCode: currency,
-        InitialDepositAmount: Number(accountBalance),
+        customerId: deriveCustomerRef(userId),
+        accountNumber: String(accountNumber),
+        type: bianType,
+        currency,
+        initialDeposit: Number(accountBalance),
     };
 }
 
@@ -169,18 +166,16 @@ export function uiTransferToBian({
     currency = "USD",
 }) {
     const body = {
-        CustomerReference: customerRef,
-        PaymentType: "INTRABANK_TRANSFER",
-        PaymentRailType: "INTERNAL",
-        PaymentInstructedAmount: Number(amount),
-        PaymentInstructedCurrencyCode: currency,
-        PaymentDebtorRecord: { DebtorAccountReference: originatorAccountRef },
-        PaymentCreditorRecord: { CreditorAccountReference: beneficiaryAccountRef },
+        customerId: customerRef,
+        type: "INTRABANK_TRANSFER",
+        rail: "INTERNAL",
+        instructedAmount: Number(amount),
+        instructedCurrency: currency,
+        debtor: { accountId: originatorAccountRef },
+        creditor: { accountId: beneficiaryAccountRef },
     };
     if (paymentMethod) {
-        body.PaymentRemittanceRecord = {
-            RemittanceUnstructuredInformationText: `via ${paymentMethod}`,
-        };
+        body.remittance = { unstructured: `via ${paymentMethod}` };
     }
     return body;
 }
@@ -192,9 +187,9 @@ export function uiTransferToBian({
  */
 export function bianPaymentInitiateToUi(envelope) {
     return {
-        transaction_id: envelope?.PaymentOrderReference,
-        PaymentOrderReference: envelope?.PaymentOrderReference,
-        status: envelope?.PaymentApexStatus,
+        transaction_id: envelope?.paymentId,
+        paymentId: envelope?.paymentId,
+        status: envelope?.status,
         raw: envelope,
     };
 }
@@ -279,7 +274,7 @@ export function bianActivityResponseToUi(envelope, ownedAccountUiRecords = [], s
     const legs = envelope?.transactions || [];
     const ownedRefs = new Set(
         (ownedAccountUiRecords || [])
-            .map((a) => a?.CurrentAccountReference || a?._id)
+            .map((a) => a?.accountId || a?._id)
             .filter(Boolean)
     );
 
