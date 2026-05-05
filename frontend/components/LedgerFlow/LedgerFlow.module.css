@@ -1,0 +1,145 @@
+/* LedgerFlow.module.css — Darkroom register on top of LeafyGreen Modal */
+
+.modal {
+  z-index: 1000;
+  transform: translateZ(0);
+}
+
+/* Dialog box — dark canvas */
+.modalDialog {
+  width: 95vw !important;
+  max-width: 1280px !important;
+  height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-align: left;
+  background-color: #001E2B !important;
+  color: #E8EDEB;
+}
+
+/* LG renders a close button — keep it visible on dark bg */
+.modalDialog button[aria-label*="lose" i] {
+  color: #E8EDEB !important;
+}
+
+.modalContent {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: hidden;
+  padding: 4px 4px 8px 4px;
+}
+
+.headerStrip {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1C2D38;
+  flex-wrap: wrap;
+}
+
+.headerTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.title {
+  color: #E8EDEB !important;
+  margin: 0;
+}
+
+.subtitle {
+  color: #889396;
+  margin-top: 2px;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Body split: diagram (left) + activity panel (right) */
+.body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: 16px;
+  overflow: hidden;
+}
+
+.diagramPane,
+.activityPane {
+  background: #00251A;
+  border: 1px solid #1C2D38;
+  border-radius: 10px;
+  padding: 14px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5C6C75;
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: 1px dashed #1C2D38;
+  border-radius: 8px;
+}
+
+/* BIAN footer strip — single quiet line */
+.bianStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  row-gap: 6px;
+  padding: 8px 12px;
+  background: #00141C;
+  border: 1px solid #1C2D38;
+  border-radius: 8px;
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+  font-size: 11px;
+  color: #889396;
+  letter-spacing: 0.02em;
+  flex-wrap: wrap;
+}
+
+.bianStrip strong {
+  color: #00ED64;
+  font-weight: 600;
+}
+
+.bianStrip .sep {
+  color: #3D4F58;
+}
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalDialog,
+  .body,
+  .controls,
+  .bianStrip {
+    transition: none !important;
+  }
+}

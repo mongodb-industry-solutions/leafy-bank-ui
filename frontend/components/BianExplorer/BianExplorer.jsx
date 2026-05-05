@@ -1,14 +1,34 @@
 "use client";
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import Modal from "@leafygreen-ui/modal";
 import { H3, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
+import { ParagraphSkeleton } from "@leafygreen-ui/skeleton-loader";
 import styles from "./BianExplorer.module.css";
 import BianDataModelTab from "./BianDataModelTab";
 import BianApiTab from "./BianApiTab";
 import { fetchBianMapping, fetchBianApiCatalog } from "@/lib/api/bian/bian_api";
+
+// Skeleton shown while the consolidated tab's chunk loads. ParagraphSkeleton
+// is the LG-canonical idle state per the MongoDB demo design system.
+function ConsolidatedSkeleton() {
+  return (
+    <div className={styles.consSkeleton}>
+      <ParagraphSkeleton />
+      <ParagraphSkeleton />
+    </div>
+  );
+}
+
+// The consolidated tab pulls in a curated data module (~30 KB) that's only
+// rendered on the third tab — split it out of the BIAN Explorer's main chunk.
+const BianConsolidatedTab = dynamic(() => import("./BianConsolidatedTab"), {
+  ssr: false,
+  loading: ConsolidatedSkeleton,
+});
 
 const TITLE_ID = "bian-explorer-title";
 const COMPLIANCE_DOMAINS = ["customers", "accounts", "payments", "transactions"];
@@ -153,7 +173,7 @@ const BianExplorer = ({ open, setOpen }) => {
             selected={selected}
             setSelected={setSelected}
           >
-            <Tab name="BIAN Data Model">
+            <Tab name="Leafy Bank BIAN Data Model">
               <div className={styles.tabPanel}>
                 <BianDataModelTab
                   mapping={mapping}
@@ -163,7 +183,7 @@ const BianExplorer = ({ open, setOpen }) => {
                 />
               </div>
             </Tab>
-            <Tab name="BIAN API">
+            <Tab name="Leafy Bank BIAN API">
               <div className={styles.tabPanel}>
                 <BianApiTab
                   // Reset internal state (service filter, expanded op) if the
@@ -174,6 +194,11 @@ const BianExplorer = ({ open, setOpen }) => {
                   error={catalogError}
                   onRetry={loadCatalog}
                 />
+              </div>
+            </Tab>
+            <Tab name="Consolidated BIAN Data Model">
+              <div className={styles.tabPanel}>
+                <BianConsolidatedTab liveMapping={mapping} />
               </div>
             </Tab>
           </Tabs>

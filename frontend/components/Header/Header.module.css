@@ -66,6 +66,12 @@
   color: #00684A;
 }
 
+.ledgerIcon {
+  margin-right: 8px;
+  margin-top: 5px;
+  color: #00684A;
+}
+
 .hamburgerIcon {
   display: none;
   cursor: pointer;
@@ -146,7 +152,8 @@
 
   .instructionsBtn,
   .logoutIcon,
-  .bianIcon {
+  .bianIcon,
+  .ledgerIcon {
     display: none;
   }
 

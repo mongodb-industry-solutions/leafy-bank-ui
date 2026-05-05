@@ -1095,3 +1095,910 @@
     flex-wrap: wrap;
   }
 }
+
+/* ==========================================================================
+   Consolidated BIAN Data Model
+   --------------------------------------------------------------------------
+   Hex literals are the closest @leafygreen-ui/palette tokens (CSS Modules
+   cannot import JS palette). Each color is annotated with its palette
+   equivalent. The 8 group accents are centralized as CSS custom properties.
+   ========================================================================== */
+
+.consLayout {
+  /* Group-accent custom properties — used in inline `--cons-hover-accent`
+     overrides on sidebar buttons. Group accents are the SD's identity color
+     and appear ONLY in: sidebar group label, sidebar active border, SD
+     header top border. They do NOT appear in body content (P1-1 color
+     discipline). */
+  --cons-accent-customer:       #016BF8; /* palette.blue.base */
+  --cons-accent-account:        #00684A; /* palette.green.dark2 */
+  --cons-accent-payments:       #C2410C; /* outside-LG orange */
+  --cons-accent-lending:        #5E0C9E; /* palette.purple.dark2 */
+  --cons-accent-capitalmarkets: #DB2777; /* outside-LG pink */
+  --cons-accent-wealth:         #1254B7; /* palette.blue.dark1 */
+  --cons-accent-fraudaml:       #DB3030; /* palette.red.base */
+  --cons-accent-glfinance:      #65A30D; /* outside-LG olive */
+
+  /* Standard easing per MongoDB demo skill */
+  --cons-ease: cubic-bezier(0.33, 1, 0.68, 1);
+
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 12px;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ===================== Sidebar ===================== */
+
+.consSidebar {
+  display: flex;
+  flex-direction: column;
+  background: #F9FBFA;             /* palette.gray.light3 */
+  border: 1px solid #E8EDEB;       /* palette.gray.light2 */
+  border-radius: 8px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.consSearchWrap {
+  padding: 4px 8px 6px;
+}
+
+.consSidebarEmpty {
+  padding: 16px 12px;
+  text-align: left;
+}
+
+.consSidebarEmptyTitle {
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.consSidebarEmptyHint {
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-size: 11px;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.consGroupBlock {
+  margin-top: 6px;
+}
+
+.consGroupLabel {
+  padding: 6px 12px 4px;
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  /* Color comes from inline style — group accent. */
+}
+
+.consSdButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px 7px 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  border-left: 3px solid transparent;
+  color: #1C2D38;                  /* palette.gray.dark3 */
+  font-size: 12px;
+  font-family: inherit;
+  transition: background 150ms var(--cons-ease),
+              transform 150ms var(--cons-ease),
+              border-left-color 150ms var(--cons-ease),
+              box-shadow 150ms var(--cons-ease);
+  /* CSS-only hover preview of the group accent (P1-2/P1-3). */
+}
+
+.consSdButton:hover {
+  background: #FFFFFF;
+  border-left-color: var(--cons-hover-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(28, 45, 56, 0.06);
+}
+
+.consSdButton:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #C3E7FE;   /* palette.blue.light2 */
+}
+
+.consSdButtonActive {
+  background: #FFFFFF;
+  font-weight: 600;
+  /* Active border-left color is set inline via the group accent. */
+}
+
+.consSdIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  flex-shrink: 0;
+}
+
+.consSdLabel {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.consLiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00A35C;             /* palette.green.dark1 */
+  box-shadow: 0 0 0 2px #C0FAE6;   /* palette.green.light2 */
+  flex-shrink: 0;
+}
+
+/* ===================== Main pane ===================== */
+
+.consMain {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+/* SD content wrapper — keyed on sd.key to remount and re-fire fade-in */
+.consSdContent {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: consSdFadeIn 220ms var(--cons-ease) both;
+}
+
+@keyframes consSdFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ===================== SD header card ===================== */
+
+.consSdHeader {
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;       /* palette.gray.light2 */
+  border-top: 3px solid #1254B7;   /* fallback; runtime override = group accent */
+  border-radius: 8px;
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+.consSdHeaderTopRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.consSdHeaderIcon {
+  display: inline-flex;
+  /* color comes from inline style — group accent */
+}
+
+/* The "BIAN Service Domain" overline label — sentence-tier register. */
+.consSdHeaderLabel {
+  font-size: 9px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+/* Live badge wraps an LG Badge with a pulsing dot prefix (P1-6). */
+.consLiveBadge {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+}
+
+.consLiveBadgePulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: consLivePulse 1800ms ease-in-out infinite;
+}
+
+@keyframes consLivePulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%      { opacity: 0.4; transform: scale(0.85); }
+}
+
+.consSdHeaderTitle {
+  margin-bottom: 4px;
+}
+
+.consSdHeaderSummary {
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-size: 12px;
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+/* Reference-only italic note under the summary (P1-6). */
+.consSdHeaderRefNote {
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-size: 11px;
+  font-style: italic;
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+/* Single-line metadata strip (P1-4 collapsed chips). */
+.consSdHeaderChipsLine {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #F1F4F4;   /* slightly lighter than gray.light2 */
+  font-size: 11px;
+}
+
+.consSdHeaderSep {
+  color: #C1C7C6;                  /* palette.gray.light1 */
+  margin: 0 2px;
+  font-weight: 700;
+}
+
+.consSdHeaderChipKey {
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin-right: 4px;
+}
+
+.consSdHeaderChipVal {
+  /* InlineCode wrapper — minor padding tweak so the inline-code chips read
+     as a single line of metadata. LG default is fine otherwise. */
+  font-size: 11px;
+}
+
+/* ===================== Sub-tabs (sticky) ===================== */
+
+.consSubTabs {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #FFFFFF;
+  padding: 8px 0;
+  border-bottom: 1px solid #E8EDEB; /* palette.gray.light2 */
+  /* Subtle gradient softens the seam where pinned content ends. */
+}
+
+.consSubTabBody {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ===================== Schema sub-tab ===================== */
+
+.consSchemaWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.consSchemaToolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.consSchemaCount {
+  font-size: 11px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+}
+
+.consImmutableBanner {
+  background: #FFEAE5;             /* palette.red.light3 */
+  border: 1px solid #FFCDC7;       /* palette.red.light2 */
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #970606;                  /* palette.red.dark2 */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.consSchemaTable {
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;       /* palette.gray.light2 */
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.consSchemaHeaderRow {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) 90px 36px minmax(0, 2fr);
+  gap: 10px;
+  padding: 9px 14px;
+  background: #F9FBFA;             /* palette.gray.light3 */
+  border-bottom: 1px solid #E8EDEB;
+  font-size: 9px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.consSchemaRow {
+  display: grid;
+  grid-template-columns: minmax(160px, 1.4fr) 90px 36px minmax(0, 2fr);
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #F1F4F4;
+  align-items: center;
+  font-size: 12px;
+  transition: background 120ms var(--cons-ease);
+}
+
+.consSchemaRow:nth-child(even) {
+  /* Faint zebra at very low contrast — purely tracking aid. */
+  background: #FCFDFC;
+}
+
+.consSchemaRow:hover {
+  background: #F9FBFA;             /* palette.gray.light3 */
+}
+
+.consSchemaRow:last-child {
+  border-bottom: none;
+}
+
+.consSchemaName {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.consPkChip,
+.consFkChip {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.consPkChip {
+  background: #FFEC9E;             /* palette.yellow.light2 */
+  color: #944F01;                  /* palette.yellow.dark2 */
+}
+
+.consFkChip {
+  background: #C3E7FE;             /* palette.blue.light2 */
+  color: #1254B7;                  /* palette.blue.dark1 */
+}
+
+.consBsonPill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* Required-state dot (P1-3 — replaces "required"/"optional" word). */
+.consReqCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.consReqDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid #C1C7C6;     /* palette.gray.light1 */
+  background: transparent;
+}
+
+.consReqDotOn {
+  background: #00A35C;             /* palette.green.dark1 */
+  border-color: #00684A;           /* palette.green.dark2 */
+}
+
+.consSchemaBian {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.consSchemaBianName {
+  font-size: 11px;
+  color: #00684A;                  /* palette.green.dark2 — BIAN identity */
+  word-break: break-word;
+}
+
+.consSchemaNote {
+  font-size: 11px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  line-height: 1.4;
+}
+
+.consEmpty {
+  padding: 20px 16px;
+  text-align: center;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  font-size: 12px;
+}
+
+.consSystemFields {
+  background: #F9FBFA;             /* palette.gray.light3 */
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.consSystemFieldsLabel {
+  font-size: 9px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.consSystemFieldsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.consSystemChip {
+  font-size: 10px;
+}
+
+.consIndexBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.consIndexLabel {
+  font-size: 9px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+/* ===================== BIAN Model sub-tab ===================== */
+
+.consBianModelWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 10px;
+}
+
+.consSynthNote {
+  background: #E1F7FF;             /* palette.blue.light3 */
+  border: 1px solid #C3E7FE;       /* palette.blue.light2 */
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 11px;
+  color: #1254B7;                  /* palette.blue.dark1 */
+  line-height: 1.5;
+}
+
+.consCrSection,
+.consBqSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.consBqSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.consBqToggleAll {
+  border: none;
+  background: transparent;
+  color: #1254B7;                  /* palette.blue.dark1 */
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-family: inherit;
+  transition: background 120ms var(--cons-ease);
+}
+
+.consBqToggleAll:hover {
+  background: #E1F7FF;             /* palette.blue.light3 */
+  text-decoration: underline;
+}
+
+.consBqToggleAll:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #C3E7FE;
+}
+
+.consSectionLabel {
+  font-size: 10px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+}
+
+.consCrTable {
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.consCrHeaderRow {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) 130px minmax(0, 2fr);
+  gap: 10px;
+  padding: 9px 14px;
+  background: #F9FBFA;
+  border-bottom: 1px solid #E8EDEB;
+  font-size: 9px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.consCrRow {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.4fr) 130px minmax(0, 2fr);
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #F1F4F4;
+  align-items: start;
+  font-size: 12px;
+  transition: background 120ms var(--cons-ease);
+}
+
+.consCrRow:nth-child(even) {
+  background: #FCFDFC;
+}
+
+.consCrRow:hover {
+  background: #F9FBFA;
+}
+
+.consCrRow:last-child {
+  border-bottom: none;
+}
+
+.consCrNameWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.consCrName {
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.consCrImpl {
+  font-size: 10px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+}
+
+.consCrImpl span {
+  color: #3D4F58;                  /* palette.gray.dark2 */
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+}
+
+.consCrNote {
+  font-size: 11px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  line-height: 1.5;
+}
+
+.consSemPill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+  height: fit-content;
+}
+
+/* ===================== BQ cards ===================== */
+
+.consBqCard {
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.consBqHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #F9FBFA;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background 150ms var(--cons-ease);
+}
+
+.consBqHeader:hover {
+  background: #E8EDEB;             /* palette.gray.light2 */
+}
+
+.consBqHeader:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px #C3E7FE; /* palette.blue.light2 */
+}
+
+.consBqHeaderLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.consBqTitle {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1C2D38;                  /* palette.gray.dark3 */
+}
+
+.consBqSubtitle {
+  font-size: 10px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+}
+
+.consBqHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.consBqCount {
+  font-size: 10px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+}
+
+.consBqChevron {
+  display: inline-flex;
+  transition: transform 150ms var(--cons-ease);
+  color: #5C6C75;
+}
+
+.consBqChevronOpen {
+  transform: rotate(180deg);
+}
+
+.consBqBody {
+  border-top: 1px solid #E8EDEB;
+}
+
+/* ===================== Services sub-tab ===================== */
+
+.consServicesWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 10px;
+}
+
+.consServicesSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.consServiceList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.consServiceItem {
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: #1C2D38;                  /* palette.gray.dark3 */
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* Service dot kept neutral — color discipline (P1-1). Was previously the
+   group accent which over-coloured the right pane. */
+.consServiceDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #C1C7C6;             /* palette.gray.light1 */
+  flex-shrink: 0;
+}
+
+.consEventList,
+.consOpList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Event pill — neutral chrome, no group accent (P1-1). */
+.consEventPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #3D4F58;                  /* palette.gray.dark2 */
+}
+
+.consOpPill {
+  background: #F9FBFA;             /* palette.gray.light3 */
+  border: 1px solid #C3E7FE;       /* palette.blue.light2 */
+  border-radius: 4px;
+  padding: 3px 9px;
+  font-size: 11px;
+  color: #1254B7;                  /* palette.blue.dark1 */
+  font-family: 'Geist Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* ===================== Related domains footer ===================== */
+
+.consRelated {
+  background: #F9FBFA;             /* palette.gray.light3 */
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.consRelatedLabel {
+  font-size: 10px;
+  color: #5C6C75;                  /* palette.gray.dark1 */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.consRelatedPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.consRelatedPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: #1C2D38;                  /* palette.gray.dark3 */
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 150ms var(--cons-ease),
+              transform 150ms var(--cons-ease),
+              box-shadow 150ms var(--cons-ease);
+}
+
+.consRelatedPill:hover {
+  border-color: var(--cons-hover-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(28, 45, 56, 0.08);
+}
+
+.consRelatedPill:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #C3E7FE;
+}
+
+/* ===================== Skeleton loader ===================== */
+
+.consSkeleton {
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+/* ===================== Responsive ===================== */
+
+@media (max-width: 900px) {
+  .consLayout {
+    grid-template-columns: 1fr;
+  }
+  .consSidebar {
+    max-height: 220px;
+  }
+  /* Collapse table grid; hide orphan headers. */
+  .consSchemaHeaderRow,
+  .consSchemaRow,
+  .consCrHeaderRow,
+  .consCrRow {
+    grid-template-columns: 1fr;
+  }
+  .consSchemaHeaderRow,
+  .consCrHeaderRow {
+    display: none;
+  }
+  /* Touch-target floor 44x44 per WCAG 2.5.8 / skill rule. */
+  .consSdButton {
+    min-height: 44px;
+    padding: 10px 12px 10px 10px;
+  }
+  .consBqHeader {
+    min-height: 44px;
+  }
+  .consRelatedPill {
+    min-height: 36px;
+  }
+}
+
+/* ===================== Reduced-motion override ===================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .consSdContent,
+  .consSdButton,
+  .consSchemaRow,
+  .consCrRow,
+  .consBqHeader,
+  .consBqChevron,
+  .consBqToggleAll,
+  .consRelatedPill {
+    animation: none !important;
+    transition: none !important;
+  }
+  .consLiveBadgePulse {
+    animation: none !important;
+    opacity: 1;
+  }
+}

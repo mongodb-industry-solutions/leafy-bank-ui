@@ -1,0 +1,657 @@
+/* FlowDiagram.module.css — Darkroom register, fluid metaphor */
+
+/* ─────────────────────────── Frame & atmosphere ─────────────────────────── */
+
+.frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 8px;
+  isolation: isolate;
+}
+
+.atmosphere {
+  position: absolute;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 25% 30%, rgba(0, 237, 100, 0.10) 0%, rgba(0, 237, 100, 0) 60%),
+    radial-gradient(50% 60% at 80% 80%, rgba(92, 164, 250, 0.09) 0%, rgba(92, 164, 250, 0) 65%),
+    radial-gradient(80% 80% at 60% 50%, rgba(0, 30, 43, 0) 0%, #00141C 80%);
+  filter: blur(0.5px);
+  animation: atmoDrift 28s ease-in-out infinite alternate;
+}
+
+@keyframes atmoDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1.0);   }
+  50%  { transform: translate3d(-2%, 1%, 0) scale(1.04); }
+  100% { transform: translate3d(2%, -1%, 0) scale(1.02); }
+}
+
+.svg {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  display: block;
+  font-family: 'Geist', 'Inter', system-ui, sans-serif;
+}
+
+.svgOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─────────────────────────── Hex lattice ground ─────────────────────────── */
+
+.hexLatticeRect {
+  opacity: 0.55;
+  mix-blend-mode: screen;
+}
+
+.hexLatticeStroke {
+  fill: none;
+  stroke: #143042;
+  stroke-width: 0.5;
+}
+
+/* ────────────────────────────── Edges ────────────────────────────── */
+
+.edge {
+  fill: none;
+  stroke: #1F3340;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  transition: stroke 280ms ease, stroke-width 280ms ease, filter 280ms ease;
+}
+
+.edgeThick {
+  stroke-width: 4.5;
+  stroke-linecap: round;
+}
+
+.edgeFork {
+  stroke-width: 3.5;
+}
+
+.edgeActive {
+  stroke: #00ED64;
+  filter: drop-shadow(0 0 6px rgba(0, 237, 100, 0.45));
+}
+
+.edgeMembrane.edgeActive {
+  stroke: #00ED64;
+  stroke-dasharray: 4 5;
+  animation: dashDrift 5s linear infinite;
+}
+
+@keyframes dashDrift { to { stroke-dashoffset: -120; } }
+
+.arrowGreenFill { fill: #00ED64; }
+.arrowMutedFill { fill: #324551; }
+
+/* ────────────────────────────── Customer ────────────────────────────── */
+
+.customer .customerHalo {
+  fill: rgba(0, 237, 100, 0.05);
+  stroke: rgba(0, 237, 100, 0.20);
+  stroke-width: 1;
+  transition: fill 280ms ease, stroke 280ms ease;
+}
+
+.customer .customerDisc {
+  fill: #002A1F;
+  stroke: #2A3D47;
+  stroke-width: 1.5;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.customer .customerInitial {
+  fill: #C1C7C6;
+  font-size: 24px;
+  font-weight: 600;
+  font-family: 'Geist', system-ui, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.customer .customerName {
+  fill: #889396;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.customerReached .customerDisc {
+  stroke: #00ED64;
+  fill: #00231A;
+  filter: drop-shadow(0 0 8px rgba(0, 237, 100, 0.30));
+}
+
+.customerReached .customerInitial { fill: #E8EDEB; }
+.customerReached .customerName { fill: #C1C7C6; }
+
+.customerCurrent .customerHalo {
+  animation: haloPulse 2s ease-in-out infinite;
+}
+
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.18); opacity: 0.4; }
+}
+
+/* ────────────────────────────── Payment ────────────────────────────── */
+
+.payment .paymentBody {
+  fill: #00141C;
+  stroke: #2A3D47;
+  stroke-width: 1.25;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.payment .paymentAmount {
+  fill: #C1C7C6;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-family: 'Geist', system-ui, sans-serif;
+}
+
+.payment .paymentMicro {
+  fill: #5C6C75;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-family: 'Geist Mono', monospace;
+}
+
+.paymentReached .paymentBody {
+  stroke: #00ED64;
+  fill: #00231A;
+  filter: drop-shadow(0 0 8px rgba(0, 237, 100, 0.28));
+}
+.paymentReached .paymentAmount { fill: #E8EDEB; }
+.paymentReached .paymentMicro  { fill: #00ED64; }
+
+/* ────────────────────────────── Fork point ────────────────────────────── */
+
+.fork .forkDot {
+  fill: #1F3340;
+  stroke: #2A3D47;
+  stroke-width: 1.5;
+  transition: fill 280ms ease, stroke 280ms ease, filter 280ms ease;
+}
+
+.forkReached .forkDot {
+  fill: #00ED64;
+  stroke: #00ED64;
+  filter: drop-shadow(0 0 8px rgba(0, 237, 100, 0.6));
+}
+
+.forkPlate {
+  fill: #00141C;
+  stroke: #1F3340;
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 280ms ease, stroke 280ms ease;
+}
+
+.forkReached .forkPlate { opacity: 1; }
+.forkBalanced .forkPlate { stroke: #00ED64; }
+
+.forkEqn {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: #889396;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.forkReached .forkEqn { opacity: 1; }
+
+.forkLabel { fill: #5C6C75; font-weight: 600; letter-spacing: 0.04em; }
+.forkValDr { fill: #FF9A6E; }
+.forkValCr { fill: #5CD9A8; }
+.forkEq    { fill: #889396; font-weight: 700; }
+
+.forkBalanced .forkValDr,
+.forkBalanced .forkValCr,
+.forkBalanced .forkEq { fill: #00ED64; }
+
+/* ────────────────────────────── Sub-ledger legs ────────────────────────────── */
+
+.subleg .sublegBody {
+  fill: #00141C;
+  stroke: #2A3D47;
+  stroke-width: 1.25;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.subleg .sublegSide {
+  font-family: 'Geist Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  fill: #5C6C75;
+  letter-spacing: 0.04em;
+}
+
+.subleg .sublegLabel {
+  fill: #C1C7C6;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.subleg .sublegMeta {
+  fill: #5C6C75;
+  font-size: 9.5px;
+  font-family: 'Geist Mono', monospace;
+}
+
+.subleg .sublegAmount {
+  font-family: 'Geist Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  fill: #889396;
+}
+
+.subLegDr.sublegReached .sublegBody {
+  stroke: #FF9A6E;
+  fill: #1F1410;
+  filter: drop-shadow(0 0 8px rgba(255, 154, 110, 0.25));
+}
+.subLegDr.sublegReached .sublegSide   { fill: #FF9A6E; }
+.subLegDr.sublegReached .sublegLabel  { fill: #E8EDEB; }
+.subLegDr.sublegReached .sublegAmount { fill: #FF9A6E; }
+
+.subLegCr.sublegReached .sublegBody {
+  stroke: #5CD9A8;
+  fill: #00231A;
+  filter: drop-shadow(0 0 8px rgba(92, 217, 168, 0.25));
+}
+.subLegCr.sublegReached .sublegSide   { fill: #5CD9A8; }
+.subLegCr.sublegReached .sublegLabel  { fill: #E8EDEB; }
+.subLegCr.sublegReached .sublegAmount { fill: #5CD9A8; }
+
+.sublegCurrent .sublegBody {
+  animation: sublegPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sublegPulse {
+  0%, 100% { stroke-opacity: 1; }
+  50%      { stroke-opacity: 0.55; }
+}
+
+/* ────────────────────────────── Reconcile membrane ────────────────────────────── */
+
+.membrane .membraneLine {
+  stroke: #2A3D47;
+  stroke-width: 1.4;
+  stroke-dasharray: 5 5;
+  animation: dashDrift 8s linear infinite;
+  transition: stroke 280ms ease;
+}
+
+.membrane .membraneField {
+  fill: rgba(255, 192, 16, 0.04);
+  stroke: rgba(255, 192, 16, 0.18);
+  stroke-width: 0.5;
+  stroke-dasharray: 3 4;
+  transition: fill 280ms ease, stroke 280ms ease;
+}
+
+.membrane .membraneTitle {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  font-family: 'Geist Mono', monospace;
+  fill: #5C6C75;
+  transition: fill 280ms ease;
+}
+
+.membrane .membraneSub {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.20em;
+  font-family: 'Geist Mono', monospace;
+  fill: #5C6C75;
+  transition: fill 280ms ease;
+}
+
+.membraneReached .membraneLine  { stroke: #FFC010; }
+.membraneReached .membraneField {
+  fill: rgba(255, 192, 16, 0.10);
+  stroke: rgba(255, 192, 16, 0.45);
+  animation: membraneShimmer 1.2s ease-out 1;
+}
+.membraneReached .membraneTitle { fill: #FFC010; }
+.membraneReached .membraneSub   { fill: #FFC010; }
+
+@keyframes membraneShimmer {
+  0%   { fill: rgba(255, 192, 16, 0.40); }
+  60%  { fill: rgba(255, 192, 16, 0.18); }
+  100% { fill: rgba(255, 192, 16, 0.10); }
+}
+
+/* ────────────────────────────── Journal hex-core ────────────────────────────── */
+
+.journalGradStopA { stop-color: #00ED64; stop-opacity: 0.30; }
+.journalGradStopB { stop-color: #003E2A; stop-opacity: 0.45; }
+.journalGradStopC { stop-color: #00141C; stop-opacity: 0.95; }
+
+.journal .journalHexOuter {
+  fill: url(#journalGrad);
+  stroke: #2A3D47;
+  stroke-width: 1.5;
+  transition: stroke 320ms ease, filter 320ms ease;
+}
+
+.journal .journalHexInner {
+  fill: #00141C;
+  stroke: #1F3340;
+  stroke-width: 1;
+  transition: stroke 320ms ease, fill 320ms ease;
+}
+
+.journal .journalLabel {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  fill: #889396;
+  transition: fill 320ms ease;
+}
+
+.journal .journalSub {
+  font-family: 'Geist', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  fill: #5C6C75;
+}
+
+.journal .journalId {
+  font-family: 'Geist Mono', monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: #00ED64;
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.journalReached .journalHexOuter {
+  stroke: #00ED64;
+  filter: drop-shadow(0 0 14px rgba(0, 237, 100, 0.45));
+}
+.journalReached .journalHexInner { stroke: #00ED64; fill: #00231A; }
+.journalReached .journalLabel    { fill: #00ED64; }
+.journalReached .journalSub      { fill: #C1C7C6; }
+.journalReached .journalId       { opacity: 1; }
+
+/* Equilibrium pulse rings */
+.journalRings { opacity: 0; transform-origin: center; transform-box: fill-box; }
+.journalRings path {
+  fill: none;
+  stroke: #00ED64;
+  stroke-width: 1;
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.journalPulse .journalRings { opacity: 1; }
+
+.journalPulse .journalRingA { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+.journalPulse .journalRingB { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.18s forwards; }
+.journalPulse .journalRingC { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.36s forwards; }
+
+@keyframes ringExpand {
+  0%   { transform: scale(0.4); opacity: 0.0; }
+  20%  { opacity: 0.85; }
+  100% { transform: scale(1.6); opacity: 0;   }
+}
+
+/* ────────────────────────────── Change-stream wavefront ────────────────────────────── */
+
+.wavefrontGroup circle {
+  fill: none;
+  stroke: #5CA4FA;
+  stroke-width: 1.5;
+  opacity: 0;
+  transform-origin: center;
+}
+
+.wavefrontA { animation: waveExpand 1.2s ease-out 1 forwards; }
+.wavefrontB { animation: waveExpand 1.2s ease-out 0.18s 1 forwards; }
+.wavefrontC { animation: waveExpand 1.2s ease-out 0.36s 1 forwards; }
+
+@keyframes waveExpand {
+  0%   { r: 6;   opacity: 0.0; }
+  10%  { opacity: 0.85; }
+  100% { r: 360; opacity: 0;   }
+}
+
+/* ────────────────────────────── Vessels (Frida & Bo) ────────────────────────────── */
+
+.liquidStopFromA { stop-color: #FF9A6E; stop-opacity: 0.85; }
+.liquidStopFromB { stop-color: #6E2A18; stop-opacity: 0.95; }
+.liquidStopToA   { stop-color: #00ED64; stop-opacity: 0.85; }
+.liquidStopToB   { stop-color: #003E2A; stop-opacity: 0.95; }
+
+.vessel .vesselGlass {
+  fill: rgba(0, 20, 28, 0.7);
+  stroke: #2A3D47;
+  stroke-width: 1.25;
+  transition: stroke 320ms ease;
+}
+
+.vessel .vesselTick {
+  stroke: #2A3D47;
+  stroke-width: 1;
+}
+
+.vessel .vesselBeforeLine {
+  stroke: #5C6C75;
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  opacity: 0.6;
+}
+
+.vessel .vesselTitle {
+  fill: #C1C7C6;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.vessel .vesselAcct {
+  fill: #5C6C75;
+  font-size: 9px;
+  font-family: 'Geist Mono', monospace;
+  letter-spacing: 0.02em;
+}
+
+.vessel .vesselBalance {
+  font-family: 'Geist Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  fill: #889396;
+  transition: fill 320ms ease;
+}
+
+.vessel .vesselLiquid {
+  transition: d 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+}
+
+.vesselDebit .vesselLiquid {
+  fill: url(#liquidGradFrom);
+  filter: drop-shadow(0 0 6px rgba(255, 154, 110, 0.30));
+}
+.vesselCredit .vesselLiquid {
+  fill: url(#liquidGradTo);
+  filter: drop-shadow(0 0 6px rgba(0, 237, 100, 0.35));
+}
+
+.vessel .vesselLiquidGloss {
+  fill: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+  pointer-events: none;
+}
+
+.vesselReached .vesselGlass {
+  stroke: #00ED64;
+}
+.vesselReached .vesselBalance {
+  fill: #E8EDEB;
+}
+
+.vesselDebit.vesselReached .vesselGlass  { stroke: #FF9A6E; }
+.vesselDebit.vesselReached .vesselBalance { fill: #FF9A6E; }
+
+/* ────────────────────────────── Particles ────────────────────────────── */
+
+.particle {
+  fill: #00ED64;
+  filter: drop-shadow(0 0 4px rgba(0, 237, 100, 0.7));
+  offset-distance: 0%;
+  animation-name: particleGlide;
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+.particleFork {
+  fill: #5CD9A8;
+  filter: drop-shadow(0 0 4px rgba(92, 217, 168, 0.7));
+}
+
+@keyframes particleGlide {
+  0%   { offset-distance: 0%;   opacity: 0;   r: 1.6; }
+  10%  { opacity: 1; r: 3.2; }
+  85%  { opacity: 1; r: 3.2; }
+  100% { offset-distance: 100%; opacity: 0;   r: 1.6; }
+}
+
+/* ────────────────────────────── Station labels (overlay) ────────────────────────────── */
+
+.stationLabel .stationTitle {
+  font-family: 'Geist Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.20em;
+  fill: #5C6C75;
+  font-weight: 600;
+}
+.stationLabel .stationSub {
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  fill: #5C6C75;
+  font-style: italic;
+}
+
+.stationReached .stationTitle { fill: #00ED64; }
+
+/* ────────────────────────────── Equilibrium badge ────────────────────────────── */
+
+.equilibrium {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(0, 20, 28, 0.85);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #1F3340;
+  border-radius: 999px;
+  font-family: 'Geist Mono', monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #889396;
+  letter-spacing: 0.02em;
+  transition: border-color 320ms ease, color 320ms ease;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.equilibriumActive { opacity: 1; }
+
+.equilibriumDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5C6C75;
+  transition: background 320ms ease, box-shadow 320ms ease;
+}
+
+.equilibriumActive .equilibriumDot {
+  background: #FFC010;
+  box-shadow: 0 0 6px rgba(255, 192, 16, 0.6);
+}
+
+.equilibriumBalanced .equilibriumDot {
+  background: #00ED64;
+  box-shadow: 0 0 8px rgba(0, 237, 100, 0.8);
+}
+
+.equilibriumLabel {
+  text-transform: uppercase;
+  font-size: 9.5px;
+  letter-spacing: 0.10em;
+  color: #5C6C75;
+}
+
+.equilibriumValDr { color: #FF9A6E; }
+.equilibriumValCr { color: #5CD9A8; }
+.equilibriumOp { color: #5C6C75; font-weight: 700; }
+
+.equilibriumBalanced { border-color: #00ED64; }
+.equilibriumBalanced .equilibriumValDr,
+.equilibriumBalanced .equilibriumValCr,
+.equilibriumBalanced .equilibriumOp { color: #00ED64; }
+
+.equilibriumCheck {
+  color: #5C6C75;
+  font-size: 12px;
+  font-weight: 700;
+}
+.equilibriumBalanced .equilibriumCheck { color: #00ED64; }
+
+/* ────────────────────────────── Reduced motion ────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere,
+  .edgeMembrane.edgeActive,
+  .membrane .membraneLine,
+  .membraneReached .membraneField,
+  .customerCurrent .customerHalo,
+  .sublegCurrent .sublegBody,
+  .journalPulse .journalRings,
+  .journalPulse .journalRingA,
+  .journalPulse .journalRingB,
+  .journalPulse .journalRingC,
+  .wavefrontA,
+  .wavefrontB,
+  .wavefrontC,
+  .particle,
+  .vessel .vesselLiquid {
+    animation: none !important;
+    transition: none !important;
+  }
+  .particle { opacity: 0; }
+  .journalRings { opacity: 0; }
+  .wavefrontGroup circle { opacity: 0; }
+}

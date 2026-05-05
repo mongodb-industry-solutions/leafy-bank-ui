@@ -13,12 +13,14 @@ import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
 import RiskProfileSelector from '@/components/RiskProfileSelector/RiskProfileSelector';
 import BianExplorer from '@/components/BianExplorer/BianExplorer';
+import LedgerFlow from '@/components/LedgerFlow/LedgerFlow';
 import styles from "./Header.module.css";
 
 function Header({ onLogout = () => { } }) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [bianOpen, setBianOpen] = useState(false);
+  const [ledgerOpen, setLedgerOpen] = useState(false);
   const pathname = usePathname();
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -105,6 +107,18 @@ function Header({ onLogout = () => { } }) {
           <Body>BIAN v14 Explorer</Body>
         </button>
 
+        {/* Mobile entry for the Ledger Flow demo */}
+        <button
+          type="button"
+          className={`${styles.linkHideDesktop} ${styles.menuButton}`}
+          onClick={() => {
+            setMenuOpen(false);
+            setLedgerOpen(true);
+          }}
+        >
+          <Body>Ledger Flow</Body>
+        </button>
+
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
           <Body>Log Out</Body>
@@ -119,6 +133,22 @@ function Header({ onLogout = () => { } }) {
             <RiskProfileSelector />
           </>
         )}
+
+        {/* Ledger Flow trigger — sits left of BIAN trigger */}
+        <Tooltip
+          trigger={
+            <IconButton
+              aria-label="Open Ledger Flow demo"
+              onClick={() => setLedgerOpen(true)}
+              className={styles.ledgerIcon}
+            >
+              <Icon glyph="Diagram3" />
+            </IconButton>
+          }
+        >
+          Ledger Flow — Payment to Balance
+        </Tooltip>
+        <LedgerFlow open={ledgerOpen} setOpen={setLedgerOpen} />
 
         {/* BIAN v14 Explorer trigger — sits immediately left of UserProfile */}
         <Tooltip

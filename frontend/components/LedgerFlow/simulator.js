@@ -1,0 +1,221 @@
+// simulator.js — pure event generator for the ledger flow demo.
+// Same event shape the backend Change Stream subscriber will eventually emit,
+// so the UI can swap data sources without re-rendering logic.
+
+const PERIOD_CODE = "2026-05";
+const PERIOD_NAME = "May 2026";
+
+function uuid() {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+  });
+}
+
+function ymd(date) {
+  const y = date.getUTCFullYear();
+  const m = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(date.getUTCDate()).padStart(2, "0");
+  return `${y}${m}${d}`;
+}
+
+function dec(n) {
+  return { $numberDecimal: Number(n).toFixed(2) };
+}
+
+function isoDate(date) {
+  return { $date: date.toISOString() };
+}
+
+// Returns an object containing:
+//   - identifiers (journalId, sub-ledger ids, idempotencyKey, paymentId)
+//   - the canonical journalEntry document (status='POSTED')
+//   - the two subLedgerEntries documents (debit + credit legs)
+//   - the ordered event timeline (delays in ms)
+export function buildPaymentRun({ from, to, amount, currency = "USD", description }) {
+  const now = new Date();
+  const stamp = ymd(now);
+  const idempotencyKey = `pay-${uuid()}`;
+  const paymentId = `PAY-${stamp}-${String(Math.floor(Math.random() * 9999)).padStart(4, "0")}`;
+  const journalId = `JNL-${stamp}-${String(Math.floor(Math.random() * 999999)).padStart(6, "0")}`;
+  const subLedgerDebitId = `SL-${stamp}-${String(Math.floor(Math.random() * 999999)).padStart(6, "0")}`;
+  const subLedgerCreditId = `SL-${stamp}-${String(Math.floor(Math.random() * 999999)).padStart(6, "0")}`;
+  const resumeToken = `rt-${uuid().slice(0, 12)}`;
+
+  const sourceReference = {
+    sourceSystem: "PAYMENT_ORDER",
+    sourceId: paymentId,
+    sourceType: "PAYMENT",
+    sourceCollection: "payments",
+  };
+
+  const journalEntry = {
+    journalId,
+    idempotencyKey,
+    periodCode: PERIOD_CODE,
+    periodName: PERIOD_NAME,
+    valueDate: isoDate(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))),
+    postingDate: isoDate(now),
+    journalType: "SYSTEM",
+    status: "POSTED",
+    currency,
+    totalAmount: dec(amount),
+    description: description || `Customer transfer — ${from.displayName} → ${to.displayName}`,
+    sourceReference,
+    entries: [
+      {
+        lineNumber: 1,
+        accountCode: from.controlAccountCode,
+        accountName: "Customer Deposits — Current",
+        side: "DEBIT",
+        amount: dec(amount),
+        currency,
+        fxRate: null,
+        functionalAmount: dec(amount),
+        subLedgerRef: subLedgerDebitId,
+        costCenter: "RETAIL-BANKING",
+        lineDescription: `Debit ${from.displayName} — ${from.accountId}`,
+      },
+      {
+        lineNumber: 2,
+        accountCode: to.controlAccountCode,
+        accountName: "Customer Deposits — Current",
+        side: "CREDIT",
+        amount: dec(amount),
+        currency,
+        fxRate: null,
+        functionalAmount: dec(amount),
+        subLedgerRef: subLedgerCreditId,
+        costCenter: "RETAIL-BANKING",
+        lineDescription: `Credit ${to.displayName} — ${to.accountId}`,
+      },
+    ],
+    reversalOf: null,
+    reversedBy: null,
+    approvedBy: "SYSTEM",
+    approvedAt: isoDate(now),
+    postedBy: "SYSTEM",
+    createdAt: isoDate(now),
+    updatedAt: isoDate(now),
+  };
+
+  const subLedgerDebit = {
+    subLedgerId: subLedgerDebitId,
+    idempotencyKey,
+    journalEntryId: journalId,
+    periodCode: PERIOD_CODE,
+    periodName: PERIOD_NAME,
+    subLedgerType: from.subLedgerType,
+    controlAccountCode: from.controlAccountCode,
+    entityReference: {
+      entityType: "ACCOUNT",
+      entityId: from.accountId,
+      entityName: `${from.displayName} — Current Account`,
+    },
+    side: "DEBIT",
+    amount: dec(amount),
+    currency,
+    functionalAmount: dec(amount),
+    runningBalance: dec(from.balance - amount),
+    valueDate: journalEntry.valueDate,
+    postingDate: journalEntry.postingDate,
+    transactionType: "PAYMENT_OUT",
+    status: "POSTED",
+    sourceReference,
+    description: `Outbound transfer — debit ${from.accountId}`,
+    reversalOf: null,
+    reversedBy: null,
+    createdAt: journalEntry.createdAt,
+    updatedAt: journalEntry.updatedAt,
+  };
+
+  const subLedgerCredit = {
+    subLedgerId: subLedgerCreditId,
+    idempotencyKey,
+    journalEntryId: journalId,
+    periodCode: PERIOD_CODE,
+    periodName: PERIOD_NAME,
+    subLedgerType: to.subLedgerType,
+    controlAccountCode: to.controlAccountCode,
+    entityReference: {
+      entityType: "ACCOUNT",
+      entityId: to.accountId,
+      entityName: `${to.displayName} — Current Account`,
+    },
+    side: "CREDIT",
+    amount: dec(amount),
+    currency,
+    functionalAmount: dec(amount),
+    runningBalance: dec(to.balance + amount),
+    valueDate: journalEntry.valueDate,
+    postingDate: journalEntry.postingDate,
+    transactionType: "PAYMENT_IN",
+    status: "POSTED",
+    sourceReference,
+    description: `Inbound transfer — credit ${to.accountId}`,
+    reversalOf: null,
+    reversedBy: null,
+    createdAt: journalEntry.createdAt,
+    updatedAt: journalEntry.updatedAt,
+  };
+
+  // Timeline. `t` is ms from run start. The reducer reads `payload` keys it
+  // cares about — additional fields are kept for backend parity.
+  const timeline = [
+    {
+      t: 0,
+      stage: "PAYMENT_INITIATED",
+      payload: {
+        paymentId,
+        idempotencyKey,
+        from: { accountId: from.accountId, displayName: from.displayName, balance: from.balance },
+        to: { accountId: to.accountId, displayName: to.displayName, balance: to.balance },
+        amount,
+        currency,
+      },
+    },
+    { t: 350, stage: "SUBLEDGER_DEBIT", payload: { document: subLedgerDebit } },
+    { t: 550, stage: "SUBLEDGER_CREDIT", payload: { document: subLedgerCredit } },
+    {
+      t: 950,
+      stage: "RECONCILE_SKIPPED",
+      payload: {
+        reason: "mvp-write-only",
+        wouldHaveMatched: true,
+        note: "App-enforced double-entry balance; period close gate deferred to Phase 2.",
+      },
+    },
+    { t: 1200, stage: "JOURNAL_POSTED", payload: { document: journalEntry } },
+    {
+      t: 1600,
+      stage: "CHANGE_STREAM",
+      payload: { resumeToken, op: "insert", ns: "leafy_bank_bian.journalEntries" },
+    },
+    {
+      t: 1950,
+      stage: "BALANCE_PROJECTED_DEBIT",
+      payload: { accountId: from.accountId, before: from.balance, after: from.balance - amount },
+    },
+    {
+      t: 2100,
+      stage: "BALANCE_PROJECTED_CREDIT",
+      payload: { accountId: to.accountId, before: to.balance, after: to.balance + amount },
+    },
+    { t: 2350, stage: "SETTLED", payload: {} },
+  ];
+
+  return {
+    identifiers: { journalId, subLedgerDebitId, subLedgerCreditId, idempotencyKey, paymentId },
+    documents: { journalEntry, subLedgerDebit, subLedgerCredit },
+    timeline,
+  };
+}
+
+// Drives a timeline against a dispatch fn. Returns a cancel handle.
+export function runTimeline(timeline, dispatch) {
+  const handles = timeline.map((evt) =>
+    setTimeout(() => dispatch({ type: "STAGE_EVENT", event: evt }), evt.t)
+  );
+  return () => handles.forEach(clearTimeout);
+}
