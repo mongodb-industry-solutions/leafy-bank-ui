@@ -463,8 +463,8 @@ const FlowDiagram = ({ state }) => {
         list.push({
           id: `${e.id}-${t}-${i}`,
           d: e.d,
-          delay: i * 70 + Math.random() * 60,
-          duration: 1100 + Math.random() * 350,
+          delay: i * 110 + Math.random() * 90,
+          duration: 1900 + Math.random() * 500,
           jitter: (Math.random() - 0.5) * 1.4,
           warm: e.warm || false,
           fork: e.fork || false,

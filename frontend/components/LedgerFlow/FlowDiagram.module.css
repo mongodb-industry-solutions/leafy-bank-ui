@@ -412,9 +412,9 @@
 
 .journalPulse .journalRings { opacity: 1; }
 
-.journalPulse .journalRingA { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
-.journalPulse .journalRingB { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.18s forwards; }
-.journalPulse .journalRingC { animation: ringExpand 1.4s cubic-bezier(0.2, 0.7, 0.3, 1) 0.36s forwards; }
+.journalPulse .journalRingA { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+.journalPulse .journalRingB { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 0.30s forwards; }
+.journalPulse .journalRingC { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 0.60s forwards; }
 
 @keyframes ringExpand {
   0%   { transform: scale(0.4); opacity: 0.0; }
@@ -432,9 +432,9 @@
   transform-origin: center;
 }
 
-.wavefrontA { animation: waveExpand 1.2s ease-out 1 forwards; }
-.wavefrontB { animation: waveExpand 1.2s ease-out 0.18s 1 forwards; }
-.wavefrontC { animation: waveExpand 1.2s ease-out 0.36s 1 forwards; }
+.wavefrontA { animation: waveExpand 1.9s ease-out 1 forwards; }
+.wavefrontB { animation: waveExpand 1.9s ease-out 0.30s 1 forwards; }
+.wavefrontC { animation: waveExpand 1.9s ease-out 0.60s 1 forwards; }
 
 @keyframes waveExpand {
   0%   { r: 6;   opacity: 0.0; }
@@ -491,7 +491,7 @@
 }
 
 .vessel .vesselLiquid {
-  transition: d 700ms cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: d 1100ms cubic-bezier(0.4, 0.0, 0.2, 1);
 }
 
 .vesselDebit .vesselLiquid {

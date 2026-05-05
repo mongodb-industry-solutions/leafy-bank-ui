@@ -175,10 +175,10 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
         currency,
       },
     },
-    { t: 350, stage: "SUBLEDGER_DEBIT", payload: { document: subLedgerDebit } },
-    { t: 550, stage: "SUBLEDGER_CREDIT", payload: { document: subLedgerCredit } },
+    { t: 1100, stage: "SUBLEDGER_DEBIT", payload: { document: subLedgerDebit } },
+    { t: 1900, stage: "SUBLEDGER_CREDIT", payload: { document: subLedgerCredit } },
     {
-      t: 950,
+      t: 2900,
       stage: "RECONCILE_SKIPPED",
       payload: {
         reason: "mvp-write-only",
@@ -186,23 +186,23 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
         note: "App-enforced double-entry balance; period close gate deferred to Phase 2.",
       },
     },
-    { t: 1200, stage: "JOURNAL_POSTED", payload: { document: journalEntry } },
+    { t: 3800, stage: "JOURNAL_POSTED", payload: { document: journalEntry } },
     {
-      t: 1600,
+      t: 5000,
       stage: "CHANGE_STREAM",
       payload: { resumeToken, op: "insert", ns: "leafy_bank_bian.journalEntries" },
     },
     {
-      t: 1950,
+      t: 6000,
       stage: "BALANCE_PROJECTED_DEBIT",
       payload: { accountId: from.accountId, before: from.balance, after: from.balance - amount },
     },
     {
-      t: 2100,
+      t: 6500,
       stage: "BALANCE_PROJECTED_CREDIT",
       payload: { accountId: to.accountId, before: to.balance, after: to.balance + amount },
     },
-    { t: 2350, stage: "SETTLED", payload: {} },
+    { t: 7300, stage: "SETTLED", payload: {} },
   ];
 
   return {
