@@ -15,7 +15,7 @@ export function indexOfOnboardStage(stage) {
 
 export const onboardingInitialState = {
   status: "IDLE",
-  mode: "SLOW",
+  mode: "STEP",
   currentStage: null,
   stageIndex: -1,
   reachedStages: {},

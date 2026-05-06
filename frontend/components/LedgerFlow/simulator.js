@@ -244,16 +244,13 @@ export function runMode(timeline, dispatch, mode = "STEP") {
   };
 
   if (mode === "SLOW") {
-    // 1/4 of the previous pace — ~6s per stage, total ~54s for 9 stages.
-    const STEP_MS = 6000;
+    const STEP_MS = 2000;
     autoHandles = timeline.map((_evt, i) =>
       setTimeout(() => fire(i), i * STEP_MS)
     );
   }
-  // STEP mode (and any unrecognised mode): no timers; caller calls next() to advance.
 
   const next = () => {
-    if (mode !== "STEP") return; // ignored in auto modes
     if (cancelled || cursor >= timeline.length) return;
     fire(cursor);
   };

@@ -122,10 +122,17 @@ const LedgerFlowV3 = () => {
   }, [state.mode, isPostingScene]);
 
   const handleNext = useCallback(() => {
-    if (!isPostingScene || state.status !== "STEP_PAUSED") return;
-    if (!runnerRef.current) { handleSimulate(); return; }
-    runnerRef.current.next();
-  }, [state.status, handleSimulate, isPostingScene]);
+    if (!isPostingScene) return;
+    if (state.status === "IDLE") { handleSimulate(); return; }
+    if (state.status === "SETTLED") return;
+    const timeline = runRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = state.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    runnerRef.current?.cancel?.();
+    dispatch({ type: "STAGE_EVENT", event: timeline[nextIdx] });
+    runnerRef.current = runMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isPostingScene, state.status, state.events?.length, handleSimulate]);
 
   const handlePrev = useCallback(() => {
     if (!isPostingScene) return;
@@ -173,10 +180,17 @@ const LedgerFlowV3 = () => {
   }, [isReconcileScene, reconcileMode]);
 
   const handleReconcileNext = useCallback(() => {
-    if (!isReconcileScene || reconcileStatus !== "STEP_PAUSED") return;
-    if (!reconcileRunnerRef.current) { handleReconcileSimulate(); return; }
-    reconcileRunnerRef.current.next();
-  }, [isReconcileScene, reconcileStatus, handleReconcileSimulate]);
+    if (!isReconcileScene) return;
+    if (reconcileStatus === "IDLE") { handleReconcileSimulate(); return; }
+    if (reconcileStatus === "SETTLED") return;
+    const timeline = reconcileRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = reconcile?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    reconcileRunnerRef.current?.cancel?.();
+    dispatch({ type: "RECONCILE_STAGE_EVENT", event: timeline[nextIdx] });
+    reconcileRunnerRef.current = runReconcileMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isReconcileScene, reconcileStatus, reconcile?.events?.length, handleReconcileSimulate]);
 
   const handleReconcilePrev = useCallback(() => {
     if (!isReconcileScene) return;
@@ -227,10 +241,17 @@ const LedgerFlowV3 = () => {
   }, [isOnboardingScene, onboardMode]);
 
   const handleOnboardNext = useCallback(() => {
-    if (!isOnboardingScene || onboardStatus !== "STEP_PAUSED") return;
-    if (!onboardRunnerRef.current) { handleOnboardSimulate(); return; }
-    onboardRunnerRef.current.next();
-  }, [isOnboardingScene, onboardStatus, handleOnboardSimulate]);
+    if (!isOnboardingScene) return;
+    if (onboardStatus === "IDLE") { handleOnboardSimulate(); return; }
+    if (onboardStatus === "SETTLED") return;
+    const timeline = onboardRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = onboarding?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    onboardRunnerRef.current?.cancel?.();
+    dispatch({ type: "ONBOARD_STAGE_EVENT", event: timeline[nextIdx] });
+    onboardRunnerRef.current = runOnboardingMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isOnboardingScene, onboardStatus, onboarding?.events?.length, handleOnboardSimulate]);
 
   const handleOnboardPrev = useCallback(() => {
     if (!isOnboardingScene) return;
@@ -281,10 +302,17 @@ const LedgerFlowV3 = () => {
   }, [isErasureScene, erasureMode]);
 
   const handleErasureNext = useCallback(() => {
-    if (!isErasureScene || erasureStatus !== "STEP_PAUSED") return;
-    if (!erasureRunnerRef.current) { handleErasureSimulate(); return; }
-    erasureRunnerRef.current.next();
-  }, [isErasureScene, erasureStatus, handleErasureSimulate]);
+    if (!isErasureScene) return;
+    if (erasureStatus === "IDLE") { handleErasureSimulate(); return; }
+    if (erasureStatus === "SETTLED") return;
+    const timeline = erasureRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = erasure?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    erasureRunnerRef.current?.cancel?.();
+    dispatch({ type: "ERASURE_STAGE_EVENT", event: timeline[nextIdx] });
+    erasureRunnerRef.current = runErasureMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isErasureScene, erasureStatus, erasure?.events?.length, handleErasureSimulate]);
 
   const handleErasurePrev = useCallback(() => {
     if (!isErasureScene) return;
@@ -335,10 +363,17 @@ const LedgerFlowV3 = () => {
   }, [isFanoutScene, fanoutMode]);
 
   const handleFanoutNext = useCallback(() => {
-    if (!isFanoutScene || fanoutStatus !== "STEP_PAUSED") return;
-    if (!fanoutRunnerRef.current) { handleFanoutSimulate(); return; }
-    fanoutRunnerRef.current.next();
-  }, [isFanoutScene, fanoutStatus, handleFanoutSimulate]);
+    if (!isFanoutScene) return;
+    if (fanoutStatus === "IDLE") { handleFanoutSimulate(); return; }
+    if (fanoutStatus === "SETTLED") return;
+    const timeline = fanoutRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = fanout?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    fanoutRunnerRef.current?.cancel?.();
+    dispatch({ type: "FANOUT_STAGE_EVENT", event: timeline[nextIdx] });
+    fanoutRunnerRef.current = runFanoutMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isFanoutScene, fanoutStatus, fanout?.events?.length, handleFanoutSimulate]);
 
   const handleFanoutPrev = useCallback(() => {
     if (!isFanoutScene) return;
@@ -389,10 +424,17 @@ const LedgerFlowV3 = () => {
   }, [isHardEdgeScene, hardEdgeMode]);
 
   const handleHardEdgeNext = useCallback(() => {
-    if (!isHardEdgeScene || hardEdgeStatus !== "STEP_PAUSED") return;
-    if (!hardEdgeRunnerRef.current) { handleHardEdgeSimulate(); return; }
-    hardEdgeRunnerRef.current.next();
-  }, [isHardEdgeScene, hardEdgeStatus, handleHardEdgeSimulate]);
+    if (!isHardEdgeScene) return;
+    if (hardEdgeStatus === "IDLE") { handleHardEdgeSimulate(); return; }
+    if (hardEdgeStatus === "SETTLED") return;
+    const timeline = hardEdgeRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = hardEdge?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    hardEdgeRunnerRef.current?.cancel?.();
+    dispatch({ type: "HARD_EDGE_STAGE_EVENT", event: timeline[nextIdx] });
+    hardEdgeRunnerRef.current = runHardEdgeMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isHardEdgeScene, hardEdgeStatus, hardEdge?.events?.length, handleHardEdgeSimulate]);
 
   const handleHardEdgePrev = useCallback(() => {
     if (!isHardEdgeScene) return;
@@ -568,22 +610,22 @@ const LedgerFlowV3 = () => {
   }, [isPostingScene, isReconcileScene, isOnboardingScene, isErasureScene, isFanoutScene, isHardEdgeScene, state.status, state.stageIndex, state.startedAt, state.settledAt, state.scene, reconcileStatus, reconcile, onboardStatus, onboarding, erasureStatus, erasure, fanoutStatus, fanout, hardEdgeStatus, hardEdge]);
 
   const canSimulate = isPostingScene && state.status === "IDLE";
-  const canStep = isPostingScene && state.status === "STEP_PAUSED" && hasNextStage(state);
+  const canStep = isPostingScene && state.status !== "IDLE" && state.status !== "SETTLED" && hasNextStage(state);
 
   const canReconcileSimulate = isReconcileScene && reconcileStatus === "IDLE";
-  const canReconcileStep = isReconcileScene && reconcileStatus === "STEP_PAUSED" && reconcileHasNextStage(reconcile);
+  const canReconcileStep = isReconcileScene && reconcileStatus !== "IDLE" && reconcileStatus !== "SETTLED" && reconcileHasNextStage(reconcile);
 
   const canOnboardSimulate = isOnboardingScene && onboardStatus === "IDLE";
-  const canOnboardStep = isOnboardingScene && onboardStatus === "STEP_PAUSED" && onboardingHasNextStage(onboarding);
+  const canOnboardStep = isOnboardingScene && onboardStatus !== "IDLE" && onboardStatus !== "SETTLED" && onboardingHasNextStage(onboarding);
 
   const canErasureSimulate = isErasureScene && erasureStatus === "IDLE";
-  const canErasureStep = isErasureScene && erasureStatus === "STEP_PAUSED" && erasureHasNextStage(erasure);
+  const canErasureStep = isErasureScene && erasureStatus !== "IDLE" && erasureStatus !== "SETTLED" && erasureHasNextStage(erasure);
 
   const canFanoutSimulate = isFanoutScene && fanoutStatus === "IDLE";
-  const canFanoutStep = isFanoutScene && fanoutStatus === "STEP_PAUSED" && fanoutHasNextStage(fanout);
+  const canFanoutStep = isFanoutScene && fanoutStatus !== "IDLE" && fanoutStatus !== "SETTLED" && fanoutHasNextStage(fanout);
 
   const canHardEdgeSimulate = isHardEdgeScene && hardEdgeStatus === "IDLE";
-  const canHardEdgeStep = isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED" && hardEdgeHasNextStage(hardEdge);
+  const canHardEdgeStep = isHardEdgeScene && hardEdgeStatus !== "IDLE" && hardEdgeStatus !== "SETTLED" && hardEdgeHasNextStage(hardEdge);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -607,12 +649,12 @@ const LedgerFlowV3 = () => {
           <div className={styles.controls}>
             {/* Step hint — any scene paused */}
             {(
-              (isPostingScene && state.status === "STEP_PAUSED") ||
-              (isOnboardingScene && onboardStatus === "STEP_PAUSED") ||
-              (isErasureScene && erasureStatus === "STEP_PAUSED") ||
-              (isReconcileScene && reconcileStatus === "STEP_PAUSED") ||
-              (isFanoutScene && fanoutStatus === "STEP_PAUSED") ||
-              (isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED")
+              (isPostingScene && canStep) ||
+              (isOnboardingScene && canOnboardStep) ||
+              (isErasureScene && canErasureStep) ||
+              (isReconcileScene && canReconcileStep) ||
+              (isFanoutScene && canFanoutStep) ||
+              (isHardEdgeScene && canHardEdgeStep)
             ) && (
               <span className={styles.stepHint} aria-live="polite">
                 <kbd className={styles.kbd}>←</kbd>
