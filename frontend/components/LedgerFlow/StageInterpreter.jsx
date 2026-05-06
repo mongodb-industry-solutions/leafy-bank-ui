@@ -44,8 +44,8 @@ function StageRail({ stageIndex }) {
   );
 }
 
-const StageInterpreter = ({ state, onOpenDrawer }) => {
-  const content = narrationFor(state);
+const StageInterpreter = ({ state, onOpenDrawer, narrationFn }) => {
+  const content = (narrationFn || narrationFor)(state);
   const stageIndex = state.stageIndex ?? -1;
 
   const stageKey = state.currentStage || "IDLE";

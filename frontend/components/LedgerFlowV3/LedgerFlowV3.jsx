@@ -1189,7 +1189,7 @@ const LedgerFlowV3 = () => {
         {/* INTERPRETER */}
         <section className={styles.interpreterBand}>
           {isPostingScene
-            ? <StageInterpreter state={state} onOpenDrawer={() => setDrawerOpen(true)} />
+            ? <StageInterpreter state={state} onOpenDrawer={() => setDrawerOpen(true)} narrationFn={narrationFor} />
             : <ScenePlaceholderInterpreter content={narrationFor(state)} onOpenDrawer={() => setDrawerOpen(true)} />
           }
         </section>
