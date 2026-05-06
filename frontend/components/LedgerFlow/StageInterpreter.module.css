@@ -1,0 +1,179 @@
+/* StageInterpreter.module.css — light theme */
+
+.interpreter {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: 14px;
+  padding: 12px 16px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 10px;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+}
+
+.left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.narrationStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.docMount {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.overline {
+  color: #5C6C75 !important;
+  margin: 0 !important;
+}
+
+.title {
+  color: #001E2B !important;
+  margin: 0 !important;
+  font-size: 20px !important;
+  line-height: 24px !important;
+}
+
+.body {
+  color: #3D4F58 !important;
+  margin: 0 !important;
+  line-height: 1.45 !important;
+  font-size: 13.5px !important;
+}
+
+.calloutWrap {
+  margin-top: 4px;
+}
+
+.calloutLink {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: #016BF8;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.calloutLink:hover { color: #083C90; }
+.calloutLink:focus-visible {
+  outline: 2px solid #0498EC;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.pipelineWrap {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.rail {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0;
+  margin: 0;
+  align-items: center;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px 0 8px;
+  border-radius: 14px;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  border: 1px solid #E8EDEB;
+  background: #FFFFFF;
+  color: #5C6C75;
+  white-space: nowrap;
+  transition: background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+}
+
+.chipIndex {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #F9FBFA;
+  border: 1px solid #C1C7C6;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10px;
+  font-weight: 600;
+  color: #5C6C75;
+}
+
+.chipLabel { line-height: 1; }
+
+.chipReached {
+  background: #E3FCF7;
+  border-color: #C0FAE6;
+  color: #00684A;
+}
+.chipReached .chipIndex {
+  background: #00684A;
+  border-color: #00684A;
+  color: #FFFFFF;
+}
+
+.chipCurrent {
+  background: transparent;
+  border-color: transparent;
+  color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(0, 237, 100, 0.20);
+  position: relative;
+}
+.chipCurrent .chipIndex {
+  background: #FFFFFF;
+  border-color: #FFFFFF;
+  color: #00684A;
+  position: relative;
+  z-index: 1;
+}
+.chipCurrent .chipLabel { position: relative; z-index: 1; }
+
+.activePill {
+  position: absolute;
+  inset: 0;
+  background: #00684A;
+  border: 1px solid #00A35C;
+  border-radius: 14px;
+  z-index: 0;
+}
+
+.chipPending {
+  /* default styling above is the pending state */
+}
+
+@media (max-width: 1100px) {
+  .interpreter { grid-template-columns: 1fr; }
+}

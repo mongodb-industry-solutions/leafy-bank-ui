@@ -1,0 +1,136 @@
+/* DocumentSnippet.module.css — light theme JSON viewer with BIAN aliases */
+
+.snippet {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #5C6C75;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.labelText {
+  background: #E1F7FF;
+  color: #016BF8;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: none;
+  font-weight: 600;
+}
+
+.pre {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: #001E2B;
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.indentLine {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.fieldNameWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.fieldName {
+  color: #00684A;
+  font-weight: 600;
+}
+
+.fieldNameLinked {
+  color: #00684A;
+  font-weight: 600;
+  border-bottom: 1px dotted #00A35C;
+  cursor: help;
+}
+
+.sprinkleTrigger {
+  margin-left: 1px;
+  color: #5C6C75;
+}
+
+.tipBody {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-width: 280px;
+  min-width: 0;
+  padding: 0;
+}
+
+.tipBian {
+  color: #71F6BA !important;
+  font-family: 'Source Code Pro', Menlo, monospace !important;
+  font-size: 12px !important;
+  line-height: 16px !important;
+  margin: 0 !important;
+}
+
+.tipMeta {
+  color: #C1C7C6 !important;
+  font-size: 11px !important;
+  line-height: 14px !important;
+  font-family: 'Source Code Pro', Menlo, monospace !important;
+  margin: 0 !important;
+}
+
+.tipNote {
+  color: #E8EDEB !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  margin: 0 !important;
+}
+
+.valStr   { color: #944F01; }
+.valNum   { color: #016BF8; }
+.valBool  { color: #B45AF2; font-weight: 500; }
+.valNull  { color: #889397; font-style: italic; }
+.valBson  { color: #001E2B; }
+.bsonKey  { color: #5E0C9E; font-weight: 500; }
+.bracket  { color: #5C6C75; }
+.punct    { color: #5C6C75; }
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 100px;
+  background: #F9FBFA;
+  border: 1px dashed #E8EDEB;
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.emptyText {
+  color: #889397 !important;
+  font-style: italic;
+}

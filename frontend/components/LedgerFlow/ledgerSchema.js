@@ -1,0 +1,300 @@
+// ledgerSchema.js
+// Single source of truth for the BIAN v14 Ledger MVP data model.
+// Consumed by:
+//   - DocumentSnippet (inline alias tooltips per field)
+//   - CollectionDrawer (full collection schema browser)
+//
+// Future: swap the literal JSON for a fetch from /api/bian/ledger-schema.
+// The shape MUST match — `aliasMap()` is the contract used by the UI.
+
+export const META = {
+  version: "v1.0-MVP",
+  title: "BIAN v14 Ledger & Sub-Ledger Data Model — MongoDB MVP",
+  database: "leafy_bank_bian",
+  bianServiceDomain: "FinancialAccounting",
+  bianControlRecord: "FinancialBookingLog",
+  bianBQ: "LedgerPosting",
+  bianPattern: "Management",
+  bianVersion: "v14",
+};
+
+// Each collection: description, BIAN classification, fields (with BIAN alias +
+// description + required), indexes, sample document. The shape mirrors the
+// canonical data-model JSON exactly so a future fetch swap is trivial.
+export const COLLECTIONS = {
+  glAccounts: {
+    mongoAlias: "glAccounts",
+    description:
+      "Chart of Accounts — master registry of all GL account codes. One document per account. Referenced by all journal and sub-ledger entries.",
+    immutable: false,
+    bianClassification: {
+      sd: "FinancialAccounting",
+      cr: "FinancialBookingLog",
+      bq: "LedgerPosting",
+      pattern: "Management",
+    },
+    fields: [
+      { name: "_id", type: "objectId", required: true, bian: "FinancialAccountReference", note: "MongoDB PK" },
+      { name: "accountCode", type: "string", required: true, bian: "FinancialAccountCode", note: "Unique code e.g. 1001, 2100, 4000. Indexed unique." },
+      { name: "accountName", type: "string", required: true, bian: "FinancialAccountName", note: "e.g. Cash and Cash Equivalents" },
+      { name: "accountType", type: "string", required: true, bian: "FinancialAccountType", note: "ASSET | LIABILITY | EQUITY | INCOME | EXPENSE" },
+      { name: "normalBalance", type: "string", required: true, bian: "FinancialAccountNormalBalanceType", note: "DEBIT | CREDIT — the side that increases the account" },
+      { name: "parentAccountCode", type: "string", required: false, bian: "ParentAccountReference", note: "Sparse — FK to parent glAccounts.accountCode for hierarchy" },
+      { name: "level", type: "int", required: true, bian: "AccountHierarchyLevel", note: "1=category, 2=group, 3=control, 4=detail. Posting only at level 4." },
+      { name: "isPostingAccount", type: "bool", required: true, bian: "FinancialAccountPostingIndicator", note: "Only level-4 accounts accept journal entries" },
+      { name: "currency", type: "string", required: true, bian: "FinancialAccountCurrencyCode", note: "ISO 4217 — functional currency of the account" },
+      { name: "subLedgerType", type: "string", required: false, bian: "SubLedgerTypeCode", note: "Sparse. ACCOUNTS_RECEIVABLE | ACCOUNTS_PAYABLE | FIXED_ASSETS | CUSTOMER_DEPOSITS | LOAN_PORTFOLIO | null (pure GL)" },
+      { name: "status", type: "string", required: true, bian: "FinancialAccountStatusType", note: "ACTIVE | INACTIVE | FROZEN" },
+      { name: "description", type: "string", required: false, bian: "FinancialAccountDescriptionText", note: "Narrative description of account purpose" },
+      { name: "createdAt", type: "date", required: true },
+      { name: "updatedAt", type: "date", required: true },
+    ],
+    indexes: [
+      { name: "idx_account_code_unique", key: "{ accountCode: 1 }", unique: true },
+      { name: "idx_account_type", key: "{ accountType: 1 }" },
+      { name: "idx_subledger_type", key: "{ subLedgerType: 1 }", sparse: true },
+      { name: "idx_parent_account", key: "{ parentAccountCode: 1 }", sparse: true },
+    ],
+    sampleDocument: {
+      accountCode: "1001",
+      accountName: "Cash and Cash Equivalents",
+      accountType: "ASSET",
+      normalBalance: "DEBIT",
+      parentAccountCode: "1000",
+      level: 4,
+      isPostingAccount: true,
+      currency: "USD",
+      subLedgerType: null,
+      status: "ACTIVE",
+      description: "Nostro and operational cash accounts",
+      createdAt: { $date: "2026-01-01T00:00:00Z" },
+      updatedAt: { $date: "2026-01-01T00:00:00Z" },
+    },
+    designDecisionIds: [9, 10],
+  },
+
+  journalEntries: {
+    mongoAlias: "journalEntries",
+    description:
+      "General Ledger journal entries — double-entry bookkeeping. IMMUTABLE once status=POSTED. Reversals create new documents; originals are never modified. Each document is one complete balanced journal (sum of debits = sum of credits).",
+    immutable: true,
+    bianClassification: {
+      sd: "FinancialAccounting",
+      cr: "FinancialBookingLog",
+      bq: "LedgerPosting",
+      pattern: "Management",
+    },
+    fields: [
+      { name: "_id", type: "objectId", required: true, bian: "FinancialBookingLogReference" },
+      { name: "journalId", type: "string", required: true, bian: "FinancialBookingLogIdentifier", note: "Business key. Format: JNL-YYYYMMDD-{seq} e.g. JNL-20260415-000042" },
+      { name: "idempotencyKey", type: "string", required: true, bian: "FinancialBookingLogIdempotencyKey", note: "CRITICAL. Client-generated UUID. Unique index prevents duplicate postings on retry. Include in every POST request." },
+      { name: "periodCode", type: "string", required: true, bian: "FinancialBookingLogPeriodCode", note: "Accounting period code. Format: YYYY-MM e.g. \"2026-04\"." },
+      { name: "periodName", type: "string", required: true, bian: "FinancialBookingLogPeriodName", note: "Human-readable period name e.g. \"April 2026\". Denormalized companion to periodCode." },
+      { name: "valueDate", type: "date", required: true, bian: "FinancialBookingLogValueDate", note: "Economic date of the transaction (may differ from postingDate)" },
+      { name: "postingDate", type: "date", required: true, bian: "FinancialBookingLogPostingDateTime", note: "System date when entry was posted — set by server" },
+      { name: "journalType", type: "string", required: true, bian: "FinancialBookingLogType", note: "MANUAL | SYSTEM | REVERSAL | ADJUSTMENT | SUBLEDGER_TRANSFER | PERIOD_CLOSE" },
+      { name: "status", type: "string", required: true, bian: "FinancialBookingLogLifecycleStatusType", note: "DRAFT | PENDING_APPROVAL | POSTED | REJECTED | REVERSED" },
+      { name: "currency", type: "string", required: true, bian: "FinancialBookingLogCurrencyCode", note: "ISO 4217 functional currency" },
+      { name: "totalAmount", type: "decimal", required: true, bian: "FinancialBookingLogTotalAmount", note: "Sum of all debit entries. Must equal sum of all credits. Use Decimal128." },
+      { name: "description", type: "string", required: true, bian: "FinancialBookingLogDescriptionText", note: "Narrative description of the business event" },
+      { name: "sourceReference", type: "object", required: true, bian: "FinancialBookingLogSourceReference", note: "Traceability to originating event — { sourceSystem, sourceId, sourceType, sourceCollection }" },
+      { name: "entries", type: "array", required: true, bian: "LedgerPostingRecord", note: "Array of debit/credit lines. Min 2. Must balance." },
+      { name: "reversalOf", type: "string", required: false, bian: "FinancialBookingLogReversalOfReference", note: "Sparse. journalId of the original entry this reverses." },
+      { name: "reversedBy", type: "string", required: false, bian: "FinancialBookingLogReversedByReference", note: "Sparse. journalId of the reversal entry." },
+      { name: "approvedBy", type: "string", required: false, bian: "FinancialBookingLogApprovedByReference" },
+      { name: "approvedAt", type: "date", required: false, bian: "FinancialBookingLogApprovalDateTime" },
+      { name: "postedBy", type: "string", required: false, bian: "FinancialBookingLogPostedByReference" },
+      { name: "createdAt", type: "date", required: true },
+      { name: "updatedAt", type: "date", required: true },
+    ],
+    entryFields: [
+      { name: "lineNumber", type: "int", bian: "LedgerPostingSequenceNumber" },
+      { name: "accountCode", type: "string", bian: "LedgerPostingFinancialAccountCode", note: "FK → glAccounts.accountCode. Must be isPostingAccount=true" },
+      { name: "accountName", type: "string", bian: "LedgerPostingFinancialAccountName", note: "Denormalized for read performance" },
+      { name: "side", type: "string", bian: "LedgerPostingDebitCreditType", note: "DEBIT | CREDIT" },
+      { name: "amount", type: "decimal", bian: "LedgerPostingTransactionAmount", note: "Decimal128 — always positive. Sign conveyed by 'side'." },
+      { name: "currency", type: "string", bian: "LedgerPostingCurrencyCode", note: "ISO 4217" },
+      { name: "fxRate", type: "decimal", bian: "LedgerPostingFXRate", note: "Sparse. FX conversion rate if currency differs from functional" },
+      { name: "functionalAmount", type: "decimal", bian: "LedgerPostingFunctionalAmount" },
+      { name: "subLedgerRef", type: "string", bian: "LedgerPostingSubLedgerReference", note: "Sparse FK → subLedgerEntries._id" },
+      { name: "costCenter", type: "string", bian: "LedgerPostingCostCenterReference" },
+      { name: "lineDescription", type: "string", bian: "LedgerPostingDescriptionText" },
+    ],
+    indexes: [
+      { name: "idx_journal_id_unique", key: "{ journalId: 1 }", unique: true },
+      { name: "idx_idempotency_key_unique", key: "{ idempotencyKey: 1 }", unique: true },
+      { name: "idx_period_status", key: "{ periodCode: 1, status: 1 }" },
+      { name: "idx_value_date", key: "{ valueDate: -1 }" },
+      { name: "idx_source_id", key: "{ 'sourceReference.sourceId': 1 }" },
+      { name: "idx_source_system_type", key: "{ 'sourceReference.sourceSystem': 1, 'sourceReference.sourceType': 1 }" },
+      { name: "idx_status_posting_date", key: "{ status: 1, postingDate: -1 }" },
+    ],
+    sampleDocument: {
+      journalId: "JNL-20260415-000042",
+      idempotencyKey: "pay-550e8400-e29b-41d4-a716-446655440000",
+      periodCode: "2026-04",
+      periodName: "April 2026",
+      valueDate: { $date: "2026-04-15T00:00:00Z" },
+      postingDate: { $date: "2026-04-15T10:23:45Z" },
+      journalType: "SYSTEM",
+      status: "POSTED",
+      currency: "USD",
+      totalAmount: { $numberDecimal: "1000.00" },
+      description: "Customer payment received — SWIFT MT103 ref TXN-EA2AEEDA",
+      sourceReference: {
+        sourceSystem: "PAYMENT_ORDER",
+        sourceId: "PAY-20260415-0042",
+        sourceType: "PAYMENT",
+        sourceCollection: "payments",
+      },
+      entries: [
+        {
+          lineNumber: 1,
+          accountCode: "1001",
+          accountName: "Cash and Cash Equivalents",
+          side: "DEBIT",
+          amount: { $numberDecimal: "1000.00" },
+          currency: "USD",
+          fxRate: null,
+          functionalAmount: { $numberDecimal: "1000.00" },
+          subLedgerRef: null,
+          costCenter: "RETAIL-BANKING",
+          lineDescription: "Cash in from customer payment",
+        },
+        {
+          lineNumber: 2,
+          accountCode: "2100",
+          accountName: "Customer Deposits — Current",
+          side: "CREDIT",
+          amount: { $numberDecimal: "1000.00" },
+          currency: "USD",
+          fxRate: null,
+          functionalAmount: { $numberDecimal: "1000.00" },
+          subLedgerRef: "SL-20260415-000042",
+          costCenter: "RETAIL-BANKING",
+          lineDescription: "Customer deposit credit — account ACC-001234",
+        },
+      ],
+    },
+    designDecisionIds: [1, 2, 3, 5, 7, 11],
+  },
+
+  subLedgerEntries: {
+    mongoAlias: "subLedgerEntries",
+    description:
+      "Sub-ledger entries — detailed transaction records linked to a GL control account. Provides the granular business context behind each GL posting. Balances here must reconcile to the corresponding GL control account balance. IMMUTABLE once status=POSTED.",
+    immutable: true,
+    bianClassification: {
+      sd: "FinancialAccounting",
+      cr: "FinancialBookingLog",
+      bq: "LedgerPosting",
+      pattern: "Management",
+    },
+    fields: [
+      { name: "_id", type: "objectId", required: true, bian: "LedgerPostingReference" },
+      { name: "subLedgerId", type: "string", required: true, bian: "LedgerPostingIdentifier", note: "Business key. Format: SL-YYYYMMDD-{seq}" },
+      { name: "idempotencyKey", type: "string", required: true, bian: "LedgerPostingIdempotencyKey", note: "Same key as parent journalEntries — prevents duplicate postings on retry." },
+      { name: "journalEntryId", type: "string", required: true, bian: "LedgerPostingFinancialBookingLogReference", note: "FK → journalEntries.journalId. Parent GL posting." },
+      { name: "periodCode", type: "string", required: true, bian: "FinancialBookingLogPeriodCode", note: "Must match parent journalEntries.periodCode." },
+      { name: "periodName", type: "string", required: true, note: "Must match parent journalEntries.periodName." },
+      { name: "subLedgerType", type: "string", required: true, bian: "LedgerPostingSubLedgerTypeCode", note: "ACCOUNTS_RECEIVABLE | ACCOUNTS_PAYABLE | CUSTOMER_DEPOSITS | LOAN_PORTFOLIO | FIXED_ASSETS | INTER_BANK" },
+      { name: "controlAccountCode", type: "string", required: true, bian: "LedgerPostingFinancialAccountCode", note: "FK → glAccounts.accountCode (the parent GL control account this sub-ledger rolls up to)" },
+      { name: "entityReference", type: "object", required: true, bian: "LedgerPostingEntityReference", note: "{ entityType, entityId, entityName }" },
+      { name: "side", type: "string", required: true, bian: "LedgerPostingDebitCreditType", note: "DEBIT | CREDIT" },
+      { name: "amount", type: "decimal", required: true, bian: "LedgerPostingTransactionAmount", note: "Decimal128 — always positive" },
+      { name: "currency", type: "string", required: true, bian: "LedgerPostingCurrencyCode" },
+      { name: "functionalAmount", type: "decimal", required: true, bian: "LedgerPostingFunctionalAmount" },
+      { name: "runningBalance", type: "decimal", required: false, bian: "LedgerPostingRunningBalance", note: "Optional — running balance per entity for this sub-ledger type. O(1) balance lookup per entity." },
+      { name: "valueDate", type: "date", required: true, bian: "LedgerPostingValueDate" },
+      { name: "postingDate", type: "date", required: true, bian: "LedgerPostingPostingDateTime" },
+      { name: "transactionType", type: "string", required: true, bian: "LedgerPostingTransactionType", note: "PAYMENT_IN | PAYMENT_OUT | LOAN_DISBURSEMENT | LOAN_REPAYMENT | INTEREST_CHARGE | FEE | DEPOSIT | WITHDRAWAL | ADJUSTMENT" },
+      { name: "status", type: "string", required: true, bian: "LedgerPostingLifecycleStatusType", note: "POSTED | REVERSED" },
+      { name: "sourceReference", type: "object", required: true, bian: "LedgerPostingSourceReference", note: "Same structure as journalEntries.sourceReference" },
+      { name: "description", type: "string", required: true, bian: "LedgerPostingDescriptionText" },
+      { name: "reversalOf", type: "string", required: false, bian: "LedgerPostingReversalOfReference", note: "Sparse — supports immutable ledger reversal." },
+      { name: "reversedBy", type: "string", required: false, bian: "LedgerPostingReversedByReference" },
+      { name: "createdAt", type: "date", required: true },
+      { name: "updatedAt", type: "date", required: true },
+    ],
+    indexes: [
+      { name: "idx_subledger_id_unique", key: "{ subLedgerId: 1 }", unique: true },
+      { name: "idx_idempotency_key_unique", key: "{ idempotencyKey: 1 }", unique: true },
+      { name: "idx_journal_entry_id", key: "{ journalEntryId: 1 }" },
+      { name: "idx_entity_date", key: "{ 'entityReference.entityId': 1, valueDate: -1 }" },
+      { name: "idx_subledger_type_period", key: "{ subLedgerType: 1, periodCode: 1 }" },
+      { name: "idx_control_account_date", key: "{ controlAccountCode: 1, valueDate: -1 }" },
+      { name: "idx_entity_status", key: "{ 'entityReference.entityType': 1, 'entityReference.entityId': 1, status: 1 }" },
+    ],
+    sampleDocument: {
+      subLedgerId: "SL-20260415-000042",
+      idempotencyKey: "pay-550e8400-e29b-41d4-a716-446655440000",
+      journalEntryId: "JNL-20260415-000042",
+      periodCode: "2026-04",
+      periodName: "April 2026",
+      subLedgerType: "CUSTOMER_DEPOSITS",
+      controlAccountCode: "2100",
+      entityReference: {
+        entityType: "ACCOUNT",
+        entityId: "ACC-001234",
+        entityName: "Jane Smith — Current Account",
+      },
+      side: "CREDIT",
+      amount: { $numberDecimal: "1000.00" },
+      currency: "USD",
+      functionalAmount: { $numberDecimal: "1000.00" },
+      runningBalance: { $numberDecimal: "3450.00" },
+      valueDate: { $date: "2026-04-15T00:00:00Z" },
+      postingDate: { $date: "2026-04-15T10:23:45Z" },
+      transactionType: "PAYMENT_IN",
+      status: "POSTED",
+      sourceReference: {
+        sourceSystem: "PAYMENT_ORDER",
+        sourceId: "PAY-20260415-0042",
+        sourceType: "PAYMENT",
+        sourceCollection: "payments",
+      },
+      description: "Inbound SWIFT MT103 — credit to customer account ACC-001234",
+    },
+    designDecisionIds: [1, 2, 6, 7, 8],
+  },
+};
+
+export const DESIGN_DECISIONS = [
+  { id: 0, topic: "MVP Scope Decision", decision: "MVP deploys 3 collections: glAccounts, journalEntries, subLedgerEntries. accountingPeriods excluded — period tracked via periodCode string on each entry.", rationale: "Minimum viable ledger: post transactions, query by account, query by period, trace back to source, drill down to entity level. Period lifecycle management (open/close) added in Phase 2." },
+  { id: 1, topic: "Idempotency Key", decision: "Every journalEntry and subLedgerEntry requires an idempotencyKey with a unique index. The client generates a UUID per business event and includes it in every POST.", rationale: "Payment systems retry on timeout. Without idempotency, the same payment could be posted twice. The unique index is the enforcement mechanism — not application code." },
+  { id: 2, topic: "Immutability of Posted Entries", decision: "Once status=POSTED, journal and sub-ledger entries are never modified or deleted. Errors are corrected by posting a REVERSAL journal which creates equal and opposite entries.", rationale: "Audit trail integrity. Regulators and auditors require an immutable ledger." },
+  { id: 3, topic: "Double-Entry Balance Enforcement", decision: "Application layer must validate sum(entries where side=DEBIT) == sum(entries where side=CREDIT) before setting status=POSTED. MongoDB $jsonSchema can validate min 2 entries exist but cannot enforce balance — this must be done in service code.", rationale: "Core accounting principle. An unbalanced journal corrupts the trial balance." },
+  { id: 4, topic: "Period Validation", decision: "MVP: application code validates that periodCode represents an open period before setting status=POSTED. Phase 2: validation moves to a DB-level check against accountingPeriods collection.", rationale: "Prevents backdating after period close which would corrupt financial statements." },
+  { id: 5, topic: "Decimal128 for All Amounts", decision: "All amount fields use BSON Decimal128 (not double). Applies to amount, totalAmount, functionalAmount, runningBalance, fxRate.", rationale: "IEEE 754 floating point loses precision in financial calculations. Decimal128 is exact to 34 significant digits — required for regulatory-grade reporting." },
+  { id: 6, topic: "Sub-Ledger to GL Relationship", decision: "subLedgerEntries roll up to a GL control account. The sum of all subLedgerEntries for a controlAccountCode must equal the GL balance of that account.", rationale: "Standard subledger accounting pattern. GL stays clean (summary); subledger has entity-level detail. Enables drill-down from GL → subledger → source document." },
+  { id: 7, topic: "Source Reference", decision: "Every journal and sub-ledger entry carries a sourceReference (sourceSystem, sourceId, sourceType, sourceCollection). Links the accounting entry back to the originating business event.", rationale: "Full traceability: payment → journal entry → sub-ledger entry → GL balance. Required for audit, dispute resolution, and regulatory reporting." },
+  { id: 8, topic: "Running Balance", decision: "runningBalance on subLedgerEntries is optional but recommended for high-query accounts. Updated atomically using findOneAndUpdate with $inc on a separate accountBalances document.", rationale: "Balance queries across millions of entries using aggregation are slow. A separate running balance document per entity enables O(1) balance lookups." },
+  { id: 9, topic: "BIAN Mapping", decision: "All collections map to BIAN Financial Accounting Service Domain. Control Record: FinancialBookingLog. BQ: LedgerPosting. Pattern: Management.", rationale: "Consistent with BIAN v14 Financial Accounting SD structure." },
+  { id: 10, topic: "MVP Collection Scope", decision: "Phase 1 MVP: glAccounts + journalEntries. Phase 2: accountingPeriods + subLedgerEntries.", rationale: "glAccounts is required immediately; journalEntries is the core posting mechanism. periodCode is stored as a plain string on journalEntries in all phases." },
+  { id: 11, topic: "BIAN v14 CR — FinancialBookingLog", decision: "Control Record corrected to FinancialBookingLog per BIAN v14 reference data. SD FinancialAccounting confirmed correct. BIAN defines 1 BQ: LedgerPosting.", rationale: "Validated against BIAN v14 Service Domains reference ODS file, May 2026." },
+];
+
+// Helper for DocumentSnippet — given a collection key, returns
+// { fieldName: { bian, note, type, required } } so the inline JSON
+// renderer can wrap each field name with an InfoSprinkle.
+export function aliasMap(collectionKey) {
+  const c = COLLECTIONS[collectionKey];
+  if (!c) return {};
+  const map = {};
+  for (const f of c.fields) {
+    map[f.name] = { bian: f.bian, note: f.note, type: f.type, required: f.required };
+  }
+  if (c.entryFields) {
+    for (const f of c.entryFields) {
+      map[`entries[].${f.name}`] = { bian: f.bian, note: f.note, type: f.type };
+      // Also expose un-prefixed for convenience when rendering an entry alone
+      if (!map[f.name]) {
+        map[f.name] = { bian: f.bian, note: f.note, type: f.type };
+      }
+    }
+  }
+  return map;
+}
+
+// Convenience for the drawer: list collection keys in canonical demo order.
+export const COLLECTION_KEYS = ["glAccounts", "journalEntries", "subLedgerEntries"];

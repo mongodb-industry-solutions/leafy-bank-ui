@@ -1,0 +1,244 @@
+/* AccountBalanceCards.module.css — compact single-row cards */
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  width: 100%;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  padding: 14px 18px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emptyText {
+  color: #5C6C75 !important;
+  font-size: 13px !important;
+  text-align: center;
+  margin: 0 !important;
+}
+
+/* Card — single horizontal row */
+.card {
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1.2fr) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #E8EDEB !important;
+  transition: box-shadow 200ms ease, border-color 200ms ease;
+  min-height: 64px;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: #E8EDEB;
+}
+.card_debit::before  { background: linear-gradient(180deg, #C25E29 0%, #FF9A6E 100%); }
+.card_credit::before { background: linear-gradient(180deg, #00684A 0%, #00ED64 100%); }
+
+/* Identity column — avatar + name + account chip */
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatar { flex-shrink: 0; }
+
+.headText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 1px;
+}
+
+.name {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 18px !important;
+  font-weight: 600 !important;
+  color: #001E2B !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.acctId {
+  font-size: 10px !important;
+  color: #5C6C75 !important;
+  background: #F9FBFA !important;
+  padding: 0 5px !important;
+  border-radius: 3px !important;
+  white-space: nowrap;
+}
+
+.dot { color: #C1C7C6; font-size: 10px; }
+
+.metaTag {
+  color: #889397 !important;
+  font-size: 10px !important;
+  margin: 0 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Balance column — large number on top, before-row underneath */
+.balanceCol {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.overline {
+  margin: 0 !important;
+  color: #5C6C75 !important;
+  font-size: 9.5px !important;
+  letter-spacing: 0.4px;
+  line-height: 12px !important;
+}
+
+.balance {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: #001E2B;
+  font-variant-numeric: tabular-nums;
+  transition: color 240ms ease;
+}
+
+/* Progress + before+arrow+after — stacked tightly in a thin column */
+.progressCol {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.progressRow {
+  position: relative;
+}
+
+.progress { width: 100%; }
+
+.progressMarks { position: relative; height: 0; }
+
+.beforeMark {
+  position: absolute;
+  top: -8px;
+  width: 2px;
+  height: 12px;
+  background: #5C6C75;
+  border-radius: 1px;
+  transform: translateX(-1px);
+  opacity: 0.5;
+}
+
+.beforeRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 11px;
+}
+
+.beforeLabel {
+  margin: 0 !important;
+  font-size: 9px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #889397 !important;
+  font-weight: 600 !important;
+}
+
+.beforeAmt {
+  margin: 0 !important;
+  color: #5C6C75 !important;
+  font-size: 11px !important;
+  text-decoration: line-through;
+  text-decoration-color: #C1C7C6;
+}
+
+.beforeArrow {
+  color: #889397;
+  flex-shrink: 0;
+}
+
+.afterAmt {
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #001E2B !important;
+}
+
+.afterAmt[data-tone="debit"]  { color: #C25E29 !important; }
+.afterAmt[data-tone="credit"] { color: #00684A !important; }
+
+/* Delta chip — far right */
+.deltaChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.deltaIcon { margin-right: 1px; }
+
+.deltaPos { color: #00684A; background: #E3FCF7; border-color: #C0FAE6; }
+.deltaNeg { color: #C25E29; background: #FFEAE5; border-color: #FFCDC7; }
+
+.deltaPending { animation: deltaPulse 1.4s ease-in-out infinite; }
+
+@keyframes deltaPulse {
+  0%, 100% { transform: scale(1);   filter: none; }
+  50%      { transform: scale(1.04); filter: brightness(1.05); }
+}
+
+@media (max-width: 900px) {
+  .row { grid-template-columns: 1fr; }
+  .card { grid-template-columns: auto 1fr auto; gap: 10px; }
+  .progressCol { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deltaPending,
+  .balance {
+    animation: none !important;
+    transition: none !important;
+  }
+}

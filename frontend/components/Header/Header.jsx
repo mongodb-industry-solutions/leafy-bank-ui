@@ -13,14 +13,12 @@ import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
 import RiskProfileSelector from '@/components/RiskProfileSelector/RiskProfileSelector';
 import BianExplorer from '@/components/BianExplorer/BianExplorer';
-import LedgerFlow from '@/components/LedgerFlow/LedgerFlow';
 import styles from "./Header.module.css";
 
 function Header({ onLogout = () => { } }) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [bianOpen, setBianOpen] = useState(false);
-  const [ledgerOpen, setLedgerOpen] = useState(false);
   const pathname = usePathname();
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -107,17 +105,14 @@ function Header({ onLogout = () => { } }) {
           <Body>BIAN v14 Explorer</Body>
         </button>
 
-        {/* Mobile entry for the Ledger Flow demo */}
-        <button
-          type="button"
-          className={`${styles.linkHideDesktop} ${styles.menuButton}`}
-          onClick={() => {
-            setMenuOpen(false);
-            setLedgerOpen(true);
-          }}
+        {/* Mobile entry for the Ledger Flow demo (route) */}
+        <Link
+          href="/ledger-flow"
+          className={`${styles.linkHideDesktop} ${styles.navLink}`}
+          onClick={() => setMenuOpen(false)}
         >
-          <Body>Ledger Flow</Body>
-        </button>
+          <Body className={styles.navLinkText}>Ledger Flow</Body>
+        </Link>
 
         {/* Updated Mobile Logout - Directly using onClick */}
         <div className={styles.linkHideDesktop} onClick={handleLogout}>
@@ -134,21 +129,22 @@ function Header({ onLogout = () => { } }) {
           </>
         )}
 
-        {/* Ledger Flow trigger — sits left of BIAN trigger */}
+        {/* Ledger Flow trigger — navigates to /ledger-flow route */}
         <Tooltip
           trigger={
-            <IconButton
-              aria-label="Open Ledger Flow demo"
-              onClick={() => setLedgerOpen(true)}
-              className={styles.ledgerIcon}
-            >
-              <Icon glyph="Diagram3" />
-            </IconButton>
+            <Link href="/ledger-flow" aria-label="Open Ledger Flow workbench" className={styles.ledgerLink}>
+              <IconButton
+                aria-label="Open Ledger Flow workbench"
+                className={styles.ledgerIcon}
+                as="span"
+              >
+                <Icon glyph="Diagram3" />
+              </IconButton>
+            </Link>
           }
         >
           Ledger Flow — Payment to Balance
         </Tooltip>
-        <LedgerFlow open={ledgerOpen} setOpen={setLedgerOpen} />
 
         {/* BIAN v14 Explorer trigger — sits immediately left of UserProfile */}
         <Tooltip

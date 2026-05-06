@@ -1,0 +1,66 @@
+/* EquilibriumBadge.module.css — light-theme glass pill */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid #E8EDEB;
+  border-radius: 999px;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: #5C6C75;
+  letter-spacing: 0.02em;
+  box-shadow: 0px 2px 4px 1px rgba(0, 30, 43, 0.10);
+  transition: border-color 320ms ease;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.active { opacity: 1; }
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #C1C7C6;
+  transition: background 320ms ease, box-shadow 320ms ease;
+}
+
+.active .dot {
+  background: #FFC010;
+  box-shadow: 0 0 6px rgba(255, 192, 16, 0.6);
+}
+
+.balanced .dot {
+  background: #00ED64;
+  box-shadow: 0 0 8px rgba(0, 237, 100, 0.7);
+}
+
+.label {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  color: #5C6C75;
+  font-weight: 600;
+}
+
+.valDr { color: #C25E29; font-weight: 600; }
+.valCr { color: #00684A; font-weight: 600; }
+.op    { color: #5C6C75; font-weight: 700; }
+
+.balanced { border-color: #00A35C; box-shadow: 0px 2px 8px 1px rgba(0, 163, 92, 0.20); }
+.balanced .valDr,
+.balanced .valCr,
+.balanced .op { color: #00684A; }
+
+.check {
+  color: #889397;
+  font-size: 13px;
+  font-weight: 700;
+}
+.balanced .check { color: #00684A; }

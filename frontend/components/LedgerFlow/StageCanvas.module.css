@@ -1,0 +1,538 @@
+/* StageCanvas.module.css — light theme, LG-flavoured */
+
+.frame {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E8EDEB;
+  box-shadow: 0px 2px 4px 1px rgba(0, 30, 43, 0.08);
+  isolation: isolate;
+}
+
+.atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 22% 28%, rgba(0, 237, 100, 0.07) 0%, rgba(0, 237, 100, 0) 60%),
+    radial-gradient(48% 56% at 78% 78%, rgba(4, 152, 236, 0.05) 0%, rgba(4, 152, 236, 0) 65%);
+  animation: atmoDrift 28s ease-in-out infinite alternate;
+}
+
+@keyframes atmoDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1.0); }
+  50%  { transform: translate3d(-1.5%, 1%, 0) scale(1.02); }
+  100% { transform: translate3d(1.5%, -0.5%, 0) scale(1.0); }
+}
+
+.stack {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.svgCol {
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  flex: 1;
+  min-height: 0;
+  padding: 4px 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.balancesRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.balancesHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 0 4px;
+}
+
+.balancesOverline {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #5C6C75;
+}
+
+.balancesCaption {
+  font-size: 11.5px;
+  color: #889397;
+  font-style: italic;
+}
+
+/* ─────────────────────────── Hex lattice ─────────────────────────── */
+
+.hexLatticeRect { opacity: 0.85; }
+
+.hexLatticeStroke {
+  fill: none;
+  stroke: #F1F4F2;
+  stroke-width: 0.5;
+}
+
+/* ─────────────────────────── Edges ─────────────────────────── */
+
+.edge {
+  fill: none;
+  stroke: #C1C7C6;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  transition: stroke 280ms ease, stroke-width 280ms ease;
+}
+
+.edgeThick { stroke-width: 4.5; }
+.edgeFork  { stroke-width: 3.5; }
+
+.edgeActive {
+  stroke: #00684A;
+}
+
+.edgeAccentDebit.edgeActive  { stroke: #C25E29; }
+.edgeAccentCredit.edgeActive { stroke: #00684A; }
+
+.edgeMembrane.edgeActive {
+  stroke: #00684A;
+  stroke-dasharray: 4 5;
+  animation: dashDrift 5s linear infinite;
+}
+
+@keyframes dashDrift { to { stroke-dashoffset: -120; } }
+
+.arrowGreenFill { fill: #00684A; }
+.arrowMutedFill { fill: #C1C7C6; }
+
+/* ─────────────────────────── Customer ─────────────────────────── */
+
+.customer .customerHalo {
+  fill: rgba(0, 237, 100, 0.06);
+  stroke: rgba(0, 168, 92, 0.30);
+  stroke-width: 1;
+}
+
+.customer .customerDisc {
+  fill: #FFFFFF;
+  stroke: #C1C7C6;
+  stroke-width: 1.5;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.customer .customerInitial {
+  fill: #001E2B;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.customer .customerName {
+  fill: #001E2B;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.customer .customerRole {
+  fill: #889397;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.customerReached .customerRole { fill: #00684A; }
+
+.customerReached .customerDisc {
+  stroke: #00684A;
+  fill: #E3FCF7;
+  filter: drop-shadow(0px 2px 4px rgba(0, 30, 43, 0.10));
+}
+.customerReached .customerInitial { fill: #001E2B; }
+.customerReached .customerName    { fill: #001E2B; }
+
+.customerCurrent .customerHalo {
+  animation: haloPulse 2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1);    opacity: 1; }
+  50%      { transform: scale(1.18); opacity: 0.4; }
+}
+
+/* ─────────────────────────── Payment pill ─────────────────────────── */
+
+.payment .paymentBody {
+  fill: #FFFFFF;
+  stroke: #C1C7C6;
+  stroke-width: 1.25;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.payment .paymentAmount {
+  fill: #001E2B;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.payment .paymentMicro {
+  fill: #5C6C75;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  font-family: 'Source Code Pro', Menlo, monospace;
+}
+
+.paymentReached .paymentBody {
+  stroke: #00684A;
+  fill: #E3FCF7;
+  filter: drop-shadow(0px 2px 4px rgba(0, 30, 43, 0.10));
+}
+.paymentReached .paymentAmount { fill: #001E2B; }
+.paymentReached .paymentMicro  { fill: #00684A; }
+
+/* ─────────────────────────── Fork ─────────────────────────── */
+
+.fork .forkDot {
+  fill: #FFFFFF;
+  stroke: #C1C7C6;
+  stroke-width: 1.5;
+  transition: fill 280ms ease, stroke 280ms ease, filter 280ms ease;
+}
+
+.forkReached .forkDot {
+  fill: #00ED64;
+  stroke: #00684A;
+  filter: drop-shadow(0 0 4px rgba(0, 168, 92, 0.5));
+}
+
+.forkPlate {
+  fill: #FFFFFF;
+  stroke: #E8EDEB;
+  stroke-width: 1;
+  opacity: 0;
+  transition: opacity 280ms ease, stroke 280ms ease;
+}
+
+.forkReached .forkPlate { opacity: 1; }
+.forkBalanced .forkPlate { stroke: #00A35C; }
+
+.forkEqn {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: #5C6C75;
+  opacity: 0;
+  transition: opacity 280ms ease;
+}
+
+.forkReached .forkEqn { opacity: 1; }
+
+.forkLabel { fill: #5C6C75; font-weight: 600; letter-spacing: 0.04em; }
+.forkValDr { fill: #C25E29; font-weight: 600; }
+.forkValCr { fill: #00684A; font-weight: 600; }
+.forkEq    { fill: #5C6C75; font-weight: 700; }
+
+.forkBalanced .forkValDr,
+.forkBalanced .forkValCr,
+.forkBalanced .forkEq { fill: #00684A; }
+
+/* ─────────────────────────── Sub-ledger legs ─────────────────────────── */
+
+.subleg .sublegBody {
+  fill: #FFFFFF;
+  stroke: #C1C7C6;
+  stroke-width: 1.25;
+  transition: stroke 280ms ease, fill 280ms ease, filter 280ms ease;
+}
+
+.subleg .sublegSide {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 14px;
+  font-weight: 700;
+  fill: #5C6C75;
+  letter-spacing: 0.04em;
+}
+
+.subleg .sublegLabel {
+  fill: #001E2B;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.subleg .sublegMeta {
+  fill: #5C6C75;
+  font-size: 9.5px;
+  font-family: 'Source Code Pro', Menlo, monospace;
+}
+
+.subleg .sublegAmount {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  fill: #5C6C75;
+}
+
+.subLegDr.sublegReached .sublegBody {
+  stroke: #C25E29;
+  fill: #FFEAE5;
+  filter: drop-shadow(0px 2px 4px rgba(0, 30, 43, 0.08));
+}
+.subLegDr.sublegReached .sublegSide   { fill: #C25E29; }
+.subLegDr.sublegReached .sublegAmount { fill: #C25E29; }
+
+.subLegCr.sublegReached .sublegBody {
+  stroke: #00A35C;
+  fill: #E3FCF7;
+  filter: drop-shadow(0px 2px 4px rgba(0, 30, 43, 0.08));
+}
+.subLegCr.sublegReached .sublegSide   { fill: #00684A; }
+.subLegCr.sublegReached .sublegAmount { fill: #00684A; }
+
+.sublegCurrent .sublegBody {
+  animation: sublegPulse 1.6s ease-in-out infinite;
+}
+
+@keyframes sublegPulse {
+  0%, 100% { stroke-opacity: 1; }
+  50%      { stroke-opacity: 0.55; }
+}
+
+/* ─────────────────────────── Reconcile membrane ─────────────────────────── */
+
+.membrane .membraneLine {
+  stroke: #C1C7C6;
+  stroke-width: 1.4;
+  stroke-dasharray: 5 5;
+  animation: dashDrift 8s linear infinite;
+  transition: stroke 280ms ease;
+}
+
+.membrane .membraneField {
+  fill: rgba(255, 192, 16, 0.05);
+  stroke: rgba(148, 79, 1, 0.20);
+  stroke-width: 0.5;
+  stroke-dasharray: 3 4;
+  transition: fill 280ms ease, stroke 280ms ease;
+}
+
+.membrane .membraneTitle {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  fill: #5C6C75;
+  transition: fill 280ms ease;
+}
+
+.membrane .membraneSub {
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.20em;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  fill: #5C6C75;
+  transition: fill 280ms ease;
+}
+
+.membraneReached .membraneLine  { stroke: #944F01; }
+.membraneReached .membraneField {
+  fill: rgba(255, 192, 16, 0.15);
+  stroke: rgba(148, 79, 1, 0.40);
+  animation: membraneShimmer 1.2s ease-out 1;
+}
+.membraneReached .membraneTitle { fill: #944F01; }
+.membraneReached .membraneSub   { fill: #944F01; }
+
+@keyframes membraneShimmer {
+  0%   { fill: rgba(255, 192, 16, 0.45); }
+  60%  { fill: rgba(255, 192, 16, 0.20); }
+  100% { fill: rgba(255, 192, 16, 0.15); }
+}
+
+/* ─────────────────────────── Journal hex-core (inverse spotlight) ─────────────────────────── */
+
+.journalGradStopA { stop-color: #00684A; stop-opacity: 0.18; }
+.journalGradStopB { stop-color: #001E2B; stop-opacity: 0.92; }
+.journalGradStopC { stop-color: #001E2B; stop-opacity: 1.0; }
+
+.journal .journalHexOuter {
+  fill: url(#journalGradLight);
+  stroke: #1C2D38;
+  stroke-width: 1.5;
+  transition: stroke 320ms ease, filter 320ms ease;
+}
+
+.journal .journalHexInner {
+  fill: #001E2B;
+  stroke: #3D4F58;
+  stroke-width: 1;
+  transition: stroke 320ms ease, fill 320ms ease;
+}
+
+.journal .journalLabel {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  fill: #C1C7C6;
+  transition: fill 320ms ease;
+}
+
+.journal .journalSub {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  fill: #889397;
+}
+
+.journal .journalId {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  fill: #5C6C75;
+  opacity: 0;
+  transition: opacity 320ms ease;
+}
+
+.journalReached .journalHexOuter {
+  stroke: #00ED64;
+  filter: drop-shadow(0 0 14px rgba(0, 237, 100, 0.45));
+}
+.journalReached .journalHexInner { stroke: #00A35C; fill: #001E2B; }
+.journalReached .journalLabel    { fill: #00ED64; }
+.journalReached .journalSub      { fill: #C0FAE6; }
+.journalReached .journalId       { opacity: 1; fill: #001E2B; }
+
+.sparkleDot {
+  fill: #00ED64;
+  filter: drop-shadow(0 0 4px rgba(0, 237, 100, 0.85));
+  pointer-events: none;
+}
+
+.journalRings { opacity: 0; transform-origin: center; transform-box: fill-box; }
+.journalRings path {
+  fill: none;
+  stroke: #00A35C;
+  stroke-width: 1;
+  opacity: 0;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.journalPulse .journalRings { opacity: 1; }
+
+.journalPulse .journalRingA { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) forwards; }
+.journalPulse .journalRingB { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 0.30s forwards; }
+.journalPulse .journalRingC { animation: ringExpand 2.2s cubic-bezier(0.2, 0.7, 0.3, 1) 0.60s forwards; }
+
+@keyframes ringExpand {
+  0%   { transform: scale(0.4); opacity: 0.0; }
+  20%  { opacity: 0.85; }
+  100% { transform: scale(1.6); opacity: 0;   }
+}
+
+/* ─────────────────────────── Change-stream wavefront ─────────────────────────── */
+
+.wavefrontGroup circle {
+  fill: none;
+  stroke: #016BF8;
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+.wavefrontA { animation: waveExpand 1.9s ease-out 1 forwards; }
+.wavefrontB { animation: waveExpand 1.9s ease-out 0.30s 1 forwards; }
+.wavefrontC { animation: waveExpand 1.9s ease-out 0.60s 1 forwards; }
+
+@keyframes waveExpand {
+  0%   { r: 6;   opacity: 0.0; }
+  10%  { opacity: 0.75; }
+  100% { r: 360; opacity: 0;   }
+}
+
+/* ─────────────────────────── Particles ─────────────────────────── */
+
+.particle {
+  fill: #00684A;
+  filter: drop-shadow(0 0 2px rgba(0, 168, 92, 0.5));
+  offset-distance: 0%;
+  animation-name: particleGlide;
+  animation-timing-function: cubic-bezier(0.4, 0.0, 0.2, 1);
+  animation-fill-mode: forwards;
+  opacity: 0;
+}
+
+.particleDebit {
+  fill: #C25E29;
+  filter: drop-shadow(0 0 2px rgba(194, 94, 41, 0.5));
+}
+
+.particleCredit {
+  fill: #00684A;
+  filter: drop-shadow(0 0 2px rgba(0, 168, 92, 0.5));
+}
+
+@keyframes particleGlide {
+  0%   { offset-distance: 0%;   opacity: 0;   r: 1.6; }
+  10%  { opacity: 1; r: 3.2; }
+  85%  { opacity: 1; r: 3.2; }
+  100% { offset-distance: 100%; opacity: 0;   r: 1.6; }
+}
+
+/* ─────────────────────────── Reduced motion ─────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .atmosphere,
+  .edgeMembrane.edgeActive,
+  .membrane .membraneLine,
+  .membraneReached .membraneField,
+  .customerCurrent .customerHalo,
+  .sublegCurrent .sublegBody,
+  .journalPulse .journalRings,
+  .journalPulse .journalRingA,
+  .journalPulse .journalRingB,
+  .journalPulse .journalRingC,
+  .wavefrontA,
+  .wavefrontB,
+  .wavefrontC,
+  .particle {
+    animation: none !important;
+    transition: none !important;
+  }
+  .particle { opacity: 0; }
+  .journalRings { opacity: 0; }
+  .wavefrontGroup circle { opacity: 0; }
+}
+
+@media (max-width: 900px) {
+  .stack { grid-template-rows: minmax(280px, 1fr) auto; }
+}

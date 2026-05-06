@@ -213,9 +213,56 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
 }
 
 // Drives a timeline against a dispatch fn. Returns a cancel handle.
+// (Kept for backward compatibility with the v1 modal — not used by v2.)
 export function runTimeline(timeline, dispatch) {
   const handles = timeline.map((evt) =>
     setTimeout(() => dispatch({ type: "STAGE_EVENT", event: evt }), evt.t)
   );
   return () => handles.forEach(clearTimeout);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// runMode — v2 entry point. Drives a timeline in one of three modes:
+//
+//   STEP  — caller invokes next() once per stage; no timers.
+//   SLOW  — auto-fires every ~1500ms; total ~13.5s.
+//   DEMO  — original v1 pacing (timeline.t values); total ~7.3s.
+//
+// Returns { next, cancel } in all modes. In STEP mode, AUTO modes also
+// expose next() but it's a no-op (the timer already advances).
+// ─────────────────────────────────────────────────────────────────────────────
+export function runMode(timeline, dispatch, mode = "STEP") {
+  let cancelled = false;
+  let cursor = 0;
+  let autoHandles = [];
+
+  const fire = (i) => {
+    if (cancelled || i >= timeline.length) return;
+    const evt = timeline[i];
+    dispatch({ type: "STAGE_EVENT", event: evt });
+    cursor = i + 1;
+  };
+
+  if (mode === "SLOW") {
+    // 1/4 of the previous pace — ~6s per stage, total ~54s for 9 stages.
+    const STEP_MS = 6000;
+    autoHandles = timeline.map((_evt, i) =>
+      setTimeout(() => fire(i), i * STEP_MS)
+    );
+  }
+  // STEP mode (and any unrecognised mode): no timers; caller calls next() to advance.
+
+  const next = () => {
+    if (mode !== "STEP") return; // ignored in auto modes
+    if (cancelled || cursor >= timeline.length) return;
+    fire(cursor);
+  };
+
+  const cancel = () => {
+    cancelled = true;
+    autoHandles.forEach(clearTimeout);
+    autoHandles = [];
+  };
+
+  return { next, cancel };
 }
