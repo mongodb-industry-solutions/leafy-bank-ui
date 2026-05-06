@@ -15,16 +15,18 @@ import { reconcileReducer, reconcileInitialState } from "./reconcileReducer";
 import { archReducer, archInitialState } from "./archReducer";
 import { rbacReducer, rbacInitialState } from "./rbacReducer";
 
+// ENGINE is intentionally not a standalone scene — engine-reconcile (Pacioli /
+// SoD / idempotency gates) is part of POSTING, fired before the GL journal
+// commits. RECONCILE remains as the detective EOD reconciliation scene.
 export const SCENES = [
   { key: "ONBOARDING", label: "Onboarding",   index: 0 },
   { key: "ARCH",       label: "Architecture", index: 1 },
   { key: "POSTING",    label: "The Posting",  index: 2 },
-  { key: "ENGINE",     label: "Engine",       index: 3 },
-  { key: "RBAC",       label: "RBAC",         index: 4 },
-  { key: "FANOUT",     label: "Fan-out",      index: 5 },
-  { key: "HARD_EDGE",  label: "Hard Edge",    index: 6 },
-  { key: "RECONCILE",  label: "Reconcile",    index: 7 },
-  { key: "ERASURE",    label: "Erasure",      index: 8 },
+  { key: "RBAC",       label: "RBAC",         index: 3 },
+  { key: "FANOUT",     label: "Fan-out",      index: 4 },
+  { key: "HARD_EDGE",  label: "Hard Edge",    index: 5 },
+  { key: "RECONCILE",  label: "Reconcile",    index: 6 },
+  { key: "ERASURE",    label: "Erasure",      index: 7 },
 ];
 
 export const initialStateV3 = {

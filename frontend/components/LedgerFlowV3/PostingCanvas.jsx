@@ -3,5 +3,7 @@
 import StageCanvas from "../LedgerFlow/StageCanvas";
 
 export default function PostingCanvas({ state }) {
-  return <StageCanvas state={state} reconcileSublabel="EOD period close" />;
+  // In v2 the membrane between sub-ledger writes and the GL commit is the
+  // engine-reconcile gate (Pacioli / SoD / idempotency), not an EOD label.
+  return <StageCanvas state={state} reconcileSublabel="Engine gates" />;
 }

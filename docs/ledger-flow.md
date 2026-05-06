@@ -46,7 +46,9 @@ A single-scene, step-by-step simulation of a payment posting cycle. The user wat
 **Route:** `/ledger-flow/v3`  
 *(The URL suffix `/v3` is a historical artifact from the internal version numbering.)*
 
-A nine-scene multi-arc demo covering the full lifecycle of a MongoDB-powered core banking platform — from customer onboarding through GDPR erasure. Each scene is independent; a scene strip at the top lets the presenter jump between them or advance linearly with the global Next button.
+An eight-scene multi-arc demo covering the full lifecycle of a MongoDB-powered core banking platform — from customer onboarding through GDPR erasure. Each scene is independent; a scene strip at the top lets the presenter jump between them or advance linearly with the global Next button.
+
+Engine reconcile (Pacioli double-entry, SoD, idempotency) is **not** a separate scene — it's part of POSTING, fired before the GL journal commits, which is where it actually runs in a real bank. RECONCILE is reserved for the **detective** EOD reconciliation that runs after posting.
 
 ### Scene overview
 
@@ -54,13 +56,12 @@ A nine-scene multi-arc demo covering the full lifecycle of a MongoDB-powered cor
 |---|-----------|-------|--------|
 | 1 | `ONBOARDING` | Onboarding — PII Vault & Queryable Encryption | 6 |
 | 2 | `ARCH` | Architecture — Four-Layer Stack | 4 |
-| 3 | `POSTING` | The Posting | 9 (same as v1) |
-| 4 | `ENGINE` | Validation Engine | 4 |
-| 5 | `RBAC` | RBAC & Least Privilege | 5 |
-| 6 | `FANOUT` | CDC Fan-out | 7 |
-| 7 | `HARD_EDGE` | Hard Edge — Error 286 | 6 |
-| 8 | `RECONCILE` | Reconciliation | up to 12 (3 scenarios) |
-| 9 | `ERASURE` | GDPR Erasure — Crypto-shredding | 6 |
+| 3 | `POSTING` | The Posting (incl. engine-reconcile gate) | 12 |
+| 4 | `RBAC` | RBAC & Least Privilege | 5 |
+| 5 | `FANOUT` | CDC Fan-out | 7 |
+| 6 | `HARD_EDGE` | Hard Edge — Error 286 | 6 |
+| 7 | `RECONCILE` | Detective Reconciliation (EOD) | up to 12 (3 scenarios) |
+| 8 | `ERASURE` | GDPR Erasure — Crypto-shredding | 6 |
 
 ---
 
@@ -96,27 +97,22 @@ A visual tour of the four-layer architecture that underpins the ledger.
 
 ### Scene 3 — POSTING
 
-Identical to v1 stages; supports two configurable dimensions before starting:
+Same stage list as v1, with the v1 `RECONCILE_SKIPPED` placeholder reinterpreted as the **engine-reconcile gate** that fires before the GL journal commits. Three pre-commit invariants are enforced at the database (not in application code):
+
+| Gate | Mechanism |
+|------|-----------|
+| Pacioli double-entry | `$expr: { $eq: [{ $sum: '$lines.amountBaseMinor' }, 0] }` |
+| Segregation of Duties | `$expr: { $ne: ['$createdBy', '$approvedBy'] }` |
+| Idempotency | Partial unique index on `externalRef` (filter `status: 'POSTED'`) → `E11000` on dup |
+
+Supports two configurable dimensions before starting:
 
 - **Transaction type:** Domestic wire, SEPA credit transfer, SWIFT cross-border, Internal transfer
 - **Scenario:** Standard posting, FX rounding, EOD reconciliation
 
 ---
 
-### Scene 4 — ENGINE
-
-The validation engine that runs before a journal entry is committed.
-
-| Stage | Gate checked |
-|-------|-------------|
-| `ENGINE_SCHEMA` | JSON Schema validation — required fields, Decimal128 type enforcement |
-| `ENGINE_BALANCE` | Pre-write balance check — sufficient funds, no overdraft |
-| `ENGINE_IDEMPOTENCY` | Duplicate detection via idempotency key index |
-| `ENGINE_COMMIT` | All gates pass; atomic multi-document transaction commits |
-
----
-
-### Scene 5 — RBAC
+### Scene 4 — RBAC
 
 MongoDB role-based access control for the ledger service accounts.
 
@@ -130,7 +126,7 @@ MongoDB role-based access control for the ledger service accounts.
 
 ---
 
-### Scene 6 — FANOUT
+### Scene 5 — FANOUT
 
 Change Stream fan-out pattern: one CDC cursor drives multiple downstream consumers.
 
@@ -146,7 +142,7 @@ Change Stream fan-out pattern: one CDC cursor drives multiple downstream consume
 
 ---
 
-### Scene 7 — HARD_EDGE
+### Scene 6 — HARD_EDGE
 
 What happens when the WORM sink returns **error 286** (storage class violation).
 
@@ -161,9 +157,9 @@ What happens when the WORM sink returns **error 286** (storage class violation).
 
 ---
 
-### Scene 8 — RECONCILE
+### Scene 7 — RECONCILE
 
-Three runnable scenarios that exercise the reconciliation engine.
+The **detective** EOD reconciliation — distinct from the engine-reconcile gate inside POSTING. Three runnable scenarios exercise it.
 
 **Scenarios:**
 
@@ -181,7 +177,7 @@ Exception scenarios insert additional stages between `RECONCILE_COMPARE` and `PE
 
 ---
 
-### Scene 9 — ERASURE
+### Scene 8 — ERASURE
 
 Frida exercises her **GDPR Article 17 Right to Erasure** via crypto-shredding.
 

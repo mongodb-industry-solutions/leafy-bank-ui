@@ -18,10 +18,40 @@ import { rbacNarrationFor } from "./rbacNarration";
 
 export { STAGE_LIST, stageOf, indexOfStage, stageLabel };
 
+// In v2 the POSTING scene replaces the v1 "RECONCILE_SKIPPED" placeholder
+// with the engine-reconcile gate (Pacioli / SoD / idempotency) — this is the
+// pre-commit validation a real GL fires before the journal is written.
+function postingNarrationFor(state) {
+  if (state.currentStage === "RECONCILE_SKIPPED") {
+    const idx = indexOfStage("RECONCILE_SKIPPED");
+    const total = STAGE_LIST.length;
+    const indexLabel = idx >= 0 ? `Stage ${idx + 1} of ${total}` : "";
+    return {
+      overline: indexLabel,
+      title: "Engine reconcile · pre-commit gates fire",
+      body:
+        "Before the GL journal commits, MongoDB enforces three invariants at the database — not the application. " +
+        "Pacioli double-entry: $expr asserts Σ amountBaseMinor = 0 across the entry's lines. " +
+        "Segregation of Duties: $expr asserts createdBy ≠ approvedBy. " +
+        "Idempotency: a partial unique index on externalRef rejects duplicate POSTED writes (E11000). " +
+        "All three gates pass simultaneously in < 40ms. The next stage is the atomic GL write.",
+      callout: {
+        variant: "note",
+        title: "Engine reconcile vs detective reconcile",
+        body:
+          "Engine reconcile (this gate) is preventive — it runs before every commit. " +
+          "Detective reconcile (the Reconcile scene) is the EOD batch that compares posted GL against sub-ledgers and external feeds.",
+      },
+      doc: null,
+    };
+  }
+  return v2NarrationFor(state);
+}
+
 export function narrationFor(state) {
   switch (state.scene) {
     case "POSTING":
-      return v2NarrationFor(state);
+      return postingNarrationFor(state);
 
     case "ONBOARDING":
       return onboardingNarrationFor(state.onboarding || {});
