@@ -82,7 +82,7 @@
 .codeText {
   font-family: 'Source Code Pro', monospace;
   font-size: 10px;
-  fill: #001E2B;
+  fill: #E8EDEB;
   dominant-baseline: middle;
 }
 
@@ -96,7 +96,7 @@
 .codeKeyword {
   font-family: 'Source Code Pro', monospace;
   font-size: 10px;
-  fill: #016BF8;
+  fill: #5FC4EA;
   dominant-baseline: middle;
 }
 
