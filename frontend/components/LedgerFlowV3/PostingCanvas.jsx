@@ -3,5 +3,5 @@
 import StageCanvas from "../LedgerFlow/StageCanvas";
 
 export default function PostingCanvas({ state }) {
-  return <StageCanvas state={state} reconcileSublabel="→ Scene 5" />;
+  return <StageCanvas state={state} reconcileSublabel="EOD period close" />;
 }

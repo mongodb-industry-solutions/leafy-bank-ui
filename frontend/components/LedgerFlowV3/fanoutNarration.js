@@ -47,11 +47,11 @@ export function fanoutNarrationFor(f = {}) {
       return {
         overline: label,
         title: "WORM Sink consumed — all three resume tokens live",
-        body: "The WORM sink writes an immutable record to the append-only archive. Now all three consumers have processed the event and each holds a resume token. The oplog is a finite sliding window — if any consumer goes offline too long, its token becomes invalid. Scene 4 shows what happens then.",
+        body: "The WORM sink writes an immutable, hash-chained record to the append-only archive. Each entry includes SHA-256(prevHash ‖ payload) and an RFC 3161 trusted timestamp — compatible with S3 Object Lock and Azure Immutable Blob Storage. Sequence numbers are monotonically increasing; any gap signals tampering. Now all three consumers have processed the event and hold resume tokens.",
         callout: {
           variant: "note",
-          title: "Resume tokens are oplog pointers",
-          body: "Each token is a reference into MongoDB's oplog. They allow a consumer to resume from exactly where it left off after a disconnect. But the oplog has a finite retention window. Scene 4 (Hard Edge) shows what happens when that window expires.",
+          title: "Resume tokens are oplog pointers — WORM is the fallback",
+          body: "Each token is a reference into MongoDB's oplog. They allow a consumer to resume from exactly where it left off. But the oplog has finite retention. When the window expires (Scene 4), the WORM sink becomes the recovery source — its immutable hash chain replays missed events with cryptographic proof of ordering.",
         },
         doc: null,
       };

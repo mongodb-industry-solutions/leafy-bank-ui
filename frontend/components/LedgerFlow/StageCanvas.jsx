@@ -404,6 +404,34 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
             <SubLedgerLeg side="DEBIT" x={ANCHOR.subDr.x} y={ANCHOR.subDr.y} reached={reached("SUBLEDGER_DEBIT")} current={currentStage === "SUBLEDGER_DEBIT"} amount={amount} currency={currency} accountId={fromAcct} displayName={fromName} />
             <SubLedgerLeg side="CREDIT" x={ANCHOR.subCr.x} y={ANCHOR.subCr.y} reached={reached("SUBLEDGER_CREDIT")} current={currentStage === "SUBLEDGER_CREDIT"} amount={amount} currency={currency} accountId={toAcct} displayName={toName} />
 
+            {/* ISO 20022 source badge — visible from payment initiation */}
+            {reached("PAYMENT_INITIATED") && (
+              <g>
+                <rect x={VB.ox + 8} y={VB.oy + 8} width={134} height={28} rx={6}
+                  fill="#FDE7C8" stroke="#944F01" strokeWidth={1} opacity={0.9} />
+                <text x={VB.ox + 75} y={VB.oy + 18} textAnchor="middle" className={styles.iso20022Title}>
+                  ISO 20022
+                </text>
+                <text x={VB.ox + 75} y={VB.oy + 30} textAnchor="middle" className={styles.iso20022Sub}>
+                  PACS.008 · CBPR+
+                </text>
+              </g>
+            )}
+
+            {/* MDT / w:majority badge — visible on JOURNAL_POSTED */}
+            {reached("JOURNAL_POSTED") && (
+              <g>
+                <rect x={ANCHOR.journal.x - 120} y={ANCHOR.journal.y + 108} width={240} height={28} rx={6}
+                  fill="#E3FCF7" stroke="#00A35C" strokeWidth={1} opacity={0.92} />
+                <text x={ANCHOR.journal.x} y={ANCHOR.journal.y + 118} textAnchor="middle" className={styles.mdtTitle}>
+                  MDT · w:majority · j:true
+                </text>
+                <text x={ANCHOR.journal.x} y={ANCHOR.journal.y + 130} textAnchor="middle" className={styles.mdtSub}>
+                  snapshot isolation · 3-coll atomic
+                </text>
+              </g>
+            )}
+
             <JournalCore reached={reached("JOURNAL_POSTED")} current={currentStage === "JOURNAL_POSTED"} journalId={state.identifiers?.journalId} />
             <ChangeStreamNode reached={reached("CHANGE_STREAM")} />
 

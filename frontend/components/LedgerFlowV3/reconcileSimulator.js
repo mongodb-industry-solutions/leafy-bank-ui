@@ -1,19 +1,32 @@
 // reconcileSimulator.js — generates the reconciliation event timeline.
 // Mirrors v2 simulator.js structure but dispatches RECONCILE_STAGE_EVENT.
 
-import { RECONCILE_RUN, RECONCILE_EXCEPTION, CORRECTION_JOURNAL } from "./reconcileFixtures";
+import { SCENARIO_DATA } from "./reconcileFixtures";
 
-export function buildReconcileRun() {
+export function buildReconcileRun({ scenario = "FX_ROUNDING" } = {}) {
+  const data = SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING;
+
+  if (scenario === "MATCH") {
+    const timeline = [
+      { stage: "RECONCILE_RUN_TRIGGERED",   payload: { run: data.run } },
+      { stage: "RECONCILE_SCANNING_SOURCE", payload: {} },
+      { stage: "RECONCILE_SCANNING_TARGET", payload: {} },
+      { stage: "RECONCILE_BALANCE_CHECK",   payload: {} },
+      { stage: "RECONCILE_RESOLVED",        payload: {} },
+    ];
+    return { timeline };
+  }
+
   const timeline = [
-    { stage: "RECONCILE_RUN_TRIGGERED",    payload: { run: RECONCILE_RUN } },
-    { stage: "RECONCILE_SCANNING_SOURCE",  payload: {} },
-    { stage: "RECONCILE_SCANNING_TARGET",  payload: {} },
-    { stage: "RECONCILE_BALANCE_CHECK",    payload: {} },
-    { stage: "RECONCILE_RESULT_UNBALANCED", payload: { breakAmount: 1.00 } },
-    { stage: "RECONCILE_EXCEPTION_CREATED", payload: { exception: RECONCILE_EXCEPTION } },
+    { stage: "RECONCILE_RUN_TRIGGERED",       payload: { run: data.run } },
+    { stage: "RECONCILE_SCANNING_SOURCE",     payload: {} },
+    { stage: "RECONCILE_SCANNING_TARGET",     payload: {} },
+    { stage: "RECONCILE_BALANCE_CHECK",       payload: {} },
+    { stage: "RECONCILE_RESULT_UNBALANCED",   payload: { breakAmount: parseFloat(data.run.breakAmount.$numberDecimal) } },
+    { stage: "RECONCILE_EXCEPTION_CREATED",   payload: { exception: data.exception } },
     { stage: "RECONCILE_INVESTIGATION_OPENED", payload: {} },
-    { stage: "RECONCILE_CORRECTION_POSTED", payload: { journal: CORRECTION_JOURNAL } },
-    { stage: "RECONCILE_RESOLVED",         payload: {} },
+    { stage: "RECONCILE_CORRECTION_POSTED",   payload: { journal: data.correction } },
+    { stage: "RECONCILE_RESOLVED",            payload: {} },
   ];
   return { timeline };
 }

@@ -3,7 +3,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SPRING } from "../LedgerFlow/motionConfig";
-import { RECONCILE_RUN, RECONCILE_EXCEPTION, CORRECTION_JOURNAL } from "./reconcileFixtures";
+import { SCENARIO_DATA } from "./reconcileFixtures";
 import styles from "./ReconcileCanvas.module.css";
 
 // ─── Layout constants ────────────────────────────────────────────────────────
@@ -117,7 +117,7 @@ function Column({ x, label, sublabel, barFill, count, total, colorFill, colorStr
         className={styles.colCount}
         animate={{ opacity: show ? 1 : 0.2 }}
       >
-        {show ? `${fmtCount(count)} ${count === 58947 ? "entries" : "GL lines"}` : "—"}
+        {show ? `${fmtCount(count)} ${label?.includes("SUB") ? "entries" : "GL lines"}` : "—"}
       </motion.text>
 
       {/* Total */}
@@ -141,6 +141,12 @@ export default function ReconcileCanvas({ state }) {
   const reached = (s) => !!r.reachedStages?.[s];
   const isActive = r.status !== "IDLE";
 
+  const scenario = r.scenario || "FX_ROUNDING";
+  const scenarioData = SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING;
+  const RECONCILE_RUN = scenarioData.run;
+  const RECONCILE_EXCEPTION = scenarioData.exception;
+  const CORRECTION_JOURNAL = scenarioData.correction;
+
   const srcFull    = reached("RECONCILE_SCANNING_SOURCE");
   const tgtFull    = reached("RECONCILE_SCANNING_TARGET");
   const isChecking = reached("RECONCILE_BALANCE_CHECK");
@@ -156,7 +162,8 @@ export default function ReconcileCanvas({ state }) {
   const beamColor  = isBalanced ? "#00A35C" : (isUnbal ? "#C82430" : (isChecking ? "#016BF8" : "#C1C7C6"));
 
   const deltaColor = isBalanced ? "#00684A" : (isUnbal ? "#C82430" : (isChecking ? "#016BF8" : "#5C6C75"));
-  const deltaAmt   = (isUnbal || isBalanced) ? (isBalanced ? "$0.00" : "$1.00") : (isChecking ? "…" : "—");
+  const breakAmt   = scenarioData.delta;
+  const deltaAmt   = (isUnbal || isBalanced) ? (isBalanced ? "$0.00" : breakAmt) : (isChecking ? "…" : "—");
   const deltaLabel = isBalanced ? "✓ BALANCED" : (isUnbal ? "⚠ UNBALANCED" : (isChecking ? "CHECKING" : "—"));
   const deltaFill  = isBalanced ? "#E3FCF7" : (isUnbal ? "#FFEAE5" : (isChecking ? "#E1F7FF" : "#F9FBFA"));
   const deltaStroke = deltaColor;
@@ -349,21 +356,21 @@ export default function ReconcileCanvas({ state }) {
 
             {/* Exception ID */}
             <text x={TICKET_X + 22} y={TICKET_Y + 22} className={styles.excId}>
-              {RECONCILE_EXCEPTION.exceptionId}
+              {RECONCILE_EXCEPTION?.exceptionId || "EXC-—"}
             </text>
             {/* Type */}
-            <rect x={TICKET_X + 216} y={TICKET_Y + 9} width={152} height={18} rx={9}
+            <rect x={TICKET_X + 216} y={TICKET_Y + 9} width={172} height={18} rx={9}
               fill={excAccent} opacity={0.12} />
-            <text x={TICKET_X + 292} y={TICKET_Y + 22} textAnchor="middle" className={styles.excTypePill} fill={excAccent}>
-              AMOUNT_MISMATCH
+            <text x={TICKET_X + 302} y={TICKET_Y + 22} textAnchor="middle" className={styles.excTypePill} fill={excAccent}>
+              {scenarioData.exceptionType || "MISMATCH"}
             </text>
             {/* Break amount */}
-            <text x={TICKET_X + 390} y={TICKET_Y + 22} className={styles.excBreak} fill={isResolved ? "#00684A" : "#C82430"}>
-              Δ $1.00
+            <text x={TICKET_X + 408} y={TICKET_Y + 22} className={styles.excBreak} fill={isResolved ? "#00684A" : "#C82430"}>
+              Δ {breakAmt}
             </text>
             {/* Priority + SLA */}
-            <text x={TICKET_X + 470} y={TICKET_Y + 22} className={styles.excMeta}>
-              HIGH · SLA 8h · controlAccount 2100
+            <text x={TICKET_X + 490} y={TICKET_Y + 22} className={styles.excMeta}>
+              {RECONCILE_EXCEPTION?.priority || "HIGH"} · SLA {RECONCILE_EXCEPTION?.slaHours || 8}h · controlAccount 2100
             </text>
 
             {/* Status badge (right) */}
@@ -383,10 +390,10 @@ export default function ReconcileCanvas({ state }) {
               {isResolved ? "✓ RESOLVED" : excStatus}
             </motion.text>
 
-            {/* Bottom note line */}
+            {/* Bottom note line — scenario aware */}
             <AnimatePresence mode="wait" initial={false}>
               <motion.text
-                key={excStatus}
+                key={`${excStatus}-${scenario}`}
                 x={TICKET_X + 22} y={TICKET_Y + 52}
                 className={styles.excNote}
                 initial={{ opacity: 0 }}
@@ -395,12 +402,12 @@ export default function ReconcileCanvas({ state }) {
                 transition={{ duration: 0.25 }}
               >
                 {isResolved
-                  ? `Period 2026-04 close unblocked · correction JNL-20260506-CORR-001 · re-run BALANCED`
+                  ? `Period 2026-04 close unblocked · ${CORRECTION_JOURNAL?.journalId || "correction posted"} · re-run BALANCED`
                   : hasCor
-                  ? `${CORRECTION_JOURNAL.journalId} posted · $1.00 ADJUSTMENT · FX pence-rounding fix on SL-20260430-047823`
+                  ? `${CORRECTION_JOURNAL?.journalId} posted · ${breakAmt} ${scenario === "DUPLICATE" ? "REVERSAL" : "ADJUSTMENT"} · ${RECONCILE_EXCEPTION?.relatedEntryId}`
                   : isInv
-                  ? `analyst.frida: "Investigating — checking SL-20260430-047823 for pence-rounding error in FX conversion"`
-                  : `Auto-detected: Σ(subLedgerEntries.amount) − Σ(GL 2100) = $1.00 · Assigned to reconciliation team`
+                  ? RECONCILE_EXCEPTION?.notes?.[1]?.text || "Investigation in progress"
+                  : RECONCILE_EXCEPTION?.notes?.[0]?.text || `Auto-detected: Σ(subLedgerEntries) − Σ(GL 2100) = ${breakAmt}`
                 }
               </motion.text>
             </AnimatePresence>

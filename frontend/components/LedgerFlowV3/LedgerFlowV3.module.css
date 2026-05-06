@@ -235,6 +235,50 @@
 /* ─── modeControl ─────────────────────────────────────────────────────────── */
 .modeControl {}
 
+/* ─── Reconcile scenario selector ────────────────────────────────────────── */
+.scenarioRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: #F9FBFA;
+  border-bottom: 1px solid #E8EDEB;
+  flex-shrink: 0;
+}
+
+.scenarioLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  color: #5C6C75;
+  white-space: nowrap;
+}
+
+.scenarioPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid #C1C7C6;
+  background: white;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  color: #5C6C75;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.scenarioPill:hover {
+  border-color: #016BF8;
+  color: #016BF8;
+}
+
+.scenarioPillActive {
+  border-color: #016BF8;
+  background: #E1F7FF;
+  color: #016BF8;
+  font-weight: 600;
+}
+
 @media (max-width: 1100px) {
   .page {
     grid-template-rows: auto auto auto auto 1fr auto auto;

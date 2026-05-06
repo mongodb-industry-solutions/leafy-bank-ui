@@ -43,7 +43,7 @@ export function ledgerReducerV3(state, action) {
         scene: action.scene,
         sceneIndex: idx >= 0 ? idx : 1,
         scenesVisited: { ...state.scenesVisited },
-        reconcile: reconcileInitialState,
+        reconcile: { ...reconcileInitialState, scenario: state.reconcile?.scenario || "FX_ROUNDING" },
         onboarding: onboardingInitialState,
         erasure: erasureInitialState,
         fanout: fanoutInitialState,
@@ -53,6 +53,7 @@ export function ledgerReducerV3(state, action) {
 
     case "RECONCILE_RESET":
     case "RECONCILE_SET_MODE":
+    case "RECONCILE_SET_SCENARIO":
     case "RECONCILE_START":
     case "RECONCILE_STEP_PREV":
     case "RECONCILE_STAGE_EVENT": {

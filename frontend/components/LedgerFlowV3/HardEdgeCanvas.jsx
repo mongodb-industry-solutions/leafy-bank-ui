@@ -346,12 +346,12 @@ export default function HardEdgeCanvas({ state }) {
         );
       })}
 
-      {/* Recovery arrow: WORM → consumer */}
+      {/* Recovery arrow: WORM → consumer (arcs below card zone) */}
       <AnimatePresence>
         {isRecovery && (
           <motion.path
             key="recArrow"
-            d={`M${WORM_X},${REC_Y} C${WORM_X - 80},${REC_Y} ${CON_X + CON_W + 80},${REC_Y} ${CON_X + CON_W},${REC_Y}`}
+            d={`M${WORM_X},${REC_Y} C${WORM_X - 40},${REC_Y + 84} ${CON_X + CON_W + 40},${REC_Y + 84} ${CON_X + CON_W},${REC_Y}`}
             fill="none" stroke="#00A35C" strokeWidth={2}
             strokeDasharray="10 4"
             initial={{ pathLength: 0, opacity: 0 }}
@@ -363,7 +363,7 @@ export default function HardEdgeCanvas({ state }) {
         )}
       </AnimatePresence>
       {isRecovery && (
-        <text x={(WORM_X + CON_X + CON_W) / 2} y={REC_Y - 8}
+        <text x={(WORM_X + CON_X + CON_W) / 2} y={REC_Y + 96}
           textAnchor="middle" className={styles.recoveryArrowLabel}>
           replaying from WORM sink
         </text>

@@ -19,6 +19,7 @@ export function indexOfReconcileStage(stage) {
 export const reconcileInitialState = {
   status: "IDLE",
   mode: "STEP",
+  scenario: "FX_ROUNDING",
   currentStage: null,
   stageIndex: -1,
   reachedStages: {},
@@ -33,15 +34,19 @@ export const reconcileInitialState = {
 export function reconcileReducer(state, action) {
   switch (action.type) {
     case "RECONCILE_RESET":
-      return { ...reconcileInitialState, mode: state.mode };
+      return { ...reconcileInitialState, mode: state.mode, scenario: state.scenario };
 
     case "RECONCILE_SET_MODE":
       return { ...state, mode: action.mode };
+
+    case "RECONCILE_SET_SCENARIO":
+      return { ...reconcileInitialState, mode: state.mode, scenario: action.scenario };
 
     case "RECONCILE_START":
       return {
         ...reconcileInitialState,
         mode: action.mode || state.mode || "STEP",
+        scenario: state.scenario,
         status: (action.mode || state.mode) === "STEP" ? "STEP_PAUSED" : "AUTO_RUNNING",
         startedAt: Date.now(),
       };

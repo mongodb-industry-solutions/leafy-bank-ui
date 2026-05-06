@@ -565,3 +565,36 @@
 @media (max-width: 900px) {
   .stack { grid-template-rows: minmax(280px, 1fr) auto; }
 }
+
+/* ─── Architecture annotation badges ─── */
+.iso20022Title {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  fill: #944F01;
+  dominant-baseline: middle;
+}
+
+.iso20022Sub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 8px;
+  fill: #944F01;
+  dominant-baseline: middle;
+}
+
+.mdtTitle {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.mdtSub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 8px;
+  fill: #00684A;
+  dominant-baseline: middle;
+}

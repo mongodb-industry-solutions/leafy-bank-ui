@@ -34,8 +34,12 @@ const TOK_Y_OFFSET = 52; // from card top
 
 // ─── Fan-out line from CDC to consumer ───────────────────────────────────────
 function FanLine({ row, active }) {
-  const x1 = CDC_CX + CDC_R + 4;
-  const y1 = CDC_CY + (row.midY - CDC_CY) * 0.18; // exit point on circle edge, angled
+  // Exit point on the circle's actual circumference toward each consumer midY
+  const dx = CON_X - CDC_CX;
+  const dy = row.midY - CDC_CY;
+  const len = Math.sqrt(dx * dx + dy * dy);
+  const x1 = CDC_CX + CDC_R * (dx / len);
+  const y1 = CDC_CY + CDC_R * (dy / len);
   const x2 = CON_X;
   const y2 = row.midY;
   return (
@@ -236,6 +240,10 @@ export default function FanoutCanvas({ state }) {
             <text x={CDC_CX} y={EVT_Y + 18} textAnchor="middle" className={styles.evtBadge}>
               operationType: "insert" · JNL-20260506-001
             </text>
+            {/* postBatchResumeToken checkpoint label */}
+            <text x={CDC_CX} y={EVT_Y + 40} textAnchor="middle" className={styles.pbrtLabel}>
+              PBRT checkpointed — durable cursor position
+            </text>
           </motion.g>
         )}
       </AnimatePresence>
@@ -247,6 +255,36 @@ export default function FanoutCanvas({ state }) {
           <ConsumerCard row={row} active={consumerActive[row.key]} showToken={showTokens} />
         </React.Fragment>
       ))}
+
+      {/* ── WORM hash chain strip (below consumer cards) ─────────────────── */}
+      <AnimatePresence>
+        {wormActive && (
+          <motion.g key="hashChain"
+            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            transition={{ ...SPRING.default, delay: 0.3 }}
+          >
+            {/* Positioned below the WORM card */}
+            <rect x={CON_X} y={348} width={CON_W} height={62} rx={8}
+              fill="#E3FCF7" stroke="#00A35C" strokeWidth={1} />
+            <rect x={CON_X} y={348} width={4} height={62} rx={4} fill="#00684A" />
+            <text x={CON_X + 18} y={363} className={styles.hashLabel}>WORM · hash chain</text>
+            <text x={CON_X + 18} y={380} className={styles.hashRow}>
+              <tspan className={styles.hashKey}>prevHash: </tspan>
+              <tspan className={styles.hashVal}>a1b2c3d4e5f67890…</tspan>
+            </text>
+            <text x={CON_X + 18} y={396} className={styles.hashRow}>
+              <tspan className={styles.hashKey}>hash: </tspan>
+              <tspan className={styles.hashVal}>SHA-256(prevHash ‖ payload) → f7a3b9c2d1e84f…</tspan>
+            </text>
+            <text x={CON_X + CON_W - 14} y={380} textAnchor="end" className={styles.hashSeq}>
+              seq 8821
+            </text>
+            <text x={CON_X + CON_W - 14} y={396} textAnchor="end" className={styles.hashRfc}>
+              RFC 3161 ✓
+            </text>
+          </motion.g>
+        )}
+      </AnimatePresence>
 
       {/* Idle hint */}
       {!isActive && (

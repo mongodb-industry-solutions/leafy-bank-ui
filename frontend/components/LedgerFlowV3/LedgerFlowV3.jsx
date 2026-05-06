@@ -81,6 +81,11 @@ const LedgerFlowV3 = () => {
   const reconcile = state.reconcile;
   const reconcileStatus = reconcile?.status || "IDLE";
   const reconcileMode = reconcile?.mode || "STEP";
+  const reconcileScenario = reconcile?.scenario || "FX_ROUNDING";
+
+  // Keep a ref so startSceneInStepMode (deps=[]) can read current scenario
+  const reconcileScenarioRef = useRef(reconcileScenario);
+  reconcileScenarioRef.current = reconcileScenario;
 
   // ─── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
@@ -223,6 +228,14 @@ const LedgerFlowV3 = () => {
     reconcileRunnerRef.current = null;
     dispatch({ type: "RECONCILE_SET_MODE", mode: value });
   }, []);
+
+  const handleSetReconcileScenario = useCallback((scenario) => {
+    if (reconcileStatus !== "IDLE") return; // don't change mid-run
+    reconcileRunnerRef.current?.cancel?.();
+    reconcileRunnerRef.current = null;
+    reconcileRunRef.current = null;
+    dispatch({ type: "RECONCILE_SET_SCENARIO", scenario });
+  }, [reconcileStatus]);
 
   // ─── Onboarding scene handlers ────────────────────────────────────────────
   const onboarding = state.onboarding;
@@ -520,7 +533,7 @@ const LedgerFlowV3 = () => {
         break;
       }
       case "RECONCILE": {
-        const { timeline: rt } = buildReconcileRun();
+        const { timeline: rt } = buildReconcileRun({ scenario: reconcileScenarioRef.current });
         reconcileRunRef.current = { timeline: rt };
         dispatch({ type: "RECONCILE_START", mode: "STEP" });
         dispatch({ type: "RECONCILE_STAGE_EVENT", event: rt[0] });
@@ -825,6 +838,27 @@ const LedgerFlowV3 = () => {
         {/* Spacer row when idRow is absent to maintain grid */}
         {!(isPostingScene && state.identifiers.idempotencyKey) && (
           <div style={{ height: 0 }} />
+        )}
+
+        {/* RECONCILE SCENARIO SELECTOR — shown when reconcile scene is active or upcoming */}
+        {isReconcileScene && reconcileStatus === "IDLE" && (
+          <div className={styles.scenarioRow}>
+            <span className={styles.scenarioLabel}>Reconcile scenario:</span>
+            {[
+              { key: "FX_ROUNDING", label: "FX Rounding Δ$1.00" },
+              { key: "DUPLICATE",   label: "Duplicate Post Δ$250" },
+              { key: "MATCH",       label: "Perfect Balance Δ$0" },
+            ].map((s) => (
+              <button
+                key={s.key}
+                type="button"
+                className={`${styles.scenarioPill} ${reconcileScenario === s.key ? styles.scenarioPillActive : ""}`}
+                onClick={() => handleSetReconcileScenario(s.key)}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         )}
 
         {/* CANVAS */}

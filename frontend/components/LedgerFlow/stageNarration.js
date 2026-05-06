@@ -50,7 +50,7 @@ export function narrationFor(state) {
       return {
         overline: indexLabel,
         title: "Payment initiated",
-        body: `${fromName} initiates a ${fmtMoney(amount, currency)} payment to ${toName}. A client-generated idempotency key is attached so retries cannot post the same payment twice — the unique MongoDB index on idempotencyKey enforces this at the database level.`,
+        body: `ISO 20022 PACS.008 ingested and mapped to canonical PaymentOrder. ${fromName} initiates a ${fmtMoney(amount, currency)} payment to ${toName}. A client-generated idempotency key is attached so retries cannot post the same payment twice — the unique MongoDB index on idempotencyKey enforces this at the database level.`,
         doc: {
           collectionKey: null,
           label: "Payment intent",
@@ -106,7 +106,7 @@ export function narrationFor(state) {
       return {
         overline: indexLabel,
         title: "GL journal posted",
-        body: `One balanced double-entry journalEntries document commits with status=POSTED. Decimal128 amounts. Status is now immutable. End-to-end traceability lives in sourceReference.sourceId, which links back to the originating payment.`,
+        body: `Multi-document transaction commits: both sub-ledger legs + the journalEntries document in a single atomic write with w:majority · j:true and snapshot isolation. One balanced double-entry document with status=POSTED. Decimal128 amounts prevent floating-point drift. Status is now immutable — corrections require a REVERSAL journal.`,
         doc: {
           collectionKey: "journalEntries",
           label: "journalEntries[0]",
@@ -118,7 +118,7 @@ export function narrationFor(state) {
       return {
         overline: indexLabel,
         title: "Change Stream emitted",
-        body: `MongoDB Change Streams fire on the insert. Downstream projections subscribe to ${COLLECTIONS.journalEntries.mongoAlias}; a resumeToken is issued so consumers can replay from the exact event on reconnect. This is the system's nervous system — every commit fans out.`,
+        body: `MongoDB Change Streams fire on the insert. Downstream projections subscribe to ${COLLECTIONS.journalEntries.mongoAlias}; a resumeToken and postBatchResumeToken (PBRT) are issued so consumers can replay from the exact event on reconnect. The PBRT is checkpointed durably — ChangeStreamHistoryLost (error 286) is handled by the WORM fallback. This is the system's nervous system — every commit fans out.`,
         doc: {
           collectionKey: null,
           label: "Change-stream event",
