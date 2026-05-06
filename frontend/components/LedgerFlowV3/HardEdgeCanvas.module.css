@@ -1,0 +1,179 @@
+.headerText {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.cardHeader {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+}
+
+.cardSub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.fieldKey {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.fieldVal {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.statusBig {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.tokenStale {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.tokenInvalid {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  fill: #C82222;
+  dominant-baseline: middle;
+}
+
+.tokenNew {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.oplTitle {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+}
+
+.oplSub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.oplZoneLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  dominant-baseline: middle;
+}
+
+.tokenMarkerLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 8px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.errCode {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 22px;
+  font-weight: 700;
+  fill: #C82222;
+  dominant-baseline: middle;
+}
+
+.errName {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  fill: #C82222;
+  dominant-baseline: middle;
+}
+
+.errSub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  fill: #97280E;
+  dominant-baseline: middle;
+}
+
+.recoveryTitle {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.recoverySub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.wormId {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.wormMeta {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.wormReplayed {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  font-weight: 600;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.retainedBadge {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+}
+
+.recoveryArrowLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 9px;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.idleHint {
+  font-family: 'Euclid Circular A', 'Inter', sans-serif;
+  font-size: 18px;
+  fill: #889397;
+  dominant-baseline: middle;
+}

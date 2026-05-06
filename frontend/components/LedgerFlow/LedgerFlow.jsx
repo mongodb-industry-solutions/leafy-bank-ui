@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { H1, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
@@ -23,6 +24,7 @@ import AccountBalanceCards from "./AccountBalanceCards";
 import styles from "./LedgerFlow.module.css";
 
 const LedgerFlow = () => {
+  const router = useRouter();
   const [state, dispatch] = useReducer(ledgerReducer, initialState);
   const runnerRef = useRef(null);
   const runRef = useRef(null); // last-built run (timeline + identifiers); preserved across STEP_PREV
@@ -145,6 +147,7 @@ const LedgerFlow = () => {
           <div className={styles.titleBlock}>
             <div className={styles.titleRow}>
               <H1 className={styles.title}>Ledger Flow</H1>
+              <Badge variant="lightgray">v1</Badge>
               <Badge variant="green">BIAN v14</Badge>
               <Badge variant="yellow">MVP · write-only</Badge>
               <Badge variant="lightgray">{stageStatus}</Badge>
@@ -216,6 +219,16 @@ const LedgerFlow = () => {
                   size="small"
                 >
                   Collections
+                </Button>
+              </motion.div>
+              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
+                <Button
+                  variant="default"
+                  onClick={() => router.push("/ledger-flow/v3")}
+                  rightGlyph={<Icon glyph="Sparkle" />}
+                  size="small"
+                >
+                  v2
                 </Button>
               </motion.div>
             </div>

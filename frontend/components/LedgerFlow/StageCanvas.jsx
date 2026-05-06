@@ -192,9 +192,8 @@ function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountI
   );
 }
 
-function ReconcileMembrane({ reached, x, h }) {
+function ReconcileMembrane({ reached, x, h, sublabel = "BYPASSED · MVP" }) {
   const cls = [styles.membrane, reached ? styles.membraneReached : ""].filter(Boolean).join(" ");
-  // Membrane spans 88% of viewBox height, vertically centered (h=400 → y 24..376)
   const top = 24;
   const bottom = h - 24;
   const span = bottom - top;
@@ -202,10 +201,9 @@ function ReconcileMembrane({ reached, x, h }) {
     <g className={cls}>
       <rect x={x - 22} y={top} width={44} height={span} rx={6} ry={6} className={styles.membraneField} />
       <line x1={x} y1={top} x2={x} y2={bottom} className={styles.membraneLine} />
-      {/* Label sits inside the membrane field at the top, with comfortable padding */}
       <g transform={`translate(${x},${top + 28})`} aria-hidden="true">
         <text textAnchor="middle" y={-4} className={styles.membraneTitle}>RECONCILE</text>
-        <text textAnchor="middle" y={10} className={styles.membraneSub}>BYPASSED · MVP</text>
+        <text textAnchor="middle" y={10} className={styles.membraneSub}>{sublabel}</text>
       </g>
     </g>
   );
@@ -292,7 +290,7 @@ function ChangeStreamWavefront({ visible, originX, originY }) {
   );
 }
 
-const StageCanvas = ({ state }) => {
+const StageCanvas = ({ state, reconcileSublabel }) => {
   const reachedStages = state.reachedStages || {};
   const currentStage = state.currentStage;
   const balances = state.balances || {};
@@ -383,7 +381,7 @@ const StageCanvas = ({ state }) => {
               })}
             </g>
 
-            <ReconcileMembrane reached={reached("RECONCILE_SKIPPED")} x={ANCHOR.membraneX} h={VB.h} />
+            <ReconcileMembrane reached={reached("RECONCILE_SKIPPED")} x={ANCHOR.membraneX} h={VB.h} sublabel={reconcileSublabel} />
             <ChangeStreamWavefront visible={reached("CHANGE_STREAM")} originX={ANCHOR.journal.x} originY={ANCHOR.journal.y} />
 
             <CustomerNode

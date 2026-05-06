@@ -1,0 +1,190 @@
+/* ErasureCanvas.module.css */
+
+.headerText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.cardHeader {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  dominant-baseline: middle;
+}
+
+.cardSub {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  fill: #889397;
+  dominant-baseline: middle;
+}
+
+.miniCardHeader {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.fieldKey {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.fieldVal {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 400;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.fieldValStruck {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 400;
+  fill: #C82430;
+  dominant-baseline: middle;
+}
+
+.cipherVal {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 400;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.orphanedVal {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  fill: #C82430;
+  dominant-baseline: middle;
+}
+
+.actTitle {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 700;
+  fill: #C82430;
+  letter-spacing: 0.07em;
+  dominant-baseline: middle;
+}
+
+.actSub {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9px;
+  font-weight: 400;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.actStatus {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  dominant-baseline: middle;
+}
+
+.cmdText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  fill: #C82430;
+  dominant-baseline: middle;
+}
+
+.stampText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  dominant-baseline: middle;
+}
+
+.retentionLabel {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  fill: #00684A;
+  letter-spacing: 0.04em;
+  dominant-baseline: middle;
+}
+
+.retentionSub {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 8.5px;
+  font-weight: 400;
+  fill: #3D7A61;
+  dominant-baseline: middle;
+}
+
+.jnlId {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.jnlStatus {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  fill: #00684A;
+  dominant-baseline: middle;
+}
+
+.retainedBadge {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 8.5px;
+  font-weight: 700;
+  fill: #00684A;
+  letter-spacing: 0.05em;
+  dominant-baseline: middle;
+}
+
+.queryLabel {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  fill: #C82430;
+  letter-spacing: 0.05em;
+  dominant-baseline: middle;
+}
+
+.queryCode {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 11.5px;
+  font-weight: 500;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.querySub {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  fill: #C82430;
+  dominant-baseline: middle;
+}
+
+.idleHint {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  fill: #889397;
+  dominant-baseline: middle;
+}

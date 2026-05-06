@@ -1,0 +1,145 @@
+/* ReconcileCanvas.module.css */
+
+.headerText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.gateText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  dominant-baseline: middle;
+}
+
+.colHeader {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.colSub {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 400;
+  fill: #889397;
+  letter-spacing: 0.02em;
+  dominant-baseline: middle;
+}
+
+.colCount {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.colTotal {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  dominant-baseline: middle;
+}
+
+.deltaEyebrow {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  dominant-baseline: middle;
+}
+
+.deltaAmount {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 20px;
+  font-weight: 700;
+  dominant-baseline: middle;
+}
+
+.deltaStatus {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.sealText {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  dominant-baseline: middle;
+}
+
+.sealSub {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  dominant-baseline: middle;
+}
+
+.excId {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.excTypePill {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  dominant-baseline: middle;
+}
+
+.excBreak {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  dominant-baseline: middle;
+}
+
+.excMeta {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  fill: #5C6C75;
+  letter-spacing: 0.03em;
+  dominant-baseline: middle;
+}
+
+.excStatus {
+  font-family: 'Source Code Pro', Menlo, 'Courier New', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.excNote {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  fill: #3D4F58;
+  dominant-baseline: middle;
+}
+
+.idleHint {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 28px;
+  font-weight: 300;
+  fill: #889397;
+  dominant-baseline: middle;
+}

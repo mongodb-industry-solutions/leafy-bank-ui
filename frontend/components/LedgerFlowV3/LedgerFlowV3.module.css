@@ -1,0 +1,248 @@
+/* LedgerFlowV3.module.css — extends v2 layout with scene strip row */
+
+.page {
+  display: grid;
+  /* topBar · sceneStrip · idRow · canvas (1fr) · balances · interpreter · footer */
+  grid-template-rows: auto auto auto 1fr auto auto auto;
+  gap: 8px;
+  height: calc(100vh - 80px);
+  padding: 8px 16px 12px 16px;
+  margin-top: 80px;
+  background: #FFFFFF;
+  color: #001E2B;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* Top bar — same as v2 */
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #E8EDEB;
+  flex-wrap: wrap;
+}
+
+.titleBlock {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.title {
+  margin: 0 !important;
+  color: #001E2B !important;
+  font-size: 28px !important;
+  line-height: 32px !important;
+  font-weight: 400 !important;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btnRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stepHint {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 10px;
+  background: #E1F7FF;
+  color: #0C2657;
+  border: 1px solid #C3E7FE;
+  border-radius: 12px;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 11.5px;
+}
+
+.kbd {
+  display: inline-block;
+  padding: 0 5px;
+  border-radius: 3px;
+  border: 1px solid #C1C7C6;
+  background: #FFFFFF;
+  color: #001E2B;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+/* ─── Scene Strip ─────────────────────────────────────────────────────────── */
+
+.sceneStrip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.sceneStrip::-webkit-scrollbar { display: none; }
+
+.sceneChip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  border: 1px solid #E8EDEB;
+  background: #F9FBFA;
+  cursor: pointer;
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #3D4F58;
+  white-space: nowrap;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  flex-shrink: 0;
+}
+
+.sceneChip:hover {
+  background: #FFFFFF;
+  border-color: #C8D1CF;
+}
+
+.sceneChipActive {
+  background: #E3FCF7;
+  border-color: #00A35C;
+  color: #00684A;
+  font-weight: 600;
+}
+
+.sceneChipActive:hover {
+  background: #C0FAE6;
+}
+
+.sceneChipDone {
+  border-color: #00A35C40;
+}
+
+.sceneChipDone .sceneChipNum::after {
+  content: " ✓";
+  font-size: 9px;
+}
+
+.sceneChipNum {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.sceneChipDivider {
+  color: #E8EDEB;
+  font-size: 14px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+/* ─── ID Row ─────────────────────────────────────────────────────────────── */
+
+.idRow {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 2px;
+  flex-shrink: 0;
+}
+
+.idRow::-webkit-scrollbar { height: 4px; }
+.idRow::-webkit-scrollbar-thumb { background: #E8EDEB; border-radius: 2px; }
+
+.copyable {
+  flex-shrink: 0;
+  max-width: 320px;
+}
+
+/* ─── Bands ──────────────────────────────────────────────────────────────── */
+
+.canvasBand {
+  display: flex;
+  min-height: 240px;
+  overflow: hidden;
+}
+
+.balancesBand {
+  flex-shrink: 0;
+}
+
+.interpreterBand {
+  display: flex;
+  flex-direction: column;
+  min-height: 200px;
+  max-height: 26vh;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* ─── BIAN footer strip ───────────────────────────────────────────────────── */
+
+.bianStrip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 6px;
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 10.5px;
+  color: #5C6C75;
+  letter-spacing: 0.02em;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  height: 28px;
+}
+
+.bianStrip strong { color: #00684A; font-weight: 600; }
+.bianStrip .sep   { color: #C1C7C6; }
+
+/* Global drawer width override */
+.page :global(dialog[data-lgid^="lg-drawer"]) {
+  width: min(1100px, 96vw) !important;
+  min-width: min(1100px, 96vw) !important;
+  max-width: 96vw !important;
+}
+
+/* ─── modeControl ─────────────────────────────────────────────────────────── */
+.modeControl {}
+
+@media (max-width: 1100px) {
+  .page {
+    grid-template-rows: auto auto auto auto 1fr auto auto;
+    height: auto;
+    min-height: calc(100vh - 60px);
+    overflow: visible;
+  }
+  .canvasBand { min-height: 480px; }
+  .interpreterBand { max-height: none; }
+  .sceneStrip { flex-wrap: wrap; }
+}

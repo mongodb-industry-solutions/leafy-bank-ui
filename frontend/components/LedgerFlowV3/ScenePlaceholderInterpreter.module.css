@@ -1,0 +1,37 @@
+/* ScenePlaceholderInterpreter.module.css */
+
+.callout {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-top: 8px;
+  border-left: 4px solid;
+}
+
+.calloutImportant {
+  background: #FFEAE5;
+  border-left-color: #C82430;
+}
+
+.calloutNote {
+  background: #E3FCF7;
+  border-left-color: #00A35C;
+}
+
+.calloutTitle {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #001E2B;
+  line-height: 1.3;
+}
+
+.calloutBody {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #3D4F58;
+  line-height: 1.4;
+}

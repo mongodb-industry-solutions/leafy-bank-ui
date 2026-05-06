@@ -1,0 +1,72 @@
+/* CollectionDrawerV3.module.css — v3 extensions on top of v2 drawer styles */
+
+/* Rail group headers */
+.railGroupHeader {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px 4px 16px;
+  margin-top: 8px;
+}
+
+.railGroupHeader:first-child {
+  margin-top: 0;
+}
+
+.railGroupLabel {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #889397;
+}
+
+.railGroupPhase {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Stub rail item — slightly dimmed */
+.railItemStub {
+  opacity: 0.72;
+}
+
+/* Stub panel components */
+.stubNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 14px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #3D4F58;
+}
+
+.stubPlaceholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  border: 1.5px dashed;
+  border-radius: 10px;
+  min-height: 80px;
+}
+
+.stubLabel {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.stubPill {
+  min-width: 72px;
+}
