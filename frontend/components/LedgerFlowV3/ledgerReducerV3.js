@@ -6,7 +6,6 @@ import {
   hasNextStage,
   hasPrevStage,
 } from "../LedgerFlow/ledgerReducer";
-import { reconcileReducer, reconcileInitialState } from "./reconcileReducer";
 import { onboardingReducer, onboardingInitialState } from "./onboardingReducer";
 import { erasureReducer, erasureInitialState } from "./erasureReducer";
 import { fanoutReducer, fanoutInitialState } from "./fanoutReducer";
@@ -17,8 +16,7 @@ export const SCENES = [
   { key: "POSTING",    label: "The Posting", index: 1 },
   { key: "FANOUT",     label: "Fan-out",     index: 2 },
   { key: "HARD_EDGE",  label: "Hard Edge",   index: 3 },
-  { key: "RECONCILE",  label: "Reconcile",   index: 4 },
-  { key: "ERASURE",    label: "Erasure",     index: 5 },
+  { key: "ERASURE",    label: "Erasure",     index: 4 },
 ];
 
 export const initialStateV3 = {
@@ -26,7 +24,6 @@ export const initialStateV3 = {
   scene: "ONBOARDING",
   sceneIndex: 0,
   scenesVisited: {},
-  reconcile: reconcileInitialState,
   onboarding: onboardingInitialState,
   erasure: erasureInitialState,
   fanout: fanoutInitialState,
@@ -40,10 +37,10 @@ export function ledgerReducerV3(state, action) {
       return {
         ...v2InitialState,
         mode: state.mode,
+        scenario: state.scenario || "FX_ROUNDING",
         scene: action.scene,
         sceneIndex: idx >= 0 ? idx : 1,
         scenesVisited: { ...state.scenesVisited },
-        reconcile: { ...reconcileInitialState, scenario: state.reconcile?.scenario || "FX_ROUNDING" },
         onboarding: onboardingInitialState,
         erasure: erasureInitialState,
         fanout: fanoutInitialState,
@@ -51,24 +48,8 @@ export function ledgerReducerV3(state, action) {
       };
     }
 
-    case "RECONCILE_RESET":
-    case "RECONCILE_SET_MODE":
-    case "RECONCILE_SET_SCENARIO":
-    case "RECONCILE_START":
-    case "RECONCILE_STEP_PREV":
-    case "RECONCILE_STAGE_EVENT": {
-      const nextReconcile = reconcileReducer(state.reconcile || reconcileInitialState, action);
-      const isResolved =
-        action.type === "RECONCILE_STAGE_EVENT" &&
-        action.event?.stage === "RECONCILE_RESOLVED";
-      return {
-        ...state,
-        reconcile: nextReconcile,
-        scenesVisited: isResolved
-          ? { ...state.scenesVisited, [state.scene]: true }
-          : state.scenesVisited,
-      };
-    }
+    case "SET_SCENARIO":
+      return { ...state, scenario: action.scenario };
 
     case "ONBOARD_RESET":
     case "ONBOARD_SET_MODE":
@@ -152,7 +133,6 @@ export function ledgerReducerV3(state, action) {
           action.type === "STAGE_EVENT" && action.event?.stage === "SETTLED"
             ? { ...state.scenesVisited, [state.scene]: true }
             : state.scenesVisited,
-        reconcile: state.reconcile || reconcileInitialState,
         onboarding: state.onboarding || onboardingInitialState,
         erasure: state.erasure || erasureInitialState,
         fanout: state.fanout || fanoutInitialState,

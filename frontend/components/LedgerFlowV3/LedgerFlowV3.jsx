@@ -13,13 +13,12 @@ import { MotionConfig, motion } from "motion/react";
 import { SPRING } from "../LedgerFlow/motionConfig";
 
 import { ledgerReducerV3, initialStateV3, hasNextStage, hasPrevStage, SCENES } from "./ledgerReducerV3";
-import { reconcileHasNextStage, reconcileHasPrevStage, RECONCILE_STAGE_LIST } from "./reconcileReducer";
 import { onboardingHasNextStage, onboardingHasPrevStage, ONBOARD_STAGE_LIST } from "./onboardingReducer";
 import { erasureHasNextStage, erasureHasPrevStage, ERASURE_STAGE_LIST } from "./erasureReducer";
 import { fanoutHasNextStage, fanoutHasPrevStage, FANOUT_STAGE_LIST } from "./fanoutReducer";
 import { hardEdgeHasNextStage, hardEdgeHasPrevStage, HARD_EDGE_STAGE_LIST } from "./hardEdgeReducer";
+import { STAGE_LIST } from "../LedgerFlow/stageNarration";
 import { buildPaymentRun, runMode } from "../LedgerFlow/simulator";
-import { buildReconcileRun, runReconcileMode } from "./reconcileSimulator";
 import { buildOnboardingRun, runOnboardingMode } from "./onboardingSimulator";
 import { buildErasureRun, runErasureMode } from "./erasureSimulator";
 import { buildFanoutRun, runFanoutMode } from "./fanoutSimulator";
@@ -35,7 +34,6 @@ import ScenePlaceholderInterpreter from "./ScenePlaceholderInterpreter";
 import styles from "./LedgerFlowV3.module.css";
 
 const POSTING_SCENE = "POSTING";
-const RECONCILE_SCENE = "RECONCILE";
 const ONBOARDING_SCENE = "ONBOARDING";
 const ERASURE_SCENE = "ERASURE";
 const FANOUT_SCENE = "FANOUT";
@@ -48,10 +46,6 @@ const LedgerFlowV3 = () => {
   // Posting scene runner refs
   const runnerRef = useRef(null);
   const runRef = useRef(null);
-
-  // Reconcile scene runner refs
-  const reconcileRunnerRef = useRef(null);
-  const reconcileRunRef = useRef(null);
 
   // Onboarding scene runner refs
   const onboardRunnerRef = useRef(null);
@@ -72,26 +66,20 @@ const LedgerFlowV3 = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const isPostingScene = state.scene === POSTING_SCENE;
-  const isReconcileScene = state.scene === RECONCILE_SCENE;
   const isOnboardingScene = state.scene === ONBOARDING_SCENE;
   const isErasureScene = state.scene === ERASURE_SCENE;
   const isFanoutScene = state.scene === FANOUT_SCENE;
   const isHardEdgeScene = state.scene === HARD_EDGE_SCENE;
 
-  const reconcile = state.reconcile;
-  const reconcileStatus = reconcile?.status || "IDLE";
-  const reconcileMode = reconcile?.mode || "STEP";
-  const reconcileScenario = reconcile?.scenario || "FX_ROUNDING";
-
+  const scenario = state.scenario || "FX_ROUNDING";
   // Keep a ref so startSceneInStepMode (deps=[]) can read current scenario
-  const reconcileScenarioRef = useRef(reconcileScenario);
-  reconcileScenarioRef.current = reconcileScenario;
+  const scenarioRef = useRef(scenario);
+  scenarioRef.current = scenario;
 
   // ─── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
     return () => {
       runnerRef.current?.cancel?.();
-      reconcileRunnerRef.current?.cancel?.();
       onboardRunnerRef.current?.cancel?.();
       erasureRunnerRef.current?.cancel?.();
       fanoutRunnerRef.current?.cancel?.();
@@ -109,6 +97,7 @@ const LedgerFlowV3 = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       description: DEFAULT_PAYMENT.description,
+      scenario: scenarioRef.current,
     });
     runRef.current = run;
     dispatch({
@@ -119,6 +108,7 @@ const LedgerFlowV3 = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       mode: state.mode,
+      scenario: scenarioRef.current,
     });
     runnerRef.current = runMode(run.timeline, dispatch, state.mode);
     if (state.mode === "STEP") {
@@ -170,72 +160,11 @@ const LedgerFlowV3 = () => {
     dispatch({ type: "SET_MODE", mode: value });
   }, []);
 
-  // ─── Reconcile scene handlers ──────────────────────────────────────────────
-  const handleReconcileSimulate = useCallback(() => {
-    if (!isReconcileScene) return;
-    reconcileRunnerRef.current?.cancel?.();
-    const { timeline } = buildReconcileRun();
-    reconcileRunRef.current = { timeline };
-    const mode = reconcileMode;
-    dispatch({ type: "RECONCILE_START", mode });
-    reconcileRunnerRef.current = runReconcileMode(timeline, dispatch, mode);
-    if (mode === "STEP") {
-      reconcileRunnerRef.current.next();
-    }
-  }, [isReconcileScene, reconcileMode]);
-
-  const handleReconcileNext = useCallback(() => {
-    if (!isReconcileScene) return;
-    if (reconcileStatus === "IDLE") { handleReconcileSimulate(); return; }
-    if (reconcileStatus === "SETTLED") return;
-    const timeline = reconcileRunRef.current?.timeline;
-    if (!timeline) return;
-    const nextIdx = reconcile?.events?.length || 0;
-    if (nextIdx >= timeline.length) return;
-    reconcileRunnerRef.current?.cancel?.();
-    dispatch({ type: "RECONCILE_STAGE_EVENT", event: timeline[nextIdx] });
-    reconcileRunnerRef.current = runReconcileMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
-  }, [isReconcileScene, reconcileStatus, reconcile?.events?.length, handleReconcileSimulate]);
-
-  const handleReconcilePrev = useCallback(() => {
-    if (!isReconcileScene) return;
-    if (!reconcileHasPrevStage(reconcile)) return;
-    if (!reconcileRunRef.current) return;
-    reconcileRunnerRef.current?.cancel?.();
-    dispatch({ type: "RECONCILE_STEP_PREV" });
-  }, [isReconcileScene, reconcileMode, reconcile]);
-
-  const lastReconcileEventCountRef = useRef(0);
-  useEffect(() => {
-    const n = reconcile?.events?.length || 0;
-    if (n < lastReconcileEventCountRef.current && reconcileRunRef.current) {
-      const remaining = reconcileRunRef.current.timeline.slice(n);
-      reconcileRunnerRef.current?.cancel?.();
-      reconcileRunnerRef.current = runReconcileMode(remaining, dispatch, "STEP");
-    }
-    lastReconcileEventCountRef.current = n;
-  }, [reconcile?.events?.length]);
-
-  const handleReconcileReset = useCallback(() => {
-    reconcileRunnerRef.current?.cancel?.();
-    reconcileRunnerRef.current = null;
-    reconcileRunRef.current = null;
-    dispatch({ type: "RECONCILE_RESET" });
-  }, []);
-
-  const handleReconcileModeChange = useCallback((value) => {
-    reconcileRunnerRef.current?.cancel?.();
-    reconcileRunnerRef.current = null;
-    dispatch({ type: "RECONCILE_SET_MODE", mode: value });
-  }, []);
-
-  const handleSetReconcileScenario = useCallback((scenario) => {
-    if (reconcileStatus !== "IDLE") return; // don't change mid-run
-    reconcileRunnerRef.current?.cancel?.();
-    reconcileRunnerRef.current = null;
-    reconcileRunRef.current = null;
-    dispatch({ type: "RECONCILE_SET_SCENARIO", scenario });
-  }, [reconcileStatus]);
+  // ─── Global scenario selector handler ─────────────────────────────────────
+  const handleSetScenario = useCallback((s) => {
+    if (state.status !== "IDLE" && isPostingScene) return; // don't change mid-run
+    dispatch({ type: "SET_SCENARIO", scenario: s });
+  }, [state.status, isPostingScene]);
 
   // ─── Onboarding scene handlers ────────────────────────────────────────────
   const onboarding = state.onboarding;
@@ -484,7 +413,6 @@ const LedgerFlowV3 = () => {
   // ─── Cancel + clear all runners ───────────────────────────────────────────
   const cancelAll = useCallback(() => {
     runnerRef.current?.cancel?.(); runnerRef.current = null; runRef.current = null;
-    reconcileRunnerRef.current?.cancel?.(); reconcileRunnerRef.current = null; reconcileRunRef.current = null;
     onboardRunnerRef.current?.cancel?.(); onboardRunnerRef.current = null; onboardRunRef.current = null;
     erasureRunnerRef.current?.cancel?.(); erasureRunnerRef.current = null; erasureRunRef.current = null;
     fanoutRunnerRef.current?.cancel?.(); fanoutRunnerRef.current = null; fanoutRunRef.current = null;
@@ -509,9 +437,9 @@ const LedgerFlowV3 = () => {
         break;
       }
       case "POSTING": {
-        const run = buildPaymentRun({ from: FRIDA, to: BO, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, description: DEFAULT_PAYMENT.description });
+        const run = buildPaymentRun({ from: FRIDA, to: BO, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, description: DEFAULT_PAYMENT.description, scenario: scenarioRef.current });
         runRef.current = run;
-        dispatch({ type: "START", from: FRIDA, to: BO, identifiers: run.identifiers, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, mode: "STEP" });
+        dispatch({ type: "START", from: FRIDA, to: BO, identifiers: run.identifiers, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, mode: "STEP", scenario: scenarioRef.current });
         dispatch({ type: "STAGE_EVENT", event: run.timeline[0] });
         runnerRef.current = runMode(run.timeline.slice(1), dispatch, "STEP");
         break;
@@ -530,14 +458,6 @@ const LedgerFlowV3 = () => {
         dispatch({ type: "HARD_EDGE_START", mode: "STEP" });
         dispatch({ type: "HARD_EDGE_STAGE_EVENT", event: ht[0] });
         hardEdgeRunnerRef.current = runHardEdgeMode(ht.slice(1), dispatch, "STEP");
-        break;
-      }
-      case "RECONCILE": {
-        const { timeline: rt } = buildReconcileRun({ scenario: reconcileScenarioRef.current });
-        reconcileRunRef.current = { timeline: rt };
-        dispatch({ type: "RECONCILE_START", mode: "STEP" });
-        dispatch({ type: "RECONCILE_STAGE_EVENT", event: rt[0] });
-        reconcileRunnerRef.current = runReconcileMode(rt.slice(1), dispatch, "STEP");
         break;
       }
       case "ERASURE": {
@@ -575,10 +495,6 @@ const LedgerFlowV3 = () => {
         currentStatus = hardEdge?.status || "IDLE"; currentEvents = hardEdge?.events;
         currentTimeline = hardEdgeRunRef.current?.timeline; stageEventType = "HARD_EDGE_STAGE_EVENT";
         sceneRunnerRef = hardEdgeRunnerRef; sceneRunnerFn = runHardEdgeMode; break;
-      case "RECONCILE":
-        currentStatus = reconcile?.status || "IDLE"; currentEvents = reconcile?.events;
-        currentTimeline = reconcileRunRef.current?.timeline; stageEventType = "RECONCILE_STAGE_EVENT";
-        sceneRunnerRef = reconcileRunnerRef; sceneRunnerFn = runReconcileMode; break;
       case "ERASURE":
         currentStatus = erasure?.status || "IDLE"; currentEvents = erasure?.events;
         currentTimeline = erasureRunRef.current?.timeline; stageEventType = "ERASURE_STAGE_EVENT";
@@ -595,7 +511,6 @@ const LedgerFlowV3 = () => {
         case "POSTING": runRef.current = null; break;
         case "FANOUT": fanoutRunRef.current = null; break;
         case "HARD_EDGE": hardEdgeRunRef.current = null; break;
-        case "RECONCILE": reconcileRunRef.current = null; break;
         case "ERASURE": erasureRunRef.current = null; break;
       }
       dispatch({ type: "SET_SCENE", scene: SCENES[nextSceneIdx].key });
@@ -613,7 +528,7 @@ const LedgerFlowV3 = () => {
     sceneRunnerRef.current?.cancel?.();
     dispatch({ type: stageEventType, event: currentTimeline[nextIdx] });
     sceneRunnerRef.current = sceneRunnerFn(currentTimeline.slice(nextIdx + 1), dispatch, "STEP");
-  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, fanout, hardEdge, reconcile, erasure, startSceneInStepMode]);
+  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, fanout, hardEdge, erasure, startSceneInStepMode]);
 
   // ─── Global Prev — step back within current scene ─────────────────────────
   const handleGlobalPrev = useCallback(() => {
@@ -634,17 +549,13 @@ const LedgerFlowV3 = () => {
         if (!hardEdgeHasPrevStage(hardEdge) || !hardEdgeRunRef.current) return;
         hardEdgeRunnerRef.current?.cancel?.();
         dispatch({ type: "HARD_EDGE_STEP_PREV" }); break;
-      case "RECONCILE":
-        if (!reconcileHasPrevStage(reconcile) || !reconcileRunRef.current) return;
-        reconcileRunnerRef.current?.cancel?.();
-        dispatch({ type: "RECONCILE_STEP_PREV" }); break;
       case "ERASURE":
         if (!erasureHasPrevStage(erasure) || !erasureRunRef.current) return;
         erasureRunnerRef.current?.cancel?.();
         dispatch({ type: "ERASURE_STEP_PREV" }); break;
       default: break;
     }
-  }, [state, onboarding, fanout, hardEdge, reconcile, erasure]);
+  }, [state, onboarding, fanout, hardEdge, erasure]);
 
   // ─── Global Reset ─────────────────────────────────────────────────────────
   const handleGlobalReset = useCallback(() => {
@@ -659,11 +570,10 @@ const LedgerFlowV3 = () => {
       case "POSTING":    return state.status;
       case "FANOUT":     return fanout?.status || "IDLE";
       case "HARD_EDGE":  return hardEdge?.status || "IDLE";
-      case "RECONCILE":  return reconcile?.status || "IDLE";
       case "ERASURE":    return erasure?.status || "IDLE";
       default:           return "IDLE";
     }
-  }, [state.scene, state.status, onboarding?.status, fanout?.status, hardEdge?.status, reconcile?.status, erasure?.status]);
+  }, [state.scene, state.status, onboarding?.status, fanout?.status, hardEdge?.status, erasure?.status]);
 
   const globalStarted = globalCurrentStatus !== "IDLE" || state.sceneIndex > 0 || Object.keys(state.scenesVisited).length > 0;
   const globalFinished = state.scene === "ERASURE" && erasureStatus === "SETTLED";
@@ -678,11 +588,10 @@ const LedgerFlowV3 = () => {
       case "POSTING":    return hasPrevStage(state);
       case "FANOUT":     return fanoutHasPrevStage(fanout);
       case "HARD_EDGE":  return hardEdgeHasPrevStage(hardEdge);
-      case "RECONCILE":  return reconcileHasPrevStage(reconcile);
       case "ERASURE":    return erasureHasPrevStage(erasure);
       default:           return false;
     }
-  }, [state, onboarding, fanout, hardEdge, reconcile, erasure]);
+  }, [state, onboarding, fanout, hardEdge, erasure]);
 
   // ─── Keyboard stepping ─────────────────────────────────────────────────────
   useStepperKeys({
@@ -702,10 +611,9 @@ const LedgerFlowV3 = () => {
     }
     const stageListLen = {
       ONBOARDING: ONBOARD_STAGE_LIST.length,
-      POSTING: 9,
+      POSTING: STAGE_LIST.length,
       FANOUT: FANOUT_STAGE_LIST.length,
       HARD_EDGE: HARD_EDGE_STAGE_LIST.length,
-      RECONCILE: RECONCILE_STAGE_LIST.length,
       ERASURE: ERASURE_STAGE_LIST.length,
     }[state.scene] || 0;
     const stageIdx = (() => {
@@ -714,13 +622,12 @@ const LedgerFlowV3 = () => {
         case "POSTING":    return (state.stageIndex ?? -1) + 1;
         case "FANOUT":     return (fanout?.stageIndex ?? -1) + 1;
         case "HARD_EDGE":  return (hardEdge?.stageIndex ?? -1) + 1;
-        case "RECONCILE":  return (reconcile?.stageIndex ?? -1) + 1;
         case "ERASURE":    return (erasure?.stageIndex ?? -1) + 1;
         default:           return 0;
       }
     })();
     return `${sceneName} · ${stageIdx} / ${stageListLen}`;
-  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, fanout, hardEdge, reconcile, erasure]);
+  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, fanout, hardEdge, erasure]);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -817,49 +724,44 @@ const LedgerFlowV3 = () => {
           })}
         </nav>
 
-        {/* IDENTIFIER COPYABLES — only when POSTING scene has active identifiers */}
-        {isPostingScene && state.identifiers.idempotencyKey && (
-          <div className={styles.idRow}>
-            {state.identifiers.journalId && (
-              <Copyable label="journalId" size="small" className={styles.copyable}>
-                {state.identifiers.journalId}
+        {/* ID / SCENARIO ROW — one grid slot, content depends on state */}
+        <div className={styles.idRow}>
+          {isPostingScene && state.identifiers.idempotencyKey ? (
+            <>
+              {state.identifiers.journalId && (
+                <Copyable label="journalId" size="small" className={styles.copyable}>
+                  {state.identifiers.journalId}
+                </Copyable>
+              )}
+              <Copyable label="idempotencyKey" size="small" className={styles.copyable}>
+                {state.identifiers.idempotencyKey}
               </Copyable>
-            )}
-            <Copyable label="idempotencyKey" size="small" className={styles.copyable}>
-              {state.identifiers.idempotencyKey}
-            </Copyable>
-            {state.identifiers.resumeToken && (
-              <Copyable label="resumeToken" size="small" className={styles.copyable}>
-                {state.identifiers.resumeToken}
-              </Copyable>
-            )}
-          </div>
-        )}
-        {/* Spacer row when idRow is absent to maintain grid */}
-        {!(isPostingScene && state.identifiers.idempotencyKey) && (
-          <div style={{ height: 0 }} />
-        )}
-
-        {/* RECONCILE SCENARIO SELECTOR — shown when reconcile scene is active or upcoming */}
-        {isReconcileScene && reconcileStatus === "IDLE" && (
-          <div className={styles.scenarioRow}>
-            <span className={styles.scenarioLabel}>Reconcile scenario:</span>
-            {[
-              { key: "FX_ROUNDING", label: "FX Rounding Δ$1.00" },
-              { key: "DUPLICATE",   label: "Duplicate Post Δ$250" },
-              { key: "MATCH",       label: "Perfect Balance Δ$0" },
-            ].map((s) => (
-              <button
-                key={s.key}
-                type="button"
-                className={`${styles.scenarioPill} ${reconcileScenario === s.key ? styles.scenarioPillActive : ""}`}
-                onClick={() => handleSetReconcileScenario(s.key)}
-              >
-                {s.label}
-              </button>
-            ))}
-          </div>
-        )}
+              {state.identifiers.resumeToken && (
+                <Copyable label="resumeToken" size="small" className={styles.copyable}>
+                  {state.identifiers.resumeToken}
+                </Copyable>
+              )}
+            </>
+          ) : !globalStarted ? (
+            <>
+              <span className={styles.scenarioLabel}>EOD reconcile scenario:</span>
+              {[
+                { key: "FX_ROUNDING", label: "FX Rounding Δ$1.00" },
+                { key: "DUPLICATE",   label: "Duplicate Post Δ$250" },
+                { key: "MATCH",       label: "Perfect Balance Δ$0" },
+              ].map((s) => (
+                <button
+                  key={s.key}
+                  type="button"
+                  className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
+                  onClick={() => handleSetScenario(s.key)}
+                >
+                  {s.label}
+                </button>
+              ))}
+            </>
+          ) : null}
+        </div>
 
         {/* CANVAS */}
         <main className={styles.canvasBand}>

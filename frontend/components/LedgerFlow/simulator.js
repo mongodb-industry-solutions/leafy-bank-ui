@@ -2,6 +2,8 @@
 // Same event shape the backend Change Stream subscriber will eventually emit,
 // so the UI can swap data sources without re-rendering logic.
 
+import { SCENARIO_DATA } from "../LedgerFlowV3/reconcileFixtures";
+
 const PERIOD_CODE = "2026-05";
 const PERIOD_NAME = "May 2026";
 
@@ -33,7 +35,7 @@ function isoDate(date) {
 //   - the canonical journalEntry document (status='POSTED')
 //   - the two subLedgerEntries documents (debit + credit legs)
 //   - the ordered event timeline (delays in ms)
-export function buildPaymentRun({ from, to, amount, currency = "USD", description }) {
+export function buildPaymentRun({ from, to, amount, currency = "USD", description, scenario = "FX_ROUNDING" }) {
   const now = new Date();
   const stamp = ymd(now);
   const idempotencyKey = `pay-${uuid()}`;
@@ -202,7 +204,31 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
       stage: "BALANCE_PROJECTED_CREDIT",
       payload: { accountId: to.accountId, before: to.balance, after: to.balance + amount },
     },
-    { t: 7300, stage: "SETTLED", payload: {} },
+    {
+      t: 7300,
+      stage: "EOD_RECONCILE_RUN",
+      payload: { scenario, run: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).run },
+    },
+    {
+      t: 8300,
+      stage: "EOD_RECONCILE_RESULT",
+      payload: {
+        scenario,
+        balanced: scenario === "MATCH",
+        run: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).run,
+        exception: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).exception,
+      },
+    },
+    {
+      t: 9300,
+      stage: "EOD_RECONCILE_RESOLVED",
+      payload: {
+        scenario,
+        exception: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).exception,
+        correction: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).correction,
+      },
+    },
+    { t: 10300, stage: "SETTLED", payload: {} },
   ];
 
   return {

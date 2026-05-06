@@ -451,6 +451,46 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
                 />
               ))}
             </g>
+
+            {/* EOD Reconcile status panel — visible during EOD stages */}
+            {reached("EOD_RECONCILE_RUN") && (() => {
+              const scenario = state.scenario || "FX_ROUNDING";
+              const isResolved = reached("EOD_RECONCILE_RESOLVED");
+              const isResult = reached("EOD_RECONCILE_RESULT");
+              const isMatch = scenario === "MATCH";
+              const fill = isResolved
+                ? (isMatch ? "#E3FCF7" : "#E3FCF7")
+                : (isResult && !isMatch) ? "#FEF3CD" : "#E1F7FF";
+              const stroke = isResolved ? "#00A35C" : (isResult && !isMatch) ? "#916A00" : "#016BF8";
+              const statusText = isResolved
+                ? (isMatch ? "BALANCED · Period-close gate open" : "RESOLVED · Period-close gate open")
+                : (isResult && !isMatch) ? "UNBALANCED · Exception created · Period close blocked"
+                : (isResult && isMatch) ? "BALANCED · Gate opens immediately"
+                : "EOD Reconciliation running…";
+              const scenarioMap = { FX_ROUNDING: "FX Rounding Δ$1.00", MATCH: "Perfect Balance Δ$0.00", DUPLICATE: "Duplicate Post Δ$250.00" };
+              return (
+                <motion.g
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  <rect x={VB.ox + 8} y={VB.oy + VB.h - 42} width={VB.w - 16} height={34} rx={7}
+                    fill={fill} stroke={stroke} strokeWidth={1.2} opacity={0.95} />
+                  <text x={VB.ox + 20} y={VB.oy + VB.h - 22} className={styles.eodStatusLabel} fill={stroke}>
+                    EOD RECONCILE
+                  </text>
+                  <text x={VB.ox + 110} y={VB.oy + VB.h - 22} className={styles.eodStatusText} fill="#001E2B">
+                    {statusText}
+                  </text>
+                  <text x={VB.ox + VB.w - 16} y={VB.oy + VB.h - 22} textAnchor="end" className={styles.eodScenarioText} fill={stroke}>
+                    {scenarioMap[scenario] || scenario}
+                  </text>
+                  <text x={VB.ox + 20} y={VB.oy + VB.h - 10} className={styles.eodSubText} fill="#5C6C75">
+                    subLedgerEntries ↔ GL account 2100 · period May 2026 · zero tolerance
+                  </text>
+                </motion.g>
+              );
+            })()}
           </svg>
         </div>
       </div>
