@@ -18,7 +18,7 @@ export function indexOfReconcileStage(stage) {
 
 export const reconcileInitialState = {
   status: "IDLE",
-  mode: "STEP",
+  mode: "SLOW",
   currentStage: null,
   stageIndex: -1,
   reachedStages: {},

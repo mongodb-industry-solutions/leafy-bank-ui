@@ -122,13 +122,13 @@ const LedgerFlowV3 = () => {
   }, [state.mode, isPostingScene]);
 
   const handleNext = useCallback(() => {
-    if (!isPostingScene || state.mode !== "STEP") return;
+    if (!isPostingScene || state.status !== "STEP_PAUSED") return;
     if (!runnerRef.current) { handleSimulate(); return; }
     runnerRef.current.next();
-  }, [state.mode, handleSimulate, isPostingScene]);
+  }, [state.status, handleSimulate, isPostingScene]);
 
   const handlePrev = useCallback(() => {
-    if (!isPostingScene || state.mode !== "STEP") return;
+    if (!isPostingScene) return;
     if (!hasPrevStage(state)) return;
     if (!runRef.current) return;
     runnerRef.current?.cancel?.();
@@ -141,10 +141,10 @@ const LedgerFlowV3 = () => {
     if (n < lastEventCountRef.current && runRef.current) {
       const remaining = runRef.current.timeline.slice(n);
       runnerRef.current?.cancel?.();
-      runnerRef.current = runMode(remaining, dispatch, state.mode);
+      runnerRef.current = runMode(remaining, dispatch, "STEP");
     }
     lastEventCountRef.current = n;
-  }, [state.events?.length, state.mode]);
+  }, [state.events?.length]);
 
   const handleReset = useCallback(() => {
     runnerRef.current?.cancel?.();
@@ -173,13 +173,13 @@ const LedgerFlowV3 = () => {
   }, [isReconcileScene, reconcileMode]);
 
   const handleReconcileNext = useCallback(() => {
-    if (!isReconcileScene || reconcileMode !== "STEP") return;
+    if (!isReconcileScene || reconcileStatus !== "STEP_PAUSED") return;
     if (!reconcileRunnerRef.current) { handleReconcileSimulate(); return; }
     reconcileRunnerRef.current.next();
-  }, [isReconcileScene, reconcileMode, handleReconcileSimulate]);
+  }, [isReconcileScene, reconcileStatus, handleReconcileSimulate]);
 
   const handleReconcilePrev = useCallback(() => {
-    if (!isReconcileScene || reconcileMode !== "STEP") return;
+    if (!isReconcileScene) return;
     if (!reconcileHasPrevStage(reconcile)) return;
     if (!reconcileRunRef.current) return;
     reconcileRunnerRef.current?.cancel?.();
@@ -192,10 +192,10 @@ const LedgerFlowV3 = () => {
     if (n < lastReconcileEventCountRef.current && reconcileRunRef.current) {
       const remaining = reconcileRunRef.current.timeline.slice(n);
       reconcileRunnerRef.current?.cancel?.();
-      reconcileRunnerRef.current = runReconcileMode(remaining, dispatch, reconcileMode);
+      reconcileRunnerRef.current = runReconcileMode(remaining, dispatch, "STEP");
     }
     lastReconcileEventCountRef.current = n;
-  }, [reconcile?.events?.length, reconcileMode]);
+  }, [reconcile?.events?.length]);
 
   const handleReconcileReset = useCallback(() => {
     reconcileRunnerRef.current?.cancel?.();
@@ -227,13 +227,13 @@ const LedgerFlowV3 = () => {
   }, [isOnboardingScene, onboardMode]);
 
   const handleOnboardNext = useCallback(() => {
-    if (!isOnboardingScene || onboardMode !== "STEP") return;
+    if (!isOnboardingScene || onboardStatus !== "STEP_PAUSED") return;
     if (!onboardRunnerRef.current) { handleOnboardSimulate(); return; }
     onboardRunnerRef.current.next();
-  }, [isOnboardingScene, onboardMode, handleOnboardSimulate]);
+  }, [isOnboardingScene, onboardStatus, handleOnboardSimulate]);
 
   const handleOnboardPrev = useCallback(() => {
-    if (!isOnboardingScene || onboardMode !== "STEP") return;
+    if (!isOnboardingScene) return;
     if (!onboardingHasPrevStage(onboarding)) return;
     if (!onboardRunRef.current) return;
     onboardRunnerRef.current?.cancel?.();
@@ -246,10 +246,10 @@ const LedgerFlowV3 = () => {
     if (n < lastOnboardEventCountRef.current && onboardRunRef.current) {
       const remaining = onboardRunRef.current.timeline.slice(n);
       onboardRunnerRef.current?.cancel?.();
-      onboardRunnerRef.current = runOnboardingMode(remaining, dispatch, onboardMode);
+      onboardRunnerRef.current = runOnboardingMode(remaining, dispatch, "STEP");
     }
     lastOnboardEventCountRef.current = n;
-  }, [onboarding?.events?.length, onboardMode]);
+  }, [onboarding?.events?.length]);
 
   const handleOnboardReset = useCallback(() => {
     onboardRunnerRef.current?.cancel?.();
@@ -281,13 +281,13 @@ const LedgerFlowV3 = () => {
   }, [isErasureScene, erasureMode]);
 
   const handleErasureNext = useCallback(() => {
-    if (!isErasureScene || erasureMode !== "STEP") return;
+    if (!isErasureScene || erasureStatus !== "STEP_PAUSED") return;
     if (!erasureRunnerRef.current) { handleErasureSimulate(); return; }
     erasureRunnerRef.current.next();
-  }, [isErasureScene, erasureMode, handleErasureSimulate]);
+  }, [isErasureScene, erasureStatus, handleErasureSimulate]);
 
   const handleErasurePrev = useCallback(() => {
-    if (!isErasureScene || erasureMode !== "STEP") return;
+    if (!isErasureScene) return;
     if (!erasureHasPrevStage(erasure)) return;
     if (!erasureRunRef.current) return;
     erasureRunnerRef.current?.cancel?.();
@@ -300,10 +300,10 @@ const LedgerFlowV3 = () => {
     if (n < lastErasureEventCountRef.current && erasureRunRef.current) {
       const remaining = erasureRunRef.current.timeline.slice(n);
       erasureRunnerRef.current?.cancel?.();
-      erasureRunnerRef.current = runErasureMode(remaining, dispatch, erasureMode);
+      erasureRunnerRef.current = runErasureMode(remaining, dispatch, "STEP");
     }
     lastErasureEventCountRef.current = n;
-  }, [erasure?.events?.length, erasureMode]);
+  }, [erasure?.events?.length]);
 
   const handleErasureReset = useCallback(() => {
     erasureRunnerRef.current?.cancel?.();
@@ -335,13 +335,13 @@ const LedgerFlowV3 = () => {
   }, [isFanoutScene, fanoutMode]);
 
   const handleFanoutNext = useCallback(() => {
-    if (!isFanoutScene || fanoutMode !== "STEP") return;
+    if (!isFanoutScene || fanoutStatus !== "STEP_PAUSED") return;
     if (!fanoutRunnerRef.current) { handleFanoutSimulate(); return; }
     fanoutRunnerRef.current.next();
-  }, [isFanoutScene, fanoutMode, handleFanoutSimulate]);
+  }, [isFanoutScene, fanoutStatus, handleFanoutSimulate]);
 
   const handleFanoutPrev = useCallback(() => {
-    if (!isFanoutScene || fanoutMode !== "STEP") return;
+    if (!isFanoutScene) return;
     if (!fanoutHasPrevStage(fanout)) return;
     if (!fanoutRunRef.current) return;
     fanoutRunnerRef.current?.cancel?.();
@@ -354,10 +354,10 @@ const LedgerFlowV3 = () => {
     if (n < lastFanoutEventCountRef.current && fanoutRunRef.current) {
       const remaining = fanoutRunRef.current.timeline.slice(n);
       fanoutRunnerRef.current?.cancel?.();
-      fanoutRunnerRef.current = runFanoutMode(remaining, dispatch, fanoutMode);
+      fanoutRunnerRef.current = runFanoutMode(remaining, dispatch, "STEP");
     }
     lastFanoutEventCountRef.current = n;
-  }, [fanout?.events?.length, fanoutMode]);
+  }, [fanout?.events?.length]);
 
   const handleFanoutReset = useCallback(() => {
     fanoutRunnerRef.current?.cancel?.();
@@ -389,13 +389,13 @@ const LedgerFlowV3 = () => {
   }, [isHardEdgeScene, hardEdgeMode]);
 
   const handleHardEdgeNext = useCallback(() => {
-    if (!isHardEdgeScene || hardEdgeMode !== "STEP") return;
+    if (!isHardEdgeScene || hardEdgeStatus !== "STEP_PAUSED") return;
     if (!hardEdgeRunnerRef.current) { handleHardEdgeSimulate(); return; }
     hardEdgeRunnerRef.current.next();
-  }, [isHardEdgeScene, hardEdgeMode, handleHardEdgeSimulate]);
+  }, [isHardEdgeScene, hardEdgeStatus, handleHardEdgeSimulate]);
 
   const handleHardEdgePrev = useCallback(() => {
-    if (!isHardEdgeScene || hardEdgeMode !== "STEP") return;
+    if (!isHardEdgeScene) return;
     if (!hardEdgeHasPrevStage(hardEdge)) return;
     if (!hardEdgeRunRef.current) return;
     hardEdgeRunnerRef.current?.cancel?.();
@@ -408,10 +408,10 @@ const LedgerFlowV3 = () => {
     if (n < lastHardEdgeEventCountRef.current && hardEdgeRunRef.current) {
       const remaining = hardEdgeRunRef.current.timeline.slice(n);
       hardEdgeRunnerRef.current?.cancel?.();
-      hardEdgeRunnerRef.current = runHardEdgeMode(remaining, dispatch, hardEdgeMode);
+      hardEdgeRunnerRef.current = runHardEdgeMode(remaining, dispatch, "STEP");
     }
     lastHardEdgeEventCountRef.current = n;
-  }, [hardEdge?.events?.length, hardEdgeMode]);
+  }, [hardEdge?.events?.length]);
 
   const handleHardEdgeReset = useCallback(() => {
     hardEdgeRunnerRef.current?.cancel?.();
@@ -453,43 +453,43 @@ const LedgerFlowV3 = () => {
   useStepperKeys({
     onNext: handleNext,
     onPrev: handlePrev,
-    enabled: isPostingScene && state.mode === "STEP" && state.status === "STEP_PAUSED",
-    enabledPrev: isPostingScene && state.mode === "STEP" && hasPrevStage(state),
+    enabled: isPostingScene && state.status === "STEP_PAUSED",
+    enabledPrev: isPostingScene && hasPrevStage(state),
   });
 
   useStepperKeys({
     onNext: handleReconcileNext,
     onPrev: handleReconcilePrev,
-    enabled: isReconcileScene && reconcileMode === "STEP" && reconcileStatus === "STEP_PAUSED",
-    enabledPrev: isReconcileScene && reconcileMode === "STEP" && reconcileHasPrevStage(reconcile),
+    enabled: isReconcileScene && reconcileStatus === "STEP_PAUSED",
+    enabledPrev: isReconcileScene && reconcileHasPrevStage(reconcile),
   });
 
   useStepperKeys({
     onNext: handleOnboardNext,
     onPrev: handleOnboardPrev,
-    enabled: isOnboardingScene && onboardMode === "STEP" && onboardStatus === "STEP_PAUSED",
-    enabledPrev: isOnboardingScene && onboardMode === "STEP" && onboardingHasPrevStage(onboarding),
+    enabled: isOnboardingScene && onboardStatus === "STEP_PAUSED",
+    enabledPrev: isOnboardingScene && onboardingHasPrevStage(onboarding),
   });
 
   useStepperKeys({
     onNext: handleErasureNext,
     onPrev: handleErasurePrev,
-    enabled: isErasureScene && erasureMode === "STEP" && erasureStatus === "STEP_PAUSED",
-    enabledPrev: isErasureScene && erasureMode === "STEP" && erasureHasPrevStage(erasure),
+    enabled: isErasureScene && erasureStatus === "STEP_PAUSED",
+    enabledPrev: isErasureScene && erasureHasPrevStage(erasure),
   });
 
   useStepperKeys({
     onNext: handleFanoutNext,
     onPrev: handleFanoutPrev,
-    enabled: isFanoutScene && fanoutMode === "STEP" && fanoutStatus === "STEP_PAUSED",
-    enabledPrev: isFanoutScene && fanoutMode === "STEP" && fanoutHasPrevStage(fanout),
+    enabled: isFanoutScene && fanoutStatus === "STEP_PAUSED",
+    enabledPrev: isFanoutScene && fanoutHasPrevStage(fanout),
   });
 
   useStepperKeys({
     onNext: handleHardEdgeNext,
     onPrev: handleHardEdgePrev,
-    enabled: isHardEdgeScene && hardEdgeMode === "STEP" && hardEdgeStatus === "STEP_PAUSED",
-    enabledPrev: isHardEdgeScene && hardEdgeMode === "STEP" && hardEdgeHasPrevStage(hardEdge),
+    enabled: isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED",
+    enabledPrev: isHardEdgeScene && hardEdgeHasPrevStage(hardEdge),
   });
 
   // ─── Stage status label ────────────────────────────────────────────────────
@@ -568,22 +568,22 @@ const LedgerFlowV3 = () => {
   }, [isPostingScene, isReconcileScene, isOnboardingScene, isErasureScene, isFanoutScene, isHardEdgeScene, state.status, state.stageIndex, state.startedAt, state.settledAt, state.scene, reconcileStatus, reconcile, onboardStatus, onboarding, erasureStatus, erasure, fanoutStatus, fanout, hardEdgeStatus, hardEdge]);
 
   const canSimulate = isPostingScene && state.status === "IDLE";
-  const canStep = isPostingScene && state.mode === "STEP" && state.status === "STEP_PAUSED" && hasNextStage(state);
+  const canStep = isPostingScene && state.status === "STEP_PAUSED" && hasNextStage(state);
 
   const canReconcileSimulate = isReconcileScene && reconcileStatus === "IDLE";
-  const canReconcileStep = isReconcileScene && reconcileMode === "STEP" && reconcileStatus === "STEP_PAUSED" && reconcileHasNextStage(reconcile);
+  const canReconcileStep = isReconcileScene && reconcileStatus === "STEP_PAUSED" && reconcileHasNextStage(reconcile);
 
   const canOnboardSimulate = isOnboardingScene && onboardStatus === "IDLE";
-  const canOnboardStep = isOnboardingScene && onboardMode === "STEP" && onboardStatus === "STEP_PAUSED" && onboardingHasNextStage(onboarding);
+  const canOnboardStep = isOnboardingScene && onboardStatus === "STEP_PAUSED" && onboardingHasNextStage(onboarding);
 
   const canErasureSimulate = isErasureScene && erasureStatus === "IDLE";
-  const canErasureStep = isErasureScene && erasureMode === "STEP" && erasureStatus === "STEP_PAUSED" && erasureHasNextStage(erasure);
+  const canErasureStep = isErasureScene && erasureStatus === "STEP_PAUSED" && erasureHasNextStage(erasure);
 
   const canFanoutSimulate = isFanoutScene && fanoutStatus === "IDLE";
-  const canFanoutStep = isFanoutScene && fanoutMode === "STEP" && fanoutStatus === "STEP_PAUSED" && fanoutHasNextStage(fanout);
+  const canFanoutStep = isFanoutScene && fanoutStatus === "STEP_PAUSED" && fanoutHasNextStage(fanout);
 
   const canHardEdgeSimulate = isHardEdgeScene && hardEdgeStatus === "IDLE";
-  const canHardEdgeStep = isHardEdgeScene && hardEdgeMode === "STEP" && hardEdgeStatus === "STEP_PAUSED" && hardEdgeHasNextStage(hardEdge);
+  const canHardEdgeStep = isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED" && hardEdgeHasNextStage(hardEdge);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -605,53 +605,15 @@ const LedgerFlowV3 = () => {
           </div>
 
           <div className={styles.controls}>
-            {/* Step hint — posting */}
-            {isPostingScene && state.mode === "STEP" && state.status === "STEP_PAUSED" && (
-              <span className={styles.stepHint} aria-live="polite">
-                <kbd className={styles.kbd}>←</kbd>
-                <kbd className={styles.kbd}>→</kbd>
-                <kbd className={styles.kbd}>Space</kbd>
-                step
-              </span>
-            )}
-            {/* Step hint — onboarding */}
-            {isOnboardingScene && onboardMode === "STEP" && onboardStatus === "STEP_PAUSED" && (
-              <span className={styles.stepHint} aria-live="polite">
-                <kbd className={styles.kbd}>←</kbd>
-                <kbd className={styles.kbd}>→</kbd>
-                <kbd className={styles.kbd}>Space</kbd>
-                step
-              </span>
-            )}
-            {/* Step hint — erasure */}
-            {isErasureScene && erasureMode === "STEP" && erasureStatus === "STEP_PAUSED" && (
-              <span className={styles.stepHint} aria-live="polite">
-                <kbd className={styles.kbd}>←</kbd>
-                <kbd className={styles.kbd}>→</kbd>
-                <kbd className={styles.kbd}>Space</kbd>
-                step
-              </span>
-            )}
-            {/* Step hint — reconcile */}
-            {isReconcileScene && reconcileMode === "STEP" && reconcileStatus === "STEP_PAUSED" && (
-              <span className={styles.stepHint} aria-live="polite">
-                <kbd className={styles.kbd}>←</kbd>
-                <kbd className={styles.kbd}>→</kbd>
-                <kbd className={styles.kbd}>Space</kbd>
-                step
-              </span>
-            )}
-            {/* Step hint — fanout */}
-            {isFanoutScene && fanoutMode === "STEP" && fanoutStatus === "STEP_PAUSED" && (
-              <span className={styles.stepHint} aria-live="polite">
-                <kbd className={styles.kbd}>←</kbd>
-                <kbd className={styles.kbd}>→</kbd>
-                <kbd className={styles.kbd}>Space</kbd>
-                step
-              </span>
-            )}
-            {/* Step hint — hard edge */}
-            {isHardEdgeScene && hardEdgeMode === "STEP" && hardEdgeStatus === "STEP_PAUSED" && (
+            {/* Step hint — any scene paused */}
+            {(
+              (isPostingScene && state.status === "STEP_PAUSED") ||
+              (isOnboardingScene && onboardStatus === "STEP_PAUSED") ||
+              (isErasureScene && erasureStatus === "STEP_PAUSED") ||
+              (isReconcileScene && reconcileStatus === "STEP_PAUSED") ||
+              (isFanoutScene && fanoutStatus === "STEP_PAUSED") ||
+              (isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED")
+            ) && (
               <span className={styles.stepHint} aria-live="polite">
                 <kbd className={styles.kbd}>←</kbd>
                 <kbd className={styles.kbd}>→</kbd>
@@ -755,7 +717,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {state.mode === "STEP" && (
+                    {state.status !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button
@@ -800,7 +762,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {onboardMode === "STEP" && (
+                    {onboardStatus !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button
@@ -845,7 +807,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {erasureMode === "STEP" && (
+                    {erasureStatus !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button
@@ -890,7 +852,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {reconcileMode === "STEP" && (
+                    {reconcileStatus !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button
@@ -935,7 +897,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {fanoutMode === "STEP" && (
+                    {fanoutStatus !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button
@@ -980,7 +942,7 @@ const LedgerFlowV3 = () => {
                   </motion.div>
                 ) : (
                   <>
-                    {hardEdgeMode === "STEP" && (
+                    {hardEdgeStatus !== "IDLE" && (
                       <>
                         <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
                           <Button

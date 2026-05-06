@@ -2,95 +2,39 @@
 
 import React, { useState } from "react";
 import { Drawer, DrawerStackProvider } from "@leafygreen-ui/drawer";
-import { H3, Body, Subtitle, Overline } from "@leafygreen-ui/typography";
+import { H3, Body, Overline } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import Code from "@leafygreen-ui/code";
 import Icon from "@leafygreen-ui/icon";
 import { motion, AnimatePresence } from "motion/react";
 import { SPRING } from "../LedgerFlow/motionConfig";
 import { COLLECTIONS, DESIGN_DECISIONS, META } from "../LedgerFlow/ledgerSchema";
+import { V3_COLLECTIONS } from "./ledgerSchemaV3";
 import styles from "../LedgerFlow/CollectionDrawer.module.css";
 import v3styles from "./CollectionDrawerV3.module.css";
 
-// V3 collection metadata — new entries not yet in v2 ledgerSchema.js
-const V3_STUBS = {
-  piiVault: {
-    mongoAlias: "piiVault",
-    description: "PII Vault — encrypted storage for sensitive customer data under Queryable Encryption. Each field is encrypted deterministically (equality-queryable) before write. MongoDB stores and queries ciphertext without decryption.",
-    phase: "Phase C",
-    accentColor: "#016BF8",
-    note: "Implements Queryable Encryption with per-customer DEK. One vault document per PII field per customer.",
-    tags: ["Queryable Encryption", "GDPR", "KMS"],
-  },
-  keyVaultDek: {
-    mongoAlias: "__keyVault.dek",
-    description: "MongoDB driver key vault — stores Data Encryption Keys (DEKs) used by Queryable Encryption. Managed exclusively by the MongoDB driver via ClientEncryption API. Do not write to this collection directly.",
-    phase: "Phase C",
-    accentColor: "#016BF8",
-    note: "Internal driver collection. Accessed via createDataKey, removeKeyByAltName, rewrapManyDataKey only.",
-    tags: ["Driver-managed", "DEK", "CMK"],
-  },
-  customers: {
-    mongoAlias: "customers",
-    description: "Customer master record. The identification.nationalId field stores a vault reference (vault:piiVault:<id>) — never plaintext. Resolved via vaultReadPII() at access time.",
-    phase: "Phase C",
-    accentColor: "#016BF8",
-    note: "Vault-reference pattern: PII fields point to piiVault documents rather than storing values inline.",
-    tags: ["Vault reference", "KYC", "Existing collection"],
-  },
-  cdcResumeTokens: {
-    mongoAlias: "cdcResumeTokens",
-    description: "CDC consumer state — one document per logical downstream consumer, per watched collection. Tracks the post-batch resume token (PBRT), consumer status, lag, and events processed. Enables exact replay on consumer restart.",
-    phase: "Phase D",
-    accentColor: "#00684A",
-    note: "Architectural rule: one CDC tier per ledger collection. Downstream consumers fan out from the tier, each maintaining their own resume token here.",
-    tags: ["CDC", "Resume token", "PBRT"],
-  },
-  reconciliationRuns: {
-    mongoAlias: "reconciliationRuns",
-    description: "Reconciliation run records — one document per scheduled or on-demand reconciliation run. Tracks source-target pair, run type, result (BALANCED / UNBALANCED), counts, totals, and duration. Mutable during execution; effectively immutable after completion.",
-    phase: "Phase B",
-    accentColor: "#5E0C9E",
-    note: "Run types: SUB_LEDGER_TO_GL, SUB_LEDGER_TO_SUB_LEDGER, STATEMENT_TO_LEDGER, POSITION_TO_POSITION, BANK_NOSTRO.",
-    tags: ["Reconciliation", "BIAN", "Period close"],
-  },
-  reconciliationExceptions: {
-    mongoAlias: "reconciliationExceptions",
-    description: "Reconciliation exceptions — one document per detected break. Lifecycle: OPEN → INVESTIGATING → RESOLVED | DEFERRED | WRITE_OFF. Links to the parent reconciliation run and (on resolution) to the correction journal posting.",
-    phase: "Phase B",
-    accentColor: "#5E0C9E",
-    note: "Priority-driven SLA: CRITICAL (2h), HIGH (8h), MEDIUM (24h), LOW (72h). Period close cannot proceed with unresolved exceptions.",
-    tags: ["Exception", "SLA", "Investigation"],
-  },
-};
+const ALL_COLLECTIONS = { ...COLLECTIONS, ...V3_COLLECTIONS };
 
 const RAIL_GROUPS = [
   {
     key: "ledger",
     label: "Ledger Core",
     collections: ["subLedgerEntries", "journalEntries", "glAccounts"],
-    isStub: false,
   },
   {
     key: "privacy",
     label: "Privacy",
     collections: ["piiVault", "keyVaultDek", "customers"],
-    isStub: true,
-    phase: "Phase C",
   },
   {
     key: "cdc",
     label: "CDC",
     collections: ["cdcResumeTokens"],
-    isStub: true,
-    phase: "Phase D",
   },
   {
     key: "reconcile",
     label: "Reconcile",
     collections: ["reconciliationRuns", "reconciliationExceptions"],
-    isStub: true,
-    phase: "Phase B",
   },
 ];
 
@@ -153,7 +97,7 @@ function IndexCard({ index }) {
 }
 
 function CollectionPanel({ collectionKey }) {
-  const c = COLLECTIONS[collectionKey];
+  const c = ALL_COLLECTIONS[collectionKey];
   if (!c) return null;
   const decisions = DESIGN_DECISIONS.filter((d) => c.designDecisionIds?.includes(d.id));
   const requiredCount = c.fields.filter((f) => f.required).length;
@@ -254,62 +198,8 @@ function CollectionPanel({ collectionKey }) {
   );
 }
 
-function StubPanel({ collectionKey }) {
-  const stub = V3_STUBS[collectionKey];
-  if (!stub) return null;
-  return (
-    <div className={styles.panel}>
-      <header className={styles.hero}>
-        <div className={styles.heroLeft}>
-          <Overline className={styles.heroEyebrow}>{META.database}</Overline>
-          <H3 className={styles.heroTitle}>
-            <Icon glyph="DatabaseConnection" size="large" className={styles.heroIcon} />
-            {stub.mongoAlias}
-          </H3>
-          <Body className={styles.heroDesc}>{stub.description}</Body>
-          <div className={styles.heroBadges}>
-            {stub.tags.map((t) => <Badge key={t} variant="lightgray">{t}</Badge>)}
-          </div>
-        </div>
-        <div className={styles.heroStats}>
-          <div className={`${styles.statPill} ${v3styles.stubPill}`}>
-            <span className={styles.statValue} style={{ fontSize: 11, color: stub.accentColor }}>
-              {stub.phase}
-            </span>
-            <span className={styles.statLabel}>shipping</span>
-          </div>
-        </div>
-      </header>
-
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <Overline className={styles.sectionEyebrow}>Note</Overline>
-        </div>
-        <div className={v3styles.stubNote}>
-          <Icon glyph="InfoWithCircle" size="small" style={{ color: stub.accentColor, flexShrink: 0 }} />
-          <Body>{stub.note}</Body>
-        </div>
-      </section>
-
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <Overline className={styles.sectionEyebrow}>Schema & Design Decisions</Overline>
-        </div>
-        <div className={v3styles.stubPlaceholder} style={{ borderColor: stub.accentColor + "33", background: stub.accentColor + "08" }}>
-          <span className={v3styles.stubLabel} style={{ color: stub.accentColor }}>
-            Full schema, indexes, sample document, and ADR-style design decisions land in {stub.phase}.
-          </span>
-        </div>
-      </section>
-    </div>
-  );
-}
-
-const ALL_KEYS_FLAT = RAIL_GROUPS.flatMap((g) => g.collections);
-
 const CollectionDrawerV3 = ({ open, setOpen }) => {
   const [activeKey, setActiveKey] = useState("subLedgerEntries");
-  const isStub = (key) => !COLLECTIONS[key];
 
   return (
     <DrawerStackProvider>
@@ -332,37 +222,25 @@ const CollectionDrawerV3 = ({ open, setOpen }) => {
                 <React.Fragment key={group.key}>
                   <li className={v3styles.railGroupHeader}>
                     <span className={v3styles.railGroupLabel}>{group.label}</span>
-                    {group.phase && (
-                      <span className={v3styles.railGroupPhase} style={{ color: group.isStub ? "#5C6C75" : "#00684A" }}>
-                        {group.phase}
-                      </span>
-                    )}
                   </li>
                   {group.collections.map((k) => {
-                    const stub = isStub(k);
-                    const c = stub ? V3_STUBS[k] : COLLECTIONS[k];
+                    const c = ALL_COLLECTIONS[k];
                     if (!c) return null;
                     const active = k === activeKey;
                     return (
                       <li key={k}>
                         <button
                           type="button"
-                          className={`${styles.railItem} ${active ? styles.railItemActive : ""} ${stub ? v3styles.railItemStub : ""}`}
+                          className={`${styles.railItem} ${active ? styles.railItemActive : ""}`}
                           onClick={() => setActiveKey(k)}
                         >
                           <span className={styles.railItemTop}>
-                            <Icon glyph={stub ? "Lock" : "Folder"} size="small" className={styles.railIcon} />
+                            <Icon glyph="Folder" size="small" className={styles.railIcon} />
                             <code className={styles.railName}>{c.mongoAlias}</code>
                           </span>
                           <span className={styles.railItemMeta}>
-                            {stub ? (
-                              <span style={{ color: "#5C6C75" }}>coming · {V3_STUBS[k].phase}</span>
-                            ) : (
-                              <>
-                                {COLLECTIONS[k].fields.length} fields · {COLLECTIONS[k].indexes.length} indexes
-                                {COLLECTIONS[k].immutable && <span className={styles.railImmutable}> · immutable</span>}
-                              </>
-                            )}
+                            {c.fields.length} fields · {c.indexes.length} indexes
+                            {c.immutable && <span className={styles.railImmutable}> · immutable</span>}
                           </span>
                         </button>
                       </li>
@@ -383,10 +261,7 @@ const CollectionDrawerV3 = ({ open, setOpen }) => {
                 exit={{ opacity: 0, y: -6 }}
                 transition={SPRING.default}
               >
-                {isStub(activeKey)
-                  ? <StubPanel collectionKey={activeKey} />
-                  : <CollectionPanel collectionKey={activeKey} />
-                }
+                <CollectionPanel collectionKey={activeKey} />
               </motion.div>
             </AnimatePresence>
           </div>

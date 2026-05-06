@@ -14,7 +14,7 @@ export function indexOfFanoutStage(stage) {
 }
 
 export const fanoutInitialState = {
-  status: "IDLE", mode: "STEP", currentStage: null, stageIndex: -1,
+  status: "IDLE", mode: "SLOW", currentStage: null, stageIndex: -1,
   reachedStages: {}, events: [], startedAt: null, settledAt: null,
 };
 

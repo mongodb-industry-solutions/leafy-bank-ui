@@ -13,12 +13,12 @@ import { fanoutReducer, fanoutInitialState } from "./fanoutReducer";
 import { hardEdgeReducer, hardEdgeInitialState } from "./hardEdgeReducer";
 
 export const SCENES = [
-  { key: "ONBOARDING", label: "Onboarding", phase: "Phase C", index: 0 },
-  { key: "POSTING",    label: "The Posting", phase: null,      index: 1 },
-  { key: "FANOUT",     label: "Fan-out",     phase: "Phase D", index: 2 },
-  { key: "HARD_EDGE",  label: "Hard Edge",   phase: "Phase E", index: 3 },
-  { key: "RECONCILE",  label: "Reconcile",   phase: "Phase B", index: 4 },
-  { key: "ERASURE",    label: "Erasure",     phase: "Phase C", index: 5 },
+  { key: "ONBOARDING", label: "Onboarding", index: 0 },
+  { key: "POSTING",    label: "The Posting", index: 1 },
+  { key: "FANOUT",     label: "Fan-out",     index: 2 },
+  { key: "HARD_EDGE",  label: "Hard Edge",   index: 3 },
+  { key: "RECONCILE",  label: "Reconcile",   index: 4 },
+  { key: "ERASURE",    label: "Erasure",     index: 5 },
 ];
 
 export const initialStateV3 = {

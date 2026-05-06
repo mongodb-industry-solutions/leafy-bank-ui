@@ -30,12 +30,12 @@ export function runReconcileMode(timeline, dispatch, mode = "STEP") {
   };
 
   if (mode === "SLOW") {
-    const STEP_MS = 6000;
+    const STEP_MS = 2000;
     autoHandles = timeline.map((_, i) => setTimeout(() => fire(i), i * STEP_MS));
   }
 
   const next = () => {
-    if (mode !== "STEP" || cancelled || cursor >= timeline.length) return;
+    if (cancelled || cursor >= timeline.length) return;
     fire(cursor);
   };
 

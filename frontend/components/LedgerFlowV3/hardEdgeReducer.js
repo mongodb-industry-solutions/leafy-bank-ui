@@ -14,7 +14,7 @@ export function indexOfHardEdgeStage(stage) {
 }
 
 export const hardEdgeInitialState = {
-  status: "IDLE", mode: "STEP", currentStage: null, stageIndex: -1,
+  status: "IDLE", mode: "SLOW", currentStage: null, stageIndex: -1,
   reachedStages: {}, events: [], startedAt: null, settledAt: null,
 };
 

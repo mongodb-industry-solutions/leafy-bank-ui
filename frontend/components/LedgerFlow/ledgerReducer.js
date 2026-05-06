@@ -5,7 +5,7 @@ import { STAGE_LIST, indexOfStage } from "./stageNarration";
 export const initialState = {
   // Lifecycle
   status: "IDLE", // IDLE | STEP_PAUSED | AUTO_RUNNING | SETTLED
-  mode: "STEP",   // STEP | SLOW | DEMO
+  mode: "SLOW",   // STEP | SLOW | DEMO
   currentStage: null,
   stageIndex: -1,
   reachedStages: {}, // { [stageKey]: timestampMs }

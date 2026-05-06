@@ -15,7 +15,7 @@ export function indexOfErasureStage(stage) {
 
 export const erasureInitialState = {
   status: "IDLE",
-  mode: "STEP",
+  mode: "SLOW",
   currentStage: null,
   stageIndex: -1,
   reachedStages: {},

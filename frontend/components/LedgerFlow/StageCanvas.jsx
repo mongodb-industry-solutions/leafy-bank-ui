@@ -192,7 +192,7 @@ function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountI
   );
 }
 
-function ReconcileMembrane({ reached, x, h, sublabel = "BYPASSED · MVP" }) {
+function ReconcileMembrane({ reached, x, h, sublabel = "deferred" }) {
   const cls = [styles.membrane, reached ? styles.membraneReached : ""].filter(Boolean).join(" ");
   const top = 24;
   const bottom = h - 24;
