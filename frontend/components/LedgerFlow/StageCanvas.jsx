@@ -14,18 +14,18 @@ import styles from "./StageCanvas.module.css";
 // 1600×400 ≈ 4:1. SVG uses preserveAspectRatio="xMidYMid slice" to fill
 // container edge-to-edge regardless of viewport ratio. Frida (left) →
 // pipeline → Bo (right) — full left-to-right narrative.
-const VB = { w: 1600, h: 400 };
+const VB = { w: 1700, h: 420, ox: -50, oy: -10 };
 
 const ANCHOR = {
-  customer:    { x: 90,   y: 200 },   // Frida
-  payment:     { x: 240,  y: 200 },
-  fork:        { x: 380,  y: 200 },
-  subDr:       { x: 600,  y: 110 },
-  subCr:       { x: 600,  y: 290 },
-  membraneX:   840,
-  journal:     { x: 1040, y: 200 },
-  recipient:   { x: 1500, y: 200 },   // Bo
-  changeStreamY: 370,
+  customer:  { x: 90,   y: 200 },   // Frida
+  payment:   { x: 240,  y: 200 },
+  fork:      { x: 380,  y: 200 },
+  subDr:     { x: 600,  y: 110 },
+  subCr:     { x: 600,  y: 290 },
+  membraneX: 840,
+  journal:   { x: 1040, y: 200 },
+  cdc:       { x: 1280, y: 200 },   // Change stream node
+  recipient: { x: 1500, y: 200 },   // Bo
 };
 
 const EDGES = [
@@ -68,22 +68,23 @@ const EDGES = [
   {
     id: "e_subCr_journal",
     activeOn: ["JOURNAL_POSTED", "CHANGE_STREAM", "BALANCE_PROJECTED_DEBIT", "BALANCE_PROJECTED_CREDIT", "SETTLED"],
-    particleOn: null,
+    particleOn: "JOURNAL_POSTED",
+    accent: "credit",
     dashedThroughMembrane: true,
     d: `M ${ANCHOR.subCr.x + 115} ${ANCHOR.subCr.y} C ${ANCHOR.subCr.x + 160} ${ANCHOR.subCr.y}, ${ANCHOR.journal.x - 110} ${ANCHOR.journal.y + 32}, ${ANCHOR.journal.x - 60} ${ANCHOR.journal.y + 18}`,
   },
   {
-    id: "e_journal_changestream",
+    id: "e_journal_cdc",
     activeOn: ["CHANGE_STREAM", "BALANCE_PROJECTED_DEBIT", "BALANCE_PROJECTED_CREDIT", "SETTLED"],
     particleOn: "CHANGE_STREAM",
-    d: `M ${ANCHOR.journal.x} ${ANCHOR.journal.y + 60} L ${ANCHOR.journal.x} ${ANCHOR.changeStreamY}`,
+    d: `M ${ANCHOR.journal.x + 72} ${ANCHOR.journal.y} L ${ANCHOR.cdc.x - 64} ${ANCHOR.cdc.y}`,
   },
   {
-    id: "e_journal_recipient",
-    activeOn: ["JOURNAL_POSTED", "CHANGE_STREAM", "BALANCE_PROJECTED_DEBIT", "BALANCE_PROJECTED_CREDIT", "SETTLED"],
+    id: "e_cdc_recipient",
+    activeOn: ["BALANCE_PROJECTED_DEBIT", "BALANCE_PROJECTED_CREDIT", "SETTLED"],
     particleOn: "BALANCE_PROJECTED_CREDIT",
     accent: "credit",
-    d: `M ${ANCHOR.journal.x + 72} ${ANCHOR.journal.y} L ${ANCHOR.recipient.x - 60} ${ANCHOR.recipient.y}`,
+    d: `M ${ANCHOR.cdc.x + 64} ${ANCHOR.cdc.y} L ${ANCHOR.recipient.x - 60} ${ANCHOR.recipient.y}`,
   },
 ];
 
@@ -108,20 +109,21 @@ function particleCountForAmount(amount) {
 function CustomerNode({ reached, current, displayName, anchor = ANCHOR.customer, role = "Sender" }) {
   const cls = [styles.customer, reached ? styles.customerReached : "", current ? styles.customerCurrent : ""].filter(Boolean).join(" ");
   return (
-    <motion.g
-      className={cls}
-      transform={`translate(${anchor.x},${anchor.y})`}
-      initial={false}
-      animate={{ scale: reached ? 1 : 0.92, opacity: reached ? 1 : 0.55 }}
-      transition={SPRING.default}
-      style={{ transformOrigin: `${anchor.x}px ${anchor.y}px`, transformBox: "fill-box" }}
-    >
-      <circle r={42} className={styles.customerHalo} />
-      <circle r={32} className={styles.customerDisc} />
-      <text textAnchor="middle" y={7} className={styles.customerInitial}>{displayName?.[0] || "?"}</text>
-      <text textAnchor="middle" y={68} className={styles.customerName}>{displayName}</text>
-      <text textAnchor="middle" y={84} className={styles.customerRole}>{role}</text>
-    </motion.g>
+    <g transform={`translate(${anchor.x},${anchor.y})`}>
+      <motion.g
+        className={cls}
+        initial={false}
+        animate={{ scale: reached ? 1 : 0.92, opacity: reached ? 1 : 0.55 }}
+        transition={SPRING.default}
+        style={{ transformOrigin: "center", transformBox: "fill-box" }}
+      >
+        <circle r={42} className={styles.customerHalo} />
+        <circle r={32} className={styles.customerDisc} />
+        <text textAnchor="middle" y={7} className={styles.customerInitial}>{displayName?.[0] || "?"}</text>
+        <text textAnchor="middle" y={68} className={styles.customerName}>{displayName}</text>
+        <text textAnchor="middle" y={84} className={styles.customerRole}>{role}</text>
+      </motion.g>
+    </g>
   );
 }
 
@@ -169,24 +171,24 @@ function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountI
   const formatted = new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", minimumFractionDigits: 2 }).format(amount || 0);
   // "Settle into place" — slide in from the fork direction (+x, ±y).
   return (
-    <motion.g
-      className={cls}
-      transform={`translate(${x},${y})`}
-      initial={false}
-      animate={{
-        x: 0,
-        opacity: reached ? 1 : 0.45,
-        scale: reached ? 1 : 0.94,
-      }}
-      transition={SPRING.default}
-      style={{ transformOrigin: `${x}px ${y}px`, transformBox: "fill-box" }}
-    >
-      <rect x={-115} y={-36} width={230} height={72} rx={12} ry={12} className={styles.sublegBody} />
-      <text x={-98} y={-12} className={styles.sublegSide}>{side === "DEBIT" ? "Dr" : "Cr"}</text>
-      <text x={-72} y={-12} className={styles.sublegLabel}>Sub-Ledger · {side}</text>
-      <text x={-72} y={11} className={styles.sublegMeta}>{displayName} · 2100</text>
-      <text x={100} y={8} textAnchor="end" className={styles.sublegAmount}>{formatted}</text>
-    </motion.g>
+    <g transform={`translate(${x},${y})`}>
+      <motion.g
+        className={cls}
+        initial={false}
+        animate={{
+          opacity: reached ? 1 : 0.45,
+          scale: reached ? 1 : 0.94,
+        }}
+        transition={SPRING.default}
+        style={{ transformOrigin: "center", transformBox: "fill-box" }}
+      >
+        <rect x={-115} y={-36} width={230} height={72} rx={12} ry={12} className={styles.sublegBody} />
+        <text x={-98} y={-12} className={styles.sublegSide}>{side === "DEBIT" ? "Dr" : "Cr"}</text>
+        <text x={-72} y={-12} className={styles.sublegLabel}>Sub-Ledger · {side}</text>
+        <text x={-72} y={11} className={styles.sublegMeta}>{displayName} · 2100</text>
+        <text x={100} y={8} textAnchor="end" className={styles.sublegAmount}>{formatted}</text>
+      </motion.g>
+    </g>
   );
 }
 
@@ -220,43 +222,61 @@ function JournalCore({ reached, current, journalId }) {
   const { x, y } = ANCHOR.journal;
   const cls = [styles.journal, reached ? styles.journalReached : "", current ? styles.journalPulse : ""].filter(Boolean).join(" ");
   return (
-    <motion.g
-      className={cls}
-      transform={`translate(${x},${y})`}
-      initial={false}
-      animate={{ scale: current ? [1, 1.08, 1] : 1 }}
-      transition={current ? { duration: 0.6, ease: [0.22, 0.7, 0.3, 1] } : SPRING.default}
-      style={{ transformOrigin: `${x}px ${y}px`, transformBox: "fill-box" }}
-    >
-      <g className={styles.journalRings}>
-        <path d={hexPath(0, 0, 84)} className={styles.journalRingA} />
-        <path d={hexPath(0, 0, 110)} className={styles.journalRingB} />
-        <path d={hexPath(0, 0, 138)} className={styles.journalRingC} />
-      </g>
-      <path d={hexPath(0, 0, 72)} className={styles.journalHexOuter} />
-      <path d={hexPath(0, 0, 56)} className={styles.journalHexInner} />
-      {/* Sparkle burst — fires once when reached. */}
-      <AnimatePresence>
-        {reached && (
-          <motion.g key="sparkles" className={styles.sparkles}>
-            {SPARKLES.map((s, i) => (
-              <motion.circle
-                key={i}
-                cx={s.x}
-                cy={s.y}
-                r={2.4}
-                className={styles.sparkleDot}
-                initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                animate={{ opacity: [0, 1, 0], scale: [0.4, 1, 0.6], x: s.x * 0.18, y: s.y * 0.18 }}
-                transition={{ duration: 0.9, delay: s.delay, ease: "easeOut" }}
-              />
-            ))}
-          </motion.g>
-        )}
-      </AnimatePresence>
-      <text textAnchor="middle" y={-3} className={styles.journalLabel}>GL JOURNAL</text>
-      <text textAnchor="middle" y={14} className={styles.journalSub}>FinancialBookingLog</text>
-      {journalId && <text textAnchor="middle" y={86} className={styles.journalId}>{journalId}</text>}
+    <g transform={`translate(${x},${y})`}>
+      <motion.g
+        className={cls}
+        initial={false}
+        animate={{ scale: current ? [1, 1.08, 1] : 1 }}
+        transition={current ? { duration: 0.6, ease: [0.22, 0.7, 0.3, 1] } : SPRING.default}
+        style={{ transformOrigin: "center", transformBox: "fill-box" }}
+      >
+        <g className={styles.journalRings}>
+          <path d={hexPath(0, 0, 84)} className={styles.journalRingA} />
+          <path d={hexPath(0, 0, 110)} className={styles.journalRingB} />
+          <path d={hexPath(0, 0, 138)} className={styles.journalRingC} />
+        </g>
+        <path d={hexPath(0, 0, 72)} className={styles.journalHexOuter} />
+        <path d={hexPath(0, 0, 56)} className={styles.journalHexInner} />
+        <AnimatePresence>
+          {reached && (
+            <motion.g key="sparkles" className={styles.sparkles}>
+              {SPARKLES.map((s, i) => (
+                <motion.circle
+                  key={i}
+                  cx={s.x}
+                  cy={s.y}
+                  r={2.4}
+                  className={styles.sparkleDot}
+                  initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                  animate={{ opacity: [0, 1, 0], scale: [0.4, 1, 0.6], x: s.x * 0.18, y: s.y * 0.18 }}
+                  transition={{ duration: 0.9, delay: s.delay, ease: "easeOut" }}
+                />
+              ))}
+            </motion.g>
+          )}
+        </AnimatePresence>
+        <text textAnchor="middle" y={5} className={styles.journalLabel}>GL JOURNAL</text>
+        <text textAnchor="middle" y={84} className={styles.journalSub}>FinancialBookingLog</text>
+        {journalId && <text textAnchor="middle" y={100} className={styles.journalId}>{journalId}</text>}
+      </motion.g>
+    </g>
+  );
+}
+
+function ChangeStreamNode({ reached }) {
+  const { x, y } = ANCHOR.cdc;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <motion.g
+        initial={false}
+        animate={{ opacity: reached ? 1 : 0.28, scale: reached ? 1 : 0.9 }}
+        transition={SPRING.default}
+        style={{ transformOrigin: "center", transformBox: "fill-box" }}
+      >
+        <rect x={-62} y={-14} width={124} height={28} rx={14} className={styles.cdcNode} />
+        <circle cx={-42} cy={0} r={4} className={styles.cdcDot} />
+        <text x={-30} y={4} className={styles.cdcLabel}>CHANGE STREAM</text>
+      </motion.g>
     </g>
   );
 }
@@ -320,7 +340,7 @@ const StageCanvas = ({ state }) => {
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className={styles.svg}
-            viewBox={`0 0 ${VB.w} ${VB.h}`}
+            viewBox={`${VB.ox} ${VB.oy} ${VB.w} ${VB.h}`}
             preserveAspectRatio="xMidYMid slice"
             role="img"
             aria-label="Ledger flow — payment to GL journal"
@@ -343,7 +363,7 @@ const StageCanvas = ({ state }) => {
               </marker>
             </defs>
 
-            <rect width={VB.w} height={VB.h} fill="url(#hexLatticeLight)" className={styles.hexLatticeRect} />
+            <rect x={VB.ox} y={VB.oy} width={VB.w} height={VB.h} fill="url(#hexLatticeLight)" className={styles.hexLatticeRect} />
 
             <g className={styles.edges}>
               {EDGES.map((e) => {
@@ -387,6 +407,7 @@ const StageCanvas = ({ state }) => {
             <SubLedgerLeg side="CREDIT" x={ANCHOR.subCr.x} y={ANCHOR.subCr.y} reached={reached("SUBLEDGER_CREDIT")} current={currentStage === "SUBLEDGER_CREDIT"} amount={amount} currency={currency} accountId={toAcct} displayName={toName} />
 
             <JournalCore reached={reached("JOURNAL_POSTED")} current={currentStage === "JOURNAL_POSTED"} journalId={state.identifiers?.journalId} />
+            <ChangeStreamNode reached={reached("CHANGE_STREAM")} />
 
             <g className={styles.particles} aria-hidden="true">
               {bursts.map((p) => (

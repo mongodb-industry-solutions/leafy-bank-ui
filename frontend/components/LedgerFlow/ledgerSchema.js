@@ -297,4 +297,4 @@ export function aliasMap(collectionKey) {
 }
 
 // Convenience for the drawer: list collection keys in canonical demo order.
-export const COLLECTION_KEYS = ["glAccounts", "journalEntries", "subLedgerEntries"];
+export const COLLECTION_KEYS = ["subLedgerEntries", "journalEntries", "glAccounts"];

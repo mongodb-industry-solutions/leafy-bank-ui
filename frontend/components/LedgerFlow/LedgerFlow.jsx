@@ -114,7 +114,8 @@ const LedgerFlow = () => {
   useStepperKeys({
     onNext: handleNext,
     onPrev: handlePrev,
-    enabled: state.mode === "STEP" && state.status !== "IDLE" && state.status !== "SETTLED",
+    enabled: state.mode === "STEP" && state.status === "STEP_PAUSED",
+    enabledPrev: state.mode === "STEP" && hasPrevStage(state),
   });
 
   const stageStatus = useMemo(() => {

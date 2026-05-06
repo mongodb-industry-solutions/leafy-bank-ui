@@ -409,9 +409,9 @@
 
 .journal .journalSub {
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  fill: #889397;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  fill: #3D4F58;
 }
 
 .journal .journalId {
@@ -458,6 +458,34 @@
   0%   { transform: scale(0.4); opacity: 0.0; }
   20%  { opacity: 0.85; }
   100% { transform: scale(1.6); opacity: 0;   }
+}
+
+/* ─────────────────────────── Change-stream node ─────────────────────────── */
+
+.cdcNode {
+  fill: #001E2B;
+  stroke: #3D4F58;
+  stroke-width: 1;
+  transition: fill 280ms ease, stroke 280ms ease;
+}
+
+.cdcDot {
+  fill: #016BF8;
+  filter: drop-shadow(0 0 3px rgba(1, 107, 248, 0.7));
+  animation: cdcPulse 2s ease-in-out infinite;
+}
+
+@keyframes cdcPulse {
+  0%, 100% { opacity: 1; r: 4; }
+  50%       { opacity: 0.5; r: 5.5; }
+}
+
+.cdcLabel {
+  font-family: 'Source Code Pro', Menlo, monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: #4CC3FF;
 }
 
 /* ─────────────────────────── Change-stream wavefront ─────────────────────────── */
@@ -512,6 +540,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .atmosphere,
+  .cdcDot,
   .edgeMembrane.edgeActive,
   .membrane .membraneLine,
   .membraneReached .membraneField,
