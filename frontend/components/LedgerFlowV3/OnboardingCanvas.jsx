@@ -324,9 +324,15 @@ export default function OnboardingCanvas({ state }) {
 
       {/* Idle hint */}
       {!isActive && (
-        <text x={W / 2} y={CARD_Y + CARD_H / 2 + 8} textAnchor="middle" className={styles.idleHint} opacity={0.28}>
+        <motion.text
+          x={W / 2} y={CARD_Y + CARD_H / 2 + 8}
+          textAnchor="middle"
+          className={styles.idleHint}
+          animate={{ opacity: [0.28, 0.55, 0.28] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+        >
           Press Simulate →
-        </text>
+        </motion.text>
       )}
     </svg>
   );

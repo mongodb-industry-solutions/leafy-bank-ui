@@ -122,7 +122,7 @@
   font-weight: 500;
   color: #3D4F58;
   white-space: nowrap;
-  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+  transition: background 150ms cubic-bezier(0.33, 1, 0.68, 1), border-color 150ms cubic-bezier(0.33, 1, 0.68, 1), color 150ms cubic-bezier(0.33, 1, 0.68, 1);
   flex-shrink: 0;
 }
 
@@ -192,6 +192,7 @@
   display: flex;
   min-height: 380px;
   overflow: hidden;
+  position: relative;
 }
 
 .balancesBand {
@@ -268,7 +269,7 @@
   color: #5C6C75;
   cursor: pointer;
   white-space: nowrap;
-  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  transition: border-color 150ms cubic-bezier(0.33, 1, 0.68, 1), color 150ms cubic-bezier(0.33, 1, 0.68, 1), background 150ms cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .scenarioPill:hover {
@@ -278,9 +279,44 @@
 
 .scenarioPillActive {
   border-color: #016BF8;
-  background: #E1F7FF;
-  color: #016BF8;
+  background: #016BF8;
+  color: #FFFFFF;
   font-weight: 600;
+}
+
+.scenarioPillActive:hover {
+  background: #0058CC;
+  border-color: #0058CC;
+}
+
+.pillCheck {
+  font-size: 9px;
+  opacity: 0.9;
+  margin-right: 2px;
+  font-weight: 700;
+}
+
+/* ─── Progress meter (stage badge inline bar) ────────────────────────────── */
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progressMeter {
+  width: 32px;
+  height: 3px;
+  border-radius: 2px;
+  background: #E8EDEB;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  background: #00A35C;
+  transition: width 400ms cubic-bezier(0.33, 1, 0.68, 1), background 200ms ease;
 }
 
 /* ─── Responsive breakpoints ─────────────────────────────────────────────── */
@@ -336,6 +372,15 @@
   }
   .canvasBand {
     min-height: 280px;
+  }
+}
+
+/* ─── Motion accessibility ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .sceneChip,
+  .scenarioPill,
+  .progressFill {
+    transition-duration: 0.01ms !important;
   }
 }
 

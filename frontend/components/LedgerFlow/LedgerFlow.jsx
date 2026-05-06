@@ -5,12 +5,13 @@ import { useRouter } from "next/navigation";
 import { H1, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
+import Tooltip from "@leafygreen-ui/tooltip";
 import IconButton from "@leafygreen-ui/icon-button";
 import Icon from "@leafygreen-ui/icon";
 import Copyable from "@leafygreen-ui/copyable";
 import { SegmentedControl, SegmentedControlOption } from "@leafygreen-ui/segmented-control";
 import LeafygreenProvider from "@leafygreen-ui/leafygreen-provider";
-import { MotionConfig, motion } from "motion/react";
+import { MotionConfig, motion, AnimatePresence } from "motion/react";
 import { SPRING } from "./motionConfig";
 
 import { ledgerReducer, initialState, hasNextStage, hasPrevStage } from "./ledgerReducer";
@@ -130,6 +131,12 @@ const LedgerFlow = () => {
     return `Stage ${idx} of 9`;
   }, [state.status, state.stageIndex, state.startedAt, state.settledAt]);
 
+  const stageProgress = useMemo(() => {
+    if (state.status === "IDLE" || state.status === "SETTLED") return null;
+    const current = state.stageIndex >= 0 ? state.stageIndex + 1 : 0;
+    return current > 0 ? { current, total: 9 } : null;
+  }, [state.status, state.stageIndex]);
+
   const canSimulate = state.status === "IDLE";
   const canStep = state.mode === "STEP" && state.status === "STEP_PAUSED" && hasNextStage(state);
 
@@ -150,7 +157,19 @@ const LedgerFlow = () => {
               <Badge variant="lightgray">v1</Badge>
               <Badge variant="green">BIAN v14</Badge>
               <Badge variant="yellow">MVP · write-only</Badge>
-              <Badge variant="lightgray">{stageStatus}</Badge>
+              <div className={styles.progressWrap}>
+                <Badge variant={state.status === "IDLE" ? "lightgray" : state.status === "SETTLED" ? "green" : "blue"}>
+                  {state.status === "SETTLED" ? `✓ ${stageStatus}` : stageStatus}
+                </Badge>
+                {stageProgress && (
+                  <div className={styles.progressMeter}>
+                    <div
+                      className={styles.progressFill}
+                      style={{ width: `${Math.round((stageProgress.current / stageProgress.total) * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -256,7 +275,51 @@ const LedgerFlow = () => {
 
         {/* CANVAS — hero band: SVG diagram only, takes all leftover height */}
         <main className={styles.canvasBand}>
-          <StageCanvas state={state} />
+          <div style={{ position: "relative", flex: 1, display: "flex" }}>
+            <StageCanvas state={state} />
+            <AnimatePresence>
+              {state.status === "SETTLED" && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8, scale: 0.94 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 4, scale: 0.94 }}
+                  transition={SPRING.hero}
+                  style={{
+                    position: "absolute",
+                    bottom: 12,
+                    right: 16,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "5px 14px 5px 10px",
+                    borderRadius: 20,
+                    background: "#E3FCF7",
+                    border: "1.5px solid #00A35C",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "#00684A",
+                    fontFamily: "'Euclid Circular A', sans-serif",
+                    pointerEvents: "none",
+                    zIndex: 10,
+                    boxShadow: "0 2px 8px rgba(0, 104, 74, 0.14)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  <span style={{
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    width: 16, height: 16, borderRadius: "50%",
+                    background: "#00A35C", color: "#fff", fontSize: 9, fontWeight: 700, flexShrink: 0,
+                  }}>✓</span>
+                  All 9 stages posted
+                  {state.settledAt && state.startedAt && (
+                    <span style={{ color: "#3D7A61", fontWeight: 400 }}>
+                      · {((state.settledAt - state.startedAt) / 1000).toFixed(2)}s
+                    </span>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </main>
 
         {/* BALANCES — its own page-grid row, never compresses the canvas */}
@@ -274,13 +337,45 @@ const LedgerFlow = () => {
 
         {/* BIAN footer strip */}
         <footer className={styles.bianStrip} aria-label="BIAN classification">
-          <span>SD <strong>FinancialAccounting</strong></span>
+          <span>SD{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>FinancialAccounting</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Service Domain — BIAN&apos;s primary classification unit. Owns the GL, sub-ledger, trial balance, and period close lifecycle.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>CR <strong>FinancialBookingLog</strong></span>
+          <span>CR{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>FinancialBookingLog</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Control Record — the persistent data entity managed by this Service Domain. An immutable log of all financial book entries.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>BQ <strong>LedgerPosting</strong></span>
+          <span>BQ{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>LedgerPosting</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Behavior Qualifier — the specific posting operation within the Control Record lifecycle: debit, credit, and GL commit.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>Pattern <strong>Management</strong></span>
+          <span>Pattern{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>Management</strong>}
+              align="top"
+              darkMode={false}
+            >
+              BIAN Interaction Pattern — lifecycle management of the Control Record, as opposed to Execute, Process, or Monitor patterns.
+            </Tooltip>
+          </span>
         </footer>
       </div>
     </MotionConfig>

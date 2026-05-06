@@ -2,6 +2,7 @@
 
 import React from "react";
 import { H3, Body, Overline } from "@leafygreen-ui/typography";
+import Icon from "@leafygreen-ui/icon";
 import DocumentSnippet from "../LedgerFlow/DocumentSnippet";
 import styles from "../LedgerFlow/StageInterpreter.module.css";
 import localStyles from "./ScenePlaceholderInterpreter.module.css";
@@ -20,7 +21,14 @@ export default function ScenePlaceholderInterpreter({ content, onOpenDrawer }) {
         </div>
         {callout && (
           <div className={`${localStyles.callout} ${callout.variant === "important" ? localStyles.calloutImportant : localStyles.calloutNote}`}>
-            <span className={localStyles.calloutTitle}>{callout.title}</span>
+            <div className={localStyles.calloutHeader}>
+              <Icon
+                glyph={callout.variant === "important" ? "Warning" : "InfoWithCircle"}
+                size={14}
+                style={{ color: callout.variant === "important" ? "#C82430" : "#00684A", flexShrink: 0 }}
+              />
+              <span className={localStyles.calloutTitle}>{callout.title}</span>
+            </div>
             <span className={localStyles.calloutBody}>{callout.body}</span>
           </div>
         )}

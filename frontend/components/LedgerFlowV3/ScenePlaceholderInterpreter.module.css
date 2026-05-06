@@ -20,6 +20,13 @@
   border-left-color: #00A35C;
 }
 
+.calloutHeader {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
 .calloutTitle {
   font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
   font-size: 12.5px;

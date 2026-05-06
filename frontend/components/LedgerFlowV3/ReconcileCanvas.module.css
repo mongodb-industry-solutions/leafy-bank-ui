@@ -115,3 +115,12 @@
   font-size: 12px;
   fill: #C1C7C6;
 }
+
+@keyframes idleGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.78; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idleGroup { animation: none !important; opacity: 0.5; }
+}

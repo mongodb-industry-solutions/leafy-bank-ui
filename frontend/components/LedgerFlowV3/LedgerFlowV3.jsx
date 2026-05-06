@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { H1, Body } from "@leafygreen-ui/typography";
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
+import Tooltip from "@leafygreen-ui/tooltip";
 import Icon from "@leafygreen-ui/icon";
 import Copyable from "@leafygreen-ui/copyable";
 
@@ -1005,6 +1006,37 @@ const LedgerFlowV3 = () => {
     return `${sceneName} · ${stageIdx} / ${stageListLen}`;
   }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
 
+  const stageProgress = useMemo(() => {
+    if (globalCurrentStatus === "IDLE" || globalCurrentStatus === "SETTLED") return null;
+    const total = {
+      ONBOARDING: ONBOARD_STAGE_LIST.length,
+      POSTING: STAGE_LIST.length,
+      ENGINE: ENGINE_STAGE_LIST.length,
+      RECONCILE: RECONCILE_STAGE_LIST.length,
+      FANOUT: FANOUT_STAGE_LIST.length,
+      HARD_EDGE: HARD_EDGE_STAGE_LIST.length,
+      ERASURE: ERASURE_STAGE_LIST.length,
+      ARCH: ARCH_STAGE_LIST.length,
+      RBAC: RBAC_STAGE_LIST.length,
+    }[state.scene] || 0;
+    if (!total) return null;
+    const current = (() => {
+      switch (state.scene) {
+        case "ONBOARDING": return (onboarding?.stageIndex ?? -1) + 1;
+        case "POSTING":    return (state.stageIndex ?? -1) + 1;
+        case "ENGINE":     return (engine?.stageIndex ?? -1) + 1;
+        case "RECONCILE":  return (reconcile?.stageIndex ?? -1) + 1;
+        case "FANOUT":     return (fanout?.stageIndex ?? -1) + 1;
+        case "HARD_EDGE":  return (hardEdge?.stageIndex ?? -1) + 1;
+        case "ERASURE":    return (erasure?.stageIndex ?? -1) + 1;
+        case "ARCH":       return (arch?.stageIndex ?? -1) + 1;
+        case "RBAC":       return (rbac?.stageIndex ?? -1) + 1;
+        default:           return 0;
+      }
+    })();
+    return { current, total };
+  }, [state.scene, state.stageIndex, globalCurrentStatus, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
+
   return (
     <LeafygreenProvider darkMode={false}>
     <MotionConfig reducedMotion="user" transition={SPRING.default}>
@@ -1020,7 +1052,19 @@ const LedgerFlowV3 = () => {
               <H1 className={styles.title}>Ledger Flow</H1>
               <Badge variant="green">v2</Badge>
               <Badge variant="blue">BIAN v14</Badge>
-              <Badge variant="lightgray">{stageStatus}</Badge>
+              <div className={styles.progressWrap}>
+                <Badge variant={globalCurrentStatus === "IDLE" ? "lightgray" : globalCurrentStatus === "SETTLED" ? "green" : "blue"}>
+                  {globalCurrentStatus === "SETTLED" ? `✓ ${stageStatus}` : stageStatus}
+                </Badge>
+                {stageProgress && (
+                  <div className={styles.progressMeter}>
+                    <div
+                      className={styles.progressFill}
+                      style={{ width: `${Math.round((stageProgress.current / stageProgress.total) * 100)}%` }}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -1132,6 +1176,7 @@ const LedgerFlowV3 = () => {
                   className={`${styles.scenarioPill} ${reconcileScenario === s.key ? styles.scenarioPillActive : ""}`}
                   onClick={() => handleSetReconcileScenario(s.key)}
                 >
+                  {reconcileScenario === s.key && <span className={styles.pillCheck}>✓ </span>}
                   {s.label}
                 </button>
               ))}
@@ -1150,6 +1195,7 @@ const LedgerFlowV3 = () => {
                   className={`${styles.scenarioPill} ${txType === t.key ? styles.scenarioPillActive : ""}`}
                   onClick={() => handleSetTxType(t.key)}
                 >
+                  {txType === t.key && <span className={styles.pillCheck}>✓ </span>}
                   {t.label}
                 </button>
               ))}
@@ -1167,6 +1213,7 @@ const LedgerFlowV3 = () => {
                       className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
                       onClick={() => handleSetScenario(s.key)}
                     >
+                      {scenario === s.key && <span className={styles.pillCheck}>✓ </span>}
                       {s.label}
                     </button>
                   ))}
@@ -1178,7 +1225,12 @@ const LedgerFlowV3 = () => {
 
         {/* CANVAS */}
         <main className={styles.canvasBand}>
-          <SceneCanvas scene={state.scene} state={state} />
+          <SceneCanvas
+            scene={state.scene}
+            state={state}
+            sceneStatus={globalCurrentStatus}
+            nextSceneLabel={SCENES[state.sceneIndex + 1]?.label}
+          />
         </main>
 
         {/* BALANCES — only visible during POSTING scene */}
@@ -1199,13 +1251,45 @@ const LedgerFlowV3 = () => {
 
         {/* BIAN footer strip */}
         <footer className={styles.bianStrip} aria-label="BIAN classification">
-          <span>SD <strong>FinancialAccounting</strong></span>
+          <span>SD{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>FinancialAccounting</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Service Domain — BIAN&apos;s primary classification unit. Owns the GL, sub-ledger, trial balance, and period close lifecycle.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>CR <strong>FinancialBookingLog</strong></span>
+          <span>CR{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>FinancialBookingLog</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Control Record — the persistent data entity managed by this Service Domain. An immutable log of all financial book entries.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>BQ <strong>LedgerPosting</strong></span>
+          <span>BQ{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>LedgerPosting</strong>}
+              align="top"
+              darkMode={false}
+            >
+              Behavior Qualifier — the specific posting operation within the Control Record lifecycle: debit, credit, and GL commit.
+            </Tooltip>
+          </span>
           <span className={styles.sep}>·</span>
-          <span>Pattern <strong>Management</strong></span>
+          <span>Pattern{" "}
+            <Tooltip
+              trigger={<strong style={{ cursor: "help", borderBottom: "1px dotted #5C6C75" }}>Management</strong>}
+              align="top"
+              darkMode={false}
+            >
+              BIAN Interaction Pattern — lifecycle management of the Control Record, as opposed to Execute, Process, or Monitor patterns.
+            </Tooltip>
+          </span>
         </footer>
       </div>
     </MotionConfig>

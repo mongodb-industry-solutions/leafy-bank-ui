@@ -120,6 +120,30 @@
   display: flex;
   min-height: 280px;
   overflow: hidden;
+  position: relative;
+}
+
+/* ─── Progress meter (inline stage badge bar) ────────────────────────────── */
+.progressWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.progressMeter {
+  width: 32px;
+  height: 3px;
+  border-radius: 2px;
+  background: #E8EDEB;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progressFill {
+  height: 100%;
+  border-radius: 2px;
+  background: #00A35C;
+  transition: width 400ms cubic-bezier(0.33, 1, 0.68, 1), background 200ms ease;
 }
 
 /* Balances band — own row in page grid; doesn't compress the canvas */
@@ -165,6 +189,13 @@
   width: min(1100px, 96vw) !important;
   min-width: min(1100px, 96vw) !important;
   max-width: 96vw !important;
+}
+
+/* ─── Motion accessibility ───────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 @media (max-width: 1100px) {

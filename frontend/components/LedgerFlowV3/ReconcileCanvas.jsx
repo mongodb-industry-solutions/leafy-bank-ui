@@ -74,9 +74,18 @@ function GateRow({ x, y, w, gateKey, label, lit, current }) {
   const checkColor = lit ? "#00684A" : "#C1C7C6";
   return (
     <motion.g
-      initial={false}
-      animate={{ opacity: lit || current ? 1 : 0.45 }}
-      transition={SPRING.default}
+      initial={{ opacity: 0.45, scale: 0.97 }}
+      animate={{
+        opacity: lit || current ? 1 : 0.45,
+        scale: lit ? 1 : 0.97,
+      }}
+      style={{ transformOrigin: `${x + w / 2}px ${y + 18}px` }}
+      transition={{
+        opacity: SPRING.default,
+        scale: lit
+          ? { type: "spring", stiffness: 380, damping: 22 }
+          : SPRING.default,
+      }}
     >
       <rect x={x} y={y} width={w} height={36} rx={8} fill={fill} stroke={stroke} strokeWidth={lit ? 1.5 : 1} />
       <text x={x + 14} y={y + 23} className={styles.gateCheck} fill={checkColor}>{lit ? "✓" : "○"}</text>
@@ -260,14 +269,17 @@ const ReconcileCanvas = ({ state }) => {
 
           {/* Idle placeholder */}
           {!currentStage && (
-            <g>
+            <motion.g
+              animate={{ opacity: [0.4, 0.78, 0.4] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            >
               <text x={W / 2} y={H / 2 - 12} textAnchor="middle" className={styles.idleTitle}>
                 Reconciliation Engine
               </text>
               <text x={W / 2} y={H / 2 + 12} textAnchor="middle" className={styles.idleSub}>
                 3 runs · 4-gate period close · zero tolerance
               </text>
-            </g>
+            </motion.g>
           )}
         </svg>
       </div>
