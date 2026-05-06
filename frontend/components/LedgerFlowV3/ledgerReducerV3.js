@@ -10,13 +10,17 @@ import { onboardingReducer, onboardingInitialState } from "./onboardingReducer";
 import { erasureReducer, erasureInitialState } from "./erasureReducer";
 import { fanoutReducer, fanoutInitialState } from "./fanoutReducer";
 import { hardEdgeReducer, hardEdgeInitialState } from "./hardEdgeReducer";
+import { engineReducer, engineInitialState } from "./engineReducer";
+import { reconcileReducer, reconcileInitialState } from "./reconcileReducer";
 
 export const SCENES = [
   { key: "ONBOARDING", label: "Onboarding", index: 0 },
   { key: "POSTING",    label: "The Posting", index: 1 },
-  { key: "FANOUT",     label: "Fan-out",     index: 2 },
-  { key: "HARD_EDGE",  label: "Hard Edge",   index: 3 },
-  { key: "ERASURE",    label: "Erasure",     index: 4 },
+  { key: "ENGINE",     label: "Engine",      index: 2 },
+  { key: "FANOUT",     label: "Fan-out",     index: 3 },
+  { key: "HARD_EDGE",  label: "Hard Edge",   index: 4 },
+  { key: "RECONCILE",  label: "Reconcile",   index: 5 },
+  { key: "ERASURE",    label: "Erasure",     index: 6 },
 ];
 
 export const initialStateV3 = {
@@ -28,6 +32,8 @@ export const initialStateV3 = {
   erasure: erasureInitialState,
   fanout: fanoutInitialState,
   hardEdge: hardEdgeInitialState,
+  engine: engineInitialState,
+  reconcile: reconcileInitialState,
 };
 
 export function ledgerReducerV3(state, action) {
@@ -38,6 +44,7 @@ export function ledgerReducerV3(state, action) {
         ...v2InitialState,
         mode: state.mode,
         scenario: state.scenario || "FX_ROUNDING",
+        txType: state.txType || "DOMESTIC",
         scene: action.scene,
         sceneIndex: idx >= 0 ? idx : 1,
         scenesVisited: { ...state.scenesVisited },
@@ -45,11 +52,16 @@ export function ledgerReducerV3(state, action) {
         erasure: erasureInitialState,
         fanout: fanoutInitialState,
         hardEdge: hardEdgeInitialState,
+        engine: engineInitialState,
+        reconcile: reconcileInitialState,
       };
     }
 
     case "SET_SCENARIO":
       return { ...state, scenario: action.scenario };
+
+    case "SET_TX_TYPE":
+      return { ...state, txType: action.txType };
 
     case "ONBOARD_RESET":
     case "ONBOARD_SET_MODE":
@@ -123,6 +135,43 @@ export function ledgerReducerV3(state, action) {
       };
     }
 
+    case "RECONCILE_RESET":
+    case "RECONCILE_SET_MODE":
+    case "RECONCILE_SET_SCENARIO":
+    case "RECONCILE_START":
+    case "RECONCILE_STEP_PREV":
+    case "RECONCILE_STAGE_EVENT": {
+      const nextReconcile = reconcileReducer(state.reconcile || reconcileInitialState, action);
+      const isDone =
+        action.type === "RECONCILE_STAGE_EVENT" &&
+        action.event?.stage === "PERIOD_CLOSED";
+      return {
+        ...state,
+        reconcile: nextReconcile,
+        scenesVisited: isDone
+          ? { ...state.scenesVisited, [state.scene]: true }
+          : state.scenesVisited,
+      };
+    }
+
+    case "ENGINE_RESET":
+    case "ENGINE_SET_MODE":
+    case "ENGINE_START":
+    case "ENGINE_STEP_PREV":
+    case "ENGINE_STAGE_EVENT": {
+      const nextEngine = engineReducer(state.engine || engineInitialState, action);
+      const isDone =
+        action.type === "ENGINE_STAGE_EVENT" &&
+        action.event?.stage === "ENGINE_COMMIT";
+      return {
+        ...state,
+        engine: nextEngine,
+        scenesVisited: isDone
+          ? { ...state.scenesVisited, [state.scene]: true }
+          : state.scenesVisited,
+      };
+    }
+
     default: {
       const v2Result = ledgerReducer(state, action);
       return {
@@ -137,6 +186,8 @@ export function ledgerReducerV3(state, action) {
         erasure: state.erasure || erasureInitialState,
         fanout: state.fanout || fanoutInitialState,
         hardEdge: state.hardEdge || hardEdgeInitialState,
+        engine: state.engine || engineInitialState,
+        reconcile: state.reconcile || reconcileInitialState,
       };
     }
   }

@@ -170,6 +170,29 @@ export const DUPLICATE_CORRECTION = {
   createdAt: isoDate("2026-05-06T18:20:00Z"),
 };
 
+// ─── CANCELLED scenario — card auth expired, reversal nets to zero ────────────
+
+export const CANCELLED_RUN = {
+  runId: "RUN-20260506-004",
+  periodCode: "2026-04",
+  periodName: "April 2026",
+  runType: "SUB_LEDGER_TO_GL",
+  controlAccountCode: "2100",
+  controlAccountName: "Customer Deposits — Current",
+  sourceCollection: "subLedgerEntries",
+  targetCollection: "glAccounts",
+  sourceCount: 58947,
+  targetCount: 58947,
+  sourceTotal: dec(984723.11),
+  targetTotal: dec(984723.11),
+  breakAmount: dec(0.00),
+  currency: "USD",
+  status: "BALANCED",
+  note: "Card auth expired — REVERSAL journal posted before EOD. Net effect = $0.00.",
+  startedAt: isoDate("2026-05-06T18:00:00Z"),
+  completedAt: isoDate("2026-05-06T18:00:02Z"),
+};
+
 // ─── Scenario map ─────────────────────────────────────────────────────────────
 
 export const SCENARIO_DATA = {
@@ -199,5 +222,14 @@ export const SCENARIO_DATA = {
     delta: "$250.00",
     exceptionType: "DUPLICATE_POSTING",
     priority: "CRITICAL",
+  },
+  CANCELLED: {
+    run: CANCELLED_RUN,
+    exception: null,
+    correction: null,
+    label: "Auth Reversal",
+    delta: "$0.00",
+    exceptionType: null,
+    priority: null,
   },
 };

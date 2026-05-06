@@ -11,6 +11,8 @@ import { onboardingNarrationFor } from "./onboardingNarration";
 import { erasureNarrationFor } from "./erasureNarration";
 import { fanoutNarrationFor } from "./fanoutNarration";
 import { hardEdgeNarrationFor } from "./hardEdgeNarration";
+import { engineNarrationFor } from "./engineNarration";
+import { reconcileNarrationFor } from "./reconcileNarration";
 
 export { STAGE_LIST, stageOf, indexOfStage, stageLabel };
 
@@ -30,11 +32,17 @@ export function narrationFor(state) {
         doc: null,
       };
 
+    case "ENGINE":
+      return engineNarrationFor(state.engine || {});
+
     case "FANOUT":
       return fanoutNarrationFor(state.fanout || {});
 
     case "HARD_EDGE":
       return hardEdgeNarrationFor(state.hardEdge || {});
+
+    case "RECONCILE":
+      return reconcileNarrationFor(state.reconcile || {});
 
     case "ERASURE":
       return erasureNarrationFor(state.erasure || {});

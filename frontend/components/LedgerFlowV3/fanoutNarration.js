@@ -4,7 +4,7 @@ import { FANOUT_STAGE_LIST } from "./fanoutReducer";
 export function fanoutNarrationFor(f = {}) {
   const stage = f.currentStage;
   const idx = f.stageIndex ?? -1;
-  const total = FANOUT_STAGE_LIST.length;
+  const total = FANOUT_STAGE_LIST.length; // now 7 with DLQ
   const label = idx >= 0 ? `Stage ${idx + 1} of ${total}` : `Stage 0 of ${total}`;
 
   switch (stage) {
@@ -51,10 +51,36 @@ export function fanoutNarrationFor(f = {}) {
         callout: {
           variant: "note",
           title: "Resume tokens are oplog pointers — WORM is the fallback",
-          body: "Each token is a reference into MongoDB's oplog. They allow a consumer to resume from exactly where it left off. But the oplog has finite retention. When the window expires (Scene 4), the WORM sink becomes the recovery source — its immutable hash chain replays missed events with cryptographic proof of ordering.",
+          body: "Each token is a reference into MongoDB's oplog. They allow a consumer to resume from exactly where it left off. But the oplog has finite retention. When the window expires (Scene 5), the WORM sink becomes the recovery source — its immutable hash chain replays missed events with cryptographic proof of ordering.",
         },
         doc: null,
       };
+
+    case "FANOUT_DLQ":
+      return {
+        overline: label,
+        title: "Dead Letter Queue — failure captured, never dropped",
+        body: "A balance projection failure (connection timeout after 3 retries) writes a cdcDeadLetters document instead of silently failing. The full event, resume token, pipeline ID, error class, and retry count are preserved. Operators triage cdcDeadLetters; resolved entries are re-emitted into the pipeline with their original resume token. The pipeline never silently loses data — every failure is observable and re-drivable.",
+        callout: {
+          variant: "important",
+          title: "Observable failure is better than silent success",
+          body: "cdcDeadLetters is queryable: { pipeline: 'balanceProjection', dispositioned: false }. Alert on non-empty result. Resolve → re-emit → mark dispositioned: true. Full audit trail preserved.",
+        },
+        doc: {
+          collectionKey: null,
+          label: "cdcDeadLetters[0]",
+          payload: {
+            _id: "DLQ-20260506-0001",
+            pipeline: "balanceProjection",
+            journalEntryId: "JNL-20260506-001",
+            errorClass: "projection_failure",
+            retryCount: 3,
+            dispositioned: false,
+            capturedAt: { $date: new Date().toISOString() },
+          },
+        },
+      };
+
     default:
       return {
         overline: "Idle",

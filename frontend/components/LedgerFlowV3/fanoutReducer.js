@@ -7,6 +7,7 @@ export const FANOUT_STAGE_LIST = [
   "FANOUT_CONSUMER_BALANCE",
   "FANOUT_CONSUMER_FRAUD",
   "FANOUT_CONSUMER_WORM",
+  "FANOUT_DLQ",
 ];
 
 export function indexOfFanoutStage(stage) {
@@ -49,7 +50,7 @@ export function fanoutReducer(state, action) {
         events: [...(state.events || []), { stage, payload, at: Date.now() }],
         status: state.mode === "STEP" ? "STEP_PAUSED" : "AUTO_RUNNING",
       };
-      if (stage === "FANOUT_CONSUMER_WORM") return { ...next, status: "SETTLED", settledAt: Date.now() };
+      if (stage === "FANOUT_DLQ") return { ...next, status: "SETTLED", settledAt: Date.now() };
       return next;
     }
     default: return state;

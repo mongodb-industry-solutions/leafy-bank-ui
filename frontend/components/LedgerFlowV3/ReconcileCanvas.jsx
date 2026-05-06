@@ -3,429 +3,276 @@
 import React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { SPRING } from "../LedgerFlow/motionConfig";
-import { SCENARIO_DATA } from "./reconcileFixtures";
 import styles from "./ReconcileCanvas.module.css";
 
-// ─── Layout constants ────────────────────────────────────────────────────────
 const W = 1600, H = 440;
 
-const COL_W = 430, COL_H = 272;
-const COL_Y = 52;
-const LEFT_X = 60;
-const RIGHT_X = 1110;
-const BAR_PAD = 18;
-const BAR_W = COL_W - BAR_PAD * 2;
-const BAR_H = 172;
-const BAR_Y = COL_Y + 56;  // top of bar container
+// 3 panels: TGB | SGL | TRIAL+GATES
+const PANEL = {
+  tgb:  { x: 30,   w: 450 },
+  sgl:  { x: 540,  w: 450 },
+  gate: { x: 1050, w: 510 },
+};
 
-// Beam connects left column right-edge to right column left-edge
-const BEAM_Y = COL_Y + 22;
-const BEAM_X1 = LEFT_X + COL_W + 8;
-const BEAM_X2 = RIGHT_X - 8;
-const BEAM_MID_X = (BEAM_X1 + BEAM_X2) / 2;  // ≈ 800
+function panelCx(p) { return p.x + p.w / 2; }
 
-// Delta box (centred in beam gap)
-const DELTA_W = 260, DELTA_H = 92;
-const DELTA_X = BEAM_MID_X - DELTA_W / 2;
-const DELTA_Y = BEAM_Y + 30;
+const GATES = [
+  { key: "runBalanced", label: "All runs BALANCED",    stage: "GATE_RUN_BALANCED"  },
+  { key: "sod",         label: "SoD verified",          stage: "GATE_SOD"           },
+  { key: "trial",       label: "Trial balance Σ = 0",   stage: "GATE_TRIAL"         },
+  { key: "noExceptions",label: "No open exceptions",    stage: "GATE_NO_EXCEPTIONS" },
+];
 
-// Exception ticket
-const TICKET_X = 140, TICKET_Y = 354, TICKET_W = 1320, TICKET_H = 70;
+function RunPanel({ x, w, label, subLabel, status, delta, count, loading, reached }) {
+  const fill = status === "BALANCED" ? "#E3FCF7" : status === "UNBALANCED" ? "#FEF3CD" : status === "PIPELINE_LAG" ? "#FFF3E0" : "#F2F3F4";
+  const stroke = status === "BALANCED" ? "#00A35C" : status === "UNBALANCED" ? "#916A00" : status === "PIPELINE_LAG" ? "#BF5700" : "#C1C7C6";
+  const statusText = status === "BALANCED" ? "BALANCED" : status === "UNBALANCED" ? "UNBALANCED" : status === "PIPELINE_LAG" ? "PIPELINE LAG" : loading ? "SCANNING…" : "PENDING";
+  const statusColor = status === "BALANCED" ? "#00684A" : status === "UNBALANCED" ? "#916A00" : status === "PIPELINE_LAG" ? "#BF5700" : "#889397";
 
-// Period gate
-const GATE_X = 1330, GATE_Y = 8, GATE_W = 248, GATE_H = 24;
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-function fmtMoney(n) {
-  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
-}
-function fmtCount(n) {
-  return new Intl.NumberFormat("en-US").format(n);
-}
-function dec(obj) {
-  if (!obj) return 0;
-  return parseFloat(typeof obj === "object" ? obj.$numberDecimal : obj);
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function Column({ x, label, sublabel, barFill, count, total, colorFill, colorStroke, colorText, show, labelFill, isBreakSide }) {
-  const barHeight = show ? BAR_H : 0;
   return (
-    <g>
-      {/* Card */}
-      <rect
-        x={x}
-        y={COL_Y}
-        width={COL_W}
-        height={COL_H}
-        rx={12}
-        className={styles.colCard}
-        stroke={show ? (isBreakSide ? "#FFCDD2" : colorStroke) : "#E8EDEB"}
-        fill="white"
-      />
-      {/* Top accent */}
-      <rect x={x} y={COL_Y} width={COL_W} height={5} rx={4} fill={show ? colorFill : "#E8EDEB"} opacity={0.5} />
-
-      {/* Header */}
-      <text x={x + COL_W / 2} y={COL_Y + 22} textAnchor="middle" className={styles.colHeader} fill={show ? labelFill : "#889397"}>
-        {label}
-      </text>
-      <text x={x + COL_W / 2} y={COL_Y + 38} textAnchor="middle" className={styles.colSub}>
-        {sublabel}
-      </text>
-
-      {/* Bar container */}
-      <rect x={x + BAR_PAD} y={BAR_Y} width={BAR_W} height={BAR_H} rx={6} fill="#F9FBFA" />
-
-      {/* Animated fill bar (grows from bottom) */}
-      <clipPath id={`clip-${label.replace(/\s+/g, "")}`}>
-        <rect x={x + BAR_PAD} y={BAR_Y} width={BAR_W} height={BAR_H} rx={6} />
-      </clipPath>
-      <motion.rect
-        x={x + BAR_PAD}
-        width={BAR_W}
-        rx={6}
-        fill={isBreakSide ? "#FFCDD2" : colorFill}
-        animate={{
-          y: BAR_Y + BAR_H - barHeight,
-          height: barHeight,
-        }}
-        transition={{ duration: 1.6, ease: [0.4, 0, 0.2, 1] }}
-        clipPath={`url(#clip-${label.replace(/\s+/g, "")})`}
-      />
-
-      {/* Horizontal ruling lines inside bar */}
-      {show && [1, 2, 3, 4, 5].map((i) => (
-        <line
-          key={i}
-          x1={x + BAR_PAD + 8}
-          y1={BAR_Y + (BAR_H / 6) * i}
-          x2={x + BAR_PAD + BAR_W - 8}
-          y2={BAR_Y + (BAR_H / 6) * i}
-          stroke={isBreakSide ? "#FFAA99" : colorStroke}
-          strokeWidth={0.7}
-          opacity={0.4}
-        />
-      ))}
-
-      {/* Count */}
-      <motion.text
-        x={x + COL_W / 2}
-        y={COL_Y + COL_H - 46}
-        textAnchor="middle"
-        className={styles.colCount}
-        animate={{ opacity: show ? 1 : 0.2 }}
+    <g transform={`translate(${x},0)`}>
+      <motion.g
+        initial={false}
+        animate={{ opacity: reached ? 1 : 0.38, y: reached ? 0 : 8 }}
+        transition={SPRING.default}
       >
-        {show ? `${fmtCount(count)} ${label?.includes("SUB") ? "entries" : "GL lines"}` : "—"}
-      </motion.text>
+        {/* Panel card */}
+        <rect y={40} width={w} height={320} rx={14} fill={fill} stroke={stroke} strokeWidth={reached ? 1.8 : 1} />
 
-      {/* Total */}
-      <motion.text
-        x={x + COL_W / 2}
-        y={COL_Y + COL_H - 22}
-        textAnchor="middle"
-        className={styles.colTotal}
-        fill={show ? colorText : "#C1C7C6"}
-        animate={{ opacity: show ? 1 : 0.2 }}
-      >
-        {show ? fmtMoney(total) : "$—"}
-      </motion.text>
+        {/* Header */}
+        <rect y={40} width={w} height={46} rx={14} fill={stroke} opacity={reached ? 0.12 : 0.06} />
+        <rect y={68} width={w} height={18} rx={0} fill={stroke} opacity={reached ? 0.12 : 0.06} />
+        <text x={w / 2} y={58} textAnchor="middle" className={styles.panelTitle} fill={statusColor}>{label}</text>
+        <text x={w / 2} y={74} textAnchor="middle" className={styles.panelSub} fill="#889397">{subLabel}</text>
+
+        {/* Count / metric */}
+        {count && (
+          <text x={w / 2} y={130} textAnchor="middle" className={styles.panelCount} fill={statusColor}>{count}</text>
+        )}
+
+        {/* Status badge */}
+        <rect x={w / 2 - 80} y={loading ? 155 : (count ? 148 : 130)} width={160} height={28} rx={8}
+          fill={reached ? fill : "#F2F3F4"} stroke={stroke} strokeWidth={1.2} />
+        <text x={w / 2} y={loading ? 170 : (count ? 167 : 149)} textAnchor="middle" className={styles.panelStatus} fill={statusColor}>
+          {statusText}
+        </text>
+
+        {/* Delta */}
+        {delta && (
+          <text x={w / 2} y={220} textAnchor="middle" className={styles.panelDelta} fill={statusColor}>
+            {`Δ ${delta}`}
+          </text>
+        )}
+      </motion.g>
     </g>
   );
 }
 
-// ─── Main Canvas ─────────────────────────────────────────────────────────────
-export default function ReconcileCanvas({ state }) {
-  const r = state?.reconcile || {};
-  const reached = (s) => !!r.reachedStages?.[s];
-  const isActive = r.status !== "IDLE";
-
-  const scenario = r.scenario || "FX_ROUNDING";
-  const scenarioData = SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING;
-  const RECONCILE_RUN = scenarioData.run;
-  const RECONCILE_EXCEPTION = scenarioData.exception;
-  const CORRECTION_JOURNAL = scenarioData.correction;
-
-  const srcFull    = reached("RECONCILE_SCANNING_SOURCE");
-  const tgtFull    = reached("RECONCILE_SCANNING_TARGET");
-  const isChecking = reached("RECONCILE_BALANCE_CHECK");
-  const isUnbal    = reached("RECONCILE_RESULT_UNBALANCED") && !reached("RECONCILE_RESOLVED");
-  const showExc    = reached("RECONCILE_EXCEPTION_CREATED");
-  const isInv      = reached("RECONCILE_INVESTIGATION_OPENED");
-  const hasCor     = reached("RECONCILE_CORRECTION_POSTED");
-  const isResolved = reached("RECONCILE_RESOLVED");
-  const isBalanced = isResolved;
-
-  // Visual states
-  const beamTilt   = isUnbal ? -2.8 : 0;
-  const beamColor  = isBalanced ? "#00A35C" : (isUnbal ? "#C82430" : (isChecking ? "#016BF8" : "#C1C7C6"));
-
-  const deltaColor = isBalanced ? "#00684A" : (isUnbal ? "#C82430" : (isChecking ? "#016BF8" : "#5C6C75"));
-  const breakAmt   = scenarioData.delta;
-  const deltaAmt   = (isUnbal || isBalanced) ? (isBalanced ? "$0.00" : breakAmt) : (isChecking ? "…" : "—");
-  const deltaLabel = isBalanced ? "✓ BALANCED" : (isUnbal ? "⚠ UNBALANCED" : (isChecking ? "CHECKING" : "—"));
-  const deltaFill  = isBalanced ? "#E3FCF7" : (isUnbal ? "#FFEAE5" : (isChecking ? "#E1F7FF" : "#F9FBFA"));
-  const deltaStroke = deltaColor;
-
-  const gateBlocked = showExc && !isResolved;
-  const gateColor  = isResolved ? "#00684A" : (gateBlocked ? "#C82430" : "#5C6C75");
-  const gateFill   = isResolved ? "#E3FCF7" : (gateBlocked ? "#FFEAE5" : "#F9FBFA");
-  const gateText   = isResolved ? "Period 2026-04 · gate: READY" : (gateBlocked ? "Period 2026-04 · gate: BLOCKED" : "Period 2026-04 · gate: PENDING");
-
-  const excStatus  = isResolved ? "RESOLVED" : (hasCor ? "CORRECTION POSTED" : (isInv ? "INVESTIGATING" : "OPEN"));
-  const excAccent  = isResolved ? "#00684A" : (isInv ? "#944F01" : "#C82430");
-  const excBg      = isResolved ? "#E3FCF7" : (hasCor ? "#FEF7DB" : (isInv ? "#FEF7DB" : "#FFEAE5"));
-  const excBorder  = isResolved ? "#00A35C" : (isInv ? "#944F01" : "#C82430");
-
+function GateRow({ x, y, w, gateKey, label, lit, current }) {
+  const fill = lit ? "#E3FCF7" : "#F2F3F4";
+  const stroke = lit ? "#00A35C" : "#C1C7C6";
+  const checkColor = lit ? "#00684A" : "#C1C7C6";
   return (
-    <svg
-      width="100%"
-      height="100%"
-      viewBox={`0 0 ${W} ${H}`}
-      preserveAspectRatio="xMidYMid meet"
-      style={{ display: "block" }}
+    <motion.g
+      initial={false}
+      animate={{ opacity: lit || current ? 1 : 0.45 }}
+      transition={SPRING.default}
     >
-      {/* Background */}
-      <rect width={W} height={H} fill="#FAFBFA" />
-
-      {/* Header strip */}
-      <rect x={0} y={0} width={W} height={38} fill="#F9FBFA" />
-      <line x1={0} y1={38} x2={W} y2={38} stroke="#E8EDEB" strokeWidth={1} />
-
-      {isActive ? (
-        <text x={40} y={23} className={styles.headerText}>
-          RECONCILIATION RUN · {RECONCILE_RUN.runId} · {RECONCILE_RUN.runType} · {RECONCILE_RUN.periodName}
-        </text>
-      ) : (
-        <text x={W / 2} y={23} textAnchor="middle" className={styles.headerText} opacity={0.45}>
-          EOD RECONCILIATION · SUB_LEDGER_TO_GL · Press Simulate to run
-        </text>
-      )}
-
-      {/* Period-close gate */}
-      <motion.g animate={{ opacity: isActive ? 1 : 0.35 }} transition={SPRING.default}>
-        <rect x={GATE_X} y={GATE_Y} width={GATE_W} height={GATE_H} rx={GATE_H / 2}
-          fill={gateFill} stroke={gateColor} strokeWidth={1} />
-        <text x={GATE_X + GATE_W / 2} y={GATE_Y + 15.5} textAnchor="middle" className={styles.gateText} fill={gateColor}>
-          {gateText}
-        </text>
-      </motion.g>
-
-      {/* ── Scale beam (tilts on unbalanced) ────────────────────────────── */}
-      <motion.g
-        animate={{ rotate: beamTilt }}
-        style={{ transformOrigin: `${BEAM_MID_X}px ${BEAM_Y}px` }}
-        transition={SPRING.default}
-      >
-        {/* Horizontal beam */}
-        <motion.line
-          x1={BEAM_X1} y1={BEAM_Y} x2={BEAM_X2} y2={BEAM_Y}
-          stroke={beamColor} strokeWidth={isChecking ? 2 : 1.5}
-          strokeDasharray={isActive ? "none" : "8 5"}
-          animate={{ stroke: beamColor }}
-          transition={SPRING.default}
-        />
-        {/* Vertical arm – left */}
-        <line x1={LEFT_X + COL_W / 2} y1={BEAM_Y} x2={LEFT_X + COL_W / 2} y2={COL_Y + 3}
-          stroke="#C1C7C6" strokeWidth={1} />
-        {/* Vertical arm – right */}
-        <line x1={RIGHT_X + COL_W / 2} y1={BEAM_Y} x2={RIGHT_X + COL_W / 2} y2={COL_Y + 3}
-          stroke="#C1C7C6" strokeWidth={1} />
-        {/* Pivot triangle */}
-        <motion.polygon
-          points={`${BEAM_MID_X},${BEAM_Y - 14} ${BEAM_MID_X - 9},${BEAM_Y} ${BEAM_MID_X + 9},${BEAM_Y}`}
-          animate={{ fill: beamColor }}
-          transition={SPRING.default}
-        />
-      </motion.g>
-
-      {/* ── Left column: Sub-Ledger ──────────────────────────────────────── */}
-      <Column
-        x={LEFT_X}
-        label="SUB-LEDGER ENTRIES"
-        sublabel="subLedgerEntries · controlAccountCode: 2100"
-        show={srcFull}
-        count={RECONCILE_RUN.sourceCount}
-        total={dec(RECONCILE_RUN.sourceTotal)}
-        colorFill="#FDE7C8"
-        colorStroke="#F4C89A"
-        colorText={isUnbal ? "#C82430" : "#001E2B"}
-        labelFill="#944F01"
-        isBreakSide={isUnbal}
-      />
-
-      {/* ── Right column: GL Summary ─────────────────────────────────────── */}
-      <Column
-        x={RIGHT_X}
-        label="GL CONTROL ACCOUNTS"
-        sublabel="glAccounts · accountCode: 2100"
-        show={tgtFull}
-        count={RECONCILE_RUN.targetCount}
-        total={dec(RECONCILE_RUN.targetTotal)}
-        colorFill="#C0FAE6"
-        colorStroke="#A8DCC5"
-        colorText={isResolved ? "#00684A" : "#001E2B"}
-        labelFill="#00684A"
-        isBreakSide={false}
-      />
-
-      {/* ── Delta box (centre) ───────────────────────────────────────────── */}
-      <AnimatePresence>
-        {isChecking && (
-          <motion.g
-            key="delta"
-            initial={{ opacity: 0, scale: 0.82 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            style={{ transformOrigin: `${DELTA_X + DELTA_W / 2}px ${DELTA_Y + DELTA_H / 2}px` }}
-            transition={SPRING.default}
-          >
-            <motion.rect
-              x={DELTA_X} y={DELTA_Y} width={DELTA_W} height={DELTA_H} rx={14}
-              animate={{ fill: deltaFill, stroke: deltaStroke }}
-              fill={deltaFill} stroke={deltaStroke} strokeWidth={1.5}
-              transition={SPRING.default}
-            />
-            <text x={DELTA_X + DELTA_W / 2} y={DELTA_Y + 24} textAnchor="middle" className={styles.deltaEyebrow} fill="#5C6C75">
-              BALANCE DELTA
-            </text>
-            <motion.text
-              x={DELTA_X + DELTA_W / 2} y={DELTA_Y + 56} textAnchor="middle"
-              className={styles.deltaAmount}
-              animate={{ fill: deltaColor }}
-              transition={SPRING.default}
-            >
-              Δ = {deltaAmt}
-            </motion.text>
-            <motion.text
-              x={DELTA_X + DELTA_W / 2} y={DELTA_Y + 76} textAnchor="middle"
-              className={styles.deltaStatus}
-              animate={{ fill: deltaColor }}
-              transition={SPRING.default}
-            >
-              {deltaLabel}
-            </motion.text>
-          </motion.g>
-        )}
-      </AnimatePresence>
-
-      {/* ── Balance seal (RESOLVED) ──────────────────────────────────────── */}
-      <AnimatePresence>
-        {isResolved && (
-          <motion.g
-            key="seal"
-            initial={{ opacity: 0, scale: 0.4, rotate: -30 }}
-            animate={{ opacity: 0.13, scale: 1, rotate: -18 }}
-            exit={{ opacity: 0 }}
-            style={{ transformOrigin: `${BEAM_MID_X}px 200px` }}
-            transition={{ ...SPRING.default, delay: 0.2 }}
-          >
-            <circle cx={BEAM_MID_X} cy={200} r={96} fill="none" stroke="#00684A" strokeWidth={5} />
-            <circle cx={BEAM_MID_X} cy={200} r={86} fill="none" stroke="#00684A" strokeWidth={1} strokeDasharray="5 4" />
-            <text x={BEAM_MID_X} y={194} textAnchor="middle" className={styles.sealText} fill="#00684A">BALANCED</text>
-            <text x={BEAM_MID_X} y={216} textAnchor="middle" className={styles.sealSub} fill="#00684A">ZERO TOLERANCE</text>
-          </motion.g>
-        )}
-      </AnimatePresence>
-
-      {/* ── Exception ticket ─────────────────────────────────────────────── */}
-      <AnimatePresence>
-        {showExc && (
-          <motion.g
-            key="ticket"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={SPRING.default}
-          >
-            {/* Card body */}
-            <motion.rect
-              x={TICKET_X} y={TICKET_Y} width={TICKET_W} height={TICKET_H} rx={10}
-              animate={{ fill: excBg, stroke: excBorder }}
-              fill={excBg} stroke={excBorder} strokeWidth={1.5}
-              transition={SPRING.default}
-            />
-            {/* Left accent stripe */}
-            <motion.rect
-              x={TICKET_X} y={TICKET_Y} width={6} height={TICKET_H} rx={6}
-              animate={{ fill: excAccent }}
-              fill={excAccent}
-              transition={SPRING.default}
-            />
-
-            {/* Exception ID */}
-            <text x={TICKET_X + 22} y={TICKET_Y + 22} className={styles.excId}>
-              {RECONCILE_EXCEPTION?.exceptionId || "EXC-—"}
-            </text>
-            {/* Type */}
-            <rect x={TICKET_X + 216} y={TICKET_Y + 9} width={172} height={18} rx={9}
-              fill={excAccent} opacity={0.12} />
-            <text x={TICKET_X + 302} y={TICKET_Y + 22} textAnchor="middle" className={styles.excTypePill} fill={excAccent}>
-              {scenarioData.exceptionType || "MISMATCH"}
-            </text>
-            {/* Break amount */}
-            <text x={TICKET_X + 408} y={TICKET_Y + 22} className={styles.excBreak} fill={isResolved ? "#00684A" : "#C82430"}>
-              Δ {breakAmt}
-            </text>
-            {/* Priority + SLA */}
-            <text x={TICKET_X + 490} y={TICKET_Y + 22} className={styles.excMeta}>
-              {RECONCILE_EXCEPTION?.priority || "HIGH"} · SLA {RECONCILE_EXCEPTION?.slaHours || 8}h · controlAccount 2100
-            </text>
-
-            {/* Status badge (right) */}
-            <motion.rect
-              x={TICKET_X + TICKET_W - 220} y={TICKET_Y + 7} width={204} height={20} rx={10}
-              animate={{ fill: excAccent }} fill={excAccent} opacity={0.12}
-              transition={SPRING.default}
-            />
-            <motion.text
-              x={TICKET_X + TICKET_W - 118} y={TICKET_Y + 21}
-              textAnchor="middle"
-              className={styles.excStatus}
-              animate={{ fill: excAccent }}
-              fill={excAccent}
-              transition={SPRING.default}
-            >
-              {isResolved ? "✓ RESOLVED" : excStatus}
-            </motion.text>
-
-            {/* Bottom note line — scenario aware */}
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.text
-                key={`${excStatus}-${scenario}`}
-                x={TICKET_X + 22} y={TICKET_Y + 52}
-                className={styles.excNote}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25 }}
-              >
-                {isResolved
-                  ? `Period 2026-04 close unblocked · ${CORRECTION_JOURNAL?.journalId || "correction posted"} · re-run BALANCED`
-                  : hasCor
-                  ? `${CORRECTION_JOURNAL?.journalId} posted · ${breakAmt} ${scenario === "DUPLICATE" ? "REVERSAL" : "ADJUSTMENT"} · ${RECONCILE_EXCEPTION?.relatedEntryId}`
-                  : isInv
-                  ? RECONCILE_EXCEPTION?.notes?.[1]?.text || "Investigation in progress"
-                  : RECONCILE_EXCEPTION?.notes?.[0]?.text || `Auto-detected: Σ(subLedgerEntries) − Σ(GL 2100) = ${breakAmt}`
-                }
-              </motion.text>
-            </AnimatePresence>
-          </motion.g>
-        )}
-      </AnimatePresence>
-
-      {/* Idle state label */}
-      {!isActive && (
-        <text
-          x={BEAM_MID_X} y={COL_Y + COL_H / 2 + 8}
-          textAnchor="middle"
-          className={styles.idleHint}
-          opacity={0.35}
-        >
-          Press Simulate →
-        </text>
-      )}
-    </svg>
+      <rect x={x} y={y} width={w} height={36} rx={8} fill={fill} stroke={stroke} strokeWidth={lit ? 1.5 : 1} />
+      <text x={x + 14} y={y + 23} className={styles.gateCheck} fill={checkColor}>{lit ? "✓" : "○"}</text>
+      <text x={x + 36} y={y + 23} className={styles.gateLabel} fill={lit ? "#001E2B" : "#889397"}>{label}</text>
+    </motion.g>
   );
 }
+
+const ReconcileCanvas = ({ state }) => {
+  const reconcile = state?.reconcile || {};
+  const scenario = reconcile.scenario || "BALANCED";
+  const currentStage = reconcile.currentStage;
+  const reachedStages = reconcile.reachedStages || {};
+  const gates = reconcile.gates || {};
+  const tgbResult = reconcile.tgbResult;
+  const sglResult = reconcile.sglResult;
+
+  const reached = (s) => !!reachedStages[s];
+
+  const tgbLoading = reached("RUN_TGB_START") && !reached("RUN_TGB_RESULT");
+  const tgbStatus = tgbResult?.status || (tgbLoading ? null : null);
+  const tgbDelta = tgbResult?.delta ? `$${parseFloat(tgbResult.delta.$numberDecimal).toFixed(2)}` : null;
+  const tgbCount = tgbResult ? `${tgbResult.strandCount || 142} strands` : null;
+
+  const sglLoading = reached("RUN_SGL_START") && !reached("RUN_SGL_RESULT");
+  const sglStatus = sglResult?.status || (sglLoading ? null : null);
+  const sglDelta = sglResult?.delta ? `$${parseFloat(sglResult.delta.$numberDecimal).toFixed(2)}` : null;
+  const sglCount = sglResult ? `${sglResult.subLedgerCount || 58947} entries` : null;
+
+  const isClosed = reached("PERIOD_CLOSED");
+
+  const scenarioMap = {
+    BALANCED: "Perfect Balance",
+    STRAND_DRIFT: "Strand Drift Δ$0.10",
+    SUB_GL_LAG: "Pipeline Lag",
+  };
+
+  return (
+    <div className={styles.frame}>
+      <div className={styles.atmosphere} aria-hidden="true" />
+      <div className={styles.svgWrap}>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className={styles.svg}
+          viewBox={`0 0 ${W} ${H}`}
+          preserveAspectRatio="xMidYMid meet"
+          role="img"
+          aria-label="Reconciliation canvas"
+        >
+          <rect width={W} height={H} fill="#FAFAF9" />
+
+          {/* Scenario badge */}
+          {currentStage && (
+            <g>
+              <rect x={W - 260} y={8} width={250} height={26} rx={6} fill="#E1F7FF" stroke="#016BF8" strokeWidth={1} />
+              <text x={W - 135} y={25} textAnchor="middle" className={styles.scenarioBadge}>
+                {`Scenario: ${scenarioMap[scenario] || scenario}`}
+              </text>
+            </g>
+          )}
+
+          {/* Panel column headers */}
+          <text x={panelCx(PANEL.tgb)} y={28} textAnchor="middle" className={styles.columnHeader}>
+            transferGroupBalance
+          </text>
+          <text x={panelCx(PANEL.sgl)} y={28} textAnchor="middle" className={styles.columnHeader}>
+            subledgerToGL
+          </text>
+          <text x={panelCx(PANEL.gate)} y={28} textAnchor="middle" className={styles.columnHeader}>
+            trialBalance · Period Close
+          </text>
+
+          {/* Dividers */}
+          <line x1={510} y1={36} x2={510} y2={H - 10} stroke="#E8EDEB" strokeWidth={1} />
+          <line x1={1020} y1={36} x2={1020} y2={H - 10} stroke="#E8EDEB" strokeWidth={1} />
+
+          {/* TGB Panel */}
+          <RunPanel
+            x={PANEL.tgb.x} w={PANEL.tgb.w}
+            label="Run 1" subLabel="per-strand continuous"
+            status={tgbStatus}
+            delta={tgbDelta && tgbStatus === "UNBALANCED" ? tgbDelta : null}
+            count={tgbCount}
+            loading={tgbLoading}
+            reached={reached("RUN_TGB_START")}
+          />
+
+          {/* SGL Panel */}
+          <RunPanel
+            x={PANEL.sgl.x} w={PANEL.sgl.w}
+            label="Run 2" subLabel="ASP glSummaryPipeline"
+            status={sglStatus}
+            delta={sglDelta && sglStatus !== "BALANCED" ? sglDelta : null}
+            count={sglCount}
+            loading={sglLoading}
+            reached={reached("RUN_SGL_START")}
+          />
+
+          {/* Gate Panel */}
+          <g transform={`translate(${PANEL.gate.x},0)`}>
+            <motion.g
+              initial={false}
+              animate={{ opacity: reached("GATE_RUN_BALANCED") ? 1 : 0.38 }}
+              transition={SPRING.default}
+            >
+              <rect y={40} width={PANEL.gate.w} height={320} rx={14}
+                fill={isClosed ? "#E3FCF7" : "#F2F3F4"}
+                stroke={isClosed ? "#00A35C" : "#C1C7C6"}
+                strokeWidth={isClosed ? 2 : 1}
+              />
+              <rect y={40} width={PANEL.gate.w} height={46} rx={14}
+                fill={isClosed ? "#00A35C" : "#C1C7C6"} opacity={0.12} />
+              <rect y={68} width={PANEL.gate.w} height={18}
+                fill={isClosed ? "#00A35C" : "#C1C7C6"} opacity={0.12} />
+              <text x={PANEL.gate.w / 2} y={58} textAnchor="middle" className={styles.panelTitle}
+                fill={isClosed ? "#00684A" : "#889397"}>4-Gate Period Close</text>
+              <text x={PANEL.gate.w / 2} y={74} textAnchor="middle" className={styles.panelSub}
+                fill="#889397">all must pass before close</text>
+
+              {GATES.map((g, i) => (
+                <GateRow
+                  key={g.key}
+                  x={16} y={96 + i * 46} w={PANEL.gate.w - 32}
+                  gateKey={g.key}
+                  label={g.label}
+                  lit={!!gates[g.key]}
+                  current={currentStage === g.stage}
+                />
+              ))}
+
+              {/* PERIOD CLOSED banner */}
+              <AnimatePresence>
+                {isClosed && (
+                  <motion.g
+                    key="closed"
+                    initial={{ opacity: 0, scale: 0.92 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={SPRING.default}
+                    style={{ transformOrigin: `${PANEL.gate.w / 2}px 310px` }}
+                  >
+                    <rect x={16} y={284} width={PANEL.gate.w - 32} height={58} rx={10}
+                      fill="#00684A" stroke="#00684A" strokeWidth={1} />
+                    <text x={PANEL.gate.w / 2} y={310} textAnchor="middle" className={styles.closedTitle}>
+                      PERIOD CLOSED
+                    </text>
+                    <text x={PANEL.gate.w / 2} y={330} textAnchor="middle" className={styles.closedSub}>
+                      LOCKED · GL entries immutable
+                    </text>
+                  </motion.g>
+                )}
+              </AnimatePresence>
+            </motion.g>
+          </g>
+
+          {/* Exception indicator */}
+          {(reached("TGB_EXCEPTION") && !reached("TGB_RESOLVED")) && (
+            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+              <rect x={PANEL.tgb.x + 16} y={280} width={PANEL.tgb.w - 32} height={56} rx={8}
+                fill="#FDE7C8" stroke="#944F01" strokeWidth={1.5} />
+              <text x={PANEL.tgb.x + PANEL.tgb.w / 2} y={304} textAnchor="middle" className={styles.excTitle}>
+                ⚠ EXCEPTION OPEN
+              </text>
+              <text x={PANEL.tgb.x + PANEL.tgb.w / 2} y={322} textAnchor="middle" className={styles.excSub}>
+                {scenario === "SUB_GL_LAG" ? "PIPELINE_LAG · paging operator" : "STRAND_DRIFT · investigating"}
+              </text>
+            </motion.g>
+          )}
+          {reached("TGB_RESOLVED") && (
+            <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+              <rect x={PANEL.tgb.x + 16} y={280} width={PANEL.tgb.w - 32} height={56} rx={8}
+                fill="#E3FCF7" stroke="#00A35C" strokeWidth={1.5} />
+              <text x={PANEL.tgb.x + PANEL.tgb.w / 2} y={304} textAnchor="middle" className={styles.excTitle} style={{ fill: "#00684A" }}>
+                ✓ EXCEPTION RESOLVED
+              </text>
+              <text x={PANEL.tgb.x + PANEL.tgb.w / 2} y={322} textAnchor="middle" className={styles.excSub} style={{ fill: "#00684A" }}>
+                {scenario === "SUB_GL_LAG" ? "pipeline restarted · caught up" : "correction journal posted · re-run BALANCED"}
+              </text>
+            </motion.g>
+          )}
+
+          {/* Idle placeholder */}
+          {!currentStage && (
+            <g>
+              <text x={W / 2} y={H / 2 - 12} textAnchor="middle" className={styles.idleTitle}>
+                Reconciliation Engine
+              </text>
+              <text x={W / 2} y={H / 2 + 12} textAnchor="middle" className={styles.idleSub}>
+                3 runs · 4-gate period close · zero tolerance
+              </text>
+            </g>
+          )}
+        </svg>
+      </div>
+    </div>
+  );
+};
+
+export default ReconcileCanvas;

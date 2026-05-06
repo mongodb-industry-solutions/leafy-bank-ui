@@ -19,6 +19,7 @@
   width: 100%;
   height: 100%;
   display: flex;
+  align-items: stretch;
 }
 
 .svg {
@@ -27,84 +28,85 @@
   display: block;
 }
 
-.columnHeader {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  fill: #5C6C75;
-  text-transform: uppercase;
-}
-
-.panelTitle {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-.panelSub {
-  font-size: 9.5px;
-  letter-spacing: 0.3px;
-}
-
-.panelCount {
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.panelStatus {
+/* Section labels */
+.sectionLabel {
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  fill: #889397;
   text-transform: uppercase;
 }
 
-.panelDelta {
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.gateCheck {
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.gateLabel {
+/* Document box */
+.docTitle {
   font-size: 11px;
-  font-weight: 500;
+  font-weight: 700;
+  fill: #001E2B;
+  letter-spacing: 0.3px;
 }
 
-.closedTitle {
-  font-size: 14px;
+.docFieldLabel {
+  font-size: 10px;
+  fill: #889397;
+  font-family: 'Source Code Pro', monospace;
+}
+
+.docFieldValue {
+  font-size: 10px;
+  fill: #001E2B;
+  font-family: 'Source Code Pro', monospace;
+}
+
+.docFieldValueHighlight {
+  font-size: 10px;
+  fill: #C03C0C;
+  font-weight: 700;
+  font-family: 'Source Code Pro', monospace;
+}
+
+/* Gate nodes */
+.gateLabel {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Source Code Pro', monospace;
+}
+
+.gateSub {
+  font-size: 9.5px;
+  fill: #889397;
+  letter-spacing: 0.3px;
+}
+
+.gateResult {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Result panel */
+.resultIcon {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.resultTitle {
+  font-size: 15px;
   font-weight: 800;
   letter-spacing: 1px;
-  fill: white;
 }
 
-.closedSub {
-  font-size: 9.5px;
+.resultSub {
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.5px;
-  fill: rgba(255, 255, 255, 0.85);
 }
 
-.excTitle {
-  font-size: 11px;
-  font-weight: 700;
-  fill: #944F01;
-}
-
-.excSub {
+.resultNote {
   font-size: 9.5px;
-  fill: #944F01;
-}
-
-.scenarioBadge {
-  font-size: 10px;
-  font-weight: 600;
-  fill: #016BF8;
   letter-spacing: 0.3px;
 }
 
+/* Idle state */
 .idleTitle {
   font-size: 18px;
   font-weight: 600;

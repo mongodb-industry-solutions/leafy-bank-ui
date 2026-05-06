@@ -9,6 +9,23 @@ export function buildFanoutRun() {
       { stage: "FANOUT_CONSUMER_BALANCE",  payload: {} },
       { stage: "FANOUT_CONSUMER_FRAUD",    payload: {} },
       { stage: "FANOUT_CONSUMER_WORM",     payload: {} },
+      {
+        stage: "FANOUT_DLQ",
+        payload: {
+          deadLetter: {
+            _id: "DLQ-20260506-0001",
+            pipeline: "balanceProjection",
+            journalEntryId: "JNL-20260506-001",
+            errorClass: "projection_failure",
+            errorMessage: "Connection timeout to accountBalances collection",
+            rawEvent: { operationType: "insert", ns: { db: "leafy_bank_bian", coll: "journalEntries" } },
+            resumeToken: "rt-3f8a2c1e-7b4d",
+            retryCount: 3,
+            dispositioned: false,
+            capturedAt: { $date: new Date().toISOString() },
+          },
+        },
+      },
     ],
   };
 }

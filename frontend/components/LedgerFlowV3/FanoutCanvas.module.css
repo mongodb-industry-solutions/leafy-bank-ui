@@ -139,6 +139,15 @@
   dominant-baseline: middle;
 }
 
+.dlqHeader {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: #B45309;
+  dominant-baseline: middle;
+}
+
 .idleHint {
   font-family: 'Euclid Circular A', 'Inter', sans-serif;
   font-size: 18px;

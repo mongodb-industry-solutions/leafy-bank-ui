@@ -161,7 +161,7 @@ function ForkPoint({ reached, debitTotal, creditTotal }) {
   );
 }
 
-function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountId, displayName }) {
+function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountId, displayName, pending }) {
   const cls = [
     styles.subleg,
     side === "DEBIT" ? styles.subLegDr : styles.subLegCr,
@@ -169,7 +169,6 @@ function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountI
     current ? styles.sublegCurrent : "",
   ].filter(Boolean).join(" ");
   const formatted = new Intl.NumberFormat("en-US", { style: "currency", currency: currency || "USD", minimumFractionDigits: 2 }).format(amount || 0);
-  // "Settle into place" — slide in from the fork direction (+x, ±y).
   return (
     <g transform={`translate(${x},${y})`}>
       <motion.g
@@ -187,6 +186,12 @@ function SubLedgerLeg({ side, x, y, reached, current, amount, currency, accountI
         <text x={-72} y={-12} className={styles.sublegLabel}>Sub-Ledger · {side}</text>
         <text x={-72} y={11} className={styles.sublegMeta}>{displayName} · 2100</text>
         <text x={100} y={8} textAnchor="end" className={styles.sublegAmount}>{formatted}</text>
+        {pending && reached && (
+          <g>
+            <rect x={-30} y={22} width={60} height={14} rx={4} fill="#FDE7C8" stroke="#944F01" strokeWidth={0.8} />
+            <text x={0} y={33} textAnchor="middle" fontSize={8} fontWeight={700} fill="#944F01" letterSpacing={0.5}>PENDING</text>
+          </g>
+        )}
       </motion.g>
     </g>
   );
@@ -297,6 +302,9 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
   const totals = state.totals || { debit: 0, credit: 0 };
   const amount = state.payment?.amount || 0;
   const currency = state.payment?.currency || "USD";
+  const txType = state.txType || "DOMESTIC";
+  const isFX = txType === "FX";
+  const isCancelled = txType === "CANCELLED";
   const reached = (s) => reachedStages[s] != null;
 
   const fromName = Object.values(balances)[0]?.displayName || "Frida";
@@ -401,19 +409,32 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
             <PaymentNode reached={reached("PAYMENT_INITIATED")} current={currentStage === "PAYMENT_INITIATED"} amount={amount} currency={currency} />
             <ForkPoint reached={reached("SUBLEDGER_DEBIT")} debitTotal={totals.debit} creditTotal={totals.credit} />
 
-            <SubLedgerLeg side="DEBIT" x={ANCHOR.subDr.x} y={ANCHOR.subDr.y} reached={reached("SUBLEDGER_DEBIT")} current={currentStage === "SUBLEDGER_DEBIT"} amount={amount} currency={currency} accountId={fromAcct} displayName={fromName} />
-            <SubLedgerLeg side="CREDIT" x={ANCHOR.subCr.x} y={ANCHOR.subCr.y} reached={reached("SUBLEDGER_CREDIT")} current={currentStage === "SUBLEDGER_CREDIT"} amount={amount} currency={currency} accountId={toAcct} displayName={toName} />
+            <SubLedgerLeg side="DEBIT" x={ANCHOR.subDr.x} y={ANCHOR.subDr.y} reached={reached("SUBLEDGER_DEBIT")} current={currentStage === "SUBLEDGER_DEBIT"} amount={amount} currency={currency} accountId={fromAcct} displayName={fromName} pending={isCancelled} />
+            <SubLedgerLeg side="CREDIT" x={ANCHOR.subCr.x} y={ANCHOR.subCr.y} reached={reached("SUBLEDGER_CREDIT")} current={currentStage === "SUBLEDGER_CREDIT"} amount={amount} currency={currency} accountId={toAcct} displayName={toName} pending={isCancelled} />
 
-            {/* ISO 20022 source badge — visible from payment initiation */}
+            {/* Source protocol badge — visible from payment initiation, varies by txType */}
             {reached("PAYMENT_INITIATED") && (
               <g>
-                <rect x={VB.ox + 8} y={VB.oy + 8} width={134} height={28} rx={6}
-                  fill="#FDE7C8" stroke="#944F01" strokeWidth={1} opacity={0.9} />
-                <text x={VB.ox + 75} y={VB.oy + 18} textAnchor="middle" className={styles.iso20022Title}>
-                  ISO 20022
+                <rect x={VB.ox + 8} y={VB.oy + 8} width={isFX ? 160 : 134} height={28} rx={6}
+                  fill={isCancelled ? "#F3E9FF" : "#FDE7C8"} stroke={isCancelled ? "#7E4FCC" : "#944F01"} strokeWidth={1} opacity={0.9} />
+                <text x={VB.ox + (isFX ? 88 : 75)} y={VB.oy + 18} textAnchor="middle" className={styles.iso20022Title}>
+                  {isCancelled ? "CARD AUTH" : "ISO 20022"}
                 </text>
-                <text x={VB.ox + 75} y={VB.oy + 30} textAnchor="middle" className={styles.iso20022Sub}>
-                  PACS.008 · CBPR+
+                <text x={VB.ox + (isFX ? 88 : 75)} y={VB.oy + 30} textAnchor="middle" className={styles.iso20022Sub}>
+                  {isFX ? "SWIFT MX · CBPR+ · PACS.008" : isCancelled ? "CARD_AUTH · entryStage: PENDING" : "PACS.008 · CBPR+"}
+                </text>
+              </g>
+            )}
+            {/* FX conversion badge — visible from PAYMENT_INITIATED when FX */}
+            {isFX && reached("PAYMENT_INITIATED") && (
+              <g>
+                <rect x={VB.ox + 8} y={VB.oy + 44} width={260} height={28} rx={6}
+                  fill="#E3FCF7" stroke="#00A35C" strokeWidth={1} opacity={0.9} />
+                <text x={VB.ox + 138} y={VB.oy + 54} textAnchor="middle" className={styles.iso20022Title} fill="#00684A">
+                  FX CONVERSION
+                </text>
+                <text x={VB.ox + 138} y={VB.oy + 66} textAnchor="middle" className={styles.iso20022Sub} fill="#00684A">
+                  {`€${(amount / 1.136).toFixed(2)} EUR → $${amount.toFixed(2)} USD · rate 1.136`}
                 </text>
               </g>
             )}
@@ -454,20 +475,20 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
 
             {/* EOD Reconcile status panel — visible during EOD stages */}
             {reached("EOD_RECONCILE_RUN") && (() => {
-              const scenario = state.scenario || "FX_ROUNDING";
+              const effectiveScenario = isCancelled ? "CANCELLED" : isFX ? "FX_ROUNDING" : (state.scenario || "FX_ROUNDING");
               const isResolved = reached("EOD_RECONCILE_RESOLVED");
               const isResult = reached("EOD_RECONCILE_RESULT");
-              const isMatch = scenario === "MATCH";
+              const isBalanced = effectiveScenario === "MATCH" || effectiveScenario === "CANCELLED";
               const fill = isResolved
-                ? (isMatch ? "#E3FCF7" : "#E3FCF7")
-                : (isResult && !isMatch) ? "#FEF3CD" : "#E1F7FF";
-              const stroke = isResolved ? "#00A35C" : (isResult && !isMatch) ? "#916A00" : "#016BF8";
+                ? "#E3FCF7"
+                : (isResult && !isBalanced) ? "#FEF3CD" : "#E1F7FF";
+              const stroke = isResolved ? "#00A35C" : (isResult && !isBalanced) ? "#916A00" : "#016BF8";
               const statusText = isResolved
-                ? (isMatch ? "BALANCED · Period-close gate open" : "RESOLVED · Period-close gate open")
-                : (isResult && !isMatch) ? "UNBALANCED · Exception created · Period close blocked"
-                : (isResult && isMatch) ? "BALANCED · Gate opens immediately"
+                ? (isBalanced ? (effectiveScenario === "CANCELLED" ? "BALANCED · Authorization reversed · Net $0.00" : "BALANCED · Period-close gate open") : "RESOLVED · Period-close gate open")
+                : (isResult && !isBalanced) ? "UNBALANCED · Exception created · Period close blocked"
+                : (isResult && isBalanced) ? (effectiveScenario === "CANCELLED" ? "BALANCED · Auth reversed · $0.00 net" : "BALANCED · Gate opens immediately")
                 : "EOD Reconciliation running…";
-              const scenarioMap = { FX_ROUNDING: "FX Rounding Δ$1.00", MATCH: "Perfect Balance Δ$0.00", DUPLICATE: "Duplicate Post Δ$250.00" };
+              const scenarioMap = { FX_ROUNDING: "FX Rounding Δ$1.00", MATCH: "Perfect Balance Δ$0.00", DUPLICATE: "Duplicate Post Δ$250.00", CANCELLED: "Auth Reversal Δ$0.00" };
               return (
                 <motion.g
                   initial={{ opacity: 0, y: 8 }}
@@ -483,7 +504,7 @@ const StageCanvas = ({ state, reconcileSublabel }) => {
                     {statusText}
                   </text>
                   <text x={VB.ox + VB.w - 16} y={VB.oy + VB.h - 22} textAnchor="end" className={styles.eodScenarioText} fill={stroke}>
-                    {scenarioMap[scenario] || scenario}
+                    {scenarioMap[effectiveScenario] || effectiveScenario}
                   </text>
                   <text x={VB.ox + 20} y={VB.oy + VB.h - 10} className={styles.eodSubText} fill="#5C6C75">
                     subLedgerEntries ↔ GL account 2100 · period May 2026 · zero tolerance

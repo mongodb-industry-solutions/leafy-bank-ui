@@ -45,15 +45,30 @@ export function narrationFor(state) {
   const indexLabel = idx >= 0 ? `Stage ${idx + 1} of ${total}` : `Stage 0 of ${total}`;
   const amount = state.payment?.amount || 0;
   const currency = state.payment?.currency || "USD";
+  const txType = state.txType || "DOMESTIC";
+  const isFX = txType === "FX";
+  const isCancelled = txType === "CANCELLED";
   const fromName = Object.values(state.balances || {})[0]?.displayName || "Frida";
   const toName = Object.values(state.balances || {})[1]?.displayName || "Bo";
 
   switch (stage) {
-    case "PAYMENT_INITIATED":
+    case "PAYMENT_INITIATED": {
+      let title, body;
+      if (isFX) {
+        const eurAmt = (amount / 1.136).toFixed(2);
+        title = "FX payment initiated · SWIFT MX";
+        body = `CBPR+ PACS.008 ingested at boundary. ${fromName} initiates €${eurAmt} EUR, converted at rate 1.136 to ${fmtMoney(amount)} USD. amountTransactionMinor carries the original EUR minor units; amountBaseMinor carries USD functional cents. The fxRateAt timestamp anchors the rate for audit. An idempotency key prevents duplicate posting on retry.`;
+      } else if (isCancelled) {
+        title = "Card authorization initiated";
+        body = `${fromName}'s card swipe triggers a CARD_AUTH message. A PENDING sub-ledger entry places a hold of ${fmtMoney(amount)} — funds are reserved but not yet transferred. entryStage=PENDING means these legs will not appear in the posted GL until CAPTURE. An idempotency key prevents duplicate auth posting.`;
+      } else {
+        title = "Payment initiated · FedNow";
+        body = `ISO 20022 PACS.008 ingested and mapped to canonical PaymentOrder. ${fromName} initiates a ${fmtMoney(amount, currency)} payment to ${toName} via FedNow instant rails. uetr and endToEndId are canonical identifiers. A client-generated idempotency key is attached so retries cannot post the same payment twice — the unique MongoDB index on idempotencyKey enforces this at the database level.`;
+      }
       return {
         overline: indexLabel,
-        title: "Payment initiated",
-        body: `ISO 20022 PACS.008 ingested and mapped to canonical PaymentOrder. ${fromName} initiates a ${fmtMoney(amount, currency)} payment to ${toName}. A client-generated idempotency key is attached so retries cannot post the same payment twice — the unique MongoDB index on idempotencyKey enforces this at the database level.`,
+        title,
+        body,
         doc: {
           collectionKey: null,
           label: "Payment intent",
@@ -64,33 +79,44 @@ export function narrationFor(state) {
             to: { accountId: Object.keys(state.balances || {})[1], displayName: toName, balance: { $numberDecimal: (Object.values(state.balances || {})[1]?.before ?? 0).toFixed(2) } },
             amount: { $numberDecimal: amount.toFixed(2) },
             currency,
+            ...(isFX ? { txType: "FX", fxRate: "1.136", txCurrency: "EUR" } : {}),
+            ...(isCancelled ? { txType: "CANCELLED", authStatus: "PENDING" } : {}),
           },
         },
       };
+    }
 
-    case "SUBLEDGER_DEBIT":
+    case "SUBLEDGER_DEBIT": {
+      const isP = isCancelled;
       return {
         overline: indexLabel,
-        title: "Sub-ledger · debit leg posted",
-        body: `Debit leg posts against ${fromName}'s Customer Deposits account. The sub-ledger entry carries the entity-level detail (account ID, running balance) that the GL summary will not. Same idempotency key as the parent journal — enforces single-write semantics across both collections.`,
+        title: isP ? "Sub-ledger · debit hold (PENDING)" : "Sub-ledger · debit leg posted",
+        body: isP
+          ? `Debit hold posts against ${fromName}'s account with status=PENDING. The ${fmtMoney(amount)} is reserved but not yet moved — entryStage=PENDING flags this as an authorization, not a completed transfer. Immutability is enforced from creation: even PENDING entries cannot be updated; only a subsequent CAPTURE or REVERSAL can change the outcome.`
+          : `Debit leg posts against ${fromName}'s Customer Deposits account. The sub-ledger entry carries the entity-level detail (account ID, running balance) that the GL summary will not. Same idempotency key as the parent journal — enforces single-write semantics across both collections.`,
         doc: {
           collectionKey: "subLedgerEntries",
           label: "subLedgerEntries[0]",
           payload: state.documents?.subLedgerEntries?.[0] || null,
         },
       };
+    }
 
-    case "SUBLEDGER_CREDIT":
+    case "SUBLEDGER_CREDIT": {
+      const isP = isCancelled;
       return {
         overline: indexLabel,
-        title: "Sub-ledger · credit leg posted",
-        body: `Credit leg posts to ${toName}'s account. Σ debits now equals Σ credits — the application-layer balance check passes. Posted entries are immutable; corrections require a REVERSAL journal, never an update.`,
+        title: isP ? "Sub-ledger · credit hold (PENDING)" : "Sub-ledger · credit leg posted",
+        body: isP
+          ? `Credit hold posts to the merchant's account with status=PENDING. Both legs are PENDING — Σ debits = Σ credits in the pending state. The double-entry constraint holds even for authorizations. If the auth expires, a REVERSAL journal will zero both legs, restoring ${fromName}'s available balance exactly.`
+          : `Credit leg posts to ${toName}'s account. Σ debits now equals Σ credits — the application-layer balance check passes. Posted entries are immutable; corrections require a REVERSAL journal, never an update.`,
         doc: {
           collectionKey: "subLedgerEntries",
           label: "subLedgerEntries[1]",
           payload: state.documents?.subLedgerEntries?.[1] || null,
         },
       };
+    }
 
     case "RECONCILE_SKIPPED":
       return {
@@ -105,17 +131,29 @@ export function narrationFor(state) {
         doc: null,
       };
 
-    case "JOURNAL_POSTED":
+    case "JOURNAL_POSTED": {
+      let title, body;
+      if (isCancelled) {
+        title = "GL journal posted · PENDING_CAPTURE";
+        body = `Multi-document transaction commits with journalStatus=PENDING_CAPTURE and journalType=CARD_AUTH. The journal records the authorization hold — not a completed transfer. Both sub-ledger legs carry status=PENDING. Immutability is enforced: when the auth expires, a REVERSAL journal must be posted; this document will never be updated. The reversal will carry reversalOf pointing back to this journalId.`;
+      } else if (isFX) {
+        title = "GL journal posted · FX transfer";
+        body = `Multi-document transaction commits. amountBaseMinor carries USD functional cents; amountTransactionMinor carries original EUR minor units; fxRateAt anchors the conversion timestamp for BCBS 239 P6 compliance. Both entries are POSTED and immutable. Decimal128 amounts prevent floating-point drift across the EUR→USD boundary.`;
+      } else {
+        title = "GL journal posted";
+        body = `Multi-document transaction commits: both sub-ledger legs + the journalEntries document in a single atomic write with w:majority · j:true and snapshot isolation. One balanced double-entry document with status=POSTED. Decimal128 amounts prevent floating-point drift. Status is now immutable — corrections require a REVERSAL journal.`;
+      }
       return {
         overline: indexLabel,
-        title: "GL journal posted",
-        body: `Multi-document transaction commits: both sub-ledger legs + the journalEntries document in a single atomic write with w:majority · j:true and snapshot isolation. One balanced double-entry document with status=POSTED. Decimal128 amounts prevent floating-point drift. Status is now immutable — corrections require a REVERSAL journal.`,
+        title,
+        body,
         doc: {
           collectionKey: "journalEntries",
           label: "journalEntries[0]",
           payload: state.documents?.journalEntry || null,
         },
       };
+    }
 
     case "CHANGE_STREAM":
       return {
@@ -184,19 +222,38 @@ export function narrationFor(state) {
     }
 
     case "EOD_RECONCILE_RUN": {
-      const scenario = state.scenario || "FX_ROUNDING";
+      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RUN")?.payload?.scenario || state.scenario || "FX_ROUNDING";
+      const effectiveTxType = state.txType || "DOMESTIC";
+      if (effectiveTxType === "CANCELLED") {
+        return {
+          overline: indexLabel,
+          title: "EOD Reconciliation triggered",
+          body: "End-of-day scheduler inserts a reconciliationRuns document with status=RUNNING. Before this run, the card authorization expired — a REVERSAL journal was posted, zeroing both PENDING sub-ledger legs. The reconciliation run sees net $0.00 impact from this transaction.",
+          doc: null,
+        };
+      }
       const scenLabels = { FX_ROUNDING: "FX Rounding Δ$1.00", MATCH: "Perfect Balance Δ$0.00", DUPLICATE: "Duplicate Post Δ$250.00" };
       return {
         overline: indexLabel,
         title: "EOD Reconciliation triggered",
-        body: `End-of-day scheduler inserts a reconciliationRuns document with status=RUNNING. Run type SUB_LEDGER_TO_GL: sums every subLedgerEntries document for control account 2100 and compares against the GL account balance. Period: May 2026. Scenario: ${scenLabels[scenario] || scenario}. This journal's entries are counted in this run.`,
+        body: `End-of-day scheduler inserts a reconciliationRuns document with status=RUNNING. Run type SUB_LEDGER_TO_GL: sums every subLedgerEntries document for control account 2100 and compares against the GL account balance. Period: May 2026. Scenario: ${scenLabels[evtScenario] || evtScenario}. This journal's entries are counted in this run.`,
         doc: null,
       };
     }
 
     case "EOD_RECONCILE_RESULT": {
-      const scenario = state.scenario || "FX_ROUNDING";
-      if (scenario === "MATCH") {
+      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RESULT")?.payload?.scenario || state.scenario || "FX_ROUNDING";
+      const effectiveTxType = state.txType || "DOMESTIC";
+      if (effectiveTxType === "CANCELLED" || evtScenario === "CANCELLED") {
+        return {
+          overline: indexLabel,
+          title: "BALANCED — authorization reversed",
+          body: "Σ(subLedgerEntries) = Σ(GL 2100). Delta = $0.00. The expired card auth and its REVERSAL journal net to zero — exactly as MongoDB's immutability model requires. No exception created. The period-close gate opens without analyst intervention.",
+          callout: { variant: "note", title: "Immutability in action", body: "MongoDB never deletes or updates a posted entry. The REVERSAL journal is the correction record — it carries reversalOf pointing to the original auth. The audit trail is complete and unbroken." },
+          doc: null,
+        };
+      }
+      if (evtScenario === "MATCH") {
         return {
           overline: indexLabel,
           title: "BALANCED — zero-delta",
@@ -205,13 +262,13 @@ export function narrationFor(state) {
           doc: null,
         };
       }
-      const delta = scenario === "DUPLICATE" ? "$250.00" : "$1.00";
-      const reason = scenario === "DUPLICATE"
+      const delta = evtScenario === "DUPLICATE" ? "$250.00" : "$1.00";
+      const reason = evtScenario === "DUPLICATE"
         ? "Sub-ledger count 58,948 ≠ GL count 58,947 — likely duplicate posting. A reconciliationExceptions record is created with priority=CRITICAL."
         : "Sub-ledger total ≠ GL total by $1.00 — likely FX rounding loss. A reconciliationExceptions record is created with priority=HIGH.";
       return {
         overline: indexLabel,
-        title: `⚠ UNBALANCED — ${delta} break detected`,
+        title: `UNBALANCED — ${delta} break detected`,
         body: `${reason} Period close is blocked. The exception lifecycle begins: OPEN → INVESTIGATING → RESOLVED — before the accounting period can close.`,
         callout: { variant: "important", title: "Period close is blocked", body: "A reconciliationExceptions document is created. The exception must be fully resolved before the period-close gate can open." },
         doc: null,
@@ -219,16 +276,19 @@ export function narrationFor(state) {
     }
 
     case "EOD_RECONCILE_RESOLVED": {
-      const scenario = state.scenario || "FX_ROUNDING";
-      if (scenario === "MATCH") {
+      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RESOLVED")?.payload?.scenario || state.scenario || "FX_ROUNDING";
+      const effectiveTxType = state.txType || "DOMESTIC";
+      if (effectiveTxType === "CANCELLED" || evtScenario === "CANCELLED" || evtScenario === "MATCH") {
         return {
           overline: indexLabel,
           title: "Period-close gate open",
-          body: "Zero-delta run — period-close gate opened immediately. No exception lifecycle needed. The immutable journal and sub-ledger entries for this payment are included in the balanced period. Full audit trail preserved.",
+          body: evtScenario === "CANCELLED" || effectiveTxType === "CANCELLED"
+            ? "Zero-delta run — auth reversal pair nets to $0.00. Period-close gate opened immediately. The original PENDING journal and its REVERSAL provide a complete, immutable audit trail of the authorization lifecycle."
+            : "Zero-delta run — period-close gate opened immediately. No exception lifecycle needed. The immutable journal and sub-ledger entries for this payment are included in the balanced period. Full audit trail preserved.",
           doc: null,
         };
       }
-      const corrType = scenario === "DUPLICATE" ? "reversal journal" : "adjustment journal";
+      const corrType = evtScenario === "DUPLICATE" ? "reversal journal" : "adjustment journal";
       return {
         overline: indexLabel,
         title: "Exception resolved — period close unblocked",
@@ -240,12 +300,27 @@ export function narrationFor(state) {
 
     case "SETTLED": {
       const elapsed = state.startedAt && state.settledAt ? ((state.settledAt - state.startedAt) / 1000).toFixed(2) : null;
+      let settledTitle, settledBody;
+      if (isCancelled) {
+        settledTitle = "Authorization expired — balance restored";
+        settledBody = elapsed
+          ? `Authorization lifecycle complete in ${elapsed}s. The card auth expired before capture — a REVERSAL journal was posted, restoring ${fromName}'s full available balance. Two immutable documents remain: the original PENDING_CAPTURE journal and the REVERSAL journal. MongoDB's immutability model ensures the audit trail cannot be altered.`
+          : `Authorization expired. ${fromName}'s balance fully restored via REVERSAL journal. Complete audit trail preserved.`;
+      } else if (isFX) {
+        settledTitle = "FX transfer settled";
+        settledBody = elapsed
+          ? `FX transfer settled in ${elapsed}s end-to-end. EUR→USD conversion captured at fxRateAt. Both balances reflect the new state; the immutable journal entries provide a complete BCBS 239 P6 compliant audit trail.`
+          : "FX transfer settled. EUR→USD conversion complete; both customer balances updated.";
+      } else {
+        settledTitle = "Settled";
+        settledBody = elapsed
+          ? `Payment settled in ${elapsed}s end-to-end. Both customer balances reflect the new state; the immutable journal and sub-ledger entries provide a complete audit trail.`
+          : "Payment settled. Both customer balances reflect the new state.";
+      }
       return {
         overline: indexLabel,
-        title: "Settled",
-        body: elapsed
-          ? `Payment settled in ${elapsed}s end-to-end. Both customer balances reflect the new state; the immutable journal and sub-ledger entries provide a complete audit trail.`
-          : "Payment settled. Both customer balances reflect the new state.",
+        title: settledTitle,
+        body: settledBody,
         doc: {
           collectionKey: null,
           label: "Settlement summary",

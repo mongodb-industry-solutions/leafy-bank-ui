@@ -17,12 +17,16 @@ import { onboardingHasNextStage, onboardingHasPrevStage, ONBOARD_STAGE_LIST } fr
 import { erasureHasNextStage, erasureHasPrevStage, ERASURE_STAGE_LIST } from "./erasureReducer";
 import { fanoutHasNextStage, fanoutHasPrevStage, FANOUT_STAGE_LIST } from "./fanoutReducer";
 import { hardEdgeHasNextStage, hardEdgeHasPrevStage, HARD_EDGE_STAGE_LIST } from "./hardEdgeReducer";
+import { engineHasNextStage, engineHasPrevStage, ENGINE_STAGE_LIST } from "./engineReducer";
+import { reconcileHasNextStage, reconcileHasPrevStage, RECONCILE_STAGE_LIST } from "./reconcileReducer";
 import { STAGE_LIST } from "../LedgerFlow/stageNarration";
 import { buildPaymentRun, runMode } from "../LedgerFlow/simulator";
 import { buildOnboardingRun, runOnboardingMode } from "./onboardingSimulator";
 import { buildErasureRun, runErasureMode } from "./erasureSimulator";
 import { buildFanoutRun, runFanoutMode } from "./fanoutSimulator";
 import { buildHardEdgeRun, runHardEdgeMode } from "./hardEdgeSimulator";
+import { buildEngineRun, runEngineMode } from "./engineSimulator";
+import { buildReconcileRun, runReconcileMode } from "./reconcileSimulator";
 import { FRIDA, BO, DEFAULT_PAYMENT } from "../LedgerFlow/ledgerFixtures";
 import { useStepperKeys } from "../LedgerFlow/useStepperKeys";
 import SceneCanvas from "./SceneCanvas";
@@ -38,6 +42,8 @@ const ONBOARDING_SCENE = "ONBOARDING";
 const ERASURE_SCENE = "ERASURE";
 const FANOUT_SCENE = "FANOUT";
 const HARD_EDGE_SCENE = "HARD_EDGE";
+const ENGINE_SCENE = "ENGINE";
+const RECONCILE_SCENE = "RECONCILE";
 
 const LedgerFlowV3 = () => {
   const router = useRouter();
@@ -63,6 +69,14 @@ const LedgerFlowV3 = () => {
   const hardEdgeRunnerRef = useRef(null);
   const hardEdgeRunRef = useRef(null);
 
+  // Engine scene runner refs
+  const engineRunnerRef = useRef(null);
+  const engineRunRef = useRef(null);
+
+  // Reconcile scene runner refs
+  const reconcileRunnerRef = useRef(null);
+  const reconcileRunRef = useRef(null);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const isPostingScene = state.scene === POSTING_SCENE;
@@ -70,11 +84,16 @@ const LedgerFlowV3 = () => {
   const isErasureScene = state.scene === ERASURE_SCENE;
   const isFanoutScene = state.scene === FANOUT_SCENE;
   const isHardEdgeScene = state.scene === HARD_EDGE_SCENE;
+  const isEngineScene = state.scene === ENGINE_SCENE;
+  const isReconcileScene = state.scene === RECONCILE_SCENE;
 
   const scenario = state.scenario || "FX_ROUNDING";
-  // Keep a ref so startSceneInStepMode (deps=[]) can read current scenario
+  const txType = state.txType || "DOMESTIC";
+  // Keep refs so startSceneInStepMode (deps=[]) can read current values
   const scenarioRef = useRef(scenario);
   scenarioRef.current = scenario;
+  const txTypeRef = useRef(txType);
+  txTypeRef.current = txType;
 
   // ─── Cleanup on unmount ────────────────────────────────────────────────────
   useEffect(() => {
@@ -84,6 +103,8 @@ const LedgerFlowV3 = () => {
       erasureRunnerRef.current?.cancel?.();
       fanoutRunnerRef.current?.cancel?.();
       hardEdgeRunnerRef.current?.cancel?.();
+      engineRunnerRef.current?.cancel?.();
+      reconcileRunnerRef.current?.cancel?.();
     };
   }, []);
 
@@ -98,6 +119,7 @@ const LedgerFlowV3 = () => {
       currency: DEFAULT_PAYMENT.currency,
       description: DEFAULT_PAYMENT.description,
       scenario: scenarioRef.current,
+      txType: txTypeRef.current,
     });
     runRef.current = run;
     dispatch({
@@ -109,6 +131,7 @@ const LedgerFlowV3 = () => {
       currency: DEFAULT_PAYMENT.currency,
       mode: state.mode,
       scenario: scenarioRef.current,
+      txType: txTypeRef.current,
     });
     runnerRef.current = runMode(run.timeline, dispatch, state.mode);
     if (state.mode === "STEP") {
@@ -162,8 +185,13 @@ const LedgerFlowV3 = () => {
 
   // ─── Global scenario selector handler ─────────────────────────────────────
   const handleSetScenario = useCallback((s) => {
-    if (state.status !== "IDLE" && isPostingScene) return; // don't change mid-run
+    if (state.status !== "IDLE" && isPostingScene) return;
     dispatch({ type: "SET_SCENARIO", scenario: s });
+  }, [state.status, isPostingScene]);
+
+  const handleSetTxType = useCallback((t) => {
+    if (state.status !== "IDLE" && isPostingScene) return;
+    dispatch({ type: "SET_TX_TYPE", txType: t });
   }, [state.status, isPostingScene]);
 
   // ─── Onboarding scene handlers ────────────────────────────────────────────
@@ -410,6 +438,126 @@ const LedgerFlowV3 = () => {
     dispatch({ type: "HARD_EDGE_SET_MODE", mode: value });
   }, []);
 
+  // ─── Engine scene handlers ────────────────────────────────────────────────
+  const engine = state.engine;
+  const engineStatus = engine?.status || "IDLE";
+  const engineMode = engine?.mode || "STEP";
+
+  const handleEngineSimulate = useCallback(() => {
+    if (!isEngineScene) return;
+    engineRunnerRef.current?.cancel?.();
+    const { timeline } = buildEngineRun();
+    engineRunRef.current = { timeline };
+    dispatch({ type: "ENGINE_START", mode: engineMode });
+    engineRunnerRef.current = runEngineMode(timeline, dispatch, engineMode);
+    if (engineMode === "STEP") engineRunnerRef.current.next();
+  }, [isEngineScene, engineMode]);
+
+  const handleEngineNext = useCallback(() => {
+    if (!isEngineScene) return;
+    if (engineStatus === "IDLE") { handleEngineSimulate(); return; }
+    if (engineStatus === "SETTLED") return;
+    const timeline = engineRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = engine?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    engineRunnerRef.current?.cancel?.();
+    dispatch({ type: "ENGINE_STAGE_EVENT", event: timeline[nextIdx] });
+    engineRunnerRef.current = runEngineMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isEngineScene, engineStatus, engine?.events?.length, handleEngineSimulate]);
+
+  const handleEnginePrev = useCallback(() => {
+    if (!isEngineScene) return;
+    if (!engineHasPrevStage(engine) || !engineRunRef.current) return;
+    engineRunnerRef.current?.cancel?.();
+    dispatch({ type: "ENGINE_STEP_PREV" });
+  }, [isEngineScene, engineMode, engine]);
+
+  const lastEngineEventCountRef = useRef(0);
+  useEffect(() => {
+    const n = engine?.events?.length || 0;
+    if (n < lastEngineEventCountRef.current && engineRunRef.current) {
+      const remaining = engineRunRef.current.timeline.slice(n);
+      engineRunnerRef.current?.cancel?.();
+      engineRunnerRef.current = runEngineMode(remaining, dispatch, "STEP");
+    }
+    lastEngineEventCountRef.current = n;
+  }, [engine?.events?.length]);
+
+  const handleEngineReset = useCallback(() => {
+    engineRunnerRef.current?.cancel?.();
+    engineRunnerRef.current = null;
+    engineRunRef.current = null;
+    dispatch({ type: "ENGINE_RESET" });
+  }, []);
+
+  const handleEngineModeChange = useCallback((value) => {
+    engineRunnerRef.current?.cancel?.();
+    engineRunnerRef.current = null;
+    dispatch({ type: "ENGINE_SET_MODE", mode: value });
+  }, []);
+
+  // ─── Reconcile scene handlers ─────────────────────────────────────────────
+  const reconcile = state.reconcile;
+  const reconcileStatus = reconcile?.status || "IDLE";
+  const reconcileMode = reconcile?.mode || "STEP";
+  const reconcileScenario = reconcile?.scenario || "BALANCED";
+  const reconcileScenarioRef = useRef(reconcileScenario);
+  reconcileScenarioRef.current = reconcileScenario;
+
+  const handleReconcileSimulate = useCallback(() => {
+    if (!isReconcileScene) return;
+    reconcileRunnerRef.current?.cancel?.();
+    const { timeline } = buildReconcileRun({ scenario: reconcileScenarioRef.current });
+    reconcileRunRef.current = { timeline };
+    dispatch({ type: "RECONCILE_START", mode: reconcileMode, scenario: reconcileScenarioRef.current });
+    reconcileRunnerRef.current = runReconcileMode(timeline, dispatch, reconcileMode);
+    if (reconcileMode === "STEP") reconcileRunnerRef.current.next();
+  }, [isReconcileScene, reconcileMode]);
+
+  const handleReconcileNext = useCallback(() => {
+    if (!isReconcileScene) return;
+    if (reconcileStatus === "IDLE") { handleReconcileSimulate(); return; }
+    if (reconcileStatus === "SETTLED") return;
+    const timeline = reconcileRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = reconcile?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    reconcileRunnerRef.current?.cancel?.();
+    dispatch({ type: "RECONCILE_STAGE_EVENT", event: timeline[nextIdx] });
+    reconcileRunnerRef.current = runReconcileMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isReconcileScene, reconcileStatus, reconcile?.events?.length, handleReconcileSimulate]);
+
+  const handleReconcilePrev = useCallback(() => {
+    if (!isReconcileScene) return;
+    if (!reconcileHasPrevStage(reconcile) || !reconcileRunRef.current) return;
+    reconcileRunnerRef.current?.cancel?.();
+    dispatch({ type: "RECONCILE_STEP_PREV" });
+  }, [isReconcileScene, reconcile]);
+
+  const lastReconcileEventCountRef = useRef(0);
+  useEffect(() => {
+    const n = reconcile?.events?.length || 0;
+    if (n < lastReconcileEventCountRef.current && reconcileRunRef.current) {
+      const remaining = reconcileRunRef.current.timeline.slice(n);
+      reconcileRunnerRef.current?.cancel?.();
+      reconcileRunnerRef.current = runReconcileMode(remaining, dispatch, "STEP");
+    }
+    lastReconcileEventCountRef.current = n;
+  }, [reconcile?.events?.length]);
+
+  const handleReconcileReset = useCallback(() => {
+    reconcileRunnerRef.current?.cancel?.();
+    reconcileRunnerRef.current = null;
+    reconcileRunRef.current = null;
+    dispatch({ type: "RECONCILE_RESET" });
+  }, []);
+
+  const handleSetReconcileScenario = useCallback((s) => {
+    if (reconcileStatus !== "IDLE" && isReconcileScene) return;
+    dispatch({ type: "RECONCILE_SET_SCENARIO", scenario: s });
+  }, [reconcileStatus, isReconcileScene]);
+
   // ─── Cancel + clear all runners ───────────────────────────────────────────
   const cancelAll = useCallback(() => {
     runnerRef.current?.cancel?.(); runnerRef.current = null; runRef.current = null;
@@ -417,6 +565,8 @@ const LedgerFlowV3 = () => {
     erasureRunnerRef.current?.cancel?.(); erasureRunnerRef.current = null; erasureRunRef.current = null;
     fanoutRunnerRef.current?.cancel?.(); fanoutRunnerRef.current = null; fanoutRunRef.current = null;
     hardEdgeRunnerRef.current?.cancel?.(); hardEdgeRunnerRef.current = null; hardEdgeRunRef.current = null;
+    engineRunnerRef.current?.cancel?.(); engineRunnerRef.current = null; engineRunRef.current = null;
+    reconcileRunnerRef.current?.cancel?.(); reconcileRunnerRef.current = null; reconcileRunRef.current = null;
   }, []);
 
   // ─── Scene switch ──────────────────────────────────────────────────────────
@@ -437,9 +587,9 @@ const LedgerFlowV3 = () => {
         break;
       }
       case "POSTING": {
-        const run = buildPaymentRun({ from: FRIDA, to: BO, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, description: DEFAULT_PAYMENT.description, scenario: scenarioRef.current });
+        const run = buildPaymentRun({ from: FRIDA, to: BO, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, description: DEFAULT_PAYMENT.description, scenario: scenarioRef.current, txType: txTypeRef.current });
         runRef.current = run;
-        dispatch({ type: "START", from: FRIDA, to: BO, identifiers: run.identifiers, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, mode: "STEP", scenario: scenarioRef.current });
+        dispatch({ type: "START", from: FRIDA, to: BO, identifiers: run.identifiers, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, mode: "STEP", scenario: scenarioRef.current, txType: txTypeRef.current });
         dispatch({ type: "STAGE_EVENT", event: run.timeline[0] });
         runnerRef.current = runMode(run.timeline.slice(1), dispatch, "STEP");
         break;
@@ -458,6 +608,22 @@ const LedgerFlowV3 = () => {
         dispatch({ type: "HARD_EDGE_START", mode: "STEP" });
         dispatch({ type: "HARD_EDGE_STAGE_EVENT", event: ht[0] });
         hardEdgeRunnerRef.current = runHardEdgeMode(ht.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "ENGINE": {
+        const { timeline: engt } = buildEngineRun();
+        engineRunRef.current = { timeline: engt };
+        dispatch({ type: "ENGINE_START", mode: "STEP" });
+        dispatch({ type: "ENGINE_STAGE_EVENT", event: engt[0] });
+        engineRunnerRef.current = runEngineMode(engt.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "RECONCILE": {
+        const { timeline: rect } = buildReconcileRun({ scenario: reconcileScenarioRef.current });
+        reconcileRunRef.current = { timeline: rect };
+        dispatch({ type: "RECONCILE_START", mode: "STEP", scenario: reconcileScenarioRef.current });
+        dispatch({ type: "RECONCILE_STAGE_EVENT", event: rect[0] });
+        reconcileRunnerRef.current = runReconcileMode(rect.slice(1), dispatch, "STEP");
         break;
       }
       case "ERASURE": {
@@ -487,6 +653,14 @@ const LedgerFlowV3 = () => {
         currentStatus = state.status; currentEvents = state.events;
         currentTimeline = runRef.current?.timeline; stageEventType = "STAGE_EVENT";
         sceneRunnerRef = runnerRef; sceneRunnerFn = runMode; break;
+      case "ENGINE":
+        currentStatus = engine?.status || "IDLE"; currentEvents = engine?.events;
+        currentTimeline = engineRunRef.current?.timeline; stageEventType = "ENGINE_STAGE_EVENT";
+        sceneRunnerRef = engineRunnerRef; sceneRunnerFn = runEngineMode; break;
+      case "RECONCILE":
+        currentStatus = reconcile?.status || "IDLE"; currentEvents = reconcile?.events;
+        currentTimeline = reconcileRunRef.current?.timeline; stageEventType = "RECONCILE_STAGE_EVENT";
+        sceneRunnerRef = reconcileRunnerRef; sceneRunnerFn = runReconcileMode; break;
       case "FANOUT":
         currentStatus = fanout?.status || "IDLE"; currentEvents = fanout?.events;
         currentTimeline = fanoutRunRef.current?.timeline; stageEventType = "FANOUT_STAGE_EVENT";
@@ -509,6 +683,8 @@ const LedgerFlowV3 = () => {
       switch (scene) {
         case "ONBOARDING": onboardRunRef.current = null; break;
         case "POSTING": runRef.current = null; break;
+        case "ENGINE": engineRunRef.current = null; break;
+        case "RECONCILE": reconcileRunRef.current = null; break;
         case "FANOUT": fanoutRunRef.current = null; break;
         case "HARD_EDGE": hardEdgeRunRef.current = null; break;
         case "ERASURE": erasureRunRef.current = null; break;
@@ -528,7 +704,7 @@ const LedgerFlowV3 = () => {
     sceneRunnerRef.current?.cancel?.();
     dispatch({ type: stageEventType, event: currentTimeline[nextIdx] });
     sceneRunnerRef.current = sceneRunnerFn(currentTimeline.slice(nextIdx + 1), dispatch, "STEP");
-  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, fanout, hardEdge, erasure, startSceneInStepMode]);
+  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, engine, reconcile, fanout, hardEdge, erasure, startSceneInStepMode]);
 
   // ─── Global Prev — step back within current scene ─────────────────────────
   const handleGlobalPrev = useCallback(() => {
@@ -541,6 +717,14 @@ const LedgerFlowV3 = () => {
         if (!hasPrevStage(state) || !runRef.current) return;
         runnerRef.current?.cancel?.();
         dispatch({ type: "STEP_PREV" }); break;
+      case "ENGINE":
+        if (!engineHasPrevStage(engine) || !engineRunRef.current) return;
+        engineRunnerRef.current?.cancel?.();
+        dispatch({ type: "ENGINE_STEP_PREV" }); break;
+      case "RECONCILE":
+        if (!reconcileHasPrevStage(reconcile) || !reconcileRunRef.current) return;
+        reconcileRunnerRef.current?.cancel?.();
+        dispatch({ type: "RECONCILE_STEP_PREV" }); break;
       case "FANOUT":
         if (!fanoutHasPrevStage(fanout) || !fanoutRunRef.current) return;
         fanoutRunnerRef.current?.cancel?.();
@@ -555,7 +739,7 @@ const LedgerFlowV3 = () => {
         dispatch({ type: "ERASURE_STEP_PREV" }); break;
       default: break;
     }
-  }, [state, onboarding, fanout, hardEdge, erasure]);
+  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
 
   // ─── Global Reset ─────────────────────────────────────────────────────────
   const handleGlobalReset = useCallback(() => {
@@ -568,15 +752,17 @@ const LedgerFlowV3 = () => {
     switch (state.scene) {
       case "ONBOARDING": return onboarding?.status || "IDLE";
       case "POSTING":    return state.status;
+      case "ENGINE":     return engine?.status || "IDLE";
+      case "RECONCILE":  return reconcile?.status || "IDLE";
       case "FANOUT":     return fanout?.status || "IDLE";
       case "HARD_EDGE":  return hardEdge?.status || "IDLE";
       case "ERASURE":    return erasure?.status || "IDLE";
       default:           return "IDLE";
     }
-  }, [state.scene, state.status, onboarding?.status, fanout?.status, hardEdge?.status, erasure?.status]);
+  }, [state.scene, state.status, onboarding?.status, engine?.status, reconcile?.status, fanout?.status, hardEdge?.status, erasure?.status]);
 
   const globalStarted = globalCurrentStatus !== "IDLE" || state.sceneIndex > 0 || Object.keys(state.scenesVisited).length > 0;
-  const globalFinished = state.scene === "ERASURE" && erasureStatus === "SETTLED";
+  const globalFinished = state.scene === "ERASURE" && (erasure?.status || "IDLE") === "SETTLED";
 
   const canGlobalNext = !globalFinished && (
     globalCurrentStatus !== "SETTLED" || state.sceneIndex < SCENES.length - 1
@@ -586,12 +772,14 @@ const LedgerFlowV3 = () => {
     switch (state.scene) {
       case "ONBOARDING": return onboardingHasPrevStage(onboarding);
       case "POSTING":    return hasPrevStage(state);
+      case "ENGINE":     return engineHasPrevStage(engine);
+      case "RECONCILE":  return reconcileHasPrevStage(reconcile);
       case "FANOUT":     return fanoutHasPrevStage(fanout);
       case "HARD_EDGE":  return hardEdgeHasPrevStage(hardEdge);
       case "ERASURE":    return erasureHasPrevStage(erasure);
       default:           return false;
     }
-  }, [state, onboarding, fanout, hardEdge, erasure]);
+  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
 
   // ─── Keyboard stepping ─────────────────────────────────────────────────────
   useStepperKeys({
@@ -609,9 +797,11 @@ const LedgerFlowV3 = () => {
       if (globalFinished) return "Complete";
       return `${sceneName} · done`;
     }
-    const stageListLen = {
+    const stageListLen = { // eslint-disable-line no-shadow
       ONBOARDING: ONBOARD_STAGE_LIST.length,
       POSTING: STAGE_LIST.length,
+      ENGINE: ENGINE_STAGE_LIST.length,
+      RECONCILE: RECONCILE_STAGE_LIST.length,
       FANOUT: FANOUT_STAGE_LIST.length,
       HARD_EDGE: HARD_EDGE_STAGE_LIST.length,
       ERASURE: ERASURE_STAGE_LIST.length,
@@ -620,6 +810,8 @@ const LedgerFlowV3 = () => {
       switch (state.scene) {
         case "ONBOARDING": return (onboarding?.stageIndex ?? -1) + 1;
         case "POSTING":    return (state.stageIndex ?? -1) + 1;
+        case "ENGINE":     return (engine?.stageIndex ?? -1) + 1;
+        case "RECONCILE":  return (reconcile?.stageIndex ?? -1) + 1;
         case "FANOUT":     return (fanout?.stageIndex ?? -1) + 1;
         case "HARD_EDGE":  return (hardEdge?.stageIndex ?? -1) + 1;
         case "ERASURE":    return (erasure?.stageIndex ?? -1) + 1;
@@ -627,7 +819,7 @@ const LedgerFlowV3 = () => {
       }
     })();
     return `${sceneName} · ${stageIdx} / ${stageListLen}`;
-  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, fanout, hardEdge, erasure]);
+  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -742,23 +934,60 @@ const LedgerFlowV3 = () => {
                 </Copyable>
               )}
             </>
-          ) : !globalStarted ? (
+          ) : isReconcileScene && reconcileStatus === "IDLE" ? (
             <>
-              <span className={styles.scenarioLabel}>EOD reconcile scenario:</span>
+              <span className={styles.scenarioLabel}>Reconcile scenario:</span>
               {[
-                { key: "FX_ROUNDING", label: "FX Rounding Δ$1.00" },
-                { key: "DUPLICATE",   label: "Duplicate Post Δ$250" },
-                { key: "MATCH",       label: "Perfect Balance Δ$0" },
+                { key: "BALANCED",     label: "Perfect Balance" },
+                { key: "STRAND_DRIFT", label: "Strand Drift Δ$0.10" },
+                { key: "SUB_GL_LAG",   label: "Pipeline Lag" },
               ].map((s) => (
                 <button
                   key={s.key}
                   type="button"
-                  className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
-                  onClick={() => handleSetScenario(s.key)}
+                  className={`${styles.scenarioPill} ${reconcileScenario === s.key ? styles.scenarioPillActive : ""}`}
+                  onClick={() => handleSetReconcileScenario(s.key)}
                 >
                   {s.label}
                 </button>
               ))}
+            </>
+          ) : !globalStarted ? (
+            <>
+              <span className={styles.scenarioLabel}>Transaction:</span>
+              {[
+                { key: "DOMESTIC",  label: "FedNow Domestic" },
+                { key: "FX",        label: "FX Transfer EUR→USD" },
+                { key: "CANCELLED", label: "Cancelled Auth" },
+              ].map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  className={`${styles.scenarioPill} ${txType === t.key ? styles.scenarioPillActive : ""}`}
+                  onClick={() => handleSetTxType(t.key)}
+                >
+                  {t.label}
+                </button>
+              ))}
+              {txType === "DOMESTIC" && (
+                <>
+                  <span className={styles.scenarioLabel} style={{ marginLeft: "16px" }}>EOD scenario:</span>
+                  {[
+                    { key: "FX_ROUNDING", label: "FX Rounding Δ$1" },
+                    { key: "DUPLICATE",   label: "Duplicate Δ$250" },
+                    { key: "MATCH",       label: "Perfect Balance" },
+                  ].map((s) => (
+                    <button
+                      key={s.key}
+                      type="button"
+                      className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
+                      onClick={() => handleSetScenario(s.key)}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </>
+              )}
             </>
           ) : null}
         </div>

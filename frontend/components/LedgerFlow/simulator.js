@@ -35,7 +35,7 @@ function isoDate(date) {
 //   - the canonical journalEntry document (status='POSTED')
 //   - the two subLedgerEntries documents (debit + credit legs)
 //   - the ordered event timeline (delays in ms)
-export function buildPaymentRun({ from, to, amount, currency = "USD", description, scenario = "FX_ROUNDING" }) {
+export function buildPaymentRun({ from, to, amount, currency = "USD", description, scenario = "FX_ROUNDING", txType = "DOMESTIC" }) {
   const now = new Date();
   const stamp = ymd(now);
   const idempotencyKey = `pay-${uuid()}`;
@@ -45,11 +45,26 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
   const subLedgerCreditId = `SL-${stamp}-${String(Math.floor(Math.random() * 999999)).padStart(6, "0")}`;
   const resumeToken = `rt-${uuid().slice(0, 12)}`;
 
+  // FX type: EUR source, USD functional
+  const isFX = txType === "FX";
+  const isCancelled = txType === "CANCELLED";
+  // For FX: Frida sends €220.00, converted at 1.136 → $250.00 USD
+  const txCurrency = isFX ? "EUR" : currency;
+  const txAmountMinor = isFX ? Math.round(amount / 1.136 * 100) : Math.round(amount * 100);
+  const fxRate = isFX ? "1.136" : null;
+  const fxRateAt = isFX ? isoDate(now) : null;
+  // CANCELLED: card auth, PENDING stage
+  const entryStage = isCancelled ? "PENDING" : "POSTED";
+  const journalStatus = isCancelled ? "PENDING_CAPTURE" : "POSTED";
+  const journalType = isCancelled ? "CARD_AUTH" : "SYSTEM";
+  // Effective EOD scenario: FX always FX_ROUNDING, CANCELLED always CANCELLED, else user-selected
+  const effectiveScenario = isCancelled ? "CANCELLED" : (isFX ? "FX_ROUNDING" : scenario);
+
   const sourceReference = {
-    sourceSystem: "PAYMENT_ORDER",
+    sourceSystem: isCancelled ? "CARD_AUTHORIZATION" : isFX ? "SWIFT_MX" : "PAYMENT_ORDER",
     sourceId: paymentId,
-    sourceType: "PAYMENT",
-    sourceCollection: "payments",
+    sourceType: isCancelled ? "CARD_AUTH" : "PAYMENT",
+    sourceCollection: isCancelled ? "cardAuthorizations" : "payments",
   };
 
   const journalEntry = {
@@ -59,11 +74,11 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
     periodName: PERIOD_NAME,
     valueDate: isoDate(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()))),
     postingDate: isoDate(now),
-    journalType: "SYSTEM",
-    status: "POSTED",
+    journalType,
+    status: journalStatus,
     currency,
     totalAmount: dec(amount),
-    description: description || `Customer transfer — ${from.displayName} → ${to.displayName}`,
+    description: description || (isCancelled ? `Card auth — ${from.displayName} at merchant` : isFX ? `FX transfer — ${from.displayName} → ${to.displayName} (EUR→USD)` : `Customer transfer — ${from.displayName} → ${to.displayName}`),
     sourceReference,
     entries: [
       {
@@ -73,11 +88,14 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
         side: "DEBIT",
         amount: dec(amount),
         currency,
-        fxRate: null,
+        amountTransactionMinor: txAmountMinor,
+        transactionCurrency: txCurrency,
+        fxRate,
+        fxRateAt,
         functionalAmount: dec(amount),
         subLedgerRef: subLedgerDebitId,
         costCenter: "RETAIL-BANKING",
-        lineDescription: `Debit ${from.displayName} — ${from.accountId}`,
+        lineDescription: isFX ? `Debit ${from.displayName} — FX ${txCurrency}→${currency}` : `Debit ${from.displayName} — ${from.accountId}`,
       },
       {
         lineNumber: 2,
@@ -86,7 +104,10 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
         side: "CREDIT",
         amount: dec(amount),
         currency,
-        fxRate: null,
+        amountTransactionMinor: txAmountMinor,
+        transactionCurrency: txCurrency,
+        fxRate,
+        fxRateAt,
         functionalAmount: dec(amount),
         subLedgerRef: subLedgerCreditId,
         costCenter: "RETAIL-BANKING",
@@ -123,9 +144,9 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
     valueDate: journalEntry.valueDate,
     postingDate: journalEntry.postingDate,
     transactionType: "PAYMENT_OUT",
-    status: "POSTED",
+    status: entryStage,
     sourceReference,
-    description: `Outbound transfer — debit ${from.accountId}`,
+    description: isCancelled ? `Card auth hold — debit ${from.accountId}` : `Outbound transfer — debit ${from.accountId}`,
     reversalOf: null,
     reversedBy: null,
     createdAt: journalEntry.createdAt,
@@ -153,9 +174,9 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
     valueDate: journalEntry.valueDate,
     postingDate: journalEntry.postingDate,
     transactionType: "PAYMENT_IN",
-    status: "POSTED",
+    status: entryStage,
     sourceReference,
-    description: `Inbound transfer — credit ${to.accountId}`,
+    description: isCancelled ? `Card auth hold — credit ${to.accountId}` : `Inbound transfer — credit ${to.accountId}`,
     reversalOf: null,
     reversedBy: null,
     createdAt: journalEntry.createdAt,
@@ -207,25 +228,27 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
     {
       t: 7300,
       stage: "EOD_RECONCILE_RUN",
-      payload: { scenario, run: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).run },
+      payload: { scenario: effectiveScenario, txType, run: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).run },
     },
     {
       t: 8300,
       stage: "EOD_RECONCILE_RESULT",
       payload: {
-        scenario,
-        balanced: scenario === "MATCH",
-        run: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).run,
-        exception: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).exception,
+        scenario: effectiveScenario,
+        txType,
+        balanced: effectiveScenario === "MATCH" || effectiveScenario === "CANCELLED",
+        run: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).run,
+        exception: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).exception,
       },
     },
     {
       t: 9300,
       stage: "EOD_RECONCILE_RESOLVED",
       payload: {
-        scenario,
-        exception: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).exception,
-        correction: (SCENARIO_DATA[scenario] || SCENARIO_DATA.FX_ROUNDING).correction,
+        scenario: effectiveScenario,
+        txType,
+        exception: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).exception,
+        correction: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).correction,
       },
     },
     { t: 10300, stage: "SETTLED", payload: {} },

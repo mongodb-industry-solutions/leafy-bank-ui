@@ -31,8 +31,11 @@ export const initialState = {
   // Payment context
   payment: { amount: 0, currency: "USD" },
 
-  // Scenario for EOD reconciliation (FX_ROUNDING | MATCH | DUPLICATE)
+  // Scenario for EOD reconciliation (FX_ROUNDING | MATCH | DUPLICATE | CANCELLED)
   scenario: "FX_ROUNDING",
+
+  // Transaction type (DOMESTIC | FX | CANCELLED)
+  txType: "DOMESTIC",
 
   // Equilibrium tracking — running sums of posted legs
   totals: { debit: 0, credit: 0 },
@@ -53,7 +56,7 @@ export const initialState = {
 export function ledgerReducer(state, action) {
   switch (action.type) {
     case "RESET":
-      return { ...initialState, mode: state.mode, scenario: state.scenario };
+      return { ...initialState, mode: state.mode, scenario: state.scenario, txType: state.txType };
 
     case "SET_MODE":
       return { ...state, mode: action.mode };
@@ -61,13 +64,17 @@ export function ledgerReducer(state, action) {
     case "SET_SCENARIO":
       return { ...state, scenario: action.scenario };
 
+    case "SET_TX_TYPE":
+      return { ...state, txType: action.txType };
+
     case "START": {
-      const { from, to, identifiers, amount, currency, mode, scenario } = action;
+      const { from, to, identifiers, amount, currency, mode, scenario, txType } = action;
       const ceiling = Math.max(from.balance, to.balance) * 1.4;
       return {
         ...initialState,
         mode: mode || state.mode || "STEP",
         scenario: scenario || state.scenario || "FX_ROUNDING",
+        txType: txType || state.txType || "DOMESTIC",
         status: mode === "STEP" ? "STEP_PAUSED" : "AUTO_RUNNING",
         startedAt: Date.now(),
         identifiers: {

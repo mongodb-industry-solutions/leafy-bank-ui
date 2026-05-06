@@ -7,7 +7,7 @@ import { FANOUT_JOURNAL, CONSUMERS } from "./fanoutFixtures";
 import styles from "./FanoutCanvas.module.css";
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
-const W = 1600, H = 440;
+const W = 1600, H = 555;
 const CARD_Y = 52;
 
 // Journal card (left)
@@ -57,26 +57,26 @@ function FanLine({ row, active }) {
 }
 
 // ─── Consumer card ────────────────────────────────────────────────────────────
-function ConsumerCard({ row, active, showToken }) {
+function ConsumerCard({ row, active, showToken, failed }) {
   return (
     <motion.g>
       <motion.rect
         x={CON_X} y={row.y} width={CON_W} height={row.h} rx={10}
         fill="white"
-        animate={{ stroke: active ? row.color : "#E8EDEB" }}
+        animate={{ stroke: active ? (failed ? "#F59B00" : row.color) : "#E8EDEB" }}
         strokeWidth={1.5}
         transition={SPRING.default}
       />
       <motion.rect
         x={CON_X} y={row.y} width={CON_W} height={4} rx={3}
-        animate={{ fill: active ? row.color : "#E8EDEB" }}
+        animate={{ fill: active ? (failed ? "#F59B00" : row.color) : "#E8EDEB" }}
         opacity={0.4}
         transition={SPRING.default}
       />
 
       {/* Consumer name + collection */}
       <text x={CON_X + 16} y={row.y + 20} className={styles.consumerLabel}
-        fill={active ? row.color : "#889397"}>
+        fill={active ? (failed ? "#B45309" : row.color) : "#889397"}>
         {row.label.toUpperCase()}
       </text>
       <text x={CON_X + 16} y={row.y + 36} className={styles.consumerSub}>
@@ -91,10 +91,10 @@ function ConsumerCard({ row, active, showToken }) {
             transition={{ duration: 0.2 }}
           >
             <rect x={CON_X + CON_W - 108} y={row.y + 8} width={92} height={18} rx={9}
-              fill={row.color} opacity={0.12} />
+              fill={failed ? "#F59B00" : row.color} opacity={0.12} />
             <text x={CON_X + CON_W - 62} y={row.y + 21} textAnchor="middle"
-              className={styles.statusPill} fill={row.color}>
-              ✓ CONSUMED
+              className={styles.statusPill} fill={failed ? "#B45309" : row.color}>
+              {failed ? "✗ FAILED" : "✓ CONSUMED"}
             </text>
           </motion.g>
         )}
@@ -135,6 +135,7 @@ export default function FanoutCanvas({ state }) {
   const balanceActive  = reached("FANOUT_CONSUMER_BALANCE");
   const fraudActive    = reached("FANOUT_CONSUMER_FRAUD");
   const wormActive     = reached("FANOUT_CONSUMER_WORM");
+  const dlqVisible     = reached("FANOUT_DLQ");
   const showTokens     = wormActive;
 
   // Active map per consumer
@@ -252,7 +253,12 @@ export default function FanoutCanvas({ state }) {
       {CON_ROWS.map((row) => (
         <React.Fragment key={row.key}>
           <FanLine row={row} active={consumerActive[row.key]} />
-          <ConsumerCard row={row} active={consumerActive[row.key]} showToken={showTokens} />
+          <ConsumerCard
+            row={row}
+            active={consumerActive[row.key]}
+            showToken={showTokens}
+            failed={row.key === "BALANCE" && dlqVisible}
+          />
         </React.Fragment>
       ))}
 
@@ -282,6 +288,66 @@ export default function FanoutCanvas({ state }) {
             <text x={CON_X + CON_W - 14} y={396} textAnchor="end" className={styles.hashRfc}>
               RFC 3161 ✓
             </text>
+          </motion.g>
+        )}
+      </AnimatePresence>
+
+      {/* ── cdcDeadLetters card (DLQ failure) ───────────────────────── */}
+      <AnimatePresence>
+        {dlqVisible && (
+          <motion.g key="dlq"
+            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            transition={{ ...SPRING.default, delay: 0.25 }}
+          >
+            {/* Connector: BALANCE card bottom → DLQ card top */}
+            <line
+              x1={CON_X + 44} y1={CON_ROWS[0].y + CON_ROWS[0].h}
+              x2={CON_X + 44} y2={430}
+              stroke="#F59B00" strokeWidth={1} strokeDasharray="5 3" opacity={0.55}
+            />
+
+            {/* DLQ card */}
+            <rect x={CON_X} y={430} width={CON_W} height={112} rx={10}
+              fill="#FFFBF0" stroke="#F59B00" strokeWidth={1.5} />
+            <rect x={CON_X} y={430} width={4} height={112} rx={4} fill="#F59B00" />
+            <rect x={CON_X} y={430} width={CON_W} height={4} rx={3}
+              fill="#F59B00" opacity={0.3} />
+
+            {/* Header row */}
+            <text x={CON_X + 16} y={449} className={styles.dlqHeader}>
+              ⚠ cdcDeadLetters
+            </text>
+            <text x={CON_X + 16} y={464} className={styles.consumerSub}>
+              → balanceProjection failure · 3 retries exhausted · re-emit to resume
+            </text>
+
+            {/* Status badge */}
+            <rect x={CON_X + CON_W - 148} y={438} width={132} height={18} rx={9}
+              fill="#F59B00" opacity={0.12} />
+            <text x={CON_X + CON_W - 82} y={451} textAnchor="middle"
+              className={styles.statusPill} fill="#B45309">
+              FAILURE CAPTURED · RE-DRIVABLE
+            </text>
+
+            {/* Divider */}
+            <line x1={CON_X + 12} y1={472} x2={CON_X + CON_W - 12} y2={472}
+              stroke="#F59B00" strokeWidth={0.5} opacity={0.3} />
+
+            {/* Document fields */}
+            {[
+              { k: "pipeline",      v: '"balanceProjection"', amber: false },
+              { k: "errorClass",    v: '"projection_failure"', amber: true  },
+              { k: "retryCount",    v: "3",                    amber: true  },
+              { k: "dispositioned", v: "false",                amber: true  },
+            ].map((r, i) => (
+              <g key={r.k}>
+                <text x={CON_X + 16} y={486 + i * 14} className={styles.fieldKey}>{r.k}:</text>
+                <text x={CON_X + 132} y={486 + i * 14} className={styles.fieldVal}
+                  fill={r.amber ? "#B45309" : "#001E2B"}>
+                  {r.v}
+                </text>
+              </g>
+            ))}
           </motion.g>
         )}
       </AnimatePresence>

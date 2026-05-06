@@ -6,12 +6,16 @@ import OnboardingCanvas from "./OnboardingCanvas";
 import FanoutCanvas from "./FanoutCanvas";
 import HardEdgeCanvas from "./HardEdgeCanvas";
 import ErasureCanvas from "./ErasureCanvas";
+import EngineCanvas from "./EngineCanvas";
+import ReconcileCanvas from "./ReconcileCanvas";
 
 const CANVAS_MAP = {
   POSTING:    PostingCanvas,
   ONBOARDING: OnboardingCanvas,
+  ENGINE:     EngineCanvas,
   FANOUT:     FanoutCanvas,
   HARD_EDGE:  HardEdgeCanvas,
+  RECONCILE:  ReconcileCanvas,
   ERASURE:    ErasureCanvas,
 };
 
