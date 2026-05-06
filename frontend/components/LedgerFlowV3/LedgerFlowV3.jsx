@@ -853,8 +853,12 @@ const LedgerFlowV3 = () => {
         case "ARCH": archRunRef.current = null; break;
         case "RBAC": rbacRunRef.current = null; break;
       }
-      dispatch({ type: "SET_SCENE", scene: SCENES[nextSceneIdx].key });
-      startSceneInStepMode(SCENES[nextSceneIdx].key);
+      const nextKey = SCENES[nextSceneIdx].key;
+      dispatch({ type: "SET_SCENE", scene: nextKey });
+      // POSTING and RECONCILE have scenario selectors — pause so the user can configure before starting
+      if (nextKey !== "POSTING" && nextKey !== "RECONCILE") {
+        startSceneInStepMode(nextKey);
+      }
       return;
     }
 
