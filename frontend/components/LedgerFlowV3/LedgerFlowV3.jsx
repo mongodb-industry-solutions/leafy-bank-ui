@@ -19,6 +19,10 @@ import { fanoutHasNextStage, fanoutHasPrevStage, FANOUT_STAGE_LIST } from "./fan
 import { hardEdgeHasNextStage, hardEdgeHasPrevStage, HARD_EDGE_STAGE_LIST } from "./hardEdgeReducer";
 import { engineHasNextStage, engineHasPrevStage, ENGINE_STAGE_LIST } from "./engineReducer";
 import { reconcileHasNextStage, reconcileHasPrevStage, RECONCILE_STAGE_LIST } from "./reconcileReducer";
+import { archHasNextStage, archHasPrevStage, ARCH_STAGE_LIST } from "./archReducer";
+import { rbacHasNextStage, rbacHasPrevStage, RBAC_STAGE_LIST } from "./rbacReducer";
+import { buildArchRun, runArchMode } from "./archSimulator";
+import { buildRbacRun, runRbacMode } from "./rbacSimulator";
 import { STAGE_LIST } from "../LedgerFlow/stageNarration";
 import { buildPaymentRun, runMode } from "../LedgerFlow/simulator";
 import { buildOnboardingRun, runOnboardingMode } from "./onboardingSimulator";
@@ -39,6 +43,8 @@ import styles from "./LedgerFlowV3.module.css";
 
 const POSTING_SCENE = "POSTING";
 const ONBOARDING_SCENE = "ONBOARDING";
+const ARCH_SCENE = "ARCH";
+const RBAC_SCENE = "RBAC";
 const ERASURE_SCENE = "ERASURE";
 const FANOUT_SCENE = "FANOUT";
 const HARD_EDGE_SCENE = "HARD_EDGE";
@@ -77,10 +83,20 @@ const LedgerFlowV3 = () => {
   const reconcileRunnerRef = useRef(null);
   const reconcileRunRef = useRef(null);
 
+  // Arch scene runner refs
+  const archRunnerRef = useRef(null);
+  const archRunRef = useRef(null);
+
+  // Rbac scene runner refs
+  const rbacRunnerRef = useRef(null);
+  const rbacRunRef = useRef(null);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const isPostingScene = state.scene === POSTING_SCENE;
   const isOnboardingScene = state.scene === ONBOARDING_SCENE;
+  const isArchScene = state.scene === ARCH_SCENE;
+  const isRbacScene = state.scene === RBAC_SCENE;
   const isErasureScene = state.scene === ERASURE_SCENE;
   const isFanoutScene = state.scene === FANOUT_SCENE;
   const isHardEdgeScene = state.scene === HARD_EDGE_SCENE;
@@ -105,6 +121,8 @@ const LedgerFlowV3 = () => {
       hardEdgeRunnerRef.current?.cancel?.();
       engineRunnerRef.current?.cancel?.();
       reconcileRunnerRef.current?.cancel?.();
+      archRunnerRef.current?.cancel?.();
+      rbacRunnerRef.current?.cancel?.();
     };
   }, []);
 
@@ -558,6 +576,124 @@ const LedgerFlowV3 = () => {
     dispatch({ type: "RECONCILE_SET_SCENARIO", scenario: s });
   }, [reconcileStatus, isReconcileScene]);
 
+  // ─── Arch scene handlers ──────────────────────────────────────────────────
+  const arch = state.arch;
+  const archStatus = arch?.status || "IDLE";
+  const archMode = arch?.mode || "STEP";
+
+  const handleArchSimulate = useCallback(() => {
+    if (!isArchScene) return;
+    archRunnerRef.current?.cancel?.();
+    const { timeline } = buildArchRun();
+    archRunRef.current = { timeline };
+    dispatch({ type: "ARCH_START", mode: archMode });
+    archRunnerRef.current = runArchMode(timeline, dispatch, archMode);
+    if (archMode === "STEP") archRunnerRef.current.next();
+  }, [isArchScene, archMode]);
+
+  const handleArchNext = useCallback(() => {
+    if (!isArchScene) return;
+    if (archStatus === "IDLE") { handleArchSimulate(); return; }
+    if (archStatus === "SETTLED") return;
+    const timeline = archRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = arch?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    archRunnerRef.current?.cancel?.();
+    dispatch({ type: "ARCH_STAGE_EVENT", event: timeline[nextIdx] });
+    archRunnerRef.current = runArchMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isArchScene, archStatus, arch?.events?.length, handleArchSimulate]);
+
+  const handleArchPrev = useCallback(() => {
+    if (!isArchScene) return;
+    if (!archHasPrevStage(arch) || !archRunRef.current) return;
+    archRunnerRef.current?.cancel?.();
+    dispatch({ type: "ARCH_STEP_PREV" });
+  }, [isArchScene, arch]);
+
+  const lastArchEventCountRef = useRef(0);
+  useEffect(() => {
+    const n = arch?.events?.length || 0;
+    if (n < lastArchEventCountRef.current && archRunRef.current) {
+      const remaining = archRunRef.current.timeline.slice(n);
+      archRunnerRef.current?.cancel?.();
+      archRunnerRef.current = runArchMode(remaining, dispatch, "STEP");
+    }
+    lastArchEventCountRef.current = n;
+  }, [arch?.events?.length]);
+
+  const handleArchReset = useCallback(() => {
+    archRunnerRef.current?.cancel?.();
+    archRunnerRef.current = null;
+    archRunRef.current = null;
+    dispatch({ type: "ARCH_RESET" });
+  }, []);
+
+  const handleArchModeChange = useCallback((value) => {
+    archRunnerRef.current?.cancel?.();
+    archRunnerRef.current = null;
+    dispatch({ type: "ARCH_SET_MODE", mode: value });
+  }, []);
+
+  // ─── Rbac scene handlers ──────────────────────────────────────────────────
+  const rbac = state.rbac;
+  const rbacStatus = rbac?.status || "IDLE";
+  const rbacMode = rbac?.mode || "STEP";
+
+  const handleRbacSimulate = useCallback(() => {
+    if (!isRbacScene) return;
+    rbacRunnerRef.current?.cancel?.();
+    const { timeline } = buildRbacRun();
+    rbacRunRef.current = { timeline };
+    dispatch({ type: "RBAC_START", mode: rbacMode });
+    rbacRunnerRef.current = runRbacMode(timeline, dispatch, rbacMode);
+    if (rbacMode === "STEP") rbacRunnerRef.current.next();
+  }, [isRbacScene, rbacMode]);
+
+  const handleRbacNext = useCallback(() => {
+    if (!isRbacScene) return;
+    if (rbacStatus === "IDLE") { handleRbacSimulate(); return; }
+    if (rbacStatus === "SETTLED") return;
+    const timeline = rbacRunRef.current?.timeline;
+    if (!timeline) return;
+    const nextIdx = rbac?.events?.length || 0;
+    if (nextIdx >= timeline.length) return;
+    rbacRunnerRef.current?.cancel?.();
+    dispatch({ type: "RBAC_STAGE_EVENT", event: timeline[nextIdx] });
+    rbacRunnerRef.current = runRbacMode(timeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [isRbacScene, rbacStatus, rbac?.events?.length, handleRbacSimulate]);
+
+  const handleRbacPrev = useCallback(() => {
+    if (!isRbacScene) return;
+    if (!rbacHasPrevStage(rbac) || !rbacRunRef.current) return;
+    rbacRunnerRef.current?.cancel?.();
+    dispatch({ type: "RBAC_STEP_PREV" });
+  }, [isRbacScene, rbac]);
+
+  const lastRbacEventCountRef = useRef(0);
+  useEffect(() => {
+    const n = rbac?.events?.length || 0;
+    if (n < lastRbacEventCountRef.current && rbacRunRef.current) {
+      const remaining = rbacRunRef.current.timeline.slice(n);
+      rbacRunnerRef.current?.cancel?.();
+      rbacRunnerRef.current = runRbacMode(remaining, dispatch, "STEP");
+    }
+    lastRbacEventCountRef.current = n;
+  }, [rbac?.events?.length]);
+
+  const handleRbacReset = useCallback(() => {
+    rbacRunnerRef.current?.cancel?.();
+    rbacRunnerRef.current = null;
+    rbacRunRef.current = null;
+    dispatch({ type: "RBAC_RESET" });
+  }, []);
+
+  const handleRbacModeChange = useCallback((value) => {
+    rbacRunnerRef.current?.cancel?.();
+    rbacRunnerRef.current = null;
+    dispatch({ type: "RBAC_SET_MODE", mode: value });
+  }, []);
+
   // ─── Cancel + clear all runners ───────────────────────────────────────────
   const cancelAll = useCallback(() => {
     runnerRef.current?.cancel?.(); runnerRef.current = null; runRef.current = null;
@@ -567,6 +703,8 @@ const LedgerFlowV3 = () => {
     hardEdgeRunnerRef.current?.cancel?.(); hardEdgeRunnerRef.current = null; hardEdgeRunRef.current = null;
     engineRunnerRef.current?.cancel?.(); engineRunnerRef.current = null; engineRunRef.current = null;
     reconcileRunnerRef.current?.cancel?.(); reconcileRunnerRef.current = null; reconcileRunRef.current = null;
+    archRunnerRef.current?.cancel?.(); archRunnerRef.current = null; archRunRef.current = null;
+    rbacRunnerRef.current?.cancel?.(); rbacRunnerRef.current = null; rbacRunRef.current = null;
   }, []);
 
   // ─── Scene switch ──────────────────────────────────────────────────────────
@@ -634,6 +772,22 @@ const LedgerFlowV3 = () => {
         erasureRunnerRef.current = runErasureMode(et.slice(1), dispatch, "STEP");
         break;
       }
+      case "ARCH": {
+        const { timeline: at } = buildArchRun();
+        archRunRef.current = { timeline: at };
+        dispatch({ type: "ARCH_START", mode: "STEP" });
+        dispatch({ type: "ARCH_STAGE_EVENT", event: at[0] });
+        archRunnerRef.current = runArchMode(at.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "RBAC": {
+        const { timeline: rt } = buildRbacRun();
+        rbacRunRef.current = { timeline: rt };
+        dispatch({ type: "RBAC_START", mode: "STEP" });
+        dispatch({ type: "RBAC_STAGE_EVENT", event: rt[0] });
+        rbacRunnerRef.current = runRbacMode(rt.slice(1), dispatch, "STEP");
+        break;
+      }
       default: break;
     }
   }, []);
@@ -673,6 +827,14 @@ const LedgerFlowV3 = () => {
         currentStatus = erasure?.status || "IDLE"; currentEvents = erasure?.events;
         currentTimeline = erasureRunRef.current?.timeline; stageEventType = "ERASURE_STAGE_EVENT";
         sceneRunnerRef = erasureRunnerRef; sceneRunnerFn = runErasureMode; break;
+      case "ARCH":
+        currentStatus = arch?.status || "IDLE"; currentEvents = arch?.events;
+        currentTimeline = archRunRef.current?.timeline; stageEventType = "ARCH_STAGE_EVENT";
+        sceneRunnerRef = archRunnerRef; sceneRunnerFn = runArchMode; break;
+      case "RBAC":
+        currentStatus = rbac?.status || "IDLE"; currentEvents = rbac?.events;
+        currentTimeline = rbacRunRef.current?.timeline; stageEventType = "RBAC_STAGE_EVENT";
+        sceneRunnerRef = rbacRunnerRef; sceneRunnerFn = runRbacMode; break;
       default: return;
     }
 
@@ -688,6 +850,8 @@ const LedgerFlowV3 = () => {
         case "FANOUT": fanoutRunRef.current = null; break;
         case "HARD_EDGE": hardEdgeRunRef.current = null; break;
         case "ERASURE": erasureRunRef.current = null; break;
+        case "ARCH": archRunRef.current = null; break;
+        case "RBAC": rbacRunRef.current = null; break;
       }
       dispatch({ type: "SET_SCENE", scene: SCENES[nextSceneIdx].key });
       startSceneInStepMode(SCENES[nextSceneIdx].key);
@@ -704,7 +868,7 @@ const LedgerFlowV3 = () => {
     sceneRunnerRef.current?.cancel?.();
     dispatch({ type: stageEventType, event: currentTimeline[nextIdx] });
     sceneRunnerRef.current = sceneRunnerFn(currentTimeline.slice(nextIdx + 1), dispatch, "STEP");
-  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, engine, reconcile, fanout, hardEdge, erasure, startSceneInStepMode]);
+  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac, startSceneInStepMode]);
 
   // ─── Global Prev — step back within current scene ─────────────────────────
   const handleGlobalPrev = useCallback(() => {
@@ -737,9 +901,17 @@ const LedgerFlowV3 = () => {
         if (!erasureHasPrevStage(erasure) || !erasureRunRef.current) return;
         erasureRunnerRef.current?.cancel?.();
         dispatch({ type: "ERASURE_STEP_PREV" }); break;
+      case "ARCH":
+        if (!archHasPrevStage(arch) || !archRunRef.current) return;
+        archRunnerRef.current?.cancel?.();
+        dispatch({ type: "ARCH_STEP_PREV" }); break;
+      case "RBAC":
+        if (!rbacHasPrevStage(rbac) || !rbacRunRef.current) return;
+        rbacRunnerRef.current?.cancel?.();
+        dispatch({ type: "RBAC_STEP_PREV" }); break;
       default: break;
     }
-  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
+  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
 
   // ─── Global Reset ─────────────────────────────────────────────────────────
   const handleGlobalReset = useCallback(() => {
@@ -757,9 +929,11 @@ const LedgerFlowV3 = () => {
       case "FANOUT":     return fanout?.status || "IDLE";
       case "HARD_EDGE":  return hardEdge?.status || "IDLE";
       case "ERASURE":    return erasure?.status || "IDLE";
+      case "ARCH":       return arch?.status || "IDLE";
+      case "RBAC":       return rbac?.status || "IDLE";
       default:           return "IDLE";
     }
-  }, [state.scene, state.status, onboarding?.status, engine?.status, reconcile?.status, fanout?.status, hardEdge?.status, erasure?.status]);
+  }, [state.scene, state.status, onboarding?.status, engine?.status, reconcile?.status, fanout?.status, hardEdge?.status, erasure?.status, arch?.status, rbac?.status]);
 
   const globalStarted = globalCurrentStatus !== "IDLE" || state.sceneIndex > 0 || Object.keys(state.scenesVisited).length > 0;
   const globalFinished = state.scene === "ERASURE" && (erasure?.status || "IDLE") === "SETTLED";
@@ -777,9 +951,11 @@ const LedgerFlowV3 = () => {
       case "FANOUT":     return fanoutHasPrevStage(fanout);
       case "HARD_EDGE":  return hardEdgeHasPrevStage(hardEdge);
       case "ERASURE":    return erasureHasPrevStage(erasure);
+      case "ARCH":       return archHasPrevStage(arch);
+      case "RBAC":       return rbacHasPrevStage(rbac);
       default:           return false;
     }
-  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
+  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
 
   // ─── Keyboard stepping ─────────────────────────────────────────────────────
   useStepperKeys({
@@ -805,6 +981,8 @@ const LedgerFlowV3 = () => {
       FANOUT: FANOUT_STAGE_LIST.length,
       HARD_EDGE: HARD_EDGE_STAGE_LIST.length,
       ERASURE: ERASURE_STAGE_LIST.length,
+      ARCH: ARCH_STAGE_LIST.length,
+      RBAC: RBAC_STAGE_LIST.length,
     }[state.scene] || 0;
     const stageIdx = (() => {
       switch (state.scene) {
@@ -815,11 +993,13 @@ const LedgerFlowV3 = () => {
         case "FANOUT":     return (fanout?.stageIndex ?? -1) + 1;
         case "HARD_EDGE":  return (hardEdge?.stageIndex ?? -1) + 1;
         case "ERASURE":    return (erasure?.stageIndex ?? -1) + 1;
+        case "ARCH":       return (arch?.stageIndex ?? -1) + 1;
+        case "RBAC":       return (rbac?.stageIndex ?? -1) + 1;
         default:           return 0;
       }
     })();
     return `${sceneName} · ${stageIdx} / ${stageListLen}`;
-  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, engine, reconcile, fanout, hardEdge, erasure]);
+  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -952,7 +1132,7 @@ const LedgerFlowV3 = () => {
                 </button>
               ))}
             </>
-          ) : !globalStarted ? (
+          ) : isPostingScene && !state.identifiers.idempotencyKey ? (
             <>
               <span className={styles.scenarioLabel}>Transaction:</span>
               {[

@@ -13,6 +13,8 @@ import { fanoutNarrationFor } from "./fanoutNarration";
 import { hardEdgeNarrationFor } from "./hardEdgeNarration";
 import { engineNarrationFor } from "./engineNarration";
 import { reconcileNarrationFor } from "./reconcileNarration";
+import { archNarrationFor } from "./archNarration";
+import { rbacNarrationFor } from "./rbacNarration";
 
 export { STAGE_LIST, stageOf, indexOfStage, stageLabel };
 
@@ -23,6 +25,12 @@ export function narrationFor(state) {
 
     case "ONBOARDING":
       return onboardingNarrationFor(state.onboarding || {});
+
+    case "ARCH":
+      return archNarrationFor(state.arch || {});
+
+    case "RBAC":
+      return rbacNarrationFor(state.rbac || {});
 
     case "ONBOARDING_PLACEHOLDER":
       return {

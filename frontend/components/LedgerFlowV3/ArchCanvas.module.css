@@ -1,0 +1,80 @@
+.headerText {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  fill: #001E2B;
+  dominant-baseline: middle;
+}
+
+.bandLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+}
+
+.bandSub {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.pillLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  dominant-baseline: middle;
+}
+
+.tableHeader {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  dominant-baseline: middle;
+}
+
+.tableCell {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  dominant-baseline: middle;
+}
+
+.tableCellKey {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  dominant-baseline: middle;
+}
+
+.principleTitle {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  dominant-baseline: middle;
+}
+
+.principleBody {
+  font-family: 'Euclid Circular A', 'Inter', sans-serif;
+  font-size: 10px;
+  fill: #5C6C75;
+  dominant-baseline: middle;
+}
+
+.overlayTitle {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  dominant-baseline: middle;
+}
+
+.idleHint {
+  font-family: 'Euclid Circular A', 'Inter', sans-serif;
+  font-size: 18px;
+  fill: #889397;
+  dominant-baseline: middle;
+}

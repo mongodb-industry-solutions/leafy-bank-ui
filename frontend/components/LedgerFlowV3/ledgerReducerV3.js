@@ -12,15 +12,19 @@ import { fanoutReducer, fanoutInitialState } from "./fanoutReducer";
 import { hardEdgeReducer, hardEdgeInitialState } from "./hardEdgeReducer";
 import { engineReducer, engineInitialState } from "./engineReducer";
 import { reconcileReducer, reconcileInitialState } from "./reconcileReducer";
+import { archReducer, archInitialState } from "./archReducer";
+import { rbacReducer, rbacInitialState } from "./rbacReducer";
 
 export const SCENES = [
-  { key: "ONBOARDING", label: "Onboarding", index: 0 },
-  { key: "POSTING",    label: "The Posting", index: 1 },
-  { key: "ENGINE",     label: "Engine",      index: 2 },
-  { key: "FANOUT",     label: "Fan-out",     index: 3 },
-  { key: "HARD_EDGE",  label: "Hard Edge",   index: 4 },
-  { key: "RECONCILE",  label: "Reconcile",   index: 5 },
-  { key: "ERASURE",    label: "Erasure",     index: 6 },
+  { key: "ONBOARDING", label: "Onboarding",   index: 0 },
+  { key: "ARCH",       label: "Architecture", index: 1 },
+  { key: "POSTING",    label: "The Posting",  index: 2 },
+  { key: "ENGINE",     label: "Engine",       index: 3 },
+  { key: "RBAC",       label: "RBAC",         index: 4 },
+  { key: "FANOUT",     label: "Fan-out",      index: 5 },
+  { key: "HARD_EDGE",  label: "Hard Edge",    index: 6 },
+  { key: "RECONCILE",  label: "Reconcile",    index: 7 },
+  { key: "ERASURE",    label: "Erasure",      index: 8 },
 ];
 
 export const initialStateV3 = {
@@ -29,6 +33,8 @@ export const initialStateV3 = {
   sceneIndex: 0,
   scenesVisited: {},
   onboarding: onboardingInitialState,
+  arch: archInitialState,
+  rbac: rbacInitialState,
   erasure: erasureInitialState,
   fanout: fanoutInitialState,
   hardEdge: hardEdgeInitialState,
@@ -49,6 +55,8 @@ export function ledgerReducerV3(state, action) {
         sceneIndex: idx >= 0 ? idx : 1,
         scenesVisited: { ...state.scenesVisited },
         onboarding: onboardingInitialState,
+        arch: archInitialState,
+        rbac: rbacInitialState,
         erasure: erasureInitialState,
         fanout: fanoutInitialState,
         hardEdge: hardEdgeInitialState,
@@ -154,6 +162,42 @@ export function ledgerReducerV3(state, action) {
       };
     }
 
+    case "ARCH_RESET":
+    case "ARCH_SET_MODE":
+    case "ARCH_START":
+    case "ARCH_STEP_PREV":
+    case "ARCH_STAGE_EVENT": {
+      const nextArch = archReducer(state.arch || archInitialState, action);
+      const isDone =
+        action.type === "ARCH_STAGE_EVENT" &&
+        action.event?.stage === "ARCH_PRINCIPLES";
+      return {
+        ...state,
+        arch: nextArch,
+        scenesVisited: isDone
+          ? { ...state.scenesVisited, [state.scene]: true }
+          : state.scenesVisited,
+      };
+    }
+
+    case "RBAC_RESET":
+    case "RBAC_SET_MODE":
+    case "RBAC_START":
+    case "RBAC_STEP_PREV":
+    case "RBAC_STAGE_EVENT": {
+      const nextRbac = rbacReducer(state.rbac || rbacInitialState, action);
+      const isDone =
+        action.type === "RBAC_STAGE_EVENT" &&
+        action.event?.stage === "RBAC_WORM";
+      return {
+        ...state,
+        rbac: nextRbac,
+        scenesVisited: isDone
+          ? { ...state.scenesVisited, [state.scene]: true }
+          : state.scenesVisited,
+      };
+    }
+
     case "ENGINE_RESET":
     case "ENGINE_SET_MODE":
     case "ENGINE_START":
@@ -183,6 +227,8 @@ export function ledgerReducerV3(state, action) {
             ? { ...state.scenesVisited, [state.scene]: true }
             : state.scenesVisited,
         onboarding: state.onboarding || onboardingInitialState,
+        arch: state.arch || archInitialState,
+        rbac: state.rbac || rbacInitialState,
         erasure: state.erasure || erasureInitialState,
         fanout: state.fanout || fanoutInitialState,
         hardEdge: state.hardEdge || hardEdgeInitialState,
