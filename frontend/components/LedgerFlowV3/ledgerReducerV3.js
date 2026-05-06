@@ -23,8 +23,8 @@ export const SCENES = [
 
 export const initialStateV3 = {
   ...v2InitialState,
-  scene: "RECONCILE",
-  sceneIndex: 4,
+  scene: "ONBOARDING",
+  sceneIndex: 0,
   scenesVisited: {},
   reconcile: reconcileInitialState,
   onboarding: onboardingInitialState,

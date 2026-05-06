@@ -7,7 +7,7 @@ import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
 import Copyable from "@leafygreen-ui/copyable";
-import { SegmentedControl, SegmentedControlOption } from "@leafygreen-ui/segmented-control";
+
 import LeafygreenProvider from "@leafygreen-ui/leafygreen-provider";
 import { MotionConfig, motion } from "motion/react";
 import { SPRING } from "../LedgerFlow/motionConfig";
@@ -468,164 +468,246 @@ const LedgerFlowV3 = () => {
     dispatch({ type: "HARD_EDGE_SET_MODE", mode: value });
   }, []);
 
+  // ─── Cancel + clear all runners ───────────────────────────────────────────
+  const cancelAll = useCallback(() => {
+    runnerRef.current?.cancel?.(); runnerRef.current = null; runRef.current = null;
+    reconcileRunnerRef.current?.cancel?.(); reconcileRunnerRef.current = null; reconcileRunRef.current = null;
+    onboardRunnerRef.current?.cancel?.(); onboardRunnerRef.current = null; onboardRunRef.current = null;
+    erasureRunnerRef.current?.cancel?.(); erasureRunnerRef.current = null; erasureRunRef.current = null;
+    fanoutRunnerRef.current?.cancel?.(); fanoutRunnerRef.current = null; fanoutRunRef.current = null;
+    hardEdgeRunnerRef.current?.cancel?.(); hardEdgeRunnerRef.current = null; hardEdgeRunRef.current = null;
+  }, []);
+
   // ─── Scene switch ──────────────────────────────────────────────────────────
   const handleSetScene = useCallback((sceneKey) => {
-    runnerRef.current?.cancel?.();
-    runnerRef.current = null;
-    runRef.current = null;
-    reconcileRunnerRef.current?.cancel?.();
-    reconcileRunnerRef.current = null;
-    reconcileRunRef.current = null;
-    onboardRunnerRef.current?.cancel?.();
-    onboardRunnerRef.current = null;
-    onboardRunRef.current = null;
-    erasureRunnerRef.current?.cancel?.();
-    erasureRunnerRef.current = null;
-    erasureRunRef.current = null;
-    fanoutRunnerRef.current?.cancel?.();
-    fanoutRunnerRef.current = null;
-    fanoutRunRef.current = null;
-    hardEdgeRunnerRef.current?.cancel?.();
-    hardEdgeRunnerRef.current = null;
-    hardEdgeRunRef.current = null;
+    cancelAll();
     dispatch({ type: "SET_SCENE", scene: sceneKey });
+  }, [cancelAll]);
+
+  // ─── Start a scene in STEP mode and fire its first stage ──────────────────
+  const startSceneInStepMode = useCallback((sceneKey) => {
+    switch (sceneKey) {
+      case "ONBOARDING": {
+        const { timeline } = buildOnboardingRun();
+        onboardRunRef.current = { timeline };
+        dispatch({ type: "ONBOARD_START", mode: "STEP" });
+        dispatch({ type: "ONBOARD_STAGE_EVENT", event: timeline[0] });
+        onboardRunnerRef.current = runOnboardingMode(timeline.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "POSTING": {
+        const run = buildPaymentRun({ from: FRIDA, to: BO, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, description: DEFAULT_PAYMENT.description });
+        runRef.current = run;
+        dispatch({ type: "START", from: FRIDA, to: BO, identifiers: run.identifiers, amount: DEFAULT_PAYMENT.amount, currency: DEFAULT_PAYMENT.currency, mode: "STEP" });
+        dispatch({ type: "STAGE_EVENT", event: run.timeline[0] });
+        runnerRef.current = runMode(run.timeline.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "FANOUT": {
+        const { timeline: ft } = buildFanoutRun();
+        fanoutRunRef.current = { timeline: ft };
+        dispatch({ type: "FANOUT_START", mode: "STEP" });
+        dispatch({ type: "FANOUT_STAGE_EVENT", event: ft[0] });
+        fanoutRunnerRef.current = runFanoutMode(ft.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "HARD_EDGE": {
+        const { timeline: ht } = buildHardEdgeRun();
+        hardEdgeRunRef.current = { timeline: ht };
+        dispatch({ type: "HARD_EDGE_START", mode: "STEP" });
+        dispatch({ type: "HARD_EDGE_STAGE_EVENT", event: ht[0] });
+        hardEdgeRunnerRef.current = runHardEdgeMode(ht.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "RECONCILE": {
+        const { timeline: rt } = buildReconcileRun();
+        reconcileRunRef.current = { timeline: rt };
+        dispatch({ type: "RECONCILE_START", mode: "STEP" });
+        dispatch({ type: "RECONCILE_STAGE_EVENT", event: rt[0] });
+        reconcileRunnerRef.current = runReconcileMode(rt.slice(1), dispatch, "STEP");
+        break;
+      }
+      case "ERASURE": {
+        const { timeline: et } = buildErasureRun();
+        erasureRunRef.current = { timeline: et };
+        dispatch({ type: "ERASURE_START", mode: "STEP" });
+        dispatch({ type: "ERASURE_STAGE_EVENT", event: et[0] });
+        erasureRunnerRef.current = runErasureMode(et.slice(1), dispatch, "STEP");
+        break;
+      }
+      default: break;
+    }
   }, []);
+
+  // ─── Global Next — advances one stage, crossing scene boundaries ──────────
+  const handleGlobalNext = useCallback(() => {
+    const scene = state.scene;
+    const sceneIdx = state.sceneIndex;
+
+    let currentStatus, currentEvents, currentTimeline, stageEventType, sceneRunnerRef, sceneRunnerFn;
+    switch (scene) {
+      case "ONBOARDING":
+        currentStatus = onboarding?.status || "IDLE"; currentEvents = onboarding?.events;
+        currentTimeline = onboardRunRef.current?.timeline; stageEventType = "ONBOARD_STAGE_EVENT";
+        sceneRunnerRef = onboardRunnerRef; sceneRunnerFn = runOnboardingMode; break;
+      case "POSTING":
+        currentStatus = state.status; currentEvents = state.events;
+        currentTimeline = runRef.current?.timeline; stageEventType = "STAGE_EVENT";
+        sceneRunnerRef = runnerRef; sceneRunnerFn = runMode; break;
+      case "FANOUT":
+        currentStatus = fanout?.status || "IDLE"; currentEvents = fanout?.events;
+        currentTimeline = fanoutRunRef.current?.timeline; stageEventType = "FANOUT_STAGE_EVENT";
+        sceneRunnerRef = fanoutRunnerRef; sceneRunnerFn = runFanoutMode; break;
+      case "HARD_EDGE":
+        currentStatus = hardEdge?.status || "IDLE"; currentEvents = hardEdge?.events;
+        currentTimeline = hardEdgeRunRef.current?.timeline; stageEventType = "HARD_EDGE_STAGE_EVENT";
+        sceneRunnerRef = hardEdgeRunnerRef; sceneRunnerFn = runHardEdgeMode; break;
+      case "RECONCILE":
+        currentStatus = reconcile?.status || "IDLE"; currentEvents = reconcile?.events;
+        currentTimeline = reconcileRunRef.current?.timeline; stageEventType = "RECONCILE_STAGE_EVENT";
+        sceneRunnerRef = reconcileRunnerRef; sceneRunnerFn = runReconcileMode; break;
+      case "ERASURE":
+        currentStatus = erasure?.status || "IDLE"; currentEvents = erasure?.events;
+        currentTimeline = erasureRunRef.current?.timeline; stageEventType = "ERASURE_STAGE_EVENT";
+        sceneRunnerRef = erasureRunnerRef; sceneRunnerFn = runErasureMode; break;
+      default: return;
+    }
+
+    if (currentStatus === "SETTLED") {
+      const nextSceneIdx = sceneIdx + 1;
+      if (nextSceneIdx >= SCENES.length) return;
+      // Null current run ref so lastEventCount effect doesn't reconstruct after SET_SCENE
+      switch (scene) {
+        case "ONBOARDING": onboardRunRef.current = null; break;
+        case "POSTING": runRef.current = null; break;
+        case "FANOUT": fanoutRunRef.current = null; break;
+        case "HARD_EDGE": hardEdgeRunRef.current = null; break;
+        case "RECONCILE": reconcileRunRef.current = null; break;
+        case "ERASURE": erasureRunRef.current = null; break;
+      }
+      dispatch({ type: "SET_SCENE", scene: SCENES[nextSceneIdx].key });
+      startSceneInStepMode(SCENES[nextSceneIdx].key);
+      return;
+    }
+
+    if (currentStatus === "IDLE") {
+      startSceneInStepMode(scene);
+      return;
+    }
+
+    const nextIdx = currentEvents?.length || 0;
+    if (!currentTimeline || nextIdx >= currentTimeline.length) return;
+    sceneRunnerRef.current?.cancel?.();
+    dispatch({ type: stageEventType, event: currentTimeline[nextIdx] });
+    sceneRunnerRef.current = sceneRunnerFn(currentTimeline.slice(nextIdx + 1), dispatch, "STEP");
+  }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, fanout, hardEdge, reconcile, erasure, startSceneInStepMode]);
+
+  // ─── Global Prev — step back within current scene ─────────────────────────
+  const handleGlobalPrev = useCallback(() => {
+    switch (state.scene) {
+      case "ONBOARDING":
+        if (!onboardingHasPrevStage(onboarding) || !onboardRunRef.current) return;
+        onboardRunnerRef.current?.cancel?.();
+        dispatch({ type: "ONBOARD_STEP_PREV" }); break;
+      case "POSTING":
+        if (!hasPrevStage(state) || !runRef.current) return;
+        runnerRef.current?.cancel?.();
+        dispatch({ type: "STEP_PREV" }); break;
+      case "FANOUT":
+        if (!fanoutHasPrevStage(fanout) || !fanoutRunRef.current) return;
+        fanoutRunnerRef.current?.cancel?.();
+        dispatch({ type: "FANOUT_STEP_PREV" }); break;
+      case "HARD_EDGE":
+        if (!hardEdgeHasPrevStage(hardEdge) || !hardEdgeRunRef.current) return;
+        hardEdgeRunnerRef.current?.cancel?.();
+        dispatch({ type: "HARD_EDGE_STEP_PREV" }); break;
+      case "RECONCILE":
+        if (!reconcileHasPrevStage(reconcile) || !reconcileRunRef.current) return;
+        reconcileRunnerRef.current?.cancel?.();
+        dispatch({ type: "RECONCILE_STEP_PREV" }); break;
+      case "ERASURE":
+        if (!erasureHasPrevStage(erasure) || !erasureRunRef.current) return;
+        erasureRunnerRef.current?.cancel?.();
+        dispatch({ type: "ERASURE_STEP_PREV" }); break;
+      default: break;
+    }
+  }, [state, onboarding, fanout, hardEdge, reconcile, erasure]);
+
+  // ─── Global Reset ─────────────────────────────────────────────────────────
+  const handleGlobalReset = useCallback(() => {
+    cancelAll();
+    dispatch({ type: "SET_SCENE", scene: "ONBOARDING" });
+  }, [cancelAll]);
+
+  // ─── Global computed state ────────────────────────────────────────────────
+  const globalCurrentStatus = useMemo(() => {
+    switch (state.scene) {
+      case "ONBOARDING": return onboarding?.status || "IDLE";
+      case "POSTING":    return state.status;
+      case "FANOUT":     return fanout?.status || "IDLE";
+      case "HARD_EDGE":  return hardEdge?.status || "IDLE";
+      case "RECONCILE":  return reconcile?.status || "IDLE";
+      case "ERASURE":    return erasure?.status || "IDLE";
+      default:           return "IDLE";
+    }
+  }, [state.scene, state.status, onboarding?.status, fanout?.status, hardEdge?.status, reconcile?.status, erasure?.status]);
+
+  const globalStarted = globalCurrentStatus !== "IDLE" || state.sceneIndex > 0 || Object.keys(state.scenesVisited).length > 0;
+  const globalFinished = state.scene === "ERASURE" && erasureStatus === "SETTLED";
+
+  const canGlobalNext = !globalFinished && (
+    globalCurrentStatus !== "SETTLED" || state.sceneIndex < SCENES.length - 1
+  );
+
+  const canGlobalPrev = useMemo(() => {
+    switch (state.scene) {
+      case "ONBOARDING": return onboardingHasPrevStage(onboarding);
+      case "POSTING":    return hasPrevStage(state);
+      case "FANOUT":     return fanoutHasPrevStage(fanout);
+      case "HARD_EDGE":  return hardEdgeHasPrevStage(hardEdge);
+      case "RECONCILE":  return reconcileHasPrevStage(reconcile);
+      case "ERASURE":    return erasureHasPrevStage(erasure);
+      default:           return false;
+    }
+  }, [state, onboarding, fanout, hardEdge, reconcile, erasure]);
 
   // ─── Keyboard stepping ─────────────────────────────────────────────────────
   useStepperKeys({
-    onNext: handleNext,
-    onPrev: handlePrev,
-    enabled: isPostingScene && state.status === "STEP_PAUSED",
-    enabledPrev: isPostingScene && hasPrevStage(state),
-  });
-
-  useStepperKeys({
-    onNext: handleReconcileNext,
-    onPrev: handleReconcilePrev,
-    enabled: isReconcileScene && reconcileStatus === "STEP_PAUSED",
-    enabledPrev: isReconcileScene && reconcileHasPrevStage(reconcile),
-  });
-
-  useStepperKeys({
-    onNext: handleOnboardNext,
-    onPrev: handleOnboardPrev,
-    enabled: isOnboardingScene && onboardStatus === "STEP_PAUSED",
-    enabledPrev: isOnboardingScene && onboardingHasPrevStage(onboarding),
-  });
-
-  useStepperKeys({
-    onNext: handleErasureNext,
-    onPrev: handleErasurePrev,
-    enabled: isErasureScene && erasureStatus === "STEP_PAUSED",
-    enabledPrev: isErasureScene && erasureHasPrevStage(erasure),
-  });
-
-  useStepperKeys({
-    onNext: handleFanoutNext,
-    onPrev: handleFanoutPrev,
-    enabled: isFanoutScene && fanoutStatus === "STEP_PAUSED",
-    enabledPrev: isFanoutScene && fanoutHasPrevStage(fanout),
-  });
-
-  useStepperKeys({
-    onNext: handleHardEdgeNext,
-    onPrev: handleHardEdgePrev,
-    enabled: isHardEdgeScene && hardEdgeStatus === "STEP_PAUSED",
-    enabledPrev: isHardEdgeScene && hardEdgeHasPrevStage(hardEdge),
+    onNext: handleGlobalNext,
+    onPrev: handleGlobalPrev,
+    enabled: canGlobalNext,
+    enabledPrev: canGlobalPrev,
   });
 
   // ─── Stage status label ────────────────────────────────────────────────────
   const stageStatus = useMemo(() => {
-    if (isHardEdgeScene) {
-      if (hardEdgeStatus === "IDLE") return "Ready";
-      if (hardEdgeStatus === "SETTLED") {
-        const elapsed =
-          hardEdge.startedAt && hardEdge.settledAt
-            ? ((hardEdge.settledAt - hardEdge.startedAt) / 1000).toFixed(2)
-            : null;
-        return elapsed ? `Settled · ${elapsed}s` : "Settled";
+    const sceneName = SCENES.find((s) => s.key === state.scene)?.label || state.scene;
+    if (globalCurrentStatus === "IDLE") return "Ready";
+    if (globalCurrentStatus === "SETTLED") {
+      if (globalFinished) return "Complete";
+      return `${sceneName} · done`;
+    }
+    const stageListLen = {
+      ONBOARDING: ONBOARD_STAGE_LIST.length,
+      POSTING: 9,
+      FANOUT: FANOUT_STAGE_LIST.length,
+      HARD_EDGE: HARD_EDGE_STAGE_LIST.length,
+      RECONCILE: RECONCILE_STAGE_LIST.length,
+      ERASURE: ERASURE_STAGE_LIST.length,
+    }[state.scene] || 0;
+    const stageIdx = (() => {
+      switch (state.scene) {
+        case "ONBOARDING": return (onboarding?.stageIndex ?? -1) + 1;
+        case "POSTING":    return (state.stageIndex ?? -1) + 1;
+        case "FANOUT":     return (fanout?.stageIndex ?? -1) + 1;
+        case "HARD_EDGE":  return (hardEdge?.stageIndex ?? -1) + 1;
+        case "RECONCILE":  return (reconcile?.stageIndex ?? -1) + 1;
+        case "ERASURE":    return (erasure?.stageIndex ?? -1) + 1;
+        default:           return 0;
       }
-      const idx = hardEdge.stageIndex >= 0 ? hardEdge.stageIndex + 1 : 0;
-      return `Stage ${idx} of ${HARD_EDGE_STAGE_LIST.length}`;
-    }
-    if (isFanoutScene) {
-      if (fanoutStatus === "IDLE") return "Ready";
-      if (fanoutStatus === "SETTLED") {
-        const elapsed =
-          fanout.startedAt && fanout.settledAt
-            ? ((fanout.settledAt - fanout.startedAt) / 1000).toFixed(2)
-            : null;
-        return elapsed ? `Settled · ${elapsed}s` : "Settled";
-      }
-      const idx = fanout.stageIndex >= 0 ? fanout.stageIndex + 1 : 0;
-      return `Stage ${idx} of ${FANOUT_STAGE_LIST.length}`;
-    }
-    if (isErasureScene) {
-      if (erasureStatus === "IDLE") return "Ready";
-      if (erasureStatus === "SETTLED") {
-        const elapsed =
-          erasure.startedAt && erasure.settledAt
-            ? ((erasure.settledAt - erasure.startedAt) / 1000).toFixed(2)
-            : null;
-        return elapsed ? `Settled · ${elapsed}s` : "Settled";
-      }
-      const idx = erasure.stageIndex >= 0 ? erasure.stageIndex + 1 : 0;
-      return `Stage ${idx} of ${ERASURE_STAGE_LIST.length}`;
-    }
-    if (isOnboardingScene) {
-      if (onboardStatus === "IDLE") return "Ready";
-      if (onboardStatus === "SETTLED") {
-        const elapsed =
-          onboarding.startedAt && onboarding.settledAt
-            ? ((onboarding.settledAt - onboarding.startedAt) / 1000).toFixed(2)
-            : null;
-        return elapsed ? `Settled · ${elapsed}s` : "Settled";
-      }
-      const idx = onboarding.stageIndex >= 0 ? onboarding.stageIndex + 1 : 0;
-      return `Stage ${idx} of ${ONBOARD_STAGE_LIST.length}`;
-    }
-    if (isReconcileScene) {
-      if (reconcileStatus === "IDLE") return "Ready";
-      if (reconcileStatus === "SETTLED") {
-        const elapsed =
-          reconcile.startedAt && reconcile.settledAt
-            ? ((reconcile.settledAt - reconcile.startedAt) / 1000).toFixed(2)
-            : null;
-        return elapsed ? `Settled · ${elapsed}s` : "Settled";
-      }
-      const idx = reconcile.stageIndex >= 0 ? reconcile.stageIndex + 1 : 0;
-      return `Stage ${idx} of ${RECONCILE_STAGE_LIST.length}`;
-    }
-    if (!isPostingScene) return SCENES.find((s) => s.key === state.scene)?.label || state.scene;
-    if (state.status === "IDLE") return "Ready";
-    if (state.status === "SETTLED") {
-      const elapsed =
-        state.startedAt && state.settledAt
-          ? ((state.settledAt - state.startedAt) / 1000).toFixed(2)
-          : null;
-      return elapsed ? `Settled · ${elapsed}s` : "Settled";
-    }
-    const idx = state.stageIndex >= 0 ? state.stageIndex + 1 : 0;
-    return `Stage ${idx} of 9`;
-  }, [isPostingScene, isReconcileScene, isOnboardingScene, isErasureScene, isFanoutScene, isHardEdgeScene, state.status, state.stageIndex, state.startedAt, state.settledAt, state.scene, reconcileStatus, reconcile, onboardStatus, onboarding, erasureStatus, erasure, fanoutStatus, fanout, hardEdgeStatus, hardEdge]);
-
-  const canSimulate = isPostingScene && state.status === "IDLE";
-  const canStep = isPostingScene && state.status !== "IDLE" && state.status !== "SETTLED" && hasNextStage(state);
-
-  const canReconcileSimulate = isReconcileScene && reconcileStatus === "IDLE";
-  const canReconcileStep = isReconcileScene && reconcileStatus !== "IDLE" && reconcileStatus !== "SETTLED" && reconcileHasNextStage(reconcile);
-
-  const canOnboardSimulate = isOnboardingScene && onboardStatus === "IDLE";
-  const canOnboardStep = isOnboardingScene && onboardStatus !== "IDLE" && onboardStatus !== "SETTLED" && onboardingHasNextStage(onboarding);
-
-  const canErasureSimulate = isErasureScene && erasureStatus === "IDLE";
-  const canErasureStep = isErasureScene && erasureStatus !== "IDLE" && erasureStatus !== "SETTLED" && erasureHasNextStage(erasure);
-
-  const canFanoutSimulate = isFanoutScene && fanoutStatus === "IDLE";
-  const canFanoutStep = isFanoutScene && fanoutStatus !== "IDLE" && fanoutStatus !== "SETTLED" && fanoutHasNextStage(fanout);
-
-  const canHardEdgeSimulate = isHardEdgeScene && hardEdgeStatus === "IDLE";
-  const canHardEdgeStep = isHardEdgeScene && hardEdgeStatus !== "IDLE" && hardEdgeStatus !== "SETTLED" && hardEdgeHasNextStage(hardEdge);
+    })();
+    return `${sceneName} · ${stageIdx} / ${stageListLen}`;
+  }, [state.scene, state.stageIndex, globalCurrentStatus, globalFinished, onboarding, fanout, hardEdge, reconcile, erasure]);
 
   return (
     <LeafygreenProvider darkMode={false}>
@@ -647,15 +729,7 @@ const LedgerFlowV3 = () => {
           </div>
 
           <div className={styles.controls}>
-            {/* Step hint — any scene paused */}
-            {(
-              (isPostingScene && canStep) ||
-              (isOnboardingScene && canOnboardStep) ||
-              (isErasureScene && canErasureStep) ||
-              (isReconcileScene && canReconcileStep) ||
-              (isFanoutScene && canFanoutStep) ||
-              (isHardEdgeScene && canHardEdgeStep)
-            ) && (
+            {canGlobalNext && (
               <span className={styles.stepHint} aria-live="polite">
                 <kbd className={styles.kbd}>←</kbd>
                 <kbd className={styles.kbd}>→</kbd>
@@ -664,378 +738,40 @@ const LedgerFlowV3 = () => {
               </span>
             )}
 
-            {/* Mode selector — posting */}
-            {isPostingScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Demo speed"
-                value={state.mode}
-                onChange={handleModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
-            {/* Mode selector — onboarding */}
-            {isOnboardingScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Onboarding demo speed"
-                value={onboardMode}
-                onChange={handleOnboardModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
-            {/* Mode selector — erasure */}
-            {isErasureScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Erasure demo speed"
-                value={erasureMode}
-                onChange={handleErasureModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
-            {/* Mode selector — reconcile */}
-            {isReconcileScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Reconcile demo speed"
-                value={reconcileMode}
-                onChange={handleReconcileModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
-            {/* Mode selector — fanout */}
-            {isFanoutScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Fanout demo speed"
-                value={fanoutMode}
-                onChange={handleFanoutModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
-            {/* Mode selector — hard edge */}
-            {isHardEdgeScene && (
-              <SegmentedControl
-                size="small"
-                aria-label="Hard Edge demo speed"
-                value={hardEdgeMode}
-                onChange={handleHardEdgeModeChange}
-                className={styles.modeControl}
-              >
-                <SegmentedControlOption value="STEP">Step</SegmentedControlOption>
-                <SegmentedControlOption value="SLOW">Slow</SegmentedControlOption>
-              </SegmentedControl>
-            )}
-
             <div className={styles.btnRow}>
-              {/* Posting scene controls */}
-              {isPostingScene ? (
-                canSimulate ? (
+              {!globalStarted ? (
+                <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
+                  <Button variant="primary" onClick={handleGlobalNext} leftGlyph={<Icon glyph="Play" />} size="small">
+                    Start
+                  </Button>
+                </motion.div>
+              ) : (
+                <>
                   <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
+                    <Button variant="default" onClick={handleGlobalPrev} disabled={!canGlobalPrev} leftGlyph={<Icon glyph="ChevronLeft" />} size="small">
+                      Prev
                     </Button>
                   </motion.div>
-                ) : (
-                  <>
-                    {state.status !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handlePrev}
-                            disabled={!hasPrevStage(state)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleNext}
-                            disabled={!canStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
-
-              {/* Onboarding scene controls */}
-              {isOnboardingScene ? (
-                canOnboardSimulate ? (
                   <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleOnboardSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
+                    <Button variant="primary" onClick={handleGlobalNext} disabled={!canGlobalNext} rightGlyph={<Icon glyph="ChevronRight" />} size="small">
+                      Next
                     </Button>
                   </motion.div>
-                ) : (
-                  <>
-                    {onboardStatus !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handleOnboardPrev}
-                            disabled={!onboardingHasPrevStage(onboarding)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleOnboardNext}
-                            disabled={!canOnboardStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleOnboardReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
-
-              {/* Erasure scene controls */}
-              {isErasureScene ? (
-                canErasureSimulate ? (
                   <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleErasureSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
+                    <Button variant="default" onClick={handleGlobalReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
+                      Reset
                     </Button>
                   </motion.div>
-                ) : (
-                  <>
-                    {erasureStatus !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handleErasurePrev}
-                            disabled={!erasureHasPrevStage(erasure)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleErasureNext}
-                            disabled={!canErasureStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleErasureReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
-
-              {/* Reconcile scene controls */}
-              {isReconcileScene ? (
-                canReconcileSimulate ? (
-                  <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleReconcileSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <>
-                    {reconcileStatus !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handleReconcilePrev}
-                            disabled={!reconcileHasPrevStage(reconcile)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleReconcileNext}
-                            disabled={!canReconcileStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleReconcileReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
-
-              {/* Fanout scene controls */}
-              {isFanoutScene ? (
-                canFanoutSimulate ? (
-                  <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleFanoutSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <>
-                    {fanoutStatus !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handleFanoutPrev}
-                            disabled={!fanoutHasPrevStage(fanout)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleFanoutNext}
-                            disabled={!canFanoutStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleFanoutReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
-
-              {/* Hard Edge scene controls */}
-              {isHardEdgeScene ? (
-                canHardEdgeSimulate ? (
-                  <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                    <Button variant="primary" onClick={handleHardEdgeSimulate} leftGlyph={<Icon glyph="Play" />} size="small">
-                      Simulate
-                    </Button>
-                  </motion.div>
-                ) : (
-                  <>
-                    {hardEdgeStatus !== "IDLE" && (
-                      <>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="default"
-                            onClick={handleHardEdgePrev}
-                            disabled={!hardEdgeHasPrevStage(hardEdge)}
-                            leftGlyph={<Icon glyph="ChevronLeft" />}
-                            size="small"
-                          >
-                            Prev
-                          </Button>
-                        </motion.div>
-                        <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                          <Button
-                            variant="primary"
-                            onClick={handleHardEdgeNext}
-                            disabled={!canHardEdgeStep}
-                            rightGlyph={<Icon glyph="ChevronRight" />}
-                            size="small"
-                          >
-                            Next
-                          </Button>
-                        </motion.div>
-                      </>
-                    )}
-                    <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                      <Button variant="default" onClick={handleHardEdgeReset} leftGlyph={<Icon glyph="Refresh" />} size="small">
-                        Reset
-                      </Button>
-                    </motion.div>
-                  </>
-                )
-              ) : null}
+                </>
+              )}
 
               <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                <Button
-                  variant="default"
-                  onClick={() => setDrawerOpen(true)}
-                  rightGlyph={<Icon glyph="Visibility" />}
-                  size="small"
-                >
+                <Button variant="default" onClick={() => setDrawerOpen(true)} rightGlyph={<Icon glyph="Visibility" />} size="small">
                   Collections
                 </Button>
               </motion.div>
               <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -1 }} transition={SPRING.tap}>
-                <Button
-                  variant="default"
-                  onClick={() => router.push("/ledger-flow")}
-                  leftGlyph={<Icon glyph="ChevronLeft" />}
-                  size="small"
-                >
+                <Button variant="default" onClick={() => router.push("/ledger-flow")} leftGlyph={<Icon glyph="ChevronLeft" />} size="small">
                   v1
                 </Button>
               </motion.div>
