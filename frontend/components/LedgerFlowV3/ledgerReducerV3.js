@@ -107,7 +107,7 @@ export function ledgerReducerV3(state, action) {
       const nextFanout = fanoutReducer(state.fanout || fanoutInitialState, action);
       const isDone =
         action.type === "FANOUT_STAGE_EVENT" &&
-        action.event?.stage === "FANOUT_CONSUMER_WORM";
+        action.event?.stage === "FANOUT_DLQ";
       return {
         ...state,
         fanout: nextFanout,
