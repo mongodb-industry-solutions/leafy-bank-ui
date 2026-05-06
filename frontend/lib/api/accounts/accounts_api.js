@@ -71,13 +71,13 @@ export async function createAccount({ userId, accountNumber, accountBalance, acc
  */
 export async function closeAccount(accountRef) {
     const body = {
-        CurrentAccountReference: accountRef,
-        ControlActionType: "Close",
+        accountId: accountRef,
+        controlAction: "Close",
     };
     const envelope = await postJson(`${ACCT_BASE}/Control`, body);
     return {
-        account_id: envelope?.CurrentAccountReference,
-        ControlActionType: envelope?.ControlActionType,
+        account_id: envelope?.accountId,
+        controlAction: envelope?.controlAction,
         raw: envelope,
     };
 }
@@ -87,7 +87,7 @@ export async function closeAccount(accountRef) {
  * @param {string} userId - 24-hex ObjectId from USER_MAP
  */
 export async function fetchAccountsForUser(userId) {
-    const body = { CustomerReference: deriveCustomerRef(userId) };
+    const body = { customerId: deriveCustomerRef(userId) };
     const envelope = await postJson(`${ACCT_BASE}/Request`, body);
     return bianAccountsResponseToUi(envelope);
 }
@@ -98,8 +98,8 @@ export async function fetchAccountsForUser(userId) {
  */
 export async function fetchActiveAccountsForUser(userId) {
     const body = {
-        CustomerReference: deriveCustomerRef(userId),
-        CurrentAccountApexStatus: "ACTIVE",
+        customerId: deriveCustomerRef(userId),
+        status: "ACTIVE",
     };
     const envelope = await postJson(`${ACCT_BASE}/Request`, body);
     return bianAccountsResponseToUi(envelope);
@@ -109,7 +109,7 @@ export async function fetchActiveAccountsForUser(userId) {
  * All active accounts (no user scope). Used by Form for the beneficiary picker.
  */
 export async function fetchActiveAccounts() {
-    const body = { CurrentAccountApexStatus: "ACTIVE" };
+    const body = { status: "ACTIVE" };
     const envelope = await postJson(`${ACCT_BASE}/Request`, body);
     return bianAccountsResponseToUi(envelope);
 }
@@ -132,7 +132,7 @@ export async function fetchAccounts(excludeAccountId = null) {
  * @param {string|number} accountNumber
  */
 export async function findAccountByNumber(accountNumber) {
-    const body = { CurrentAccountNumber: String(accountNumber) };
+    const body = { accountNumber: String(accountNumber) };
     const envelope = await postJson(`${ACCT_BASE}/Retrieve`, body);
     return bianAccountRetrieveToUi(envelope);
 }
@@ -143,7 +143,7 @@ export async function findAccountByNumber(accountNumber) {
  */
 export async function findActiveAccountByNumber(accountNumber) {
     const result = await findAccountByNumber(accountNumber);
-    if (result.account && result.account.CurrentAccountApexStatus !== "ACTIVE") {
+    if (result.account && result.account.status !== "ACTIVE") {
         return { account: null };
     }
     return result;
@@ -168,8 +168,8 @@ export async function fetchRecentActivityForCustomer(
     limit = 50
 ) {
     const body = {
-        CustomerReference: deriveCustomerRef(userId),
-        Limit: limit,
+        customerId: deriveCustomerRef(userId),
+        limit,
     };
     const envelope = await postJson(
         `${ACCT_BASE}/CurrentAccountTransaction/Request`,
