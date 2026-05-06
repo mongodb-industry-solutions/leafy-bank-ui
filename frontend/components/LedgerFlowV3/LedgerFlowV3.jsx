@@ -1136,7 +1136,7 @@ const LedgerFlowV3 = () => {
                 </button>
               ))}
             </>
-          ) : isPostingScene && !state.identifiers.idempotencyKey ? (
+          ) : (isOnboardingScene || isPostingScene) && !state.identifiers.idempotencyKey ? (
             <>
               <span className={styles.scenarioLabel}>Transaction:</span>
               {[
