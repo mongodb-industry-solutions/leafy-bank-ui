@@ -31,12 +31,29 @@ const LedgerFlow = () => {
   const runRef = useRef(null); // last-built run (timeline + identifiers); preserved across STEP_PREV
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const scenario = state.scenario || "FX_ROUNDING";
+  const txType = state.txType || "DOMESTIC";
+  const scenarioRef = useRef(scenario);
+  scenarioRef.current = scenario;
+  const txTypeRef = useRef(txType);
+  txTypeRef.current = txType;
+
   // Cancel in-flight run on unmount.
   useEffect(() => {
     return () => {
       runnerRef.current?.cancel?.();
     };
   }, []);
+
+  const handleSetScenario = useCallback((s) => {
+    if (state.status !== "IDLE") return;
+    dispatch({ type: "SET_SCENARIO", scenario: s });
+  }, [state.status]);
+
+  const handleSetTxType = useCallback((t) => {
+    if (state.status !== "IDLE") return;
+    dispatch({ type: "SET_TX_TYPE", txType: t });
+  }, [state.status]);
 
   const handleSimulate = useCallback(() => {
     runnerRef.current?.cancel?.();
@@ -46,6 +63,8 @@ const LedgerFlow = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       description: DEFAULT_PAYMENT.description,
+      scenario: scenarioRef.current,
+      txType: txTypeRef.current,
     });
     runRef.current = run;
     dispatch({
@@ -56,6 +75,8 @@ const LedgerFlow = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       mode: state.mode,
+      scenario: scenarioRef.current,
+      txType: txTypeRef.current,
     });
     runnerRef.current = runMode(run.timeline, dispatch, state.mode);
     if (state.mode === "STEP") {
@@ -254,24 +275,65 @@ const LedgerFlow = () => {
           </div>
         </header>
 
-        {/* IDENTIFIER COPYABLES */}
-        {state.identifiers.idempotencyKey && (
-          <div className={styles.idRow}>
-            {state.identifiers.journalId && (
-              <Copyable label="journalId" size="small" className={styles.copyable}>
-                {state.identifiers.journalId}
+        {/* SCENARIO SELECTOR (IDLE) / IDENTIFIER COPYABLES (running) */}
+        <div className={styles.idRow}>
+          {state.identifiers.idempotencyKey ? (
+            <>
+              {state.identifiers.journalId && (
+                <Copyable label="journalId" size="small" className={styles.copyable}>
+                  {state.identifiers.journalId}
+                </Copyable>
+              )}
+              <Copyable label="idempotencyKey" size="small" className={styles.copyable}>
+                {state.identifiers.idempotencyKey}
               </Copyable>
-            )}
-            <Copyable label="idempotencyKey" size="small" className={styles.copyable}>
-              {state.identifiers.idempotencyKey}
-            </Copyable>
-            {state.identifiers.resumeToken && (
-              <Copyable label="resumeToken" size="small" className={styles.copyable}>
-                {state.identifiers.resumeToken}
-              </Copyable>
-            )}
-          </div>
-        )}
+              {state.identifiers.resumeToken && (
+                <Copyable label="resumeToken" size="small" className={styles.copyable}>
+                  {state.identifiers.resumeToken}
+                </Copyable>
+              )}
+            </>
+          ) : (
+            <>
+              <span className={styles.scenarioLabel}>Transaction:</span>
+              {[
+                { key: "DOMESTIC",  label: "FedNow Domestic" },
+                { key: "FX",        label: "FX Transfer EUR→USD" },
+                { key: "CANCELLED", label: "Cancelled Auth" },
+              ].map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  className={`${styles.scenarioPill} ${txType === t.key ? styles.scenarioPillActive : ""}`}
+                  onClick={() => handleSetTxType(t.key)}
+                >
+                  {txType === t.key && <span className={styles.pillCheck}>✓ </span>}
+                  {t.label}
+                </button>
+              ))}
+              {txType === "DOMESTIC" && (
+                <>
+                  <span className={styles.scenarioLabel} style={{ marginLeft: 16 }}>EOD scenario:</span>
+                  {[
+                    { key: "FX_ROUNDING", label: "FX Rounding Δ$1" },
+                    { key: "DUPLICATE",   label: "Duplicate Δ$250" },
+                    { key: "MATCH",       label: "Perfect Balance" },
+                  ].map((s) => (
+                    <button
+                      key={s.key}
+                      type="button"
+                      className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
+                      onClick={() => handleSetScenario(s.key)}
+                    >
+                      {scenario === s.key && <span className={styles.pillCheck}>✓ </span>}
+                      {s.label}
+                    </button>
+                  ))}
+                </>
+              )}
+            </>
+          )}
+        </div>
 
         {/* CANVAS — hero band: SVG diagram only, takes all leftover height */}
         <main className={styles.canvasBand}>

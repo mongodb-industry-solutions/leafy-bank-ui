@@ -95,7 +95,7 @@
   line-height: 16px;
 }
 
-/* Identifier chips — single horizontal row, slim */
+/* Identifier / scenario row — single horizontal row, slim */
 .idRow {
   display: flex;
   flex-wrap: nowrap;
@@ -105,6 +105,56 @@
   scrollbar-width: thin;
   padding-bottom: 2px;
   flex-shrink: 0;
+  min-height: 28px;
+}
+
+/* ─── Scenario selector pills ───────────────────────────────────────────── */
+.scenarioLabel {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  color: #5C6C75;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.scenarioPill {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 12px;
+  border: 1px solid #C1C7C6;
+  background: white;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 10px;
+  color: #5C6C75;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: border-color 150ms cubic-bezier(0.33, 1, 0.68, 1), color 150ms cubic-bezier(0.33, 1, 0.68, 1), background 150ms cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.scenarioPill:hover {
+  border-color: #016BF8;
+  color: #016BF8;
+}
+
+.scenarioPillActive {
+  border-color: #016BF8;
+  background: #016BF8;
+  color: #FFFFFF;
+  font-weight: 600;
+}
+
+.scenarioPillActive:hover {
+  background: #0058CC;
+  border-color: #0058CC;
+}
+
+.pillCheck {
+  font-size: 9px;
+  opacity: 0.9;
+  margin-right: 2px;
+  font-weight: 700;
 }
 
 .idRow::-webkit-scrollbar { height: 4px; }
@@ -193,7 +243,8 @@
 
 /* ─── Motion accessibility ───────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .progressFill {
+  .progressFill,
+  .scenarioPill {
     transition-duration: 0.01ms !important;
   }
 }
