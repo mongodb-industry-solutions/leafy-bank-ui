@@ -39,6 +39,45 @@ A single-scene, step-by-step simulation of a payment posting cycle. The user wat
 - **Reset** — clears state and returns to `PAYMENT_INITIATED`
 - Keyboard: `→` / `Space` advance, `←` goes back
 
+### Data model — Collections drawer
+
+A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the BIAN v14 ledger data model backing the demo. Database: `leafy_bank_bian`. SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`.
+
+| Collection | Role | Immutable? |
+|---|---|---|
+| `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
+| `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
+| `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
+| `bianMappings` | Versioned BIAN field-name catalog — see below | mixed (per document) |
+
+For each collection the drawer shows:
+
+- BIAN classification badges (SD / CR / BQ / Pattern) and a hero with field/index/required counts
+- Full **field table** with type, required flag, BIAN canonical alias, and notes
+- For `journalEntries`, a separate **entry sub-fields** table for `entries[].*`
+- **Indexes** as visual cards (unique / sparse / standard)
+- **Sample document(s)** rendered as JSON
+- **Design decisions** — the architectural choices behind the schema (idempotency, immutability, double-entry enforcement, Decimal128, sub-ledger ↔ GL relationship, source reference, running balance, BIAN mapping, mapping versioning)
+
+#### `bianMappings` — versioned BIAN catalog
+
+Two coexisting document shapes in one collection:
+
+| Document | `versionType` | Lifecycle | Covers |
+|---|---|---|---|
+| `bian-mapping-mutable` | `mutable` | Updated in place; consumers always read latest | All business-logic collections (customers, accounts, payments, fraudEvaluation, fraudResolution, portfolioAllocation, portfolioPerformance, loans, creditReports, canonicalJsonStorage, glAccounts) |
+| `bian-mapping-immutable-v{N}` | `immutable` | Write-once; new version = new document | Ledger collections only (`journalEntries`, `subLedgerEntries`) |
+
+**Why split?** Posted journals are append-only and pin the mapping version they were canonicalized against (e.g. `mappingVersion: "v1.0"`). If the v1.0 mapping mutated after the fact, every historical journal pointing at v1.0 would silently observe a different schema — breaking the audit trail. Mirrors the schema-registry pattern (Confluent, Avro): versions are content-addressed snapshots, not editable rows.
+
+**Enforcement (defense in depth):**
+
+1. App layer rejects `updateOne` / `replaceOne` on any document where `$meta.versionType === "immutable"`.
+2. Unique index on `$meta.documentId` — and `documentId` encodes the version — so the index itself blocks accidental upsert overwrite.
+3. Writes funnel through a single ingestion service that stamps `pinnedAt = lastUpdatedAt` at first insert and refuses any later mutation.
+
+**Reader contract:** historical ledger entries are always resolved against their pinned immutable mapping — never auto-upgraded. The mutable catalog is read for business-logic collections only.
+
 ---
 
 ## LedgerFlow v2
