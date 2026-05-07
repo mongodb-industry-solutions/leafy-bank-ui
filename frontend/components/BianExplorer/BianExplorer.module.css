@@ -587,10 +587,9 @@
 /* ===================== API Tab ===================== */
 
 .apiScroll {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-  overscroll-behavior: contain;
+  /* Natural flow — the page route's <main> is the scroll context, not this wrapper.
+     Original drawer's flex:1/min-height:0/overflow-y:auto was needed when this lived
+     inside a fixed-height drawer; now BianApiTab is only rendered by the landing page. */
   padding: 4px;
   display: flex;
   flex-direction: column;
