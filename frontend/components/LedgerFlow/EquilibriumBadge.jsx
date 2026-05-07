@@ -29,20 +29,35 @@ const EquilibriumBadge = ({ debit = 0, credit = 0, active = false }) => {
       aria-live="polite"
       animate={
         balanced
-          ? { rotate: [0, -6, 4, -2, 0], scale: [1, 1.04, 1] }
-          : { rotate: 0, scale: 1 }
+          ? {
+              y: [0, -5, 1.5, 0],
+              scale: [1, 1.05, 0.98, 1],
+              boxShadow: [
+                "0px 2px 4px 1px rgba(0,30,43,0.10)",
+                "0px 4px 22px 3px rgba(0,164,74,0.38)",
+                "0px 2px 8px 1px rgba(0,163,92,0.22)",
+              ],
+            }
+          : { y: 0, scale: 1, boxShadow: "0px 2px 4px 1px rgba(0,30,43,0.10)" }
       }
-      transition={balanced ? { duration: 0.55, ease: [0.2, 0.7, 0.3, 1] } : SPRING.default}
+      transition={balanced ? { duration: 0.5, ease: [0.34, 1.56, 0.64, 1] } : SPRING.default}
     >
       <motion.span
         className={styles.dot}
         aria-hidden="true"
         animate={
           balanced
-            ? { boxShadow: ["0 0 0 0 rgba(0,237,100,0.0)", "0 0 0 10px rgba(0,237,100,0.0)"], scale: [1, 1.4, 1] }
+            ? {
+                scale: [1, 1.9, 0.85, 1],
+                boxShadow: [
+                  "0 0 6px rgba(0,237,100,0.6)",
+                  "0 0 20px rgba(0,237,100,0.85)",
+                  "0 0 8px rgba(0,237,100,0.70)",
+                ],
+              }
             : {}
         }
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1] }}
       />
       <span className={styles.label}>Equilibrium</span>
       <span className={styles.valDr}>{fmt(debit)}</span>

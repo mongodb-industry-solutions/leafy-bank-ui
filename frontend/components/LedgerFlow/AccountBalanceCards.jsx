@@ -62,7 +62,14 @@ function AccountCard({ accountId, displayName, before, current, ceiling, side })
       {/* Col 2 — Big balance numeral with overline (spring-driven) */}
       <div className={styles.balanceCol}>
         <Overline className={styles.overline}>Current balance</Overline>
-        <motion.span className={styles.balance} data-tone={tone}>
+        <motion.span
+          key={isDirty ? "updated" : "pristine"}
+          className={styles.balance}
+          data-tone={tone}
+          initial={isDirty ? { scale: 1.12, opacity: 0.7 } : false}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 340, damping: 22 }}
+        >
           {formatted}
         </motion.span>
       </div>

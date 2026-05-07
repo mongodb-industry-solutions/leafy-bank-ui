@@ -25,7 +25,12 @@ function StageRail({ stageIndex }) {
             !isCurrent && !isReached ? styles.chipPending : "",
           ].filter(Boolean).join(" ");
           return (
-            <li key={s} className={cls}>
+            <motion.li
+              key={s}
+              className={cls}
+              animate={isCurrent ? { scale: [0.88, 1.06, 1] } : { scale: 1 }}
+              transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            >
               {isCurrent && (
                 <motion.span
                   layoutId="lf-active-stage-pill"
@@ -36,7 +41,7 @@ function StageRail({ stageIndex }) {
               )}
               <span className={styles.chipIndex}>{i + 1}</span>
               <span className={styles.chipLabel}>{stageLabel(s)}</span>
-            </li>
+            </motion.li>
           );
         })}
       </ol>

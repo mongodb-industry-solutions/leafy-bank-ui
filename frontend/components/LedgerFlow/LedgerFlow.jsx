@@ -335,8 +335,37 @@ const LedgerFlow = () => {
                     zIndex: 10,
                     boxShadow: "0 2px 8px rgba(0, 104, 74, 0.14)",
                     whiteSpace: "nowrap",
+                    overflow: "visible",
                   }}
                 >
+                  {/* Sparkle burst on settlement */}
+                  {[
+                    { x: -20, y: -14, c: "#00ED64", s: 5 },
+                    { x:  22, y: -16, c: "#00ED64", s: 4 },
+                    { x: -12, y:  18, c: "#00A35C", s: 4 },
+                    { x:  26, y:  12, c: "#00ED64", s: 3 },
+                    { x:   6, y: -22, c: "#C0FAE6", s: 4 },
+                  ].map((sp, i) => (
+                    <motion.span
+                      key={i}
+                      initial={{ opacity: 0, x: 0, y: 0, scale: 0 }}
+                      animate={{ opacity: [0, 0.95, 0], x: sp.x, y: sp.y, scale: [0, 1.3, 0] }}
+                      transition={{ duration: 0.65, delay: 0.08 + i * 0.055, ease: "easeOut" }}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: sp.s,
+                        height: sp.s,
+                        marginLeft: -sp.s / 2,
+                        marginTop: -sp.s / 2,
+                        borderRadius: "50%",
+                        background: sp.c,
+                        boxShadow: `0 0 ${sp.s * 2}px ${sp.c}`,
+                        pointerEvents: "none",
+                      }}
+                    />
+                  ))}
                   <span style={{
                     display: "flex", alignItems: "center", justifyContent: "center",
                     width: 16, height: 16, borderRadius: "50%",
