@@ -2,7 +2,6 @@
 // Same event shape the backend Change Stream subscriber will eventually emit,
 // so the UI can swap data sources without re-rendering logic.
 
-import { SCENARIO_DATA } from "../LedgerFlowV3/reconcileFixtures";
 
 const PERIOD_CODE = "2026-05";
 const PERIOD_NAME = "May 2026";
@@ -35,7 +34,7 @@ function isoDate(date) {
 //   - the canonical journalEntry document (status='POSTED')
 //   - the two subLedgerEntries documents (debit + credit legs)
 //   - the ordered event timeline (delays in ms)
-export function buildPaymentRun({ from, to, amount, currency = "USD", description, scenario = "FX_ROUNDING", txType = "DOMESTIC" }) {
+export function buildPaymentRun({ from, to, amount, currency = "USD", description, txType = "DOMESTIC" }) {
   const now = new Date();
   const stamp = ymd(now);
   const idempotencyKey = `pay-${uuid()}`;
@@ -57,9 +56,6 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
   const entryStage = isCancelled ? "PENDING" : "POSTED";
   const journalStatus = isCancelled ? "PENDING_CAPTURE" : "POSTED";
   const journalType = isCancelled ? "CARD_AUTH" : "SYSTEM";
-  // Effective EOD scenario: FX always FX_ROUNDING, CANCELLED always CANCELLED, else user-selected
-  const effectiveScenario = isCancelled ? "CANCELLED" : (isFX ? "FX_ROUNDING" : scenario);
-
   const sourceReference = {
     sourceSystem: isCancelled ? "CARD_AUTHORIZATION" : isFX ? "SWIFT_MX" : "PAYMENT_ORDER",
     sourceId: paymentId,
@@ -225,33 +221,7 @@ export function buildPaymentRun({ from, to, amount, currency = "USD", descriptio
       stage: "BALANCE_PROJECTED_CREDIT",
       payload: { accountId: to.accountId, before: to.balance, after: to.balance + amount },
     },
-    {
-      t: 7300,
-      stage: "EOD_RECONCILE_RUN",
-      payload: { scenario: effectiveScenario, txType, run: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).run },
-    },
-    {
-      t: 8300,
-      stage: "EOD_RECONCILE_RESULT",
-      payload: {
-        scenario: effectiveScenario,
-        txType,
-        balanced: effectiveScenario === "MATCH" || effectiveScenario === "CANCELLED",
-        run: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).run,
-        exception: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).exception,
-      },
-    },
-    {
-      t: 9300,
-      stage: "EOD_RECONCILE_RESOLVED",
-      payload: {
-        scenario: effectiveScenario,
-        txType,
-        exception: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).exception,
-        correction: (SCENARIO_DATA[effectiveScenario] || SCENARIO_DATA.FX_ROUNDING).correction,
-      },
-    },
-    { t: 10300, stage: "SETTLED", payload: {} },
+    { t: 7300, stage: "SETTLED", payload: {} },
   ];
 
   return {

@@ -21,9 +21,6 @@ export const STAGE_LIST = [
   "CHANGE_STREAM",
   "BALANCE_PROJECTED_DEBIT",
   "BALANCE_PROJECTED_CREDIT",
-  "EOD_RECONCILE_RUN",
-  "EOD_RECONCILE_RESULT",
-  "EOD_RECONCILE_RESOLVED",
   "SETTLED",
 ];
 
@@ -221,83 +218,6 @@ export function narrationFor(state) {
       };
     }
 
-    case "EOD_RECONCILE_RUN": {
-      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RUN")?.payload?.scenario || state.scenario || "FX_ROUNDING";
-      const effectiveTxType = state.txType || "DOMESTIC";
-      if (effectiveTxType === "CANCELLED") {
-        return {
-          overline: indexLabel,
-          title: "EOD Reconciliation triggered",
-          body: "End-of-day scheduler inserts a reconciliationRuns document with status=RUNNING. Before this run, the card authorization expired — a REVERSAL journal was posted, zeroing both PENDING sub-ledger legs. The reconciliation run sees net $0.00 impact from this transaction.",
-          doc: null,
-        };
-      }
-      const scenLabels = { FX_ROUNDING: "FX Rounding Δ$1.00", MATCH: "Perfect Balance Δ$0.00", DUPLICATE: "Duplicate Post Δ$250.00" };
-      return {
-        overline: indexLabel,
-        title: "EOD Reconciliation triggered",
-        body: `End-of-day scheduler inserts a reconciliationRuns document with status=RUNNING. Run type SUB_LEDGER_TO_GL: sums every subLedgerEntries document for control account 2100 and compares against the GL account balance. Period: May 2026. Scenario: ${scenLabels[evtScenario] || evtScenario}. This journal's entries are counted in this run.`,
-        doc: null,
-      };
-    }
-
-    case "EOD_RECONCILE_RESULT": {
-      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RESULT")?.payload?.scenario || state.scenario || "FX_ROUNDING";
-      const effectiveTxType = state.txType || "DOMESTIC";
-      if (effectiveTxType === "CANCELLED" || evtScenario === "CANCELLED") {
-        return {
-          overline: indexLabel,
-          title: "BALANCED — authorization reversed",
-          body: "Σ(subLedgerEntries) = Σ(GL 2100). Delta = $0.00. The expired card auth and its REVERSAL journal net to zero — exactly as MongoDB's immutability model requires. No exception created. The period-close gate opens without analyst intervention.",
-          callout: { variant: "note", title: "Immutability in action", body: "MongoDB never deletes or updates a posted entry. The REVERSAL journal is the correction record — it carries reversalOf pointing to the original auth. The audit trail is complete and unbroken." },
-          doc: null,
-        };
-      }
-      if (evtScenario === "MATCH") {
-        return {
-          overline: indexLabel,
-          title: "BALANCED — zero-delta",
-          body: "Σ(subLedgerEntries) = Σ(GL 2100). Delta = $0.00. No exception created. The reconciliation run completes in BALANCED status — the period-close gate opens immediately without analyst intervention.",
-          callout: { variant: "note", title: "Period-close gate READY", body: "Perfect reconciliation. Zero tolerance satisfied. Period close proceeds without exception lifecycle." },
-          doc: null,
-        };
-      }
-      const delta = evtScenario === "DUPLICATE" ? "$250.00" : "$1.00";
-      const reason = evtScenario === "DUPLICATE"
-        ? "Sub-ledger count 58,948 ≠ GL count 58,947 — likely duplicate posting. A reconciliationExceptions record is created with priority=CRITICAL."
-        : "Sub-ledger total ≠ GL total by $1.00 — likely FX rounding loss. A reconciliationExceptions record is created with priority=HIGH.";
-      return {
-        overline: indexLabel,
-        title: `UNBALANCED — ${delta} break detected`,
-        body: `${reason} Period close is blocked. The exception lifecycle begins: OPEN → INVESTIGATING → RESOLVED — before the accounting period can close.`,
-        callout: { variant: "important", title: "Period close is blocked", body: "A reconciliationExceptions document is created. The exception must be fully resolved before the period-close gate can open." },
-        doc: null,
-      };
-    }
-
-    case "EOD_RECONCILE_RESOLVED": {
-      const evtScenario = state.events?.find(e => e.stage === "EOD_RECONCILE_RESOLVED")?.payload?.scenario || state.scenario || "FX_ROUNDING";
-      const effectiveTxType = state.txType || "DOMESTIC";
-      if (effectiveTxType === "CANCELLED" || evtScenario === "CANCELLED" || evtScenario === "MATCH") {
-        return {
-          overline: indexLabel,
-          title: "Period-close gate open",
-          body: evtScenario === "CANCELLED" || effectiveTxType === "CANCELLED"
-            ? "Zero-delta run — auth reversal pair nets to $0.00. Period-close gate opened immediately. The original PENDING journal and its REVERSAL provide a complete, immutable audit trail of the authorization lifecycle."
-            : "Zero-delta run — period-close gate opened immediately. No exception lifecycle needed. The immutable journal and sub-ledger entries for this payment are included in the balanced period. Full audit trail preserved.",
-          doc: null,
-        };
-      }
-      const corrType = evtScenario === "DUPLICATE" ? "reversal journal" : "adjustment journal";
-      return {
-        overline: indexLabel,
-        title: "Exception resolved — period close unblocked",
-        body: `Exception status → RESOLVED. Analyst confirms root cause and a ${corrType} corrects the break. A re-run of the reconciliation returns BALANCED. The period-close gate clears. Zero tolerance maintained end-to-end: detection → investigation → correction → closure.`,
-        callout: { variant: "note", title: "Period close is now READY", body: "All reconciliation exceptions resolved. The correction journal and exception document provide a complete, immutable audit trail." },
-        doc: null,
-      };
-    }
-
     case "SETTLED": {
       const elapsed = state.startedAt && state.settledAt ? ((state.settledAt - state.startedAt) / 1000).toFixed(2) : null;
       let settledTitle, settledBody;
@@ -355,9 +275,6 @@ export function stageLabel(stage) {
     case "CHANGE_STREAM": return "Change Stream";
     case "BALANCE_PROJECTED_DEBIT": return "Balance · Dr";
     case "BALANCE_PROJECTED_CREDIT": return "Balance · Cr";
-    case "EOD_RECONCILE_RUN": return "EOD Run";
-    case "EOD_RECONCILE_RESULT": return "EOD Result";
-    case "EOD_RECONCILE_RESOLVED": return "EOD Resolved";
     case "SETTLED": return "Settled";
     default: return stage;
   }

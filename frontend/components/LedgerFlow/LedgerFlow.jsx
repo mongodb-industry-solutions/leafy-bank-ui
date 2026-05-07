@@ -31,10 +31,7 @@ const LedgerFlow = () => {
   const runRef = useRef(null); // last-built run (timeline + identifiers); preserved across STEP_PREV
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const scenario = state.scenario || "FX_ROUNDING";
   const txType = state.txType || "DOMESTIC";
-  const scenarioRef = useRef(scenario);
-  scenarioRef.current = scenario;
   const txTypeRef = useRef(txType);
   txTypeRef.current = txType;
 
@@ -44,11 +41,6 @@ const LedgerFlow = () => {
       runnerRef.current?.cancel?.();
     };
   }, []);
-
-  const handleSetScenario = useCallback((s) => {
-    if (state.status !== "IDLE") return;
-    dispatch({ type: "SET_SCENARIO", scenario: s });
-  }, [state.status]);
 
   const handleSetTxType = useCallback((t) => {
     if (state.status !== "IDLE") return;
@@ -63,7 +55,6 @@ const LedgerFlow = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       description: DEFAULT_PAYMENT.description,
-      scenario: scenarioRef.current,
       txType: txTypeRef.current,
     });
     runRef.current = run;
@@ -75,7 +66,6 @@ const LedgerFlow = () => {
       amount: DEFAULT_PAYMENT.amount,
       currency: DEFAULT_PAYMENT.currency,
       mode: state.mode,
-      scenario: scenarioRef.current,
       txType: txTypeRef.current,
     });
     runnerRef.current = runMode(run.timeline, dispatch, state.mode);
@@ -311,26 +301,6 @@ const LedgerFlow = () => {
                   {t.label}
                 </button>
               ))}
-              {txType === "DOMESTIC" && (
-                <>
-                  <span className={styles.scenarioLabel} style={{ marginLeft: 16 }}>EOD scenario:</span>
-                  {[
-                    { key: "FX_ROUNDING", label: "FX Rounding Δ$1" },
-                    { key: "DUPLICATE",   label: "Duplicate Δ$250" },
-                    { key: "MATCH",       label: "Perfect Balance" },
-                  ].map((s) => (
-                    <button
-                      key={s.key}
-                      type="button"
-                      className={`${styles.scenarioPill} ${scenario === s.key ? styles.scenarioPillActive : ""}`}
-                      onClick={() => handleSetScenario(s.key)}
-                    >
-                      {scenario === s.key && <span className={styles.pillCheck}>✓ </span>}
-                      {s.label}
-                    </button>
-                  ))}
-                </>
-              )}
             </>
           )}
         </div>
