@@ -81,7 +81,7 @@ const CUSTOMER_REF_TO_USERID = (() => {
  */
 export function bianAccountToUi(record) {
     if (!record) return null;
-    const customerRef = record.customerId;
+    const customerRef = record.customerSnapshot?.customerId ?? record.customerId;
     return {
         ...record,
         _customerUserName: CUSTOMER_REF_TO_USERNAME[customerRef] || "Unknown User",
