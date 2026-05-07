@@ -41,29 +41,15 @@ A single-scene, step-by-step simulation of a payment posting cycle. The user wat
 
 ### Data model — Collections drawer
 
-A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the full BIAN v14 data model backing the platform. The rail groups collections by domain: **Ledger**, **Party & Account**, **Payments**, **Fraud**, **Lending**, **Portfolio**, **Meta**. Default DB is `leafy_bank_bian`; Lending collections live in `fsi-agentic-lending` (called out per row).
-
-#### Ledger (SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`)
-
-| Collection | Role | Immutable? |
-|---|---|---|
-| `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
-| `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
-| `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
-
-#### Party & Account
-
-| Collection | BIAN SD / CR | Notes |
-|---|---|---|
-| `customers` | `PartyReferenceDataDirectory` / `PartyReferenceDataDirectoryEntry` | Identification (PII via Queryable Encryption), employment, contact, KYC, consents, bank-relations |
-| `accounts` | `CurrentAccount` / `CurrentAccountFulfillmentArrangement` | Balances, signatories, restrictions, statement schedule, GL mapping |
+A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the full BIAN v14 data model backing the platform. The rail is grouped by BIAN service domain in this order: **Payments → Fraud → Portfolio → Lending → Ledger → Mappings**. Default DB is `leafy_bank_bian`; Lending collections live in `fsi-agentic-lending` (called out per row).
 
 #### Payments
 
 | Collection | BIAN SD / CR | Notes |
 |---|---|---|
+| `customers` | `PartyReferenceDataDirectory` / `PartyReferenceDataDirectoryEntry` | Identification (PII via Queryable Encryption), employment, contact, KYC, consents, bank-relations |
+| `accounts` | `CurrentAccount` / `CurrentAccountFulfillmentArrangement` | Balances, signatories, restrictions, statement schedule, GL mapping |
 | `payments` | `PaymentOrder` / `PaymentOrder` | Card / RTP / SWIFT / RTGS / ACH with full ISO 20022 fields |
-| `transactions` | `CustomerTransactionEngine` / `TransactionLog` | Posted transaction log on a current account |
 | `canonicalJsonStorage` | `PaymentOrderInitiation` / `PaymentOrderInitiationTransaction` | SWIFT MT ⇄ ISO 20022 message conversion with field-level audit trail |
 
 #### Fraud
@@ -73,14 +59,6 @@ A **Collections** button in the v1 toolbar opens a wide two-pane drawer that bro
 | `fraudEvaluation` | `FraudEvaluation` / `FraudEvaluationProcedure` | Composite score per inbound transaction; flagged → `fraudResolution` |
 | `fraudResolution` | `FraudResolution` / `FraudCaseProcedure` | Case lifecycle, regulatory filing, related transactions |
 
-#### Lending — DB `fsi-agentic-lending`
-
-| Collection | BIAN SD / CR | Notes |
-|---|---|---|
-| `borrowers` | `ConsumerLoan` / `ConsumerLoanApplicationProfile` | Minimal v7 borrower profile |
-| `loans` | `ConsumerLoan` / `ConsumerLoanFulfillmentArrangement` | Application: amount, collateral, affordability, status history |
-| `creditReports` | `CustomerCreditRating` / `ExternalCreditBureauReport` | External bureau snapshot — score, tradelines, inquiries |
-
 #### Portfolio
 
 | Collection | BIAN SD / CR | Notes |
@@ -88,7 +66,22 @@ A **Collections** button in the v1 toolbar opens a wide two-pane drawer that bro
 | `portfolioAllocation` | `InvestmentPortfolioPlanning` / `ManagedInvestmentPortfolioAgreement` | Target asset allocation per managed portfolio |
 | `portfolioPerformance` | `InvestmentPortfolioAnalysis` / `ManagedInvestmentPortfolioAnalysis` | Daily and cumulative return values |
 
-#### Meta
+#### Lending — DB `fsi-agentic-lending`
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `loans` | `ConsumerLoan` / `ConsumerLoanFulfillmentArrangement` | Application: amount, collateral, affordability, status history |
+| `creditReports` | `CustomerCreditRating` / `ExternalCreditBureauReport` | External bureau snapshot — score, tradelines, inquiries |
+
+#### Ledger (SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`)
+
+| Collection | Role | Immutable? |
+|---|---|---|
+| `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
+| `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
+| `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
+
+#### Mappings
 
 | Collection | Role | Immutable? |
 |---|---|---|
@@ -104,7 +97,7 @@ For each collection the drawer shows:
 - **Sample document(s)** rendered as JSON — shown when defined
 - **Design decisions** — the architectural choices behind the ledger schema (idempotency, immutability, double-entry enforcement, Decimal128, sub-ledger ↔ GL relationship, source reference, running balance, BIAN mapping, mapping versioning)
 
-The 12 business-logic collections (Party & Account, Payments, Fraud, Lending, Portfolio) are derived directly from the canonical BIAN v14 alias map (`bian-alias-map.json`) — fields and BIAN aliases are the single source of truth; no hand-written field tables to drift.
+The 10 business-logic collections (Payments, Fraud, Portfolio, Lending) are derived directly from the canonical BIAN v14 alias map (`bian-alias-map.json`) — fields and BIAN aliases are the single source of truth; no hand-written field tables to drift.
 
 #### `bianMappings` — versioned BIAN catalog
 

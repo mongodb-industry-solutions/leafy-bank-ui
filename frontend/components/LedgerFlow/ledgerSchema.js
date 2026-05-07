@@ -729,47 +729,6 @@ const BUSINESS_LOGIC_BIAN_MAP = {
     sourceSystem: "SourceSystemReference",
   },
 
-  transactions: {
-    txnId: "TransactionReference",
-    accountId: "CurrentAccountReference",
-    paymentId: "PaymentOrderReference",
-    externalRef: "TransactionExternalReference",
-    bankRef: "TransactionBankReference",
-    type: "TransactionType",
-    txnCode: "TransactionCategoryCode",
-    amount: "TransactionAmount",
-    currency: "TransactionCurrencyCode",
-    fxRate: "TransactionFXConversionRateValue",
-    baseAmount: "TransactionBaseAmount",
-    valueDate: "TransactionValueDate",
-    bookingDate: "TransactionBookingDate",
-    description: "TransactionDescriptionText",
-    narrative: "TransactionNarrativeText",
-    balanceAfter: "CurrentAccountBalanceAfterTransactionAmount",
-    channel: "TransactionInitiationChannelType",
-    isReversed: "TransactionReversalIndicator",
-    transactionCategory: "TransactionCategoryType",
-    paymentMethod: "PaymentInstrumentType",
-    isInternal: "TransactionInternalIndicator",
-    reversalTxnId: "ReversalTransactionReference",
-    counterparty: "TransactionCounterpartyRecord",
-    "counterparty.name": "CounterpartyName",
-    "counterparty.accountNo": "CounterpartyAccountNumber",
-    "counterparty.bic": "CounterpartyBankIdentifierCode",
-    "counterparty.country": "CounterpartyCountryCode",
-    "counterparty.userName": "CounterpartyLoginIdentifier",
-    "counterparty.accountType": "CounterpartyAccountType",
-    transactionDates: "TransactionDateRecord",
-    "transactionDates[].date": "TransactionDate",
-    "transactionDates[].type": "TransactionDateType",
-    transactionStatus: "TransactionStatusType",
-    isCompleted: "TransactionCompletedIndicator",
-    isNotified: "TransactionNotificationSentIndicator",
-    createdAt: "RecordCreateDateTime",
-    createdBy: "RecordCreatedByReference",
-    sourceSystem: "SourceSystemReference",
-  },
-
   fraudEvaluation: {
     transactionId: "FraudEvaluationSubjectReference",
     customerId: "CustomerReference",
@@ -807,13 +766,6 @@ const BUSINESS_LOGIC_BIAN_MAP = {
     "caseResolution.submittedAt": "FilingSubmittedDateTime",
     "caseResolution.filingReference": "FilingReferenceIdentifier",
     "caseResolution.regulatoryAuthority": "RegulatoryAuthorityText",
-  },
-
-  borrowers: {
-    customerId: "CustomerReference",
-    creditScore: "impl_CreditScoreValue",
-    loansId: "ConsumerLoanApplicationReference",
-    createdAt: "RecordCreateDateTime",
   },
 
   loans: {
@@ -906,14 +858,14 @@ const BUSINESS_LOGIC_BIAN_MAP = {
 
 const BUSINESS_LOGIC_META = {
   customers: {
-    group: "Party & Account",
+    group: "Payments",
     database: "leafy_bank_bian",
     description:
       "Customer master record. Identification (PII encrypted client-side via Queryable Encryption), employment, contact, KYC, consents, and bank-relations data.",
     bianClassification: { sd: "PartyReferenceDataDirectory", cr: "PartyReferenceDataDirectoryEntry", bq: "PartyAdministration", pattern: "ReferenceData" },
   },
   accounts: {
-    group: "Party & Account",
+    group: "Payments",
     database: "leafy_bank_bian",
     description:
       "Current-account fulfilment record — balances, signatories, restrictions, statement schedule, GL mapping. One document per account.",
@@ -925,13 +877,6 @@ const BUSINESS_LOGIC_META = {
     description:
       "Payment order — initiated, fraud-checked, cleared, and settled. Covers card, RTP, SWIFT/RTGS, and ACH rails with full ISO 20022 fields.",
     bianClassification: { sd: "PaymentOrder", cr: "PaymentOrder", bq: "Initiation", pattern: "Operations" },
-  },
-  transactions: {
-    group: "Payments",
-    database: "leafy_bank_bian",
-    description:
-      "Posted transaction log on a current account — booking date, value date, balance after, counterparty, FX, channel.",
-    bianClassification: { sd: "CustomerTransactionEngine", cr: "TransactionLog", bq: "Posting", pattern: "Operations" },
   },
   canonicalJsonStorage: {
     group: "Payments",
@@ -953,13 +898,6 @@ const BUSINESS_LOGIC_META = {
     description:
       "Fraud case lifecycle — investigation, regulatory filing, and resolution. Links back to fraudEvaluation alerts and related transactions.",
     bianClassification: { sd: "FraudResolution", cr: "FraudCaseProcedure", bq: "Investigate", pattern: "Operations" },
-  },
-  borrowers: {
-    group: "Lending",
-    database: "fsi-agentic-lending",
-    description:
-      "Lending borrower profile — minimal v7 shape. Ties customerId to creditScore and loan applications. Lives in the lending DB.",
-    bianClassification: { sd: "ConsumerLoan", cr: "ConsumerLoanApplicationProfile", bq: "BorrowerAdministration", pattern: "Reference" },
   },
   loans: {
     group: "Lending",
@@ -1017,16 +955,15 @@ for (const [key, aliasMap] of Object.entries(BUSINESS_LOGIC_BIAN_MAP)) {
 COLLECTIONS.subLedgerEntries.group = "Ledger";
 COLLECTIONS.journalEntries.group = "Ledger";
 COLLECTIONS.glAccounts.group = "Ledger";
-COLLECTIONS.bianMappings.group = "Meta";
+COLLECTIONS.bianMappings.group = "Mappings";
 
 // Convenience for the drawer: list collection keys in canonical demo order,
-// grouped: Ledger → Party/Account → Payments → Fraud → Lending → Portfolio → Meta.
+// grouped by BIAN service domain: Payments → Fraud → Portfolio → Lending → Ledger → Mappings.
 export const COLLECTION_KEYS = [
-  "subLedgerEntries", "journalEntries", "glAccounts",
-  "customers", "accounts",
-  "payments", "transactions", "canonicalJsonStorage",
+  "customers", "accounts", "payments", "canonicalJsonStorage",
   "fraudEvaluation", "fraudResolution",
-  "borrowers", "loans", "creditReports",
   "portfolioAllocation", "portfolioPerformance",
+  "loans", "creditReports",
+  "subLedgerEntries", "journalEntries", "glAccounts",
   "bianMappings",
 ];
