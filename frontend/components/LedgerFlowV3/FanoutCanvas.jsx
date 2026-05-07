@@ -87,8 +87,9 @@ function ConsumerCard({ row, active, showToken, failed }) {
       <AnimatePresence>
         {active && (
           <motion.g key="status"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, scale: 0.7 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
+            transition={{ type: "spring", stiffness: 340, damping: 22 }}
+            style={{ transformOrigin: `${CON_X + CON_W - 62}px ${row.y + 17}px` }}
           >
             <rect x={CON_X + CON_W - 108} y={row.y + 8} width={92} height={18} rx={9}
               fill={failed ? "#F59B00" : row.color} opacity={0.12} />
@@ -216,6 +217,17 @@ export default function FanoutCanvas({ state }) {
           >
             <circle cx={CDC_CX} cy={CDC_CY} r={CDC_R}
               fill="#E1F7FF" stroke={eventVisible ? "#016BF8" : "#C1C7C6"} strokeWidth={1.5} />
+            {/* Pulse ring on event arrival — one-shot expand + fade */}
+            {eventVisible && (
+              <motion.circle
+                cx={CDC_CX} cy={CDC_CY} r={CDC_R}
+                fill="none" stroke="#016BF8" strokeWidth={3}
+                initial={{ scale: 1, opacity: 0.7 }}
+                animate={{ scale: 1.65, opacity: 0 }}
+                style={{ transformOrigin: `${CDC_CX}px ${CDC_CY}px` }}
+                transition={{ duration: 0.65, ease: "easeOut" }}
+              />
+            )}
             <text x={CDC_CX} y={CDC_CY - 10} textAnchor="middle" className={styles.cdcTitle}>
               CDC TIER
             </text>
@@ -296,8 +308,10 @@ export default function FanoutCanvas({ state }) {
       <AnimatePresence>
         {dlqVisible && (
           <motion.g key="dlq"
-            initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
-            transition={{ ...SPRING.default, delay: 0.25 }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0, x: [0, 0, -5, 4, -3, 2, 0] }}
+            exit={{ opacity: 0 }}
+            transition={{ ...SPRING.default, delay: 0.25, x: { duration: 0.45, delay: 0.55, ease: "easeInOut" } }}
           >
             {/* Connector: BALANCE card bottom → DLQ card top */}
             <line

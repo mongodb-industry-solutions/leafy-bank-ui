@@ -173,10 +173,10 @@ export default function ErasureCanvas({ state }) {
         {isDeleted && (
           <motion.g key="stamp"
             initial={{ opacity: 0, scale: 0.3, rotate: -30 }}
-            animate={{ opacity: 0.18, scale: 1, rotate: -22 }}
+            animate={{ opacity: [0, 0.22, 0.16, 0.18], scale: [0.3, 1.15, 0.88, 1], rotate: [-30, -18, -24, -22] }}
             exit={{ opacity: 0 }}
             style={{ transformOrigin: `${KV_X + KV_W / 2}px ${CARD_Y + KV_H / 2}px` }}
-            transition={{ ...SPRING.default, delay: 0.15 }}
+            transition={{ duration: 0.5, ease: [0.34, 1.56, 0.64, 1], delay: 0.15 }}
           >
             <rect
               x={KV_X + 60} y={CARD_Y + KV_H / 2 - 32}

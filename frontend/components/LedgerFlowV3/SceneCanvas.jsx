@@ -25,6 +25,14 @@ const CANVAS_MAP = {
   ERASURE:    ErasureCanvas,
 };
 
+const SPARKS = [
+  { x: -18, y: -18, delay: 0 },
+  { x: 28,  y: -22, delay: 0.06 },
+  { x: 72,  y: -16, delay: 0.12 },
+  { x: -10, y: 16,  delay: 0.09 },
+  { x: 88,  y: 14,  delay: 0.15 },
+];
+
 function SettledBadge({ nextLabel }) {
   return (
     <motion.div
@@ -51,8 +59,28 @@ function SettledBadge({ nextLabel }) {
         zIndex: 10,
         boxShadow: "0 2px 8px rgba(0, 104, 74, 0.14)",
         whiteSpace: "nowrap",
+        overflow: "visible",
       }}
     >
+      {SPARKS.map((s, i) => (
+        <motion.span
+          key={i}
+          aria-hidden="true"
+          initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+          animate={{ opacity: [0, 0.9, 0], scale: [0, 1.3, 0], x: [0, s.x * 0.6, s.x], y: [0, s.y * 0.6, s.y] }}
+          transition={{ duration: 0.55, delay: s.delay, ease: "easeOut" }}
+          style={{
+            position: "absolute",
+            left: "40%",
+            top: "50%",
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
+            background: "#00A35C",
+            pointerEvents: "none",
+          }}
+        />
+      ))}
       <span style={{
         display: "flex",
         alignItems: "center",

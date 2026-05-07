@@ -88,7 +88,15 @@ function GateRow({ x, y, w, gateKey, label, lit, current }) {
       }}
     >
       <rect x={x} y={y} width={w} height={36} rx={8} fill={fill} stroke={stroke} strokeWidth={lit ? 1.5 : 1} />
-      <text x={x + 14} y={y + 23} className={styles.gateCheck} fill={checkColor}>{lit ? "✓" : "○"}</text>
+      <motion.text
+        key={lit ? "check-lit" : "check-unlit"}
+        x={x + 14} y={y + 23}
+        className={styles.gateCheck} fill={checkColor}
+        initial={lit ? { scale: 0.4, opacity: 0 } : false}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={lit ? { duration: 0.38, ease: [0.34, 1.56, 0.64, 1] } : SPRING.default}
+        style={{ transformBox: "fill-box", transformOrigin: "50% 50%" }}
+      >{lit ? "✓" : "○"}</motion.text>
       <text x={x + 36} y={y + 23} className={styles.gateLabel} fill={lit ? "#001E2B" : "#889397"}>{label}</text>
     </motion.g>
   );
@@ -221,10 +229,10 @@ const ReconcileCanvas = ({ state }) => {
                 {isClosed && (
                   <motion.g
                     key="closed"
-                    initial={{ opacity: 0, scale: 0.92 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, scale: 0.82 }}
+                    animate={{ opacity: 1, scale: [0.82, 1.1, 0.95, 1] }}
                     exit={{ opacity: 0 }}
-                    transition={SPRING.default}
+                    transition={{ duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }}
                     style={{ transformOrigin: `${PANEL.gate.w / 2}px 310px` }}
                   >
                     <rect x={16} y={284} width={PANEL.gate.w - 32} height={58} rx={10}

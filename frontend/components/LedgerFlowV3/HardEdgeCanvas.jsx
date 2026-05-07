@@ -213,8 +213,11 @@ export default function HardEdgeCanvas({ state }) {
             />
           ))}
 
-          {/* Resume token marker */}
-          <motion.g animate={{ opacity: 1 }} transition={SPRING.default}>
+          {/* Resume token marker — pulses when rolled into danger zone */}
+          <motion.g
+            animate={oplogRolled ? { opacity: [1, 0.3, 1, 0.3, 1] } : { opacity: 1 }}
+            transition={oplogRolled ? { duration: 1.0, repeat: 1, ease: "easeInOut" } : SPRING.default}
+          >
             <line x1={TOK_MX} y1={BAR_Y - 8} x2={TOK_MX} y2={BAR_Y + BAR_H + 8}
               stroke={oplogRolled ? "#C82430" : "#944F01"} strokeWidth={2} />
             <text x={TOK_MX} y={BAR_Y - 14} textAnchor="middle"
@@ -323,8 +326,10 @@ export default function HardEdgeCanvas({ state }) {
         const active = isRecovery || caughtUp;
         return (
           <motion.g key={entry.wormId}
-            initial={{ opacity: 0 }} animate={{ opacity: isActive ? 1 : 0 }}
-            transition={{ duration: 0.3, delay: i * 0.06 }}
+            initial={{ opacity: 0, scale: 0.93 }}
+            animate={{ opacity: isActive ? 1 : 0, scale: active ? [0.93, 1.04, 1] : 1 }}
+            transition={{ duration: 0.3, delay: i * 0.06, scale: active ? { duration: 0.35, delay: i * 0.08, ease: [0.34, 1.56, 0.64, 1] } : undefined }}
+            style={{ transformOrigin: `${WORM_X + WORM_W / 2}px ${CARD_Y + 69 + i * 50}px` }}
           >
             <rect x={WORM_X + 16} y={CARD_Y + 50 + i * 50} width={WORM_W - 32} height={38} rx={6}
               fill={active ? "#E3FCF7" : "#F9FBFA"}

@@ -67,6 +67,16 @@ function GateNode({ x, y, check, stage, reached }) {
             transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
           />
         )}
+        {isPassing && (
+          <motion.rect
+            x={-144} y={-36} width={288} height={72} rx={16} ry={16}
+            fill="none" stroke="#00A35C" strokeWidth={2.5}
+            initial={{ scale: 1, opacity: 0.75 }}
+            animate={{ scale: 1.18, opacity: 0 }}
+            style={{ transformBox: "fill-box", transformOrigin: "center" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
+        )}
         <text x={0} y={-8} textAnchor="middle" className={styles.gateLabel} fill={color}>{check.label}</text>
         <text x={0} y={12} textAnchor="middle" className={styles.gateSub} fill={color}>{check.sub}</text>
         {isFailing && (
@@ -244,7 +254,7 @@ const EngineCanvas = ({ state }) => {
                 </motion.g>
               )}
               {allPass && (
-                <motion.g key="pass" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} transition={SPRING.default} style={{ transformOrigin: `${RESULT_X}px ${DOC_Y}px` }}>
+                <motion.g key="pass" initial={{ opacity: 0, scale: 0.82 }} animate={{ opacity: 1, scale: [0.82, 1.1, 0.95, 1] }} exit={{ opacity: 0 }} transition={{ duration: 0.45, ease: [0.34, 1.56, 0.64, 1] }} style={{ transformOrigin: `${RESULT_X}px ${DOC_Y}px` }}>
                   <rect x={RESULT_X - 128} y={DOC_Y - 80} width={256} height={160} rx={14}
                     fill="#E3FCF7" stroke="#00A35C" strokeWidth={2} />
                   <text x={RESULT_X} y={DOC_Y - 44} textAnchor="middle" className={styles.resultIcon}>✓</text>
