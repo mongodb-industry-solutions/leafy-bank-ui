@@ -1,189 +1,185 @@
-# `/bian-data-model` — LeafyGreen Compliance Migration Plan
+# `/bian-data-model` — LeafyGreen Polish & Fine-Tune Plan
 
-Status: **proposal — not yet executed**. Ship in phases per section. Each phase is independently shippable.
+> Skill-graph driven. Built against `skill:leafygreen-ui` v1.0.0 (`schema:react-artifact:v1`),
+> tokens from `params:leafygreen-ui:default`, components from the `dataDisplay`,
+> `feedback`, `form`, `layout`, `navigation`, `utility` catalogues.
+> Replaces the prior prose audit; this version cites exact token paths.
 
----
-
-## 1. Audit of current state
-
-The page (`components/BianDataModel/BianDataModelPage.jsx` + `.module.css`) was built quickly to mirror the consolidated HTML's IA. It uses some LeafyGreen primitives (`Tabs`, `Badge`, `TextInput`, `Button`, `Icon`, typography) but violates several rules from the MongoDB demo design system:
-
-| Rule | Status | Evidence |
-|---|---|---|
-| All cards `borderRadius: 8px`, `border: 1px solid ${palette.gray.light2}` | ⚠ partial | Cards use 8/12px radius; borders are hardcoded `#E8EDEB` (right value, wrong source) |
-| Use `palette.*` from `@leafygreen-ui/palette`, never raw hex | ✗ | ~40+ raw hex literals in CSS module + inline `style={{}}` props |
-| Use `spacing[n]` from `@leafygreen-ui/tokens` | ✗ | Raw px throughout (`padding: 18px 24px`, etc.) |
-| Header background `palette.green.dark2` | ⚠ | Currently `#001E2B` (green.dark3); should be `green.dark2` (`#023430`) per skill — **needs confirmation** |
-| Body text contrast ≥ 4.5:1 — minimum `palette.gray.dark1` on white | ⚠ | Several `#5C6C75`/`#889397` text usages — borderline; verify |
-| Use LG `Table` for data grids | ✗ | Raw `<table>` + custom CSS for fields, mappings, indexes, relationships |
-| Use LG `Card` / `ExpandableCard` for content containers | ✗ | Custom `.metaCard`, `.bqCard`, `.relCard`, `.footerCard` divs |
-| Use LG `SearchInput` for search | ✗ | Uses `TextInput`; should be `SearchInput` (skill explicitly lists it) |
-| Use LG `Spinner` from `loading-indicator` | ✗ | Catalog loading shows raw `<Body>Loading…</Body>` |
-| Use LG `Banner` for error states | ⚠ | `BianApiTab` already does this; the data-model side has no error path (data is bundled) |
-| Use LG `Skeleton` for async content | ✗ | No skeletons during catalog fetch |
-| Empty states: dashed border, `#FAFBFA`, reduced-opacity icon, centered | ✗ | Search-empty currently silently hides groups — no empty state |
-| Sticky header with `zIndex: 100` | ✗ | Hero scrolls with content |
-| Max-width container (1400px for data-heavy) | ✗ | Body fills viewport without max-width clamp |
-| `:focus-visible` indicator on every interactive element | ✗ | Custom `<button>` for sidebar items has no focus style |
-| Touch targets 44x44 on small screens | ⚠ | Sidebar buttons ~32px tall — fine on desktop, fails WCAG on mobile |
-| Animations: CSS-only, 150/220ms, `cubic-bezier(0.33, 1, 0.68, 1)` | ⚠ | Currently `transition: background 0.1s` — should standardize |
-| `prefers-reduced-motion` respected | ✗ | No media query |
-| ARIA on custom widgets (sidebar list, tabs) | ⚠ | Sidebar has `aria-label="BIAN domains"` but list items lack semantics; LG `Tabs` handles tabs |
-| Emoji policy: never in nav / headers / badges | ✗ | Sidebar items use 👤🏦💸… as domain icons; chart-of-accounts hero uses 📒. **This conflicts with the user's "data EXACTLY the same" requirement** — see Open Question 1 |
-| Heading font Euclid Circular A | ✓ | LG typography components use it |
-| Code font Source Code Pro | ✓ | Used throughout |
-
-**Stack note:** `@leafygreen-ui/palette` is in `package.json`. `@leafygreen-ui/tokens` is **not** declared as a direct dependency — needs adding (it's a transitive dep, but explicit is required for direct import).
+Status: **proposal — not yet executed**. Phases land independently and ship green.
 
 ---
 
-## 2. Open questions (resolve before Phase 2)
+## 0. Source of truth
 
-1. **Emoji icons in sidebar.** The HTML data ships with emoji icons per domain (👤 customers, 🏦 accounts, 💸 payments, …). Skill rule: **no emojis in core navigation**. Options:
-   - **A.** Drop emojis. Replace with LG `Icon` glyphs mapped per domain (e.g. `Person`, `University`, `CreditCard`).
-   - **B.** Keep emojis (user said "data EXACTLY the same"). Document the deviation from skill in this plan.
-   - **Recommendation:** A. The emoji is decoration, not data — replacing it with LG icons preserves the information architecture and brings the page in line with skill rules. Confirm with user.
+Every value in this plan comes from the LeafyGreen skill graph, not memory:
 
-2. **Hero color.** Current `#001E2B` (green.dark3) vs skill-prescribed `palette.green.dark2` (`#023430`). The HTML used the darker shade. Options:
-   - **A.** Follow skill — switch to `green.dark2`.
-   - **B.** Keep darker shade per HTML.
-   - **Recommendation:** A.
+- **Palette**: `gray.dark4 #112733`, `gray.dark3 #1C2D38`, `gray.dark1 #5C6C75`, `gray.base #889397`, `gray.light2 #E8EDEB`, `gray.light3 #F9FBFA`, `green.dark3 #023430`, `green.dark2 #00684A`, `green.base #00ED64`, `blue.base #016BF8`, `red.base #DB3030`, `red.light3 #FFEAE5`.
+- **Spacing scale**: 0/25/50/100/150/200/300/400/500/600/800/900/1000/1200/1400/1600/1800 → 0,1,2,4,6,8,12,16,20,24,32,36,40,48,56,64,72 px.
+- **Border-radius scale**: 0/50/100/150/200/300/400/500/600 → 0,2,4,6,8,12,16,20,24 px.
+- **Typography**: H1 48/62 w400, H2 32/40 w400 *(regular — signature LeafyGreen)*, H3 24/28 w500, Subtitle 18/24 w600, Body1 13/20, Body2 16/28, Overline 12/20 w600 uppercase 0.4px.
+- **Transitions**: faster 100, default 150, slower 300, slowest 500 ms.
+- **Light theme tokens**: text.primary `#001E2B`, text.secondary `#5C6C75`, link `#016BF8`, border.secondary `gray.light2`, background.primary `#FFFFFF`, background.secondary `#F9FBFA`, shadow.1 `0 2px 4px 1px rgba(0,30,43,0.15)`, shadow.2 `0 18px 18px -15px rgba(0,30,43,0.20)`.
+- **Focus ring (light)**: `0 0 0 2px #FFFFFF, 0 0 0 4px #016BF8` — **two rings**, blue.base (not blue.light2 as I had).
+- **Hover ring (gray)**: `0 0 0 3px #E8EDEB`.
+- **A11y rule** from skill: `green.base #00ED64` MUST NEVER be used for text on white — fails WCAG AA. Use `green.dark2 #00684A`.
 
-3. **Sticky hero or static hero?** Skill says headers should be sticky. The hero here is content-rich (title + 5 stats + CTA + back button). A sticky condensed bar after scroll would be cleaner.
-   - **Recommendation:** Two-tier — full hero on entry, condensed sticky strip on scroll.
+Component contracts:
+
+- **Card**: `bg = bg.primary`, `borderRadius = radius.600` (24 px), `shadow = shadow.1`, `padding = spacing.600` (24 px). Hover → `shadow.2`.
+- **Banner**: `borderLeft 3px solid <variant>`, `padding spacing.400` (16 px), `borderRadius radius.200` (8 px). Variants info/warning/success/danger.
+- **Badge**: `radius.100` (4 px), padding `3px 6px`, 12 px / w600 / uppercase / 0.4px letter-spacing.
+- **Tabs (active)**: `border-bottom 3px solid green.dark2`, `fontWeight 600`, `color text.primary`, padding `spacing.400`.
+- **SideNav**: width 240, bg `gray.dark4`, white text. Active = `borderLeft 3px solid green.base`, bg `green.dark3`, color `green.base`.
+- **Table**: header bg `gray.light3`, w600, 12 px uppercase 0.4px, color `text.secondary`, padding `8/16`. Rows: border-bottom `gray.light2`, body1 13/20, hover bg `gray.light3`.
+- **Tooltip**: bg `gray.dark3`, color white, `radius.100`, padding `4/8`, 12 px.
+- **ExpandableCard**: card with collapsible content. Use for BQ groups, Relationship details, anywhere with disclosable content.
+
+---
+
+## 1. Audit of current `/bian-data-model` against the skill graph
+
+| # | Surface | Current | Skill spec | Verdict |
+|---|---|---|---|---|
+| 1 | Hero bg | `#1C2D38` (gray.dark3) | per-skill the inverse-primary background can be `gray.dark3` or `gray.dark4` | ✓ valid |
+| 2 | Hero border-bottom | `3px solid #00684A` | green.dark2 — fine | ✓ |
+| 3 | Stats panels | `rgba(0,30,43,0.55)` | skill has no stat-panel variant, but gray.dark4 (`#112733`) is the canonical inverse panel surface | ⚠ one-off; convert to gray.dark4 + 1px border gray.dark2 |
+| 4 | Hero stat radius | 8px | no spec; 8 (radius.200) acceptable | ✓ |
+| 5 | Sidebar bg | `#F9FBFA` (light) | Atlas SideNav spec is `gray.dark4` + white text + active `borderLeft 3px green.base` on `green.dark3` | ✗ — sidebar is a light variant; Atlas-style is dark. **Decision needed (Q-1).** |
+| 6 | Sidebar item active | `borderLeft 3px d.color`, bg `gray.light2` | spec is `borderLeft 3px green.base`, bg `green.dark3`, color `green.base` | ✗ if going dark; ⚠ if staying light (ok pattern, wrong colors) |
+| 7 | Domain header card | radius 12 px, custom border-top accent | Card radius is `radius.600` (24 px) | ⚠ — current 12 is more conservative than spec; either bump to 24 or accept a "compact card" deviation |
+| 8 | Field/mapping/index tables | hand-rolled `<table>` + `.tbl` CSS | LG `<Table>` component with `<HeaderRow>`/`<HeaderCell>`/`<Row>`/`<Cell>` | ✗ — should swap to LG primitive |
+| 9 | BQ cards | hand-rolled green-headed cards | spec → `<ExpandableCard>` per BQ | ✗ |
+| 10 | Relationship cards | hand-rolled white cards | LG `<Card>` is the right primitive | ⚠ |
+| 11 | Footer panels (pattern legend, DB map) | hand-rolled cards | LG `<Card>` | ⚠ |
+| 12 | Immutable banner | hand-rolled red div | `<Banner variant="danger">` | ✗ |
+| 13 | Search input | `TextInput` from `@leafygreen-ui/text-input` | `SearchInput` from `@leafygreen-ui/search-input` per skill component decision | ⚠ |
+| 14 | Back button | pill `<button>` w/ slate border | LG `<Button variant="default" leftGlyph={<Icon glyph="ArrowLeft"/>}>` or `<BackLink>` | ⚠ |
+| 15 | Focus ring | `0 0 0 2px #C2E5FF` (blue.light2) | spec: `0 0 0 2px #FFFFFF, 0 0 0 4px #016BF8` (white inner + blue.base outer, two rings) | ✗ — wrong colour and structure |
+| 16 | Hover ring on interactive items | none | spec: `0 0 0 3px gray.light2` for default; `green.light2` for primary | ✗ |
+| 17 | Tabs | LG `<Tabs>` | matches | ✓ |
+| 18 | Loading state (Semantic API) | none surfaced (catalog is hardcoded now, never loading) | n/a | ✓ |
+| 19 | Empty state — sidebar filter returns nothing | groups silently disappear | LG `emptyState` component (title/description/primaryButton) | ✗ |
+| 20 | Body text contrast | mostly `gray.dark1`; some `gray.base` (`#889397`) used as content text in tables/cards | spec: body text must be `gray.dark1` minimum on white. `gray.base` is decorative meta only | ⚠ — audit and lift content text |
+| 21 | Card hover | none | spec: `translateY(-2px)` + `shadow.2` for elevatable cards (relationship, BQ) | ✗ |
+| 22 | Transitions | `150ms cubic-bezier(0.33, 1, 0.68, 1)` standardized | spec: 100/150/300/500. 150 = "default". curve unspecified — bezier OK | ✓ |
+| 23 | `prefers-reduced-motion` | only on back button | spec: respected globally | ⚠ |
+| 24 | Touch targets | sidebar buttons ~32 px tall | spec: 44 px min on screens ≤1024 px (WCAG 2.5.8) | ✗ |
+| 25 | Sticky hero | not sticky (per your call) | n/a — your override | ✓ |
+| 26 | Page max-width | none — content fills viewport | spec: 1400 px for data-heavy routes | ✗ |
+
+Summary: **18 violations or near-misses**, **5 OK**, **3 deferred to your decision**.
+
+---
+
+## 2. Decision points (resolve before Phase B)
+
+- **Q-1 — Sidebar variant.** The skill graph specifies `SideNav` as `gray.dark4` background with white text — Atlas-style. Current sidebar is light (`gray.light3`). Two options:
+  - **(a) Atlas dark** — matches skill exactly; visually heavier next to the slate hero (two dark surfaces).
+  - **(b) Light variant** — consistent with the page-content surface; deviates from the SideNav spec but stays inside the `gray.light3` "secondary background" token. Active item still applies the canonical `borderLeft 3px green.base` cue.
+  - **Recommendation:** (b) light. The page is content-dense and a dark sidebar would compete with the hero. The skill's SideNav spec is for Atlas product-shell navigation; here the sidebar is an in-page domain selector — closer to a section nav.
+
+- **Q-2 — Card radius.** LG `Card` spec is `radius.600` (24 px). Current cards use 12 px. Bumping to 24 px is a noticeable visual change. Options:
+  - **(a) Strict 24 px** — full skill compliance.
+  - **(b) Keep 12 px** — calling these "compact info panels" not Card, accepting the deviation for density.
+  - **Recommendation:** (b) keep 12 px for the inline meta/info panels (they aren't elevation-cards in the spec sense), use full `<Card>` (24 px) only for top-level relationship/BQ tiles.
+
+- **Q-3 — BQ disclosure.** BQ groups currently render fully expanded. Some BQs have 30+ field paths; the page becomes very tall. Options:
+  - **(a)** Collapse all BQs by default in `<ExpandableCard>` — user opens what they want.
+  - **(b)** Auto-expand the first BQ, others collapsed.
+  - **(c)** Always expanded.
+  - **Recommendation:** (b) — scannable on entry, doesn't fight the data.
 
 ---
 
 ## 3. Phased migration
 
-### Phase 0 — Foundations (small, low-risk)
+Each phase is one commit and independently shippable.
 
-Land before any visual changes. Independently shippable.
+### Phase A — Token foundation (no visual change)
 
-- Add `@leafygreen-ui/tokens` to `package.json` as a direct dependency.
-- Create `frontend/lib/ui/tokens.js` exporting a `uiTokens` object — surfaces, borders, shadows, transitions — wrapping `palette` and `spacing` per the skill's pattern. This is the single source of truth for non-component design values.
-- Document in the file's header comment which `palette.*` token each value comes from.
+Land before any visual edits.
 
-**Out:** new file `lib/ui/tokens.js`, updated `package.json`. **Risk:** none.
+- Add `@leafygreen-ui/tokens` as a direct dep (currently transitive).
+- Create `frontend/lib/ui/leafygreenTokens.js`. Re-exports from `@leafygreen-ui/palette` + `@leafygreen-ui/tokens`, plus a `uiTokens` object with surface, border, shadow, transition values from the skill graph (see §0). One module, one import point. Documented with skill-graph provenance comment.
+- No code consumes it yet.
 
----
+### Phase B — Hex → token sweep (no visual change)
 
-### Phase 1 — Hex → tokens (no visual change)
+- Replace every raw hex in `BianDataModelPage.module.css` with the same hex value plus a `/* palette.* */` comment naming the token. Goal: any future maintainer can `Find/Replace` if a token shifts.
+- Replace inline `style={{ color: '#…' }}` and `style={{ background: '#…' }}` with `palette.<token>`.
+- Drop dead colors and consolidate one-off greens/blues onto canonical palette names.
 
-Replace every raw hex literal in `BianDataModelPage.jsx`/`.module.css` with the matching `palette.*` / `uiTokens.*` value. CSS module hexes get a `/* palette.gray.light2 */` comment per skill rule for CSS-modules.
+### Phase C — LG containers
 
-- All inline `style={{ color: '#XXXXXX' }}` → `style={{ color: palette.green.base }}` etc.
-- All `padding: 18px` → `padding: spacing[400]`-style references where in JSX; CSS module keeps px values but gains comments mapping to tokens.
-- `Badge` inline-style overrides for `pattern` (currently `style={{ background: patColor + '20' }}`) → switch to LG `Badge` semantic variants where possible (`green` / `blue` / `yellow` / `red` / `purple`) keyed by `pattern`.
+- **Domain meta card**, **Relationship card**, **Footer panels** → LG `<Card>` (radius decision per Q-2).
+- **Domain header** → kept as a custom flex card with accent border-top (LG Card lacks an accent slot; documented deviation).
+- **BQ groups** → LG `<ExpandableCard>` with `title={bqName}`, `description="N fields"`, `defaultOpen={i === 0}` (per Q-3).
+- **Immutable banner** → `<Banner variant="danger">…<Icon glyph="Lock"/> IMMUTABLE — append only…</Banner>`.
 
-**Risk:** low. Same pixels, same colors. Diff is mechanical.
+### Phase D — LG `<Table>`
 
----
+Migrate four tables: Collection fields, BIAN Mapping, Indexes, Relationships (currently rendered with `<table>`/`.tbl`):
 
-### Phase 2 — Replace custom containers with LG primitives
+- Wrap with `<Table>`, build `columns` array, body rows via render-prop pattern per LG 15.x.
+- Carry over the section-heading rows (Top-level fields, nested groups in mapping tab) using `<Row>` with `colSpan` cell.
+- Keep `BsonTag` and `FieldName` as cell renderers; they already use palette-aligned colors.
 
-Swap hand-rolled card divs and tables for LG components.
+### Phase E — Sidebar refactor
 
-- `<div className={styles.metaCard}>` (collection metadata) → `<Card>` with `<Body>` rows.
-- `<div className={styles.domainHeader}>` → `<Card>` with custom accent border via inline `borderTop` (only allowed deviation since LG `Card` lacks accent slot).
-- `<div className={styles.bqCard}>` → `<ExpandableCard>` per BQ — fits the disclosure pattern, supports very long BQ field lists without the page exploding.
-- `<div className={styles.relCard}>` → `<Card>` with semantic Badge for cardinality.
-- `<div className={styles.footerCard}>` (pattern legend, DB map) → `<Card>`.
-- All `<table className={styles.tbl}>` → LG `Table` / `TableHead` / `HeaderRow` / `HeaderCell` / `TableBody` / `Row` / `Cell` per skill component decision table.
+- Apply Q-1 decision (light SideNav variant with canonical active treatment).
+- Switch `<TextInput placeholder="Search domains…">` → `<SearchInput>` (correct LG primitive for filter use case; comes with clear button).
+- Min height 44 px on viewports ≤ 1024 px.
+- Empty state when filter returns 0 domains: small dashed-border card with `<Icon glyph="MagnifyingGlass">`, "No domains match", and a "Clear filter" `<Button variant="default" size="small">`.
 
-**Risk:** medium. LG `Table` has a fixed visual signature; current density is higher than LG default. May need to accept LG's spacing or use `Table` with `shouldAlternateRowColor={false}` and zoom to data-dense vertical.
+### Phase F — Focus + hover
 
----
+- Replace every `box-shadow: 0 0 0 2px #C2E5FF` with the skill-canonical two-ring focus: `0 0 0 2px #FFFFFF, 0 0 0 4px #016BF8`.
+- Add hover ring `0 0 0 3px #E8EDEB` to sidebar buttons and back button on `:hover`.
+- Card-tier hover (`translateY(-2px) + shadow.2`) on Relationship and BQ cards. CSS-only `:hover`; respect `prefers-reduced-motion`.
 
-### Phase 3 — Sidebar refactor
+### Phase G — Body-text contrast pass
 
-Currently a stack of plain `<button>` elements. Make it accessible and LG-coherent.
+- Audit every text colour against the rule "≥ 4.5:1 on white".
+- `gray.base` (`#889397`) → demoted to non-content meta only (separator labels, "—" placeholders, sub-eyebrows). Anywhere it currently colours descriptive text in tables / cards / cells, lift to `gray.dark1` (`#5C6C75`).
 
-- Wrap sidebar in a `<nav aria-label="BIAN domains">` (already done) with `<ul role="list">`.
-- Each domain becomes an `<li><button role="tab"…>` or — better — switch to LG `SegmentedControl` / `RadioBoxGroup` if the count fits, but here we have 16 items → too many for segmented.
-- Keep custom buttons but apply skill-mandated focus-visible style: `box-shadow: 0 0 0 2px ${palette.blue.light2}` on `:focus-visible`.
-- Switch `TextInput` to `SearchInput` from `@leafygreen-ui/search-input`.
-- Replace emoji icons (Open Q 1A): map each domain key to an `<Icon glyph="…" />` from LG. Drop the `icon` field's literal emoji.
-- Add empty state when search returns zero domains: dashed border card, "No domains match" + clear-search action.
+### Phase H — Layout & responsive
 
-**Risk:** medium. Visual change is visible — sidebar will read differently without emoji color.
+- Wrap main pane in a max-width 1400 px container per skill data-heavy guidance. Sidebar stays full-bleed.
+- Breakpoint behavior:
+  - `≤1024 px` — sidebar becomes a `Drawer` (opened via a hamburger button in the hero).
+  - `≤768 px` — hero stats wrap to two rows; the CTA button drops below stats.
+- `@media (prefers-reduced-motion: reduce)` block applied to all transitions globally.
 
----
+### Phase I — A11y polish
 
-### Phase 4 — Loading / error / empty states for Semantic API
+- Pattern Badges get `aria-label="Pattern: Management"` etc.
+- LG `Tabs` is wired with proper roles; verify after Phase C–D refactor.
+- `Spinner` / `SkeletonLoader` regions get `role="status"` + `aria-live="polite"`.
+- `<Banner>` (immutable) gets `role="alert"` (LG handles by default — verify).
+- Run skill graph `check_constraints` against a fact summary of the implemented page; iterate on flagged items.
 
-`BianApiTab` already wires these via props but the wrappers aren't LG-styled.
+### Phase J — Final pass
 
-- Loading: replace `<Body>Loading BIAN API catalog…</Body>` with `<Spinner />` (from `loading-indicator`) + `ParagraphSkeleton` from `skeleton-loader`.
-- Error: confirm `Banner variant="danger"` is used (already is) — add a retry button via LG `Button`.
-- Empty (catalog has zero services): dashed card with icon + helpful message.
-
-**Risk:** low.
-
----
-
-### Phase 5 — Layout & responsive
-
-- Wrap `<main>` content in a max-width container: 1400px for the data-heavy domain views (collection + mapping + BQ tabs all benefit from horizontal room).
-- Make hero sticky-on-scroll: full hero collapses to a condensed strip (just back button + title + CTA) when user scrolls past 80px. CSS-only via `position: sticky; top: 0` on a wrapper, plus `IntersectionObserver` to toggle a `condensed` class. **No JS animations** per skill — pure CSS transition `cubic-bezier(0.33, 1, 0.68, 1)` 220ms.
-- Breakpoints: 1024px → sidebar collapses to a `<Drawer>` (LG `@leafygreen-ui/drawer` is already a dep). Below 768px the hero stats wrap fully.
-- Honor `@media (prefers-reduced-motion: reduce)` — disable hero collapse transition, instant snap.
-
-**Risk:** medium. Sticky-on-scroll is the visible change most likely to need iteration.
+- Standardize transition durations using token names: 100 (color flips), 150 (size/translate), 300 (layout).
+- Run a final "Design Completion Checklist" walk per skill SKILL.md.
+- Update `docs/bian-data-model-leafygreen-plan.md` to mark phases complete.
 
 ---
 
-### Phase 6 — Accessibility hardening
+## 4. Out of scope
 
-- Audit body text on white surfaces: any `#5C6C75` (`palette.gray.dark1` is `#5D6C74` — close, verify) gets confirmed at ≥ 4.5:1 vs `#FFFFFF`. Lighter neutrals (`#889397`) are reserved for non-essential meta only (badge labels, separator text).
-- Every interactive element gets a `:focus-visible` shadow.
-- Tab content regions get `role="tabpanel"` (LG `Tabs` handles this — verify).
-- `Spinner` and async regions get `aria-live="polite"`.
-- Pattern badges convey severity-like meaning — add `aria-label` like `"Pattern: Management"`.
-- Test with keyboard-only nav: tab order must traverse hero → back → search → sidebar → tabs → table.
-
-**Risk:** low–medium. Some test/iterate.
+- Data: every domain, field, BQ, mapping, relationship stays bit-identical.
+- Routing: `/bian-data-model` and `/ledger-flow` stay where they are.
+- Sticky hero: per your decision, hero is non-sticky; not revisiting.
+- DB-tag in sidebar: per your decision, no per-row DB labels.
+- Emoji icons: already replaced; no further work.
 
 ---
 
-### Phase 7 — Polish
+## 5. Sequencing for review
 
-- Card hover: `translateY(-2px)` + `uiTokens.shadowHover` on relationship cards and BQ cards. `onMouseEnter` / `onMouseLeave` per skill (cannot use CSS-only because token shadow values come from JS; or use CSS module with documented hex fallbacks).
-- Standardize transitions: 150ms (snappy) for hover, 220ms (medium) for layout.
-- Run the "Design Completion Checklist" from the skill end-to-end.
+Land **A → B** first (zero visual change) — pause for review.
+Then **C → D → E** (visible refactor of containers, tables, sidebar) — pause again.
+Then **F → G → H → I → J** in one batch — final ship.
 
-**Risk:** low.
-
----
-
-## 4. Concrete deliverables per phase
-
-| Phase | Files touched | New files | Lines (rough) |
-|---|---|---|---|
-| 0 | `package.json` | `lib/ui/tokens.js` | ~80 |
-| 1 | `BianDataModelPage.jsx`, `.module.css` | — | ~150 (mechanical) |
-| 2 | `BianDataModelPage.jsx`, `.module.css` | — | ~250 |
-| 3 | `BianDataModelPage.jsx`, `.module.css`, `bianDataModelData.js` (icon mapping) | `lib/ui/domainIconMap.js` | ~120 |
-| 4 | `BianDataModelPage.jsx` | — | ~40 |
-| 5 | `BianDataModelPage.jsx`, `.module.css` | — | ~100 |
-| 6 | `BianDataModelPage.jsx`, `.module.css` | — | ~60 |
-| 7 | `BianDataModelPage.jsx`, `.module.css` | — | ~40 |
-
-Total ~900 lines across 8 commits. Each commit independently buildable & shippable.
-
----
-
-## 5. What I will NOT change
-
-- **Data**: every domain, field, BQ, mapping, relationship stays bit-identical to the alias map. The skill governs visual presentation only.
-- **Information architecture**: sidebar groups, tab structure, hero stats remain.
-- **Routing**: `/bian-data-model` and `/ledger-flow` stay where they are.
-- **Existing `BianApiTab`**: presentational component is untouched. Only its wrapper (`SemanticApiView`) gets LG-compliant chrome.
-
----
-
-## 6. Suggested sequencing
-
-Land Phases 0–1 first (zero visual change, foundation only). Pause for review. Then Phases 2–4 in one batch (visible refactor of containers + tables + states). Pause again. Then Phases 5–7 (layout + a11y + polish).
-
-Total estimated work: ~3–4 working sessions of focused implementation, paced for review checkpoints.
+Three review checkpoints. ~9 commits. Runtime budget: a focused session per checkpoint.
