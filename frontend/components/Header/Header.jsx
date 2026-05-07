@@ -12,13 +12,11 @@ import Tooltip from '@leafygreen-ui/tooltip';
 import { usePathname } from 'next/navigation';
 import UserProfile from '@/components/UserProfile/UserProfile';
 import RiskProfileSelector from '@/components/RiskProfileSelector/RiskProfileSelector';
-import BianExplorer from '@/components/BianExplorer/BianExplorer';
 import styles from "./Header.module.css";
 
 function Header({ onLogout = () => { } }) {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [bianOpen, setBianOpen] = useState(false);
   const pathname = usePathname();
 
   const [selectedUser, setSelectedUser] = useState(null);
@@ -93,25 +91,13 @@ function Header({ onLogout = () => { } }) {
           <Body className={styles.navLinkText}>Crypto Investment</Body>
         </Link>
 
-        {/* Mobile entry for the BIAN explorer */}
-        <button
-          type="button"
-          className={`${styles.linkHideDesktop} ${styles.menuButton}`}
-          onClick={() => {
-            setMenuOpen(false);
-            setBianOpen(true);
-          }}
-        >
-          <Body>BIAN v14 Explorer</Body>
-        </button>
-
-        {/* Mobile entry for the Ledger Flow demo (route) */}
+        {/* Mobile entry — unified BIAN data model + Semantic API + Ledger Flow */}
         <Link
-          href="/ledger-flow"
+          href="/bian-data-model"
           className={`${styles.linkHideDesktop} ${styles.navLink}`}
           onClick={() => setMenuOpen(false)}
         >
-          <Body className={styles.navLinkText}>Ledger Flow</Body>
+          <Body className={styles.navLinkText}>BIAN Data Model, Semantic API &amp; Ledger Flow</Body>
         </Link>
 
         {/* Updated Mobile Logout - Directly using onClick */}
@@ -129,12 +115,16 @@ function Header({ onLogout = () => { } }) {
           </>
         )}
 
-        {/* Ledger Flow trigger — navigates to /ledger-flow route */}
+        {/* Unified BIAN landing page — covers data model, Semantic API, and Ledger Flow */}
         <Tooltip
           trigger={
-            <Link href="/ledger-flow" aria-label="Open Ledger Flow workbench" className={styles.ledgerLink}>
+            <Link
+              href="/bian-data-model"
+              aria-label="Open BIAN Data Model, Semantic API and Ledger Flow"
+              className={styles.ledgerLink}
+            >
               <IconButton
-                aria-label="Open Ledger Flow workbench"
+                aria-label="Open BIAN Data Model, Semantic API and Ledger Flow"
                 className={styles.ledgerIcon}
                 as="span"
               >
@@ -143,24 +133,8 @@ function Header({ onLogout = () => { } }) {
             </Link>
           }
         >
-          Ledger Flow — Payment to Balance
+          BIAN Data Model, Semantic API &amp; Ledger Flow
         </Tooltip>
-
-        {/* BIAN v14 Explorer trigger — sits immediately left of UserProfile */}
-        <Tooltip
-          trigger={
-            <IconButton
-              aria-label="Open BIAN data model and API explorer"
-              onClick={() => setBianOpen(true)}
-              className={styles.bianIcon}
-            >
-              <Icon glyph="University" />
-            </IconButton>
-          }
-        >
-          BIAN v14 Data Model &amp; API
-        </Tooltip>
-        <BianExplorer open={bianOpen} setOpen={setBianOpen} />
 
         <UserProfile></UserProfile>
 
