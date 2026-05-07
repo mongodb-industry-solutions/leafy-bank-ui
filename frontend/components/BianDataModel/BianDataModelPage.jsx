@@ -59,7 +59,7 @@ function CollectionTab({ d }) {
       </div>
       {d.immutable && (
         <div className={styles.immutBanner}>
-          ⊘ IMMUTABLE — append only. Corrections create new reversal documents, never edit existing entries.
+          <Icon glyph="Lock" size="small" /> IMMUTABLE — append only. Corrections create new reversal documents, never edit existing entries.
         </div>
       )}
       <table className={styles.tbl}>

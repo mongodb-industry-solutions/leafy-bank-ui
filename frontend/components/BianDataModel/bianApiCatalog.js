@@ -4,13 +4,20 @@
 // All operations use the BIAN verb-in-URL convention (POST /Domain/Action) and
 // expect/return JSON envelopes per the conventions block below.
 //
-// Keep this in sync with the underlying transactions/accounts microservice when
-// new operations land. Source of truth = the route files under `app/api/`.
+// Field naming policy — request/response bodies and `envelopeKeys` use BIAN v14
+// canonical attribute names (e.g. CustomerReference, PartyNameGivenName,
+// CurrentAccountBalanceAmount) sourced from the consolidated alias map in
+// `bianDataModelData.js` (the `bm` block per collection). Mongo-side persistence
+// uses the camelCase aliases; the API surface speaks BIAN to keep the semantic
+// layer portable across data stores.
+//
+// Operational/meta keys that are not BIAN-defined attributes (e.g. `patch`,
+// `page`, `filter`, restriction `action`) remain in their conventional form.
 
 export const BIAN_API_CATALOG = {
   version: "v1.0",
   description:
-    "Leafy Bank — BIAN v14 Semantic API. Verb-in-URL convention; all operations are POST. JSON request bodies are strict (extra fields rejected) and use ISO 4217 currency codes with money encoded as JSON numbers.",
+    "Leafy Bank — BIAN v14 Semantic API. Verb-in-URL convention; all operations are POST. JSON request bodies are strict (extra fields rejected) and use ISO 4217 currency codes with money encoded as JSON numbers. Body keys are BIAN v14 canonical attribute names.",
   conventions: {
     method: "POST",
     verbInUrl: true,
@@ -52,40 +59,48 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               request: {
-                notes: "Identification, contact, KYC seed, consents. PII fields (nationalId, taxId, passport) are encrypted client-side via Queryable Encryption before reaching the server.",
+                notes: "Identification, contact, KYC seed, consents. PII fields (NationalIdentityNumber, TaxIdentificationNumber, PassportNumber) are encrypted client-side via Queryable Encryption before reaching the server. Body keys are BIAN canonical attribute names.",
                 example: {
-                  identification: {
-                    firstName: "Frida",
-                    lastName: "Karlsson",
-                    dateOfBirth: "1986-04-12",
-                    nationality: "SE",
-                    nationalId: "<QE-ciphertext>",
-                    nationalIdType: "PERSONNUMMER",
+                  PartyIdentification: {
+                    PartyNameGivenName: "Frida",
+                    PartyNameFamilyName: "Karlsson",
+                    PartyDateOfBirthDate: "1986-04-12",
+                    PartyNationalityCode: "SE",
+                    NationalIdentityNumber: "<QE-ciphertext>",
+                    NationalIdentityNumberType: "PERSONNUMMER",
                   },
-                  contact: {
-                    email: "frida.karlsson@example.com",
-                    phone: "+46-70-555-0123",
-                    addresses: [
-                      { type: "RESIDENTIAL", line1: "Vasagatan 1", city: "Stockholm", country: "SE", isPrimary: true },
+                  PartyContactRecord: {
+                    PartyContactEmailAddress: "frida.karlsson@example.com",
+                    PartyContactPhoneNumber: "+46-70-555-0123",
+                    PartyAddressRecord: [
+                      {
+                        PartyAddressType: "RESIDENTIAL",
+                        PartyAddressLine1Text: "Vasagatan 1",
+                        PartyAddressCityText: "Stockholm",
+                        PartyAddressCountryCode: "SE",
+                        PartyAddressIsPrimaryIndicator: true,
+                      },
                     ],
                   },
-                  kyc: { level: "STANDARD" },
-                  consents: [{ consentType: "MARKETING", granted: false }],
+                  CustomerKYCRecord: { CustomerKYCVerificationLevelType: "STANDARD" },
+                  PartyConsentRecord: [
+                    { PartyConsentType: "MARKETING", PartyConsentGrantedIndicator: false },
+                  ],
                 },
               },
               response: {
                 successCodes: [201],
-                envelopeKeys: ["customerId", "kycStatus", "createdAt"],
+                envelopeKeys: ["CustomerReference", "CustomerKYCProcedureStatus", "RecordCreateDateTime"],
                 example: {
-                  customerId: "CUS-20260507-000142",
-                  kycStatus: "PENDING_VERIFICATION",
-                  createdAt: "2026-05-07T10:23:45.120Z",
+                  CustomerReference: "CUS-20260507-000142",
+                  CustomerKYCProcedureStatus: "PENDING_VERIFICATION",
+                  RecordCreateDateTime: "2026-05-07T10:23:45.120Z",
                 },
               },
               errors: [
-                { code: 400, meaning: "Bad Request", when: "Missing identification.firstName / .lastName / .dateOfBirth, or extra fields present." },
+                { code: 400, meaning: "Bad Request", when: "Missing PartyIdentification.PartyNameGivenName / .PartyNameFamilyName / .PartyDateOfBirthDate, or extra fields present." },
                 { code: 409, meaning: "Conflict", when: "Same Idempotency-Key replayed with a different payload." },
-                { code: 422, meaning: "Unprocessable Entity", when: "Date of birth in the future or nationality not ISO 3166-1 alpha-2." },
+                { code: 422, meaning: "Unprocessable Entity", when: "PartyDateOfBirthDate in the future or PartyNationalityCode not ISO 3166-1 alpha-2." },
               ],
               notesFooter: "On success, a Change Stream event fires from the customers collection; downstream consumers (Onboarding, RBAC, KYC) pick it up via their resume tokens.",
             },
@@ -93,7 +108,7 @@ export const BIAN_API_CATALOG = {
               id: "party_retrieve",
               method: "POST",
               path: "/PartyReferenceDataDirectoryEntry/Retrieve",
-              summary: "Retrieve the full party reference record by customerId.",
+              summary: "Retrieve the full party reference record by CustomerReference.",
               bianAction: "retrieve",
               bianBehaviorQualifier: "PartyIdentification",
               headers: [
@@ -101,21 +116,35 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               request: {
-                example: { customerId: "CUS-20260507-000142" },
+                example: { CustomerReference: "CUS-20260507-000142" },
               },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["customerId", "identification", "contact", "kyc", "consents", "version"],
+                envelopeKeys: [
+                  "CustomerReference",
+                  "PartyIdentification",
+                  "PartyContactRecord",
+                  "CustomerKYCRecord",
+                  "PartyConsentRecord",
+                  "RecordVersionNumber",
+                ],
                 example: {
-                  customerId: "CUS-20260507-000142",
-                  identification: { firstName: "Frida", lastName: "Karlsson" },
-                  contact: { email: "frida.karlsson@example.com" },
-                  kyc: { status: "VERIFIED", level: "STANDARD", riskRating: "LOW" },
-                  version: 4,
+                  CustomerReference: "CUS-20260507-000142",
+                  PartyIdentification: {
+                    PartyNameGivenName: "Frida",
+                    PartyNameFamilyName: "Karlsson",
+                  },
+                  PartyContactRecord: { PartyContactEmailAddress: "frida.karlsson@example.com" },
+                  CustomerKYCRecord: {
+                    CustomerKYCProcedureStatus: "VERIFIED",
+                    CustomerKYCVerificationLevelType: "STANDARD",
+                    CustomerCreditRatingAssessment: "LOW",
+                  },
+                  RecordVersionNumber: 4,
                 },
               },
               errors: [
-                { code: 404, meaning: "Not Found", when: "customerId does not exist in the directory." },
+                { code: 404, meaning: "Not Found", when: "CustomerReference does not exist in the directory." },
               ],
             },
             {
@@ -130,23 +159,35 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               request: {
-                example: { customerId: "CUS-20260507-000142" },
+                example: { CustomerReference: "CUS-20260507-000142" },
               },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["customerId", "status", "level", "riskRating", "verifiedAt", "documents"],
+                envelopeKeys: [
+                  "CustomerReference",
+                  "CustomerKYCProcedureStatus",
+                  "CustomerKYCVerificationLevelType",
+                  "CustomerCreditRatingAssessment",
+                  "CustomerKYCVerificationDate",
+                  "CustomerKYCDocumentRecord",
+                ],
                 example: {
-                  customerId: "CUS-20260507-000142",
-                  status: "VERIFIED",
-                  level: "STANDARD",
-                  riskRating: "LOW",
-                  verifiedAt: "2026-05-07T11:02:11.000Z",
-                  documents: [{ docType: "PASSPORT", verifiedAt: "2026-05-07T11:01:08.000Z" }],
+                  CustomerReference: "CUS-20260507-000142",
+                  CustomerKYCProcedureStatus: "VERIFIED",
+                  CustomerKYCVerificationLevelType: "STANDARD",
+                  CustomerCreditRatingAssessment: "LOW",
+                  CustomerKYCVerificationDate: "2026-05-07T11:02:11.000Z",
+                  CustomerKYCDocumentRecord: [
+                    {
+                      CustomerKYCDocumentType: "PASSPORT",
+                      CustomerKYCDocumentVerifiedDate: "2026-05-07T11:01:08.000Z",
+                    },
+                  ],
                 },
               },
               errors: [
                 { code: 403, meaning: "Forbidden", when: "Caller has Party-Read but not KYC-Read." },
-                { code: 404, meaning: "Not Found", when: "customerId not in directory." },
+                { code: 404, meaning: "Not Found", when: "CustomerReference not in directory." },
               ],
             },
           ],
@@ -174,32 +215,43 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               enums: [
-                { label: "Account type", values: ["CHECKING", "SAVINGS", "BUSINESS"] },
-                { label: "Currency", values: ["USD", "EUR", "GBP", "SEK", "JPY"] },
+                { label: "CurrentAccountType", values: ["CHECKING", "SAVINGS", "BUSINESS"] },
+                { label: "CurrentAccountCurrencyCode", values: ["USD", "EUR", "GBP", "SEK", "JPY"] },
               ],
               request: {
                 example: {
-                  customerId: "CUS-20260507-000142",
-                  type: "CHECKING",
-                  currency: "USD",
-                  productId: "PROD-CHK-STD",
-                  branchId: "BR-NYC-01",
+                  CustomerReference: "CUS-20260507-000142",
+                  CurrentAccountType: "CHECKING",
+                  CurrentAccountCurrencyCode: "USD",
+                  ProductReference: "PROD-CHK-STD",
+                  BranchReference: "BR-NYC-01",
                 },
               },
               response: {
                 successCodes: [201],
-                envelopeKeys: ["accountId", "accountNumber", "status", "balance", "openedAt"],
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "CurrentAccountNumber",
+                  "CurrentAccountApexStatus",
+                  "CurrentAccountBalanceRecord",
+                  "CurrentAccountOpenDate",
+                ],
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  accountNumber: "5500-0142-0891",
-                  status: "ACTIVE",
-                  balance: { current: 0, available: 0, ledger: 0, hold: 0 },
-                  openedAt: "2026-05-07T11:18:02.000Z",
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  CurrentAccountNumber: "5500-0142-0891",
+                  CurrentAccountApexStatus: "ACTIVE",
+                  CurrentAccountBalanceRecord: {
+                    CurrentAccountBalanceAmount: 0,
+                    CurrentAccountAvailableBalanceAmount: 0,
+                    CurrentAccountLedgerBalanceAmount: 0,
+                    CurrentAccountHoldAmount: 0,
+                  },
+                  CurrentAccountOpenDate: "2026-05-07T11:18:02.000Z",
                 },
               },
               errors: [
-                { code: 404, meaning: "Not Found", when: "customerId references no party in the directory." },
-                { code: 422, meaning: "Unprocessable Entity", when: "KYC status != VERIFIED for the customer." },
+                { code: 404, meaning: "Not Found", when: "CustomerReference references no party in the directory." },
+                { code: 422, meaning: "Unprocessable Entity", when: "CustomerKYCProcedureStatus != VERIFIED for the customer." },
               ],
             },
             {
@@ -213,20 +265,33 @@ export const BIAN_API_CATALOG = {
                 { name: "Authorization", required: true, notes: "Bearer token with Account-Read scope." },
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
-              request: { example: { accountId: "ACC-20260507-000891" } },
+              request: { example: { CurrentAccountReference: "ACC-20260507-000891" } },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["accountId", "accountNumber", "type", "status", "balance", "interest", "signatories"],
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "CurrentAccountNumber",
+                  "CurrentAccountType",
+                  "CurrentAccountApexStatus",
+                  "CurrentAccountBalanceRecord",
+                  "CurrentAccountInterestRecord",
+                  "CurrentAccountSignatoryRecord",
+                ],
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  accountNumber: "5500-0142-0891",
-                  type: "CHECKING",
-                  status: "ACTIVE",
-                  balance: { current: 12450.18, available: 12450.18, ledger: 12450.18, hold: 0 },
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  CurrentAccountNumber: "5500-0142-0891",
+                  CurrentAccountType: "CHECKING",
+                  CurrentAccountApexStatus: "ACTIVE",
+                  CurrentAccountBalanceRecord: {
+                    CurrentAccountBalanceAmount: 12450.18,
+                    CurrentAccountAvailableBalanceAmount: 12450.18,
+                    CurrentAccountLedgerBalanceAmount: 12450.18,
+                    CurrentAccountHoldAmount: 0,
+                  },
                 },
               },
               errors: [
-                { code: 404, meaning: "Not Found", when: "accountId does not exist." },
+                { code: 404, meaning: "Not Found", when: "CurrentAccountReference does not exist." },
               ],
             },
             {
@@ -242,18 +307,32 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               request: {
+                notes: "`patch` is the operational JSON-merge-patch wrapper (RFC 7396); its inner keys are BIAN canonical attribute names.",
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  patch: { statement: { frequency: "MONTHLY", deliveryChannel: "EMAIL" } },
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  patch: {
+                    CurrentAccountStatementRecord: {
+                      AccountStatementFrequencyType: "MONTHLY",
+                      AccountStatementDeliveryChannelType: "EMAIL",
+                    },
+                  },
                 },
               },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["accountId", "version", "updatedAt"],
-                example: { accountId: "ACC-20260507-000891", version: 7, updatedAt: "2026-05-07T11:31:00.000Z" },
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "RecordVersionNumber",
+                  "RecordUpdateDateTime",
+                ],
+                example: {
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  RecordVersionNumber: 7,
+                  RecordUpdateDateTime: "2026-05-07T11:31:00.000Z",
+                },
               },
               errors: [
-                { code: 409, meaning: "Conflict", when: "Optimistic-lock version mismatch." },
+                { code: 409, meaning: "Conflict", when: "Optimistic-lock RecordVersionNumber mismatch." },
               ],
             },
             {
@@ -270,28 +349,40 @@ export const BIAN_API_CATALOG = {
               ],
               enums: [
                 { label: "Control action", values: ["APPLY", "RELEASE"] },
-                { label: "Restriction type", values: ["FROZEN", "DEBIT_BLOCK", "CREDIT_BLOCK", "FULL_BLOCK"] },
+                { label: "AccountRestrictionType", values: ["FROZEN", "DEBIT_BLOCK", "CREDIT_BLOCK", "FULL_BLOCK"] },
               ],
               request: {
+                notes: "`action` is an operational APPLY/RELEASE selector (not a BIAN attribute); the `CurrentAccountRestrictionRecord` payload uses BIAN canonical names.",
                 example: {
-                  accountId: "ACC-20260507-000891",
+                  CurrentAccountReference: "ACC-20260507-000891",
                   action: "APPLY",
-                  restriction: { type: "DEBIT_BLOCK", reason: "AML investigation case CASE-2026-0042" },
+                  CurrentAccountRestrictionRecord: {
+                    AccountRestrictionType: "DEBIT_BLOCK",
+                    AccountRestrictionReasonText: "AML investigation case CASE-2026-0042",
+                  },
                 },
               },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["accountId", "restriction", "appliedAt", "appliedBy"],
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "CurrentAccountRestrictionRecord",
+                  "AccountRestrictionAppliedDate",
+                  "AccountRestrictionAppliedByReference",
+                ],
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  restriction: { type: "DEBIT_BLOCK", reason: "AML investigation case CASE-2026-0042" },
-                  appliedAt: "2026-05-07T11:42:18.000Z",
-                  appliedBy: "ops.compliance@leafybank.com",
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  CurrentAccountRestrictionRecord: {
+                    AccountRestrictionType: "DEBIT_BLOCK",
+                    AccountRestrictionReasonText: "AML investigation case CASE-2026-0042",
+                  },
+                  AccountRestrictionAppliedDate: "2026-05-07T11:42:18.000Z",
+                  AccountRestrictionAppliedByReference: "ops.compliance@leafybank.com",
                 },
               },
               errors: [
                 { code: 403, meaning: "Forbidden", when: "Caller lacks Account-Control scope." },
-                { code: 404, meaning: "Not Found", when: "accountId not found." },
+                { code: 404, meaning: "Not Found", when: "CurrentAccountReference not found." },
               ],
               notesFooter: "Each control action emits an OCSF 4002 Authorization Activity event to the WORM audit sink.",
             },
@@ -306,17 +397,27 @@ export const BIAN_API_CATALOG = {
                 { name: "Authorization", required: true, notes: "Bearer token with Account-Read scope." },
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
-              request: { example: { accountId: "ACC-20260507-000891" } },
+              request: { example: { CurrentAccountReference: "ACC-20260507-000891" } },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["accountId", "balance", "asOf"],
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "CurrentAccountBalanceRecord",
+                  "CurrentAccountBalanceUpdateDateTime",
+                ],
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  balance: { current: 12450.18, available: 12450.18, ledger: 12450.18, hold: 0, overdraftLimit: 500 },
-                  asOf: "2026-05-07T11:43:01.014Z",
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  CurrentAccountBalanceRecord: {
+                    CurrentAccountBalanceAmount: 12450.18,
+                    CurrentAccountAvailableBalanceAmount: 12450.18,
+                    CurrentAccountLedgerBalanceAmount: 12450.18,
+                    CurrentAccountHoldAmount: 0,
+                    CurrentAccountOverdraftLimitAmount: 500,
+                  },
+                  CurrentAccountBalanceUpdateDateTime: "2026-05-07T11:43:01.014Z",
                 },
               },
-              errors: [{ code: 404, meaning: "Not Found", when: "accountId not found." }],
+              errors: [{ code: 404, meaning: "Not Found", when: "CurrentAccountReference not found." }],
             },
             {
               id: "account_txn_request",
@@ -330,24 +431,36 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               request: {
+                notes: "`page` and `filter` are operational pagination/filter wrappers (not BIAN attributes).",
                 example: {
-                  accountId: "ACC-20260507-000891",
+                  CurrentAccountReference: "ACC-20260507-000891",
                   page: { limit: 50, cursor: null },
                   filter: { from: "2026-04-01", to: "2026-05-07" },
                 },
               },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["accountId", "transactions", "page"],
+                envelopeKeys: [
+                  "CurrentAccountReference",
+                  "CurrentAccountTransactionRecord",
+                  "page",
+                ],
                 example: {
-                  accountId: "ACC-20260507-000891",
-                  transactions: [
-                    { txnId: "TXN-2026-04-15-0001", type: "CREDIT", amount: 1000, currency: "USD", bookingDate: "2026-04-15", balanceAfter: 12450.18 },
+                  CurrentAccountReference: "ACC-20260507-000891",
+                  CurrentAccountTransactionRecord: [
+                    {
+                      TransactionReference: "TXN-2026-04-15-0001",
+                      TransactionType: "CREDIT",
+                      TransactionAmount: 1000,
+                      TransactionCurrencyCode: "USD",
+                      TransactionBookingDate: "2026-04-15",
+                      CurrentAccountBalanceAfterTransactionAmount: 12450.18,
+                    },
                   ],
                   page: { nextCursor: null, hasMore: false },
                 },
               },
-              errors: [{ code: 404, meaning: "Not Found", when: "accountId not found." }],
+              errors: [{ code: 404, meaning: "Not Found", when: "CurrentAccountReference not found." }],
             },
           ],
         },
@@ -374,44 +487,50 @@ export const BIAN_API_CATALOG = {
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
               enums: [
-                { label: "Rail", values: ["SWIFT", "RTGS", "RTP", "ACH", "CARD", "INTERNAL"] },
-                { label: "Charge bearer", values: ["DEBT", "CRED", "SHAR", "SLEV"] },
-                { label: "Priority", values: ["NORM", "HIGH", "URGT"] },
+                { label: "PaymentRailType", values: ["SWIFT", "RTGS", "RTP", "ACH", "CARD", "INTERNAL"] },
+                { label: "PaymentChargeBearerType", values: ["DEBT", "CRED", "SHAR", "SLEV"] },
+                { label: "PaymentPriorityType", values: ["NORM", "HIGH", "URGT"] },
               ],
               request: {
-                notes: "ISO 20022 pacs.008-style fields. The proxy stamps the canonical envelope and forwards Idempotency-Key downstream.",
+                notes: "ISO 20022 pacs.008-style fields under BIAN canonical names. The proxy stamps the canonical envelope and forwards Idempotency-Key downstream.",
                 example: {
-                  customerId: "CUS-20260507-000142",
-                  rail: "SWIFT",
-                  type: "EXTERNAL_OUTBOUND",
-                  amount: 1000,
-                  currency: "USD",
-                  debtor: { accountId: "ACC-20260507-000891" },
-                  creditor: {
-                    name: "Acme GmbH",
-                    iban: "DE89370400440532013000",
-                    bic: "COBADEFFXXX",
-                    bankName: "Commerzbank AG",
-                    bankCountry: "DE",
+                  CustomerReference: "CUS-20260507-000142",
+                  PaymentRailType: "SWIFT",
+                  PaymentType: "EXTERNAL_OUTBOUND",
+                  PaymentTransactionAmount: 1000,
+                  PaymentTransactionCurrencyCode: "USD",
+                  PaymentDebtorRecord: { DebtorAccountReference: "ACC-20260507-000891" },
+                  PaymentCreditorRecord: {
+                    CreditorPartyName: "Acme GmbH",
+                    CreditorInternationalBankAccountNumber: "DE89370400440532013000",
+                    CreditorBankIdentifierCode: "COBADEFFXXX",
+                    CreditorBankName: "Commerzbank AG",
+                    CreditorBankCountryCode: "DE",
                   },
-                  remittance: { unstructured: "Invoice 2026-04-PRO-2010" },
-                  chargeBearer: "SHAR",
-                  priority: "NORM",
+                  PaymentRemittanceRecord: { RemittanceUnstructuredInformationText: "Invoice 2026-04-PRO-2010" },
+                  PaymentChargeBearerType: "SHAR",
+                  PaymentPriorityType: "NORM",
                 },
               },
               response: {
                 successCodes: [201, 202],
-                envelopeKeys: ["paymentId", "endToEndId", "uetr", "status", "initiatedAt"],
+                envelopeKeys: [
+                  "PaymentOrderReference",
+                  "PaymentEndToEndIdentifier",
+                  "PaymentUniqueTransactionReference",
+                  "PaymentApexStatus",
+                  "PaymentInitiationDateTime",
+                ],
                 example: {
-                  paymentId: "PAY-20260507-0042",
-                  endToEndId: "E2E-pay-550e8400-e29b",
-                  uetr: "550e8400-e29b-41d4-a716-446655440000",
-                  status: "ACCEPTED",
-                  initiatedAt: "2026-05-07T11:48:32.401Z",
+                  PaymentOrderReference: "PAY-20260507-0042",
+                  PaymentEndToEndIdentifier: "E2E-pay-550e8400-e29b",
+                  PaymentUniqueTransactionReference: "550e8400-e29b-41d4-a716-446655440000",
+                  PaymentApexStatus: "ACCEPTED",
+                  PaymentInitiationDateTime: "2026-05-07T11:48:32.401Z",
                 },
               },
               errors: [
-                { code: 400, meaning: "Bad Request", when: "Missing creditor.iban for SWIFT/RTGS rails, or amount <= 0." },
+                { code: 400, meaning: "Bad Request", when: "Missing CreditorInternationalBankAccountNumber for SWIFT/RTGS rails, or PaymentTransactionAmount <= 0." },
                 { code: 403, meaning: "Forbidden", when: "Debtor account has a DEBIT_BLOCK restriction in force." },
                 { code: 409, meaning: "Conflict", when: "Same Idempotency-Key replayed with a different payload." },
                 { code: 422, meaning: "Unprocessable Entity", when: "Insufficient available balance + overdraft, or sanctions check FAIL." },
@@ -422,34 +541,50 @@ export const BIAN_API_CATALOG = {
               id: "payment_retrieve",
               method: "POST",
               path: "/PaymentOrderProcedure/Retrieve",
-              summary: "Retrieve a payment order by paymentId — full ISO 20022 envelope, clearing/settlement timeline, and fraud evaluation.",
+              summary: "Retrieve a payment order by PaymentOrderReference — full ISO 20022 envelope, clearing/settlement timeline, and fraud evaluation.",
               bianAction: "retrieve",
               bianBehaviorQualifier: "PaymentOrderInitiation",
               headers: [
                 { name: "Authorization", required: true, notes: "Bearer token with Payment-Read scope." },
                 { name: "Content-Type", required: true, notes: "application/json" },
               ],
-              request: { example: { paymentId: "PAY-20260507-0042" } },
+              request: { example: { PaymentOrderReference: "PAY-20260507-0042" } },
               response: {
                 successCodes: [200],
-                envelopeKeys: ["paymentId", "status", "amount", "currency", "debtor", "creditor", "clearing", "fraud"],
+                envelopeKeys: [
+                  "PaymentOrderReference",
+                  "PaymentApexStatus",
+                  "PaymentTransactionAmount",
+                  "PaymentTransactionCurrencyCode",
+                  "PaymentDebtorRecord",
+                  "PaymentCreditorRecord",
+                  "PaymentClearingAndSettlementRecord",
+                  "PaymentFraudEvaluationRecord",
+                ],
                 example: {
-                  paymentId: "PAY-20260507-0042",
-                  status: "SETTLED",
-                  amount: 1000,
-                  currency: "USD",
-                  debtor: { accountId: "ACC-20260507-000891" },
-                  creditor: { name: "Acme GmbH", bic: "COBADEFFXXX" },
-                  clearing: {
-                    receivedAt: "2026-05-07T11:48:32.401Z",
-                    settledAt: "2026-05-07T11:48:34.918Z",
-                    settlementDate: "2026-05-07",
-                    networkRef: "SWIFT-MT103-RX-2026-05-07-0098",
+                  PaymentOrderReference: "PAY-20260507-0042",
+                  PaymentApexStatus: "SETTLED",
+                  PaymentTransactionAmount: 1000,
+                  PaymentTransactionCurrencyCode: "USD",
+                  PaymentDebtorRecord: { DebtorAccountReference: "ACC-20260507-000891" },
+                  PaymentCreditorRecord: {
+                    CreditorPartyName: "Acme GmbH",
+                    CreditorBankIdentifierCode: "COBADEFFXXX",
                   },
-                  fraud: { score: 0.12, decision: "ALLOW", checkedAt: "2026-05-07T11:48:32.602Z" },
+                  PaymentClearingAndSettlementRecord: {
+                    PaymentReceivedDateTime: "2026-05-07T11:48:32.401Z",
+                    PaymentSettledDateTime: "2026-05-07T11:48:34.918Z",
+                    PaymentSettlementDate: "2026-05-07",
+                    PaymentClearingNetworkReference: "SWIFT-MT103-RX-2026-05-07-0098",
+                  },
+                  PaymentFraudEvaluationRecord: {
+                    PaymentFraudScore: 0.12,
+                    PaymentFraudDecisionType: "ALLOW",
+                    FraudEvaluationDateTime: "2026-05-07T11:48:32.602Z",
+                  },
                 },
               },
-              errors: [{ code: 404, meaning: "Not Found", when: "paymentId not found." }],
+              errors: [{ code: 404, meaning: "Not Found", when: "PaymentOrderReference not found." }],
             },
           ],
         },

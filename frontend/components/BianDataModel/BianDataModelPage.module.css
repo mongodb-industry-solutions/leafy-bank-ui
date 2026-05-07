@@ -3,8 +3,9 @@
 .shell {
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 60px);
+  height: calc(100vh - 60px);
   background: #FFFFFF;
+  overflow: hidden;
 }
 
 /* HERO — slate hero (palette.gray.dark3) with green accent border */
@@ -18,6 +19,7 @@
   gap: 16px;
   flex-wrap: wrap;
   border-bottom: 3px solid #00684A; /* palette.green.dark2 */
+  flex-shrink: 0;
 }
 .heroLeft { display: flex; flex-direction: column; gap: 4px; }
 .backButton {
@@ -58,7 +60,13 @@
 .heroStatLbl { font-size: 9px; color: #89979B; text-transform: uppercase; letter-spacing: 0.1em; }
 
 /* LAYOUT */
-.body { display: flex; flex: 1; min-height: 0; }
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 
 /* SIDEBAR */
 .sidebar {
