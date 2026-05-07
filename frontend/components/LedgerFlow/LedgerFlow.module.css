@@ -201,12 +201,11 @@
   flex-shrink: 0;
 }
 
-/* Interpreter band — capped, scrolls inside if needed */
+/* Interpreter band — fixed height so the canvas above never jumps */
 .interpreterBand {
   display: flex;
   flex-direction: column;
-  min-height: 200px;
-  max-height: 26vh;
+  height: clamp(160px, 24vh, 220px);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -257,5 +256,5 @@
     overflow: visible;
   }
   .canvasBand { min-height: 540px; }
-  .interpreterBand { max-height: none; }
+  .interpreterBand { height: auto; min-height: 160px; }
 }

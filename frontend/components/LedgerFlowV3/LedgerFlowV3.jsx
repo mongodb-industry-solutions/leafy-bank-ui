@@ -875,48 +875,62 @@ const LedgerFlowV3 = () => {
     sceneRunnerRef.current = sceneRunnerFn(currentTimeline.slice(nextIdx + 1), dispatch, "STEP");
   }, [state.scene, state.sceneIndex, state.status, state.events, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac, startSceneInStepMode]);
 
-  // ─── Global Prev — step back within current scene ─────────────────────────
+  // ─── Global Prev — step back within scene, or jump to previous scene ────────
   const handleGlobalPrev = useCallback(() => {
+    // Try stepping back within the current scene first.
     switch (state.scene) {
       case "ONBOARDING":
-        if (!onboardingHasPrevStage(onboarding) || !onboardRunRef.current) return;
-        onboardRunnerRef.current?.cancel?.();
-        dispatch({ type: "ONBOARD_STEP_PREV" }); break;
+        if (onboardingHasPrevStage(onboarding) && onboardRunRef.current) {
+          onboardRunnerRef.current?.cancel?.();
+          dispatch({ type: "ONBOARD_STEP_PREV" }); return;
+        } break;
       case "POSTING":
-        if (!hasPrevStage(state) || !runRef.current) return;
-        runnerRef.current?.cancel?.();
-        dispatch({ type: "STEP_PREV" }); break;
+        if (hasPrevStage(state) && runRef.current) {
+          runnerRef.current?.cancel?.();
+          dispatch({ type: "STEP_PREV" }); return;
+        } break;
       case "ENGINE":
-        if (!engineHasPrevStage(engine) || !engineRunRef.current) return;
-        engineRunnerRef.current?.cancel?.();
-        dispatch({ type: "ENGINE_STEP_PREV" }); break;
+        if (engineHasPrevStage(engine) && engineRunRef.current) {
+          engineRunnerRef.current?.cancel?.();
+          dispatch({ type: "ENGINE_STEP_PREV" }); return;
+        } break;
       case "RECONCILE":
-        if (!reconcileHasPrevStage(reconcile) || !reconcileRunRef.current) return;
-        reconcileRunnerRef.current?.cancel?.();
-        dispatch({ type: "RECONCILE_STEP_PREV" }); break;
+        if (reconcileHasPrevStage(reconcile) && reconcileRunRef.current) {
+          reconcileRunnerRef.current?.cancel?.();
+          dispatch({ type: "RECONCILE_STEP_PREV" }); return;
+        } break;
       case "FANOUT":
-        if (!fanoutHasPrevStage(fanout) || !fanoutRunRef.current) return;
-        fanoutRunnerRef.current?.cancel?.();
-        dispatch({ type: "FANOUT_STEP_PREV" }); break;
+        if (fanoutHasPrevStage(fanout) && fanoutRunRef.current) {
+          fanoutRunnerRef.current?.cancel?.();
+          dispatch({ type: "FANOUT_STEP_PREV" }); return;
+        } break;
       case "HARD_EDGE":
-        if (!hardEdgeHasPrevStage(hardEdge) || !hardEdgeRunRef.current) return;
-        hardEdgeRunnerRef.current?.cancel?.();
-        dispatch({ type: "HARD_EDGE_STEP_PREV" }); break;
+        if (hardEdgeHasPrevStage(hardEdge) && hardEdgeRunRef.current) {
+          hardEdgeRunnerRef.current?.cancel?.();
+          dispatch({ type: "HARD_EDGE_STEP_PREV" }); return;
+        } break;
       case "ERASURE":
-        if (!erasureHasPrevStage(erasure) || !erasureRunRef.current) return;
-        erasureRunnerRef.current?.cancel?.();
-        dispatch({ type: "ERASURE_STEP_PREV" }); break;
+        if (erasureHasPrevStage(erasure) && erasureRunRef.current) {
+          erasureRunnerRef.current?.cancel?.();
+          dispatch({ type: "ERASURE_STEP_PREV" }); return;
+        } break;
       case "ARCH":
-        if (!archHasPrevStage(arch) || !archRunRef.current) return;
-        archRunnerRef.current?.cancel?.();
-        dispatch({ type: "ARCH_STEP_PREV" }); break;
+        if (archHasPrevStage(arch) && archRunRef.current) {
+          archRunnerRef.current?.cancel?.();
+          dispatch({ type: "ARCH_STEP_PREV" }); return;
+        } break;
       case "RBAC":
-        if (!rbacHasPrevStage(rbac) || !rbacRunRef.current) return;
-        rbacRunnerRef.current?.cancel?.();
-        dispatch({ type: "RBAC_STEP_PREV" }); break;
+        if (rbacHasPrevStage(rbac) && rbacRunRef.current) {
+          rbacRunnerRef.current?.cancel?.();
+          dispatch({ type: "RBAC_STEP_PREV" }); return;
+        } break;
       default: break;
     }
-  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac]);
+    // No step to go back to — navigate to the previous scene.
+    if (state.sceneIndex > 0) {
+      handleSetScene(SCENES[state.sceneIndex - 1].key);
+    }
+  }, [state, onboarding, engine, reconcile, fanout, hardEdge, erasure, arch, rbac, handleSetScene]);
 
   // ─── Global Reset ─────────────────────────────────────────────────────────
   const handleGlobalReset = useCallback(() => {
@@ -948,6 +962,9 @@ const LedgerFlowV3 = () => {
   );
 
   const canGlobalPrev = useMemo(() => {
+    // Can always go left if a previous scene exists.
+    if (state.sceneIndex > 0) return true;
+    // Otherwise check if current scene has a step to go back to.
     switch (state.scene) {
       case "ONBOARDING": return onboardingHasPrevStage(onboarding);
       case "POSTING":    return hasPrevStage(state);

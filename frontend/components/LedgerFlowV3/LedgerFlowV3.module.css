@@ -202,8 +202,7 @@
 .interpreterBand {
   display: flex;
   flex-direction: column;
-  min-height: 160px;
-  max-height: 26vh;
+  height: clamp(140px, 22vh, 220px);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -349,8 +348,7 @@
     min-height: 320px;
   }
   .interpreterBand {
-    max-height: 180px;
-    min-height: 130px;
+    height: clamp(130px, 20vh, 180px);
   }
 }
 
@@ -403,8 +401,7 @@
     min-height: 220px;
   }
   .interpreterBand {
-    min-height: 100px;
-    max-height: none;
+    height: 120px;
   }
   .btnRow {
     gap: 4px;
