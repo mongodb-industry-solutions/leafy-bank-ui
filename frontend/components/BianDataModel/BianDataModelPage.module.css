@@ -231,11 +231,25 @@
 .mapLi { display: flex; align-items: center; gap: 6px; }
 .mapLd { width: 8px; height: 8px; border-radius: 2px; }
 .mapSec {
-  padding: 8px 12px; background: #F9FBFA; font-size: 10px; color: #00684A;
-  text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; border-bottom: 1px solid #E8EDEB; border-top: 1px solid #E8EDEB;
+  padding: 8px 12px; background: #F9FBFA; /* palette.gray.light3 */
+  font-size: 10px; color: #5C6C75; /* palette.gray.dark1 — neutral eyebrow, no green bleed */
+  text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;
+  border-bottom: 1px solid #E8EDEB; border-top: 1px solid #E8EDEB; /* palette.gray.light2 */
 }
-.mapBian { color: #00684A; font-family: 'Source Code Pro', monospace; font-size: 11.5px; font-weight: 600; }
-.mapMongo { color: #001E2B; font-family: 'Source Code Pro', monospace; font-size: 11.5px; }
+/* BIAN cell: bold dark navy with a green left-marker for semantic cue,
+   instead of all-green text. Mongo cell stays normal-weight dark navy. */
+.mapBian {
+  display: inline-block;
+  color: #001E2B; /* palette.black — text.primary */
+  font-family: 'Source Code Pro', monospace; font-size: 11.5px; font-weight: 600;
+  border-left: 3px solid #00684A; /* palette.green.dark2 — semantic accent */
+  padding-left: 8px;
+  line-height: 1.4;
+}
+.mapMongo {
+  color: #001E2B; /* palette.black */
+  font-family: 'Source Code Pro', monospace; font-size: 11.5px; font-weight: 400;
+}
 
 /* BQ TAB */
 .bqCard {
@@ -281,10 +295,12 @@
 .dbName { font-family: 'Source Code Pro', monospace; font-size: 11px; color: #00684A; font-weight: 600; }
 .dbColls { font-size: 10.5px; color: #5C6C75; margin-top: 2px; }
 
-/* Semantic API view */
+/* Semantic API view — no inner scroll/overflow; main pane is the scroll context */
 .semanticApi {
-  background: #FFFFFF; border: 1px solid #E8EDEB; border-radius: 12px;
-  padding: 0; overflow: hidden;
+  background: #FFFFFF; /* palette.white */
+  border: 1px solid #E8EDEB; /* palette.gray.light2 */
+  border-radius: 12px;
+  padding: 0;
 }
 .semanticApiHero {
   background: linear-gradient(135deg, #00684A 0%, #023430 100%);
