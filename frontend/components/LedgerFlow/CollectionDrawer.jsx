@@ -28,7 +28,7 @@ function FieldTable({ fields }) {
           <th className={styles.fieldTh}>Field</th>
           <th className={styles.fieldTh}>Type</th>
           <th className={`${styles.fieldTh} ${styles.fieldThReq}`}>Req</th>
-          <th className={styles.fieldTh}>BIAN Alias</th>
+          <th className={styles.fieldTh} title="BIAN v14 canonical name — represents the SD/CR/BQ attribute or aggregate this Mongo field maps to">BIAN Name</th>
           <th className={styles.fieldTh}>Notes</th>
         </tr>
       </thead>
@@ -259,7 +259,6 @@ const CollectionDrawer = ({ open, setOpen }) => {
                 const prev = i > 0 ? COLLECTIONS[COLLECTION_KEYS[i - 1]] : null;
                 const showGroup = c.group && (!prev || prev.group !== c.group);
                 const active = k === activeKey;
-                const dbOverride = c.database && c.database !== META.database;
                 return (
                   <React.Fragment key={k}>
                     {showGroup && (
@@ -281,7 +280,6 @@ const CollectionDrawer = ({ open, setOpen }) => {
                           {c.fields.length} fields
                           {c.indexes?.length > 0 && <> · {c.indexes.length} indexes</>}
                           {c.immutable && <span className={styles.railImmutable}> · immutable</span>}
-                          {dbOverride && <span className={styles.railDbTag}> · {c.database}</span>}
                         </span>
                       </button>
                     </li>
