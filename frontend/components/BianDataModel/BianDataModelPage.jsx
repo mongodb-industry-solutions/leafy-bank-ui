@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Body, H1, H2, H3, Subtitle, Overline } from "@leafygreen-ui/typography";
 import TextInput from "@leafygreen-ui/text-input";
 import Badge from "@leafygreen-ui/badge";
 import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
+import IconButton from "@leafygreen-ui/icon-button";
 import Link from "next/link";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
 import {
@@ -18,6 +20,7 @@ import {
   PATTERN_COLORS,
 } from "./bianDataModelData";
 import BianApiTab from "../BianExplorer/BianApiTab";
+import { fetchBianApiCatalog } from "@/lib/api/bian/bian_api";
 import styles from "./BianDataModelPage.module.css";
 
 const SEMANTIC_API_KEY = "__semantic_api__";
@@ -290,6 +293,32 @@ function DomainView({ activeKey }) {
 }
 
 function SemanticApiView() {
+  const [catalog, setCatalog] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    fetchBianApiCatalog()
+      .then((data) => {
+        if (cancelled) return;
+        setCatalog(data?.catalog || data);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setError(e?.message || "Failed to load BIAN API catalog");
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
+
   return (
     <div className={styles.semanticApi}>
       <div className={styles.semanticApiHero}>
@@ -297,7 +326,12 @@ function SemanticApiView() {
         <p>BIAN-compliant action endpoints (initiate / retrieve / update / execute / notify) mapped to the consolidated MongoDB data model. Browse by service domain.</p>
       </div>
       <div className={styles.semanticApiInner}>
-        <BianApiTab />
+        <BianApiTab
+          catalog={catalog}
+          loading={loading}
+          error={error}
+          onRetry={() => setReloadKey((k) => k + 1)}
+        />
       </div>
     </div>
   );
@@ -306,6 +340,14 @@ function SemanticApiView() {
 export default function BianDataModelPage() {
   const [activeKey, setActiveKey] = useState(DOMAIN_MAP[0].key);
   const [filter, setFilter] = useState("");
+  const router = useRouter();
+  const handleBack = useCallback(() => {
+    if (typeof window !== "undefined" && window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/");
+    }
+  }, [router]);
 
   const filteredDomains = useMemo(() => {
     if (!filter.trim()) return DOMAIN_MAP;
@@ -323,6 +365,15 @@ export default function BianDataModelPage() {
       {/* HERO */}
       <div className={styles.hero}>
         <div className={styles.heroLeft}>
+          <button
+            type="button"
+            className={styles.backButton}
+            onClick={handleBack}
+            aria-label="Go back"
+          >
+            <Icon glyph="ArrowLeft" size="small" />
+            <span>Back</span>
+          </button>
           <Overline className={styles.heroEyebrow}>
             <span className={styles.heroDot} />
             Leafy Bank · MongoDB · BIAN v14
