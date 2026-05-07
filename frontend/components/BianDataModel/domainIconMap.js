@@ -12,12 +12,12 @@ export const DOMAIN_ICONS = {
   subLedgerEntries: "List",
   fraudEvaluation: "Warning",
   fraudResolution: "MagnifyingGlass",
-  portfolioAllocation: "ChartLine",
-  portfolioPerformance: "Diagram3",
-  canonicalJsonStorage: "Bolt",
+  portfolioAllocation: "Charts",
+  portfolioPerformance: "TimeSeries",
+  canonicalJsonStorage: "LightningBolt",
   loans: "Building",
   borrowers: "PersonGroup",
-  creditReports: "ChartGrowth",
+  creditReports: "Gauge",
 };
 
 export const SEMANTIC_API_ICON = "Connect";
