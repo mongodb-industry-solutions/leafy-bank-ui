@@ -27,7 +27,6 @@ function FieldTable({ fields }) {
         <tr>
           <th className={styles.fieldTh}>Field</th>
           <th className={styles.fieldTh}>Type</th>
-          <th className={`${styles.fieldTh} ${styles.fieldThReq}`}>Req</th>
           <th className={styles.fieldTh} title="BIAN v14 canonical name — represents the SD/CR/BQ attribute or aggregate this Mongo field maps to">BIAN Name</th>
           <th className={styles.fieldTh}>Notes</th>
         </tr>
@@ -39,7 +38,6 @@ function FieldTable({ fields }) {
             <td className={styles.fieldTdType}>
               <span className={`${styles.typePill} ${styles[`type_${f.type}`] || ""}`}>{f.type}</span>
             </td>
-            <td className={styles.fieldTdReq}>{f.required ? <span className={styles.reqCheck}>✓</span> : <span className={styles.reqDot}>·</span>}</td>
             <td className={styles.fieldTdBian}>{f.bian ? <code className={styles.bianValue}>{f.bian}</code> : <span className={styles.bianNone}>—</span>}</td>
             <td className={styles.fieldTdNote}>{f.note || ""}</td>
           </tr>
