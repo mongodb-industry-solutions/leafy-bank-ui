@@ -292,8 +292,14 @@ export const COLLECTIONS = {
     ],
     sampleDocuments: [
       {
-        label: "Immutable — pinned snapshot (ledger only)",
+        label: "Immutable — pinned snapshot",
+        kind: "immutable",
         accent: "yellow",
+        documentId: "bian-mapping-immutable-v1.0",
+        version: "v1.0",
+        caption:
+          "Ledger collections only (journalEntries, subLedgerEntries). Write-once; every posted journal pins this exact mapping version. Modifying this document silently rewrites the historical audit trail.",
+        scope: "journalEntries · subLedgerEntries",
         doc: {
           $meta: {
             documentId: "bian-mapping-immutable-v1.0",
@@ -357,8 +363,14 @@ export const COLLECTIONS = {
         },
       },
       {
-        label: "Mutable — living catalog (business-logic collections, truncated)",
+        label: "Mutable — living catalog",
+        kind: "mutable",
         accent: "blue",
+        documentId: "bian-mapping-mutable",
+        version: "latest",
+        caption:
+          "Business-logic collections (customers, accounts, payments, fraud, lending, portfolio). Updated in place — consumers always read the latest. Truncated below; ~300 field mappings across 11 collections.",
+        scope: "11 business-logic collections",
         doc: {
           $meta: {
             documentId: "bian-mapping-mutable",

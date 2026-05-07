@@ -474,6 +474,129 @@
   overflow: hidden;
 }
 
+/* ─────────── Sample-document cards (multi-doc, e.g. bianMappings) ─────────── */
+
+.sampleDocStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sampleDocCard {
+  border: 1px solid #E8EDEB;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 30, 43, 0.06);
+}
+
+.sampleDocCard_yellow {
+  border-color: #F9D277;
+  border-left: 4px solid #C2872B;
+}
+
+.sampleDocCard_blue {
+  border-color: #B1D8F7;
+  border-left: 4px solid #1254B7;
+}
+
+.sampleDocHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px 10px 16px;
+  background: linear-gradient(to bottom, #F9FBFA 0%, #FFFFFF 100%);
+  border-bottom: 1px solid #E8EDEB;
+  flex-wrap: wrap;
+}
+
+.sampleDocHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sampleDocBadge {
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  flex-shrink: 0;
+}
+
+.sampleDocTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.sampleDocTitle {
+  font-family: 'Euclid Circular A', 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #001E2B;
+  line-height: 1.2;
+}
+
+.sampleDocId {
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+  color: #5C6C75;
+  background: #F1F3F4;
+  padding: 1px 6px;
+  border-radius: 4px;
+  border: 1px solid #E8EDEB;
+  width: fit-content;
+}
+
+.sampleDocHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sampleDocPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #F9FBFA;
+  border: 1px solid #E8EDEB;
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+}
+
+.sampleDocPillLabel {
+  color: #889397;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.sampleDocPillValue {
+  color: #001E2B;
+  font-weight: 600;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 11px;
+}
+
+.sampleDocCaption {
+  margin: 0;
+  padding: 10px 16px 12px 16px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #5C6C75;
+  background: #FCFDFC;
+  border-bottom: 1px solid #E8EDEB;
+}
+
+.sampleDocCard .codeWrap {
+  border-radius: 0;
+}
+
 .decisionGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

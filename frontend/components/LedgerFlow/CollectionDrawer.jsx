@@ -139,19 +139,55 @@ function CollectionPanel({ collectionKey }) {
 
       {/* SAMPLE DOCUMENT(S) */}
       {c.sampleDocuments ? (
-        c.sampleDocuments.map((s, i) => (
-          <section key={i} className={styles.section}>
-            <div className={styles.sectionHead}>
-              <Overline className={styles.sectionEyebrow}>Sample document</Overline>
-              {s.accent ? <Badge variant={s.accent}>{s.label}</Badge> : <span className={styles.sectionPath}>{s.label}</span>}
-            </div>
-            <div className={styles.codeWrap}>
-              <Code language="json" copyable>
-                {JSON.stringify(s.doc, null, 2)}
-              </Code>
-            </div>
-          </section>
-        ))
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <Overline className={styles.sectionEyebrow}>Sample documents</Overline>
+            <span className={styles.sectionCount}>{c.sampleDocuments.length}</span>
+            <span className={styles.sectionPath}>one per <code>$meta.versionType</code></span>
+          </div>
+          <div className={styles.sampleDocStack}>
+            {c.sampleDocuments.map((s, i) => (
+              <article
+                key={i}
+                className={`${styles.sampleDocCard} ${s.accent ? styles[`sampleDocCard_${s.accent}`] : ""}`}
+              >
+                <header className={styles.sampleDocHeader}>
+                  <div className={styles.sampleDocHeaderLeft}>
+                    <Badge variant={s.accent || "lightgray"} className={styles.sampleDocBadge}>
+                      {(s.kind || "").toUpperCase() || s.label}
+                    </Badge>
+                    <div className={styles.sampleDocTitleBlock}>
+                      <div className={styles.sampleDocTitle}>{s.label}</div>
+                      {s.documentId && (
+                        <code className={styles.sampleDocId}>{s.documentId}</code>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.sampleDocHeaderRight}>
+                    {s.version && (
+                      <span className={styles.sampleDocPill}>
+                        <span className={styles.sampleDocPillLabel}>version</span>
+                        <code className={styles.sampleDocPillValue}>{s.version}</code>
+                      </span>
+                    )}
+                    {s.scope && (
+                      <span className={styles.sampleDocPill}>
+                        <span className={styles.sampleDocPillLabel}>scope</span>
+                        <span className={styles.sampleDocPillValue}>{s.scope}</span>
+                      </span>
+                    )}
+                  </div>
+                </header>
+                {s.caption && <p className={styles.sampleDocCaption}>{s.caption}</p>}
+                <div className={styles.codeWrap}>
+                  <Code language="json" copyable>
+                    {JSON.stringify(s.doc, null, 2)}
+                  </Code>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
       ) : c.sampleDocument ? (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
