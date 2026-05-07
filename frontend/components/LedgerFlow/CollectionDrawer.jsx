@@ -20,6 +20,25 @@ function StatPill({ label, value, accent }) {
   );
 }
 
+function FieldName({ name }) {
+  const segs = name.split(".");
+  const depth = segs.length - 1;
+  const leaf = segs[depth];
+  const prefix = depth > 0 ? segs.slice(0, depth).join(".") + "." : "";
+  return (
+    <div
+      className={styles.fieldNameWrap}
+      style={depth > 0 ? { paddingLeft: `${depth * 14}px` } : undefined}
+    >
+      {depth > 0 && <span className={styles.fieldNameConnector} aria-hidden="true">└</span>}
+      <code className={styles.fieldNameCode}>
+        {prefix && <span className={styles.fieldNamePrefix}>{prefix}</span>}
+        <span className={styles.fieldNameLeaf}>{leaf}</span>
+      </code>
+    </div>
+  );
+}
+
 function FieldTable({ fields }) {
   return (
     <table className={styles.fieldTable}>
@@ -34,7 +53,7 @@ function FieldTable({ fields }) {
       <tbody>
         {fields.map((f) => (
           <tr key={f.name} className={`${styles.fieldTr} ${f.required ? styles.fieldTrRequired : ""}`}>
-            <td className={styles.fieldTdName}><code>{f.name}</code></td>
+            <td className={styles.fieldTdName}><FieldName name={f.name} /></td>
             <td className={styles.fieldTdType}>
               <span className={`${styles.typePill} ${styles[`type_${f.type}`] || ""}`}>{f.type}</span>
             </td>
