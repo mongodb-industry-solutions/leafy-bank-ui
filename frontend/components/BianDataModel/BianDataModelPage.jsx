@@ -20,7 +20,9 @@ import {
   PATTERN_COLORS,
 } from "./bianDataModelData";
 import BianApiTab from "../BianExplorer/BianApiTab";
-import { fetchBianApiCatalog } from "@/lib/api/bian/bian_api";
+import { BIAN_API_CATALOG } from "./bianApiCatalog";
+import { palette } from "@leafygreen-ui/palette";
+import { DOMAIN_ICONS, SEMANTIC_API_ICON } from "./domainIconMap";
 import styles from "./BianDataModelPage.module.css";
 
 const SEMANTIC_API_KEY = "__semantic_api__";
@@ -232,7 +234,9 @@ function DomainView({ activeKey }) {
       <div className={styles.domainHeader} style={{ "--accent": color }}>
         <div className={styles.dhLeft}>
           <div className={styles.dhRow1}>
-            <span className={styles.dhBigIcon}>{info.icon}</span>
+            <span className={styles.dhBigIcon} style={{ color }}>
+              <Icon glyph={DOMAIN_ICONS[activeKey] || "Folder"} size="large" />
+            </span>
             <span className={styles.dhSdLabel}>BIAN Service Domain</span>
             <Badge
               style={{ background: `${patColor}20`, color: patColor, border: `1px solid ${patColor}40` }}
@@ -254,7 +258,11 @@ function DomainView({ activeKey }) {
           <span className={styles.infoChip}>{fieldCount} fields</span>
           <span className={styles.infoChip}>{bmCount} BIAN mappings</span>
           {bqCount > 0 && <span className={`${styles.infoChip} ${styles.infoChipBq}`}>{bqCount} BQs</span>}
-          {d.immutable && <span className={`${styles.infoChip} ${styles.infoChipImmut}`}>⊘ Immutable</span>}
+          {d.immutable && (
+            <span className={`${styles.infoChip} ${styles.infoChipImmut}`}>
+              <Icon glyph="Lock" size="small" /> Immutable
+            </span>
+          )}
         </div>
       </div>
 
@@ -293,45 +301,14 @@ function DomainView({ activeKey }) {
 }
 
 function SemanticApiView() {
-  const [catalog, setCatalog] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    fetchBianApiCatalog()
-      .then((data) => {
-        if (cancelled) return;
-        setCatalog(data?.catalog || data);
-      })
-      .catch((e) => {
-        if (cancelled) return;
-        setError(e?.message || "Failed to load BIAN API catalog");
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
-
   return (
     <div className={styles.semanticApi}>
       <div className={styles.semanticApiHero}>
         <H3>Leafy Bank — BIAN Semantic API</H3>
-        <p>BIAN-compliant action endpoints (initiate / retrieve / update / execute / notify) mapped to the consolidated MongoDB data model. Browse by service domain.</p>
+        <p>BIAN-compliant action endpoints (initiate / retrieve / update / execute / register) mapped to the consolidated MongoDB data model. Browse by service domain.</p>
       </div>
       <div className={styles.semanticApiInner}>
-        <BianApiTab
-          catalog={catalog}
-          loading={loading}
-          error={error}
-          onRetry={() => setReloadKey((k) => k + 1)}
-        />
+        <BianApiTab catalog={BIAN_API_CATALOG} loading={false} error={null} />
       </div>
     </div>
   );
@@ -426,7 +403,9 @@ export default function BianDataModelPage() {
                       style={{ borderLeftColor: isActive ? d.color : "transparent" }}
                       onClick={() => setActiveKey(d.key)}
                     >
-                      <span className={styles.domainIcon}>{d.icon}</span>
+                      <span className={styles.domainIcon} style={{ color: isActive ? d.color : palette.gray.dark1 }}>
+                        <Icon glyph={DOMAIN_ICONS[d.key] || "Folder"} size="small" />
+                      </span>
                       <span
                         className={styles.domainName}
                         style={{ color: isActive ? d.color : undefined }}
@@ -445,13 +424,15 @@ export default function BianDataModelPage() {
           <button
             type="button"
             className={`${styles.domainBtn} ${activeKey === SEMANTIC_API_KEY ? styles.domainBtnActive : ""}`}
-            style={{ borderLeftColor: activeKey === SEMANTIC_API_KEY ? "#00684A" : "transparent" }}
+            style={{ borderLeftColor: activeKey === SEMANTIC_API_KEY ? palette.green.dark2 : "transparent" }}
             onClick={() => setActiveKey(SEMANTIC_API_KEY)}
           >
-            <span className={styles.domainIcon}>⚡</span>
+            <span className={styles.domainIcon} style={{ color: activeKey === SEMANTIC_API_KEY ? palette.green.dark2 : palette.gray.dark1 }}>
+              <Icon glyph={SEMANTIC_API_ICON} size="small" />
+            </span>
             <span
               className={styles.domainName}
-              style={{ color: activeKey === SEMANTIC_API_KEY ? "#00684A" : undefined }}
+              style={{ color: activeKey === SEMANTIC_API_KEY ? palette.green.dark2 : undefined }}
             >
               Leafy Bank Semantic API
             </span>
