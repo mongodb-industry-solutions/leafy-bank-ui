@@ -3,13 +3,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Body, H1, H2, H3, Subtitle, Overline } from "@leafygreen-ui/typography";
-import TextInput from "@leafygreen-ui/text-input";
+import { SearchInput } from "@leafygreen-ui/search-input";
 import Badge from "@leafygreen-ui/badge";
+import Banner from "@leafygreen-ui/banner";
 import Button from "@leafygreen-ui/button";
 import Icon from "@leafygreen-ui/icon";
 import IconButton from "@leafygreen-ui/icon-button";
 import Link from "next/link";
 import { Tabs, Tab } from "@leafygreen-ui/tabs";
+import { palette, uiTokens, spacing } from "@/lib/ui/leafygreenTokens";
 import {
   DOMAIN_MAP,
   GROUPS,
@@ -21,7 +23,6 @@ import {
 } from "./bianDataModelData";
 import BianApiTab from "../BianExplorer/BianApiTab";
 import { BIAN_API_CATALOG } from "./bianApiCatalog";
-import { palette } from "@leafygreen-ui/palette";
 import { DOMAIN_ICONS, SEMANTIC_API_ICON } from "./domainIconMap";
 import styles from "./BianDataModelPage.module.css";
 
@@ -58,8 +59,10 @@ function CollectionTab({ d }) {
         <div className={styles.metaRow}><span className={styles.metaLbl}>Immutable</span><span className={styles.metaVal}>{d.immutable ? "Yes — append only" : "No"}</span></div>
       </div>
       {d.immutable && (
-        <div className={styles.immutBanner}>
-          <Icon glyph="Lock" size="small" /> IMMUTABLE — append only. Corrections create new reversal documents, never edit existing entries.
+        <div className={styles.immutBannerWrap}>
+          <Banner variant="danger">
+            IMMUTABLE — append only. Corrections create new reversal documents, never edit existing entries.
+          </Banner>
         </div>
       )}
       <table className={styles.tbl}>
@@ -379,14 +382,23 @@ export default function BianDataModelPage() {
         {/* SIDEBAR */}
         <nav className={styles.sidebar} aria-label="BIAN domains">
           <div className={styles.searchWrap}>
-            <TextInput
+            <SearchInput
               placeholder="Search domains…"
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               aria-label="Filter BIAN domains"
-              sizeVariant="small"
+              size="small"
             />
           </div>
+          {filteredDomains.length === 0 && (
+            <div className={styles.railEmpty} role="status">
+              <Icon glyph="MagnifyingGlass" size="default" />
+              <Body className={styles.railEmptyTitle}>No domains match</Body>
+              <Button variant="default" size="small" onClick={() => setFilter("")}>
+                Clear filter
+              </Button>
+            </div>
+          )}
           {GROUPS.map((group) => {
             const groupDomains = filteredDomains.filter((d) => d.group === group);
             if (!groupDomains.length) return null;
@@ -441,7 +453,9 @@ export default function BianDataModelPage() {
 
         {/* MAIN */}
         <main className={styles.main}>
-          {activeKey === SEMANTIC_API_KEY ? <SemanticApiView /> : <DomainView activeKey={activeKey} />}
+          <div className={styles.mainInner}>
+            {activeKey === SEMANTIC_API_KEY ? <SemanticApiView /> : <DomainView activeKey={activeKey} />}
+          </div>
         </main>
       </div>
     </div>

@@ -35,7 +35,8 @@
 .backButton:hover { background: rgba(255, 255, 255, 0.08); border-color: #FFFFFF; }
 .backButton:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #C2E5FF; /* palette.blue.light2 */
+  /* skill-spec focusRing.default — two rings, white inner + blue.base outer */
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #016BF8; /* palette.white, palette.blue.base */
 }
 @media (prefers-reduced-motion: reduce) {
   .backButton { transition: none; }
@@ -86,26 +87,61 @@
   padding: 8px 14px; border-left: 3px solid transparent; display: flex; align-items: center; gap: 8px;
   transition: background 0.1s;
 }
+.domainBtn {
+  min-height: 36px;
+  transition: background 150ms cubic-bezier(0.33, 1, 0.68, 1);
+}
 .domainBtn:hover { background: #E8EDEB; /* palette.gray.light2 */ }
 .domainBtnActive { background: #E8EDEB; }
 .domainBtn:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #C2E5FF; /* palette.blue.light2 */
+  /* skill-spec focusRing.default — two rings */
+  box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 4px #016BF8;
   position: relative; z-index: 1;
+}
+@media (max-width: 1024px) {
+  /* WCAG 2.5.8 touch target on smaller viewports */
+  .domainBtn { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .domainBtn { transition: none; }
 }
 .domainIcon { font-size: 14px; line-height: 1; }
 .domainName { font-size: 12px; color: #5C6C75; font-weight: 400; line-height: 1.3; }
 .domainBtnActive .domainName { font-weight: 600; color: #001E2B; }
 .semanticDivider {
-  margin: 12px 0 0 0; padding: 12px 14px 4px 14px; border-top: 1px solid #E8EDEB;
-  font-size: 9px !important; color: #00684A !important; font-weight: 700 !important;
+  margin: 12px 0 0 0; padding: 12px 14px 4px 14px; border-top: 1px solid #E8EDEB; /* palette.gray.light2 */
+  font-size: 9px !important; color: #00684A !important; /* palette.green.dark2 */ font-weight: 700 !important;
   letter-spacing: 0.14em; text-transform: uppercase;
 }
 
-/* MAIN */
+/* Empty state when sidebar filter returns no results */
+.railEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 12px;
+  padding: 20px 14px;
+  border: 1px dashed #C1C7C6; /* palette.gray.light1 */
+  border-radius: 8px;
+  background: #F9FBFA; /* palette.gray.light3 */
+  text-align: center;
+  color: #5C6C75; /* palette.gray.dark1 */
+}
+.railEmptyTitle { color: #001E2B !important; /* palette.black */ font-weight: 600 !important; }
+
+/* MAIN — clamp content to 1400px on data-heavy routes per LG layout guidance */
 .main {
-  flex: 1; overflow-y: auto; padding: 18px 24px 32px 24px; background: #FFFFFF;
+  flex: 1; overflow-y: auto; background: #FFFFFF; /* palette.white */
   min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+.mainInner {
+  width: 100%;
+  max-width: 1400px;
+  padding: 18px 24px 32px 24px;
 }
 
 /* DOMAIN HEADER CARD */
@@ -142,12 +178,10 @@
   padding: 12px 16px; margin-bottom: 10px;
 }
 .metaRow { display: grid; grid-template-columns: 160px 1fr; gap: 10px; padding: 4px 0; font-size: 12px; }
-.metaLbl { color: #889397; }
+.metaLbl { color: #5C6C75; /* palette.gray.dark1 — content text, ≥4.5:1 on white */ }
 .metaVal { color: #001E2B; font-family: 'Source Code Pro', monospace; word-break: break-all; }
-.immutBanner {
-  background: #FFF5F5; border: 1px solid #FCA5A5; border-radius: 8px;
-  padding: 10px 14px; margin-bottom: 10px; font-size: 12px; color: #DC2626;
-}
+/* Wrapper around the LG <Banner variant="danger"> used for the immutable callout. */
+.immutBannerWrap { margin-bottom: 10px; }
 
 /* SHARED TABLE */
 .tbl {
