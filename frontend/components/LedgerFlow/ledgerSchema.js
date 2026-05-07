@@ -958,12 +958,12 @@ COLLECTIONS.glAccounts.group = "Ledger";
 COLLECTIONS.bianMappings.group = "Mappings";
 
 // Convenience for the drawer: list collection keys in canonical demo order,
-// grouped by BIAN service domain: Payments → Fraud → Portfolio → Lending → Ledger → Mappings.
+// grouped by BIAN service domain: Payments → Ledger → Fraud → Portfolio → Lending → Mappings.
 export const COLLECTION_KEYS = [
   "customers", "accounts", "payments", "canonicalJsonStorage",
+  "subLedgerEntries", "journalEntries", "glAccounts",
   "fraudEvaluation", "fraudResolution",
   "portfolioAllocation", "portfolioPerformance",
   "loans", "creditReports",
-  "subLedgerEntries", "journalEntries", "glAccounts",
   "bianMappings",
 ];

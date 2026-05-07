@@ -41,7 +41,7 @@ A single-scene, step-by-step simulation of a payment posting cycle. The user wat
 
 ### Data model — Collections drawer
 
-A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the full BIAN v14 data model backing the platform. The rail is grouped by BIAN service domain in this order: **Payments → Fraud → Portfolio → Lending → Ledger → Mappings**. Default DB is `leafy_bank_bian`; Lending collections live in `fsi-agentic-lending` (called out per row).
+A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the full BIAN v14 data model backing the platform. The rail is grouped by BIAN service domain in this order: **Payments → Ledger → Fraud → Portfolio → Lending → Mappings**. Default DB is `leafy_bank_bian`; Lending collections live in `fsi-agentic-lending` (called out per row).
 
 #### Payments
 
@@ -51,6 +51,14 @@ A **Collections** button in the v1 toolbar opens a wide two-pane drawer that bro
 | `accounts` | `CurrentAccount` / `CurrentAccountFulfillmentArrangement` | Balances, signatories, restrictions, statement schedule, GL mapping |
 | `payments` | `PaymentOrder` / `PaymentOrder` | Card / RTP / SWIFT / RTGS / ACH with full ISO 20022 fields |
 | `canonicalJsonStorage` | `PaymentOrderInitiation` / `PaymentOrderInitiationTransaction` | SWIFT MT ⇄ ISO 20022 message conversion with field-level audit trail |
+
+#### Ledger (SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`)
+
+| Collection | Role | Immutable? |
+|---|---|---|
+| `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
+| `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
+| `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
 
 #### Fraud
 
@@ -72,14 +80,6 @@ A **Collections** button in the v1 toolbar opens a wide two-pane drawer that bro
 |---|---|---|
 | `loans` | `ConsumerLoan` / `ConsumerLoanFulfillmentArrangement` | Application: amount, collateral, affordability, status history |
 | `creditReports` | `CustomerCreditRating` / `ExternalCreditBureauReport` | External bureau snapshot — score, tradelines, inquiries |
-
-#### Ledger (SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`)
-
-| Collection | Role | Immutable? |
-|---|---|---|
-| `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
-| `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
-| `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
 
 #### Mappings
 
