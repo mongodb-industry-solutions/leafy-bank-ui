@@ -133,17 +133,33 @@ function CollectionPanel({ collectionKey }) {
         </div>
       </section>
 
-      {/* SAMPLE DOCUMENT */}
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <Overline className={styles.sectionEyebrow}>Sample document</Overline>
-        </div>
-        <div className={styles.codeWrap}>
-          <Code language="json" copyable>
-            {JSON.stringify(c.sampleDocument, null, 2)}
-          </Code>
-        </div>
-      </section>
+      {/* SAMPLE DOCUMENT(S) */}
+      {c.sampleDocuments ? (
+        c.sampleDocuments.map((s, i) => (
+          <section key={i} className={styles.section}>
+            <div className={styles.sectionHead}>
+              <Overline className={styles.sectionEyebrow}>Sample document</Overline>
+              {s.accent ? <Badge variant={s.accent}>{s.label}</Badge> : <span className={styles.sectionPath}>{s.label}</span>}
+            </div>
+            <div className={styles.codeWrap}>
+              <Code language="json" copyable>
+                {JSON.stringify(s.doc, null, 2)}
+              </Code>
+            </div>
+          </section>
+        ))
+      ) : (
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <Overline className={styles.sectionEyebrow}>Sample document</Overline>
+          </div>
+          <div className={styles.codeWrap}>
+            <Code language="json" copyable>
+              {JSON.stringify(c.sampleDocument, null, 2)}
+            </Code>
+          </div>
+        </section>
+      )}
 
       {/* DESIGN DECISIONS */}
       {decisions.length > 0 && (
