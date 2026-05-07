@@ -41,23 +41,70 @@ A single-scene, step-by-step simulation of a payment posting cycle. The user wat
 
 ### Data model — Collections drawer
 
-A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the BIAN v14 ledger data model backing the demo. Database: `leafy_bank_bian`. SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`.
+A **Collections** button in the v1 toolbar opens a wide two-pane drawer that browses the full BIAN v14 data model backing the platform. The rail groups collections by domain: **Ledger**, **Party & Account**, **Payments**, **Fraud**, **Lending**, **Portfolio**, **Meta**. Default DB is `leafy_bank_bian`; Lending collections live in `fsi-agentic-lending` (called out per row).
+
+#### Ledger (SD `FinancialAccounting` · CR `FinancialBookingLog` · BQ `LedgerPosting` · Pattern `Management`)
 
 | Collection | Role | Immutable? |
 |---|---|---|
 | `subLedgerEntries` | Per-entity sub-ledger detail rolling up to a GL control account | ✓ when `status=POSTED` |
 | `journalEntries` | GL double-entry journals — balanced debit/credit lines, atomic posting | ✓ when `status=POSTED` |
 | `glAccounts` | Chart of Accounts master registry; only level-4 accounts accept postings | — |
+
+#### Party & Account
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `customers` | `PartyReferenceDataDirectory` / `PartyReferenceDataDirectoryEntry` | Identification (PII via Queryable Encryption), employment, contact, KYC, consents, bank-relations |
+| `accounts` | `CurrentAccount` / `CurrentAccountFulfillmentArrangement` | Balances, signatories, restrictions, statement schedule, GL mapping |
+
+#### Payments
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `payments` | `PaymentOrder` / `PaymentOrder` | Card / RTP / SWIFT / RTGS / ACH with full ISO 20022 fields |
+| `transactions` | `CustomerTransactionEngine` / `TransactionLog` | Posted transaction log on a current account |
+| `canonicalJsonStorage` | `PaymentOrderInitiation` / `PaymentOrderInitiationTransaction` | SWIFT MT ⇄ ISO 20022 message conversion with field-level audit trail |
+
+#### Fraud
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `fraudEvaluation` | `FraudEvaluation` / `FraudEvaluationProcedure` | Composite score per inbound transaction; flagged → `fraudResolution` |
+| `fraudResolution` | `FraudResolution` / `FraudCaseProcedure` | Case lifecycle, regulatory filing, related transactions |
+
+#### Lending — DB `fsi-agentic-lending`
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `borrowers` | `ConsumerLoan` / `ConsumerLoanApplicationProfile` | Minimal v7 borrower profile |
+| `loans` | `ConsumerLoan` / `ConsumerLoanFulfillmentArrangement` | Application: amount, collateral, affordability, status history |
+| `creditReports` | `CustomerCreditRating` / `ExternalCreditBureauReport` | External bureau snapshot — score, tradelines, inquiries |
+
+#### Portfolio
+
+| Collection | BIAN SD / CR | Notes |
+|---|---|---|
+| `portfolioAllocation` | `InvestmentPortfolioPlanning` / `ManagedInvestmentPortfolioAgreement` | Target asset allocation per managed portfolio |
+| `portfolioPerformance` | `InvestmentPortfolioAnalysis` / `ManagedInvestmentPortfolioAnalysis` | Daily and cumulative return values |
+
+#### Meta
+
+| Collection | Role | Immutable? |
+|---|---|---|
 | `bianMappings` | Versioned BIAN field-name catalog — see below | mixed (per document) |
 
 For each collection the drawer shows:
 
-- BIAN classification badges (SD / CR / BQ / Pattern) and a hero with field/index/required counts
-- Full **field table** with type, required flag, BIAN canonical alias, and notes
+- The host **database** (default `leafy_bank_bian` or per-collection override, e.g. `fsi-agentic-lending` for the Lending group)
+- BIAN classification badges (SD / CR / BQ / Pattern) and a hero with field / required / index counts
+- Full **field table** with type, required flag, BIAN canonical alias, and notes — dotted paths and `arrayPath[].field` notation are rendered as-is
 - For `journalEntries`, a separate **entry sub-fields** table for `entries[].*`
-- **Indexes** as visual cards (unique / sparse / standard)
-- **Sample document(s)** rendered as JSON
-- **Design decisions** — the architectural choices behind the schema (idempotency, immutability, double-entry enforcement, Decimal128, sub-ledger ↔ GL relationship, source reference, running balance, BIAN mapping, mapping versioning)
+- **Indexes** as visual cards (unique / sparse / standard) — shown only for collections where indexes are defined (Ledger + `bianMappings`)
+- **Sample document(s)** rendered as JSON — shown when defined
+- **Design decisions** — the architectural choices behind the ledger schema (idempotency, immutability, double-entry enforcement, Decimal128, sub-ledger ↔ GL relationship, source reference, running balance, BIAN mapping, mapping versioning)
+
+The 12 business-logic collections (Party & Account, Payments, Fraud, Lending, Portfolio) are derived directly from the canonical BIAN v14 alias map (`bian-alias-map.json`) — fields and BIAN aliases are the single source of truth; no hand-written field tables to drift.
 
 #### `bianMappings` — versioned BIAN catalog
 

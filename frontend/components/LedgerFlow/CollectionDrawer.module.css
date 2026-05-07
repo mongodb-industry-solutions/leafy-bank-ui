@@ -126,6 +126,32 @@
   font-weight: 600;
 }
 
+.railDbTag {
+  color: #1254B7;
+  font-weight: 600;
+}
+
+.railGroup {
+  list-style: none;
+  padding: 12px 16px 4px 16px;
+  margin-top: 4px;
+  border-top: 1px solid #E8EDEB;
+}
+
+.railGroup:first-child {
+  border-top: none;
+  margin-top: 0;
+}
+
+.railGroupLabel {
+  margin: 0 !important;
+  font-size: 9.5px !important;
+  color: #5C6C75 !important;
+  letter-spacing: 0.08em !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
 /* ─────────── Right panel ─────────── */
 
 .panelScroll {

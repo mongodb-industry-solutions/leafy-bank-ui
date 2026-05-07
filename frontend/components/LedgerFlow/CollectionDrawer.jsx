@@ -76,7 +76,7 @@ function CollectionPanel({ collectionKey }) {
       {/* HERO — title + classification badges + stats */}
       <header className={styles.hero}>
         <div className={styles.heroLeft}>
-          <Overline className={styles.heroEyebrow}>{META.database}</Overline>
+          <Overline className={styles.heroEyebrow}>{c.database || META.database}</Overline>
           <H3 className={styles.heroTitle}>
             <Icon glyph="DatabaseConnection" size="large" className={styles.heroIcon} />
             {c.mongoAlias}
@@ -93,7 +93,9 @@ function CollectionPanel({ collectionKey }) {
         <div className={styles.heroStats}>
           <StatPill label="fields" value={c.fields.length} accent="green" />
           <StatPill label="required" value={requiredCount} accent="blue" />
-          <StatPill label="indexes" value={c.indexes.length} accent="purple" />
+          {c.indexes?.length > 0 && (
+            <StatPill label="indexes" value={c.indexes.length} accent="purple" />
+          )}
           {c.entryFields && (
             <StatPill label="entry sub-fields" value={c.entryFields.length} accent="yellow" />
           )}
@@ -121,17 +123,19 @@ function CollectionPanel({ collectionKey }) {
       )}
 
       {/* INDEXES — visual cards */}
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <Overline className={styles.sectionEyebrow}>Indexes</Overline>
-          <span className={styles.sectionCount}>{c.indexes.length}</span>
-        </div>
-        <div className={styles.indexGrid}>
-          {c.indexes.map((idx) => (
-            <IndexCard key={idx.name} index={idx} />
-          ))}
-        </div>
-      </section>
+      {c.indexes?.length > 0 && (
+        <section className={styles.section}>
+          <div className={styles.sectionHead}>
+            <Overline className={styles.sectionEyebrow}>Indexes</Overline>
+            <span className={styles.sectionCount}>{c.indexes.length}</span>
+          </div>
+          <div className={styles.indexGrid}>
+            {c.indexes.map((idx) => (
+              <IndexCard key={idx.name} index={idx} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* SAMPLE DOCUMENT(S) */}
       {c.sampleDocuments ? (
@@ -148,7 +152,7 @@ function CollectionPanel({ collectionKey }) {
             </div>
           </section>
         ))
-      ) : (
+      ) : c.sampleDocument ? (
         <section className={styles.section}>
           <div className={styles.sectionHead}>
             <Overline className={styles.sectionEyebrow}>Sample document</Overline>
@@ -159,7 +163,7 @@ function CollectionPanel({ collectionKey }) {
             </Code>
           </div>
         </section>
-      )}
+      ) : null}
 
       {/* DESIGN DECISIONS */}
       {decisions.length > 0 && (
@@ -214,26 +218,38 @@ const CollectionDrawer = ({ open, setOpen }) => {
               <Subtitle className={styles.railTitle}>BIAN {META.bianVersion}</Subtitle>
             </div>
             <ul className={styles.railList}>
-              {COLLECTION_KEYS.map((k) => {
+              {COLLECTION_KEYS.map((k, i) => {
                 const c = COLLECTIONS[k];
+                const prev = i > 0 ? COLLECTIONS[COLLECTION_KEYS[i - 1]] : null;
+                const showGroup = c.group && (!prev || prev.group !== c.group);
                 const active = k === activeKey;
+                const dbOverride = c.database && c.database !== META.database;
                 return (
-                  <li key={k}>
-                    <button
-                      type="button"
-                      className={`${styles.railItem} ${active ? styles.railItemActive : ""}`}
-                      onClick={() => setActiveKey(k)}
-                    >
-                      <span className={styles.railItemTop}>
-                        <Icon glyph="Folder" size="small" className={styles.railIcon} />
-                        <code className={styles.railName}>{c.mongoAlias}</code>
-                      </span>
-                      <span className={styles.railItemMeta}>
-                        {c.fields.length} fields · {c.indexes.length} indexes
-                        {c.immutable && <span className={styles.railImmutable}> · immutable</span>}
-                      </span>
-                    </button>
-                  </li>
+                  <React.Fragment key={k}>
+                    {showGroup && (
+                      <li className={styles.railGroup} aria-hidden="true">
+                        <Overline className={styles.railGroupLabel}>{c.group}</Overline>
+                      </li>
+                    )}
+                    <li>
+                      <button
+                        type="button"
+                        className={`${styles.railItem} ${active ? styles.railItemActive : ""}`}
+                        onClick={() => setActiveKey(k)}
+                      >
+                        <span className={styles.railItemTop}>
+                          <Icon glyph="Folder" size="small" className={styles.railIcon} />
+                          <code className={styles.railName}>{c.mongoAlias}</code>
+                        </span>
+                        <span className={styles.railItemMeta}>
+                          {c.fields.length} fields
+                          {c.indexes?.length > 0 && <> · {c.indexes.length} indexes</>}
+                          {c.immutable && <span className={styles.railImmutable}> · immutable</span>}
+                          {dbOverride && <span className={styles.railDbTag}> · {c.database}</span>}
+                        </span>
+                      </button>
+                    </li>
+                  </React.Fragment>
                 );
               })}
             </ul>
