@@ -256,6 +256,10 @@
   white-space: nowrap;
 }
 
+.txTypeBadge {
+  margin-right: 6px;
+}
+
 .scenarioPill {
   display: inline-flex;
   align-items: center;

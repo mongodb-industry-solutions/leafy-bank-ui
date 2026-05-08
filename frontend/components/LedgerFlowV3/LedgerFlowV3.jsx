@@ -1165,6 +1165,19 @@ const LedgerFlowV3 = () => {
         <div className={styles.idRow}>
           {isPostingScene && state.identifiers.idempotencyKey ? (
             <>
+              <span className={styles.scenarioLabel}>Transaction:</span>
+              <Badge
+                variant={
+                  txType === "DOMESTIC" ? "green" :
+                  txType === "FX" ? "blue" :
+                  "yellow"
+                }
+                className={styles.txTypeBadge}
+              >
+                {txType === "DOMESTIC" ? "FedNow Domestic" :
+                 txType === "FX"       ? "FX Transfer EUR→USD" :
+                                         "Cancelled Auth"}
+              </Badge>
               {state.identifiers.journalId && (
                 <Copyable label="journalId" size="small" className={styles.copyable}>
                   {state.identifiers.journalId}

@@ -428,7 +428,8 @@ function ErrorsSection({ errors }) {
         <thead>
           <tr>
             <th>Code</th>
-            <th>Case</th>
+            <th>Meaning</th>
+            <th>When</th>
           </tr>
         </thead>
         <tbody>
@@ -441,7 +442,8 @@ function ErrorsSection({ errors }) {
                   {e.code}
                 </span>
               </td>
-              <td>{e.case}</td>
+              <td>{e.meaning ?? e.case}</td>
+              <td>{e.when}</td>
             </tr>
           ))}
         </tbody>
