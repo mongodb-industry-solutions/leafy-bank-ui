@@ -3,9 +3,8 @@
 .shell {
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
   background: #FFFFFF;
-  overflow: hidden;
 }
 
 /* HERO — slate hero (palette.gray.dark3) with green accent border */
@@ -47,8 +46,16 @@
   text-transform: uppercase; margin: 0 !important;
 }
 .heroDot { width: 6px; height: 6px; border-radius: 50%; background: #00ED64; box-shadow: 0 0 8px #00ED64; }
-.heroTitle { color: #FFFFFF !important; margin: 0 !important; }
-.heroTitle small { color: #00ED64; font-size: 12px; font-weight: 400; margin-left: 8px; letter-spacing: 0.04em; }
+.heroTitle { color: #FFFFFF !important; margin: 0 !important; white-space: nowrap; }
+.heroTitle small {
+  display: block;
+  color: #00ED64;
+  font-size: 12px;
+  font-weight: 400;
+  margin: 4px 0 0 0;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
 .heroStats { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .heroCtaLink { text-decoration: none; margin-left: 6px; }
 .heroStat {
@@ -65,7 +72,7 @@
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
-  overflow: hidden;
+  align-items: flex-start;
 }
 
 
@@ -74,8 +81,12 @@
   width: 240px;
   background: #F9FBFA;
   border-right: 1px solid #E8EDEB;
-  overflow-y: auto;
   flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  max-height: calc(100vh - 60px);
+  overflow-y: auto;
+  align-self: stretch;
 }
 .searchWrap { padding: 10px 12px 8px 12px; }
 .groupLabel {
@@ -133,7 +144,7 @@
 
 /* MAIN — clamp content to 1400px on data-heavy routes per LG layout guidance */
 .main {
-  flex: 1; overflow-y: auto; background: #FFFFFF; /* palette.white */
+  flex: 1; background: #FFFFFF; /* palette.white */
   min-width: 0;
   display: flex;
   justify-content: center;
