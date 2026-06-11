@@ -6,7 +6,7 @@ export async function GET(request) {
                        process.env.NEXT_PUBLIC_CAPITALMARKETS_AGENTS_API_URL || 
                        "http://localhost:8005";
     
-    const url = `${backendUrl}/portfolio/fetch-crypto-portfolio-allocation`;
+    const url = `${backendUrl}/InvestmentPortfolioPlanning/PORT-0002/Retrieve`;
     
     console.log(`🔗 Proxying GET request to: ${url}`);
     

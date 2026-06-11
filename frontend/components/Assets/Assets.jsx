@@ -70,7 +70,7 @@ export default function Assets() {
                 if (shouldShowLoading) {
                     const basicAssets = Object.entries(assetsClosePrice.assets_close_price)
                         .map(([symbol, data]) => {
-                            const allocation = allocationResponse.portfolio_allocation[symbol];
+                            const allocation = allocationResponse.portfolioAllocation[symbol];
                             return {
                                 symbol,
                                 close: parseFloat(data.close_price.toFixed(2)),
@@ -78,10 +78,10 @@ export default function Assets() {
                                     $date: new Date(data.timestamp).toISOString()
                                 },
                                 allocation: allocation ? {
-                                    percentage: allocation.allocation_percentage,
-                                    decimal: allocation.allocation_decimal,
+                                    percentage: allocation.allocationPercentage,
+                                    decimal: allocation.allocationDecimal,
                                     description: allocation.description,
-                                    asset_type: allocation.asset_type
+                                    asset_type: allocation.assetType
                                 } : null,
                                 sentiment: {
                                     score: 0.5,
@@ -183,7 +183,7 @@ export default function Assets() {
                 const transformedAssets = Object.entries(assetsClosePrice.assets_close_price)
                     .map(([symbol, data]) => {
                         // Get allocation data for this asset
-                        const allocation = allocationResponse.portfolio_allocation[symbol];
+                        const allocation = allocationResponse.portfolioAllocation[symbol];
 
                         // Get sentiment data for this asset from the news report
                         const sentimentData = newsReportResponse?.market_news_report?.report?.asset_news_sentiments?.find(item => item.asset === symbol);
@@ -230,10 +230,10 @@ export default function Assets() {
                             },
                             // Include allocation data if available
                             allocation: allocation ? {
-                                percentage: allocation.allocation_percentage,
-                                decimal: allocation.allocation_decimal,
+                                percentage: allocation.allocationPercentage,
+                                decimal: allocation.allocationDecimal,
                                 description: allocation.description,
-                                asset_type: allocation.asset_type
+                                asset_type: allocation.assetType
                             } : null,
                             // Include normalized sentiment data
                             sentiment: {
