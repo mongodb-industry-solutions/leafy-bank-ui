@@ -179,6 +179,16 @@
 }
 .infoChipImmut { color: #DC2626; border-color: #FCA5A5; }
 .infoChipBq { color: #00684A; border-color: #A3D9B1; }
+.infoChipDemo { background: #00684A; color: #FFFFFF; border-color: #00684A; }
+
+/* DEMO HIGHLIGHT — collections this demo uses (derived from DB_MAP via ?demo=) */
+.domainBtnDemo:not(.domainBtnActive) { background: #F3FBF6; }
+.demoPill {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+  padding: 1px 6px; border-radius: 10px;
+  background: #00684A; color: #FFFFFF;
+}
 
 /* TABS */
 .tabsWrap { margin-bottom: 14px; }
