@@ -43,7 +43,7 @@ export default function AssetsCrypto() {
                 ]);
 
                 const cryptoSuggestionsData = cryptoSuggestionsResponse;
-                const portfolioAllocations = cryptoAllocationResponse?.crypto_portfolio_allocation || {};
+                const portfolioAllocations = cryptoAllocationResponse?.portfolioAllocation || {};
                 const cryptoPrices = cryptoPricesResponse?.assets_close_price || {};
                 const cryptoRecentData = cryptoRecentDataResponse?.assets_data || {};
                 
@@ -75,9 +75,9 @@ export default function AssetsCrypto() {
                         symbol: item.asset,
                         allocation: {
                             description: allocationEntry?.description || item.description,
-                            asset_type: allocationEntry?.asset_type || item.asset_type,
-                            percentage: allocationEntry?.allocation_percentage || "N/A",
-                            decimal: allocationEntry?.allocation_decimal || null
+                            asset_type: allocationEntry?.assetType || item.asset_type,
+                            percentage: allocationEntry?.allocationPercentage || "N/A",
+                            decimal: allocationEntry?.allocationDecimal || null
                         },
                         close: priceData ? parseFloat(priceData.close_price.toFixed(2)) : null,
                         timestamp: priceData ? { $date: new Date(priceData.timestamp).toISOString() } : { $date: new Date().toISOString() },

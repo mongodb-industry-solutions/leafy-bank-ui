@@ -19,6 +19,17 @@ function Header({ onLogout = () => { } }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 
+  // Open the BIAN explorer with a demo lens matching the page you're on, so the
+  // relevant collections + Semantic-API tab are highlighted. Stock and Crypto
+  // Investment both map to the single "portfolio" demo.
+  const BIAN_ROUTE_DEMO = {
+    "/asset-portfolio": "portfolio",
+    "/crypto-portfolio": "portfolio",
+  };
+  const bianHref = BIAN_ROUTE_DEMO[pathname]
+    ? `/bian-data-model?demo=${BIAN_ROUTE_DEMO[pathname]}`
+    : "/bian-data-model";
+
   const [selectedUser, setSelectedUser] = useState(null);
   const [isPortfolioManager, setIsPortfolioManager] = useState(false);
 
@@ -93,7 +104,7 @@ function Header({ onLogout = () => { } }) {
 
         {/* Mobile entry — unified BIAN data model + Semantic API + Ledger Flow */}
         <Link
-          href="/bian-data-model"
+          href={bianHref}
           className={`${styles.linkHideDesktop} ${styles.navLink}`}
           onClick={() => setMenuOpen(false)}
         >
@@ -119,7 +130,7 @@ function Header({ onLogout = () => { } }) {
         <Tooltip
           trigger={
             <Link
-              href="/bian-data-model"
+              href={bianHref}
               aria-label="Open BIAN Data Model, Semantic API and Ledger Flow"
               className={styles.ledgerLink}
             >

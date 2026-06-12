@@ -23,10 +23,31 @@ import {
 } from "./bianDataModelData";
 import BianApiTab from "../BianExplorer/BianApiTab";
 import { BIAN_API_CATALOG } from "./bianApiCatalog";
+import { PAYMENT_RAIL_API_CATALOG } from "./paymentRailApiCatalog";
+import { PORTFOLIO_API_CATALOG } from "./portfolioApiCatalog";
 import { DOMAIN_ICONS, SEMANTIC_API_ICON } from "./domainIconMap";
 import styles from "./BianDataModelPage.module.css";
 
 const SEMANTIC_API_KEY = "__semantic_api__";
+const PAYMENT_RAIL_API_KEY = "__payment_rail_api__";
+const PORTFOLIO_API_KEY = "__portfolio_api__";
+
+// A "demo lens" highlights the collections + semantic-API view a given demo
+// uses. Chosen at runtime via ?demo=<key> (the Header appends it based on the
+// page you opened the explorer from), falling back to NEXT_PUBLIC_DEFAULT_DEMO.
+// With neither set, nothing is highlighted. Each demo maps to its DB_MAP key
+// (collections to pill) + the sidebar key of its semantic-API view to pill.
+const DEMOS = {
+  payments: { dbKey: "fsi-payments-processing", apiKey: PAYMENT_RAIL_API_KEY },
+  "leafy-bank": { dbKey: "leafy_bank_bian", apiKey: SEMANTIC_API_KEY },
+  portfolio: { dbKey: "agentic_capital_markets", apiKey: PORTFOLIO_API_KEY },
+};
+const NO_DEMO = { dbKey: null, apiKey: null };
+const DEFAULT_DEMO = process.env.NEXT_PUBLIC_DEFAULT_DEMO || null;
+
+function resolveDemo(slug) {
+  return DEMOS[slug] || DEMOS[DEFAULT_DEMO] || NO_DEMO;
+}
 
 function BsonTag({ type }) {
   const cls = styles[`bson_${type}`] || styles.bsonTag;
@@ -220,7 +241,7 @@ function RelationshipsTab({ activeKey }) {
   );
 }
 
-function DomainView({ activeKey }) {
+function DomainView({ activeKey, demoCollections, demoDbKey }) {
   const info = DOMAIN_MAP.find((d) => d.key === activeKey);
   const d = COLL_DATA[activeKey];
   const [tab, setTab] = useState(0);
@@ -258,6 +279,9 @@ function DomainView({ activeKey }) {
           {d.description && <div className={styles.dhDesc}>{d.description}</div>}
         </div>
         <div className={styles.dhRight}>
+          {demoCollections.has(activeKey) && (
+            <span className={`${styles.infoChip} ${styles.infoChipDemo}`}>Used by this demo</span>
+          )}
           <span className={styles.infoChip}>{fieldCount} fields</span>
           <span className={styles.infoChip}>{bmCount} BIAN mappings</span>
           {bqCount > 0 && <span className={`${styles.infoChip} ${styles.infoChipBq}`}>{bqCount} BQs</span>}
@@ -293,7 +317,10 @@ function DomainView({ activeKey }) {
           <div className={styles.footerCardLbl}>Database map</div>
           {Object.entries(DB_MAP).map(([db, colls]) => (
             <div key={db} className={styles.dbChip}>
-              <div className={styles.dbName}>{db}</div>
+              <div className={styles.dbName}>
+                {db}
+                {db === demoDbKey && <span className={styles.demoPill}>demo</span>}
+              </div>
               <div className={styles.dbColls}>{colls.join(", ")}</div>
             </div>
           ))}
@@ -317,10 +344,52 @@ function SemanticApiView() {
   );
 }
 
+function PaymentRailApiView() {
+  return (
+    <div className={styles.semanticApi}>
+      <div className={styles.semanticApiHero}>
+        <H3>Payment Rail — BIAN Semantic API</H3>
+        <p>BIAN-compliant PaymentRail endpoints — message conversion exposed as Outbound / Inbound transactions on a single operating session — plus the operational and agentic routes the Agentic Payments Platform demo runs. Browse by service.</p>
+      </div>
+      <div className={styles.semanticApiInner}>
+        <BianApiTab catalog={PAYMENT_RAIL_API_CATALOG} loading={false} error={null} />
+      </div>
+    </div>
+  );
+}
+
+function PortfolioApiView() {
+  return (
+    <div className={styles.semanticApi}>
+      <div className={styles.semanticApiHero}>
+        <H3>Portfolio — BIAN Semantic API</H3>
+        <p>BIAN-compliant Capital Markets endpoints — InvestmentPortfolioPlanning (allocation) and InvestmentPortfolioAnalysis (daily performance read + Execute) for the equity (PORT-0001) and crypto (PORT-0002) portfolios. GET for retrieves, POST for the performance write.</p>
+      </div>
+      <div className={styles.semanticApiInner}>
+        <BianApiTab catalog={PORTFOLIO_API_CATALOG} loading={false} error={null} />
+      </div>
+    </div>
+  );
+}
+
 export default function BianDataModelPage() {
   const [activeKey, setActiveKey] = useState(DOMAIN_MAP[0].key);
   const [filter, setFilter] = useState("");
+  const [demo, setDemo] = useState(DEFAULT_DEMO);
   const router = useRouter();
+
+  // Read the demo lens from ?demo=<key> once on mount (set by the Header link
+  // based on the page the explorer was opened from). Unknown/absent => no lens.
+  useEffect(() => {
+    const d = new URLSearchParams(window.location.search).get("demo");
+    if (d && DEMOS[d]) setDemo(d);
+  }, []);
+
+  const activeDemo = resolveDemo(demo);
+  const demoCollections = useMemo(
+    () => new Set(DB_MAP[activeDemo.dbKey] || []),
+    [activeDemo.dbKey]
+  );
   const handleBack = useCallback(() => {
     if (typeof window !== "undefined" && window.history.length > 1) {
       router.back();
@@ -407,11 +476,12 @@ export default function BianDataModelPage() {
                 <Overline className={styles.groupLabel}>{group}</Overline>
                 {groupDomains.map((d) => {
                   const isActive = d.key === activeKey;
+                  const isDemo = demoCollections.has(d.key);
                   return (
                     <button
                       key={d.key}
                       type="button"
-                      className={`${styles.domainBtn} ${isActive ? styles.domainBtnActive : ""}`}
+                      className={`${styles.domainBtn} ${isActive ? styles.domainBtnActive : ""} ${isDemo ? styles.domainBtnDemo : ""}`}
                       style={{ borderLeftColor: isActive ? d.color : "transparent" }}
                       onClick={() => setActiveKey(d.key)}
                     >
@@ -424,6 +494,7 @@ export default function BianDataModelPage() {
                       >
                         {d.label}
                       </span>
+                      {isDemo && <span className={styles.demoPill}>demo</span>}
                     </button>
                   );
                 })}
@@ -435,7 +506,7 @@ export default function BianDataModelPage() {
           <Overline className={styles.semanticDivider}>Semantic Layer</Overline>
           <button
             type="button"
-            className={`${styles.domainBtn} ${activeKey === SEMANTIC_API_KEY ? styles.domainBtnActive : ""}`}
+            className={`${styles.domainBtn} ${activeKey === SEMANTIC_API_KEY ? styles.domainBtnActive : ""} ${activeDemo.apiKey === SEMANTIC_API_KEY ? styles.domainBtnDemo : ""}`}
             style={{ borderLeftColor: activeKey === SEMANTIC_API_KEY ? palette.green.dark2 : "transparent" }}
             onClick={() => setActiveKey(SEMANTIC_API_KEY)}
           >
@@ -448,13 +519,56 @@ export default function BianDataModelPage() {
             >
               Leafy Bank Semantic API
             </span>
+            {activeDemo.apiKey === SEMANTIC_API_KEY && <span className={styles.demoPill}>demo</span>}
+          </button>
+          <button
+            type="button"
+            className={`${styles.domainBtn} ${activeKey === PAYMENT_RAIL_API_KEY ? styles.domainBtnActive : ""} ${activeDemo.apiKey === PAYMENT_RAIL_API_KEY ? styles.domainBtnDemo : ""}`}
+            style={{ borderLeftColor: activeKey === PAYMENT_RAIL_API_KEY ? palette.green.dark2 : "transparent" }}
+            onClick={() => setActiveKey(PAYMENT_RAIL_API_KEY)}
+          >
+            <span className={styles.domainIcon} style={{ color: activeKey === PAYMENT_RAIL_API_KEY ? palette.green.dark2 : palette.gray.dark1 }}>
+              <Icon glyph={SEMANTIC_API_ICON} size="small" />
+            </span>
+            <span
+              className={styles.domainName}
+              style={{ color: activeKey === PAYMENT_RAIL_API_KEY ? palette.green.dark2 : undefined }}
+            >
+              Payment Rail Semantic API
+            </span>
+            {activeDemo.apiKey === PAYMENT_RAIL_API_KEY && <span className={styles.demoPill}>demo</span>}
+          </button>
+          <button
+            type="button"
+            className={`${styles.domainBtn} ${activeKey === PORTFOLIO_API_KEY ? styles.domainBtnActive : ""} ${activeDemo.apiKey === PORTFOLIO_API_KEY ? styles.domainBtnDemo : ""}`}
+            style={{ borderLeftColor: activeKey === PORTFOLIO_API_KEY ? palette.green.dark2 : "transparent" }}
+            onClick={() => setActiveKey(PORTFOLIO_API_KEY)}
+          >
+            <span className={styles.domainIcon} style={{ color: activeKey === PORTFOLIO_API_KEY ? palette.green.dark2 : palette.gray.dark1 }}>
+              <Icon glyph={SEMANTIC_API_ICON} size="small" />
+            </span>
+            <span
+              className={styles.domainName}
+              style={{ color: activeKey === PORTFOLIO_API_KEY ? palette.green.dark2 : undefined }}
+            >
+              Portfolio Semantic API
+            </span>
+            {activeDemo.apiKey === PORTFOLIO_API_KEY && <span className={styles.demoPill}>demo</span>}
           </button>
         </nav>
 
         {/* MAIN */}
         <main className={styles.main}>
           <div className={styles.mainInner}>
-            {activeKey === SEMANTIC_API_KEY ? <SemanticApiView /> : <DomainView activeKey={activeKey} />}
+            {activeKey === SEMANTIC_API_KEY ? (
+              <SemanticApiView />
+            ) : activeKey === PAYMENT_RAIL_API_KEY ? (
+              <PaymentRailApiView />
+            ) : activeKey === PORTFOLIO_API_KEY ? (
+              <PortfolioApiView />
+            ) : (
+              <DomainView activeKey={activeKey} demoCollections={demoCollections} demoDbKey={activeDemo.dbKey} />
+            )}
           </div>
         </main>
       </div>
