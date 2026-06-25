@@ -219,51 +219,47 @@ function deriveDisplayLabel(leg, isInternal) {
 }
 
 /**
- * Wrap a single ledger leg (raw Mongo doc, camelCase) with adapter-derived
- * display helpers. The original camelCase fields pass through unchanged so the
- * expand-JSON panel renders the actual storage shape.
+ * Wrap a single v4_21 transaction doc (raw Mongo, camelCase) with adapter-derived
+ * display helpers. The original fields pass through unchanged so the expand-JSON
+ * panel renders the actual storage shape.
  *
- * Mongo leg shape (per `leafy_bank_bian.transactions`):
- *   { _id, txnId, accountId, paymentId, type, txnCode, amount, currency,
+ * v4_21 shape (per `leafy_bank_bian.transactions`):
+ *   { _id, txnId, paymentId, direction: "OUTGOING", txnCode, amount, currency,
  *     valueDate, bookingDate, description, balanceAfter, channel,
- *     counterparty: { name, accountNo, bic, country }, gl: {...}, ... }
+ *     payer: { accountId, accountNo, name, ... },
+ *     payee: { accountId, accountNo, name, isInternal, ... }, ... }
  *
- * @param {object} leg - raw Mongo doc
- * @param {object} ctx - { isInternal, selfUserId, selfUserName }
+ * @param {object} doc - raw Mongo doc
+ * @param {object} ctx - { isOutgoing, isInternal, selfUserId, selfUserName }
  * @returns {object} Mongo doc + `_*` helpers
  */
-function decorateLeg(leg, ctx) {
-    const txnType = leg.type; // "DEBIT" | "CREDIT"
-    const isOutgoing = txnType === "DEBIT";
-    const isIncoming = !ctx.isInternal && txnType === "CREDIT";
-
-    const counterparty = leg.counterparty || {};
+function decorateLeg(doc, ctx) {
+    const otherSide = ctx.isOutgoing ? (doc.payee || {}) : (doc.payer || {});
     const otherSideName = ctx.isInternal
         ? ctx.selfUserName
-        : counterparty.name || "Unknown";
+        : otherSide.name || "Unknown";
 
     return {
-        ...leg,
+        ...doc,
         _isInternal: !!ctx.isInternal,
-        _isIncoming: !!isIncoming,
-        _isOutgoing: !!isOutgoing,
+        _isIncoming: !ctx.isOutgoing,
+        _isOutgoing: !!ctx.isOutgoing,
         _selfUserId: ctx.selfUserId,
         _selfUserName: ctx.selfUserName,
         _otherSideName: otherSideName,
-        _displayLabel: deriveDisplayLabel(leg, ctx.isInternal),
-        _paymentMethod: extractPaymentMethod(leg),
+        _displayLabel: deriveDisplayLabel(doc, ctx.isInternal),
+        _paymentMethod: extractPaymentMethod(doc),
     };
 }
 
 /**
- * Translate the activity-route response (raw Mongo legs) into a list of decorated
- * legs, applying the per-user one-leg-per-payment filter (Phase 5 decision #3).
+ * Translate the activity-route response (v4_21 one-doc-per-payment shape) into a
+ * list of decorated docs for the UI.
  *
- * The backend's activity route now returns raw Mongo docs (camelCase) under
- * `transactions` so the UI panel can show the actual storage shape. Filter rules:
- *   - Internal between two of the user's own accounts -> emit DEBIT leg only.
- *   - Outgoing only (user is debtor)               -> emit DEBIT leg.
- *   - Incoming only (user is creditor)             -> emit CREDIT leg.
+ * v4_21 shape: one doc per payment with `payer.accountId` / `payee.accountId`
+ * instead of per-leg `accountId` and `type: DEBIT|CREDIT`. Ownership is determined
+ * by matching ownedRefs against both sides; direction is determined by which side
+ * the user owns.
  *
  * @param {object} envelope - backend response: { transactions: [...] }
  * @param {object[]} ownedAccountUiRecords - the user's own account objects (post-adapter)
@@ -271,39 +267,29 @@ function decorateLeg(leg, ctx) {
  * @returns {{transactions: object[]}}
  */
 export function bianActivityResponseToUi(envelope, ownedAccountUiRecords = [], selfUser = {}) {
-    const legs = envelope?.transactions || [];
+    const docs = envelope?.transactions || [];
     const ownedRefs = new Set(
         (ownedAccountUiRecords || [])
             .map((a) => a?.accountId || a?._id)
             .filter(Boolean)
     );
 
-    // Group legs by paymentId so we can detect "internal-between-own-accounts" cases.
-    const byPaymentId = new Map();
-    for (const leg of legs) {
-        const paymentId = leg.paymentId || leg.txnId;
-        if (!byPaymentId.has(paymentId)) byPaymentId.set(paymentId, []);
-        byPaymentId.get(paymentId).push(leg);
-    }
-
     const out = [];
-    for (const [, group] of byPaymentId) {
-        const ownedLegs = group.filter((l) => ownedRefs.has(l.accountId));
-        const isInternal = ownedLegs.length > 1;
+    for (const doc of docs) {
+        const payerOwned = ownedRefs.has(doc.payer?.accountId);
+        const payeeOwned = ownedRefs.has(doc.payee?.accountId);
 
-        let chosen;
-        if (isInternal) {
-            chosen = ownedLegs.find((l) => l.type === "DEBIT") || ownedLegs[0];
-        } else if (ownedLegs.length === 1) {
-            chosen = ownedLegs[0];
-        } else {
-            // No owned leg in this payment group — should not happen once the activity
-            // route fans out by CustomerReference, but skip defensively.
+        if (!payerOwned && !payeeOwned) {
+            // Neither side belongs to this user — skip defensively.
             continue;
         }
 
+        const isInternal = payerOwned && payeeOwned;
+        const isOutgoing = payerOwned;
+
         out.push(
-            decorateLeg(chosen, {
+            decorateLeg(doc, {
+                isOutgoing,
                 isInternal,
                 selfUserId: selfUser.userId,
                 selfUserName: selfUser.userName,
